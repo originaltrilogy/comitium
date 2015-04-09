@@ -68,6 +68,9 @@ select
 from "tblForumUsers";
 
 
+SELECT SETVAL('users_id_seq', ( select max("id") + 1 from users ) );
+
+
 create table "userLogs" (
   "id" serial not null,
   "userID" integer not null,

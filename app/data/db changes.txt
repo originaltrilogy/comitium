@@ -33,26 +33,3 @@ x. topic-view-times.sql
 x. cleanup.sql (set not nulls and uniques for items that couldn't be set that way during migration)
 
 x. indexes.sql
-
-
-new table: userLogs
-  CREATE TABLE `originaltrilogy`.`userLogs` (
-  `id` INT NOT NULL,
-  `userID` INT NOT NULL,
-  `action` VARCHAR(45) NOT NULL,
-  `IP` VARCHAR(45) NOT NULL,
-  `time` DATETIME NOT NULL,
-  `timestamp` TIMESTAMP NOT NULL,
-  PRIMARY KEY (`id`));
-
-
-new table: postHistory
-  CREATE TABLE `originaltrilogy`.`postHistory` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `postID` INT NOT NULL,
-  `editorID` INT NOT NULL,
-  `editReason` VARCHAR(500) NULL,
-  `markdown` LONGTEXT NOT NULL,
-  `time` DATETIME NOT NULL,
-  `timestamp` TIMESTAMP NULL,
-  PRIMARY KEY (`id`));

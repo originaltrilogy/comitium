@@ -233,17 +233,21 @@ function topicSubset(discussion, start, end, emitter) {
       if ( output.listen.success ) {
         // Build a view-ready object containing only the posts in the requested subset
         for ( var i = 0; i < end - start; i += 1 ) {
-          subset[i] = {};
-          for ( var property in output.topics[i] ) {
-            if ( output.topics[i].hasOwnProperty(property) ) {
-              if ( property === 'replies' || property === 'views' ) {
-                subset[i][property] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
-              } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                subset[i][property] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');
-              } else {
-                subset[i][property] = output.topics[i][property];
+          if ( output.topics[i] ) {
+            subset[i] = {};
+            for ( var property in output.topics[i] ) {
+              if ( output.topics[i].hasOwnProperty(property) ) {
+                if ( property === 'replies' || property === 'views' ) {
+                  subset[i][property] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
+                } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+                  subset[i][property] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');
+                } else {
+                  subset[i][property] = output.topics[i][property];
+                }
               }
             }
+          } else {
+            break;
           }
         }
 

@@ -7,10 +7,10 @@ var fs = require('fs'),
 
 global.app = require('citizen');
 
-require('nodetime').profile({
-  accountKey: app.config.main.nodeTime.accountKey,
-  appName: app.config.main.nodeTime.appName
-});
+// require('nodetime').profile({
+//   accountKey: app.config.main.nodeTime.accountKey,
+//   appName: app.config.main.nodeTime.appName
+// });
 
 app.db = {
   sql: {}

@@ -52,6 +52,9 @@ select
 from "tblForumSubcategories";
 
 
+SELECT SETVAL('discussions_id_seq', ( select max("id") + 1 from discussions ) );
+
+
 update "discussions"
 set "metaDescription" = "description"
 where "metaDescription" = '';

@@ -1,2 +1,4 @@
 app/config/*
 app/log/*
+.DS_Store
+node_modules

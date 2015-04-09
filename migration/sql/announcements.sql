@@ -19,6 +19,9 @@ select
 from "tblForumTopicForumLookup" where "bitAnnouncement" = true;
 
 
+SELECT SETVAL('announcements_id_seq', ( select max("id") + 1 from announcements ) );
+
+
 update "topics" t set "discussionID" = (
   select "intForumID"
   from "tblForumTopicForumLookup" l

@@ -20,3 +20,6 @@ select
   "intPostID",
   "vchBookmarkNotes"
 from "tblForumBookmarks";
+
+
+SELECT SETVAL('bookmarks_id_seq', ( select max("id") + 1 from bookmarks ) );

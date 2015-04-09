@@ -20,3 +20,6 @@ select
   "intTopicID",
   "dteSubscriptionNotificationSent"
 from "tblForumTopicSubscriptions";
+
+
+SELECT SETVAL('subscriptions_id_seq', ( select max("id") + 1 from subscriptions ) );

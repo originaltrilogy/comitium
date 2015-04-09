@@ -344,15 +344,19 @@ function postSubset(topic, start, end, emitter) {
       if ( output.listen.success ) {
         // Build a view-ready object containing only the posts in the requested subset
         for ( var i = 0; i < end - start; i += 1 ) {
-          subset[i] = {};
-          for ( var property in output.posts[i] ) {
-            if ( output.posts[i].hasOwnProperty(property) ) {
-              if ( property === 'time' ) {
-                subset[i][property] = app.toolbox.moment(app.toolbox.helpers.isoDate(output.posts[i][property])).format('MMMM D[,] YYYY [at] h:mm zz');
-              } else {
-                subset[i][property] = output.posts[i][property];
+          if ( output.posts[i] ) {
+            subset[i] = {};
+            for ( var property in output.posts[i] ) {
+              if ( output.posts[i].hasOwnProperty(property) ) {
+                if ( property === 'time' ) {
+                  subset[i][property] = app.toolbox.moment(app.toolbox.helpers.isoDate(output.posts[i][property])).format('MMMM D[,] YYYY [at] h:mm zz');
+                } else {
+                  subset[i][property] = output.posts[i][property];
+                }
               }
             }
+          } else {
+            break;
           }
         }
 

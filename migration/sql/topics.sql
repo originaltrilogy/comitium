@@ -58,4 +58,8 @@ select
   "bitDraft"
 from "tblForumTopics" t where "intFirstTopicPostID" is not null;
 
+
+SELECT SETVAL('topics_id_seq', ( select max("id") + 1 from topics ) );
+
+
 update topics set "titleHtml" = "id" where "titleHtml" is null;

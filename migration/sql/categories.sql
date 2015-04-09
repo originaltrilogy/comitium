@@ -41,3 +41,6 @@ select
   "bitSystem",
   "bitLocked"
 from "tblForumCategories";
+
+
+SELECT SETVAL('categories_id_seq', ( select max("id") + 1 from categories ) );

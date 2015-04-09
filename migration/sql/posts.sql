@@ -40,6 +40,9 @@ select
 from "tblForumPosts";
 
 
+SELECT SETVAL('posts_id_seq', ( select max("id") + 1 from posts ) );
+
+
 create index on posts ( "id" );
 
 

@@ -20,3 +20,6 @@ select
   "intTopicID",
   "dteTopicViewTime"
 from "tblForumTopicViewTimes";
+
+
+SELECT SETVAL('topicViews_id_seq', ( select max("id") + 1 from "topicViews" ) );
