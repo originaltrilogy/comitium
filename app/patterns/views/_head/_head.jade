@@ -1,0 +1,9 @@
+head
+  meta(charset="utf-8")
+  meta(name="viewport" content="width=device-width, initial-scale=1.0")
+  base(href="#{route.parsed.protocol + config.main.baseUrl}")
+  title #{metaData.title}
+  meta(name="description" content="#{metaData.description}")
+  meta(name="keywords" content="#{metaData.keywords}")
+  script(type="text/javascript" src="#{route.parsed.protocol + config.main.staticAssetUrl}/themes/default/#{config.citizen.mode}.js")
+  link(rel="stylesheet" type="text/css" href="#{route.parsed.protocol + config.main.staticAssetUrl}/themes/default/#{config.citizen.mode}.css")

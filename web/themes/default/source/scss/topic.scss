@@ -1,0 +1,30 @@
+/*-------------------
+topic view
+-------------------*/
+body[data-controller="topic"] {
+
+  &[data-view="topic"] {
+    h1 {
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    nav.actions {
+      text-align: center;
+
+      li {
+        display: inline-block;
+        margin: 0 0.4rem;
+      }
+    }
+  }
+
+  &[data-view="write"],
+  &[data-view="reply"] {
+    li.topic-title {
+      textarea {
+        height: 6.4rem;
+      }
+    }
+  }
+
+}

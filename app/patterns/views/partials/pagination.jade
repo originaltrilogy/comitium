@@ -1,0 +1,19 @@
+if pagination && ( pagination.previous || pagination.next )
+  nav.pagination
+    ul
+      if pagination.first
+        li.first
+          a(href="#{pagination.first.url}") 1
+      if pagination.previous
+        li.previous
+          a(href="#{pagination.previous.url}")
+            = pagination.previous.number
+      li.current Page #{pagination.current}
+      if pagination.next
+        li.next
+          a(href="#{pagination.next.url}")
+            = pagination.next.number
+      if pagination.last
+        li.last
+          a(href="#{pagination.last.url}")
+            = pagination.last.number

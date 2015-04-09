@@ -1,0 +1,20 @@
+/*-------------------
+discussions view
+-------------------*/
+body[data-controller="discussions"] {
+
+  &[data-view="discussions"] {
+    p.description {
+      margin-top: 0.4rem;
+      margin-bottom: 1.2rem;
+    }
+    p.stats {
+      margin-top: 0.8rem;
+    }
+    span.topics,
+    span.posts {
+      font-weight: bold;
+    }
+  }
+
+}

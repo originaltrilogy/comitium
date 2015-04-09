@@ -1,0 +1,34 @@
+h1 Register with OT.com
+p Create an account and we'll send your activation e-mail right away.
+section.sign-up-form
+  if !session.username
+    form(action="#{config.main.basePath}register/action/form" method="post" novalidate)
+      if register && register.message
+        p.message
+          = register.message
+      .data
+        ul
+          li.username.text.required
+            label(for="username") Username
+            input#username(name="username" type="text" value="#{form.username}" required)
+          li.email.text.required
+            label(for="email") E-mail Address
+            p.label-note Required for account activation
+            input#email(name="email" type="email" value="#{form.email}" required)
+          li.password.text.required
+            label(for="password") Password
+            p.label-note At least 8 characters, letters and numbers only
+            input#password(name="password" type="password" value="#{form.password}" required)
+          li.verify-password.text.required
+            label(for="verify-password") Verify Password
+            input#verify-password(name="verifyPassword" type="password" value="#{form.verifyPassword}" required)
+          li.tos.checkbox.required
+            input#tos(name="tos" type="checkbox" value="true" checked=form.tos required)
+            label(for="tos") I have read and agree to the forum <a href="#{config.main.basePath}page/terms-of-service">Terms of Service</a>.
+      .actions
+        ul
+          li.primary
+            input(name="formAction" type="submit" value="Register")
+  else
+    p You're already signed in as <strong>#{session.username}</strong>.
+    p Not you? <a href="#{config.main.basePath}sign-out" title="Sign out of the forum.">Sign out of the forum</a> and sign in as a different user.

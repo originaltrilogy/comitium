@@ -1,0 +1,10 @@
+{
+  "extends":        "../.jshintrc",
+  "node":           false,
+  "browser":        true,
+  "globals": {
+    "OT":         false,
+    "Modernizr":    false,
+    "console":      false
+  }
+}

@@ -1,0 +1,28 @@
+/*-------------------
+discussion view
+-------------------*/
+body[data-controller="discussion"] {
+
+  &[data-view="discussion"] {
+    main > p {
+      margin: 1.2rem 1.4rem 1.8rem;
+      font-size: 1.2rem;
+      color: white;
+    }
+    article:last-child {
+      border-bottom: none;
+    }
+    p.details {
+      margin-top: 0.4rem;
+      margin-bottom: 1.2rem;
+    }
+    p.stats {
+      margin-top: 0.8rem;
+    }
+    span.replies,
+    span.views {
+      font-weight: bold;
+    }
+  }
+
+}

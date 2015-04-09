@@ -1,0 +1,4 @@
+ul#categories
+  each category in categories
+    li
+      a(href="#{config.main.basePath}discussion/#{category.vchForumURLTitle}/id/#{category.intForumID}") #{category.vchForumTitle}

@@ -1,0 +1,97 @@
+/*-------------------
+Variables
+-------------------*/
+$version: '0.1';
+$glyphs: 'EntypoDev';
+$defaultFont: "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+$titleFont: "Avenir Next", Avenir, $defaultFont;
+
+/*-------------------
+Mixins
+-------------------*/
+
+// Creates an icon by replacing text with a glyph
+@mixin icon ($iconSize, $content) {
+	position: relative;
+	display: block;
+	margin: 0;
+	padding: 0 0 0 #{$iconSize*10+'px'};
+	padding: 0 0 0 #{$iconSize+'rem'};
+	width: #{$iconSize*10+'px'};
+	width: #{$iconSize+'rem'};
+	height: #{$iconSize*10+'px'};
+	height: #{$iconSize+'rem'};
+	text-indent: 110%;
+	overflow: hidden;
+	text-decoration: none;
+	line-height: #{$iconSize*11+'px'};
+	line-height: #{$iconSize*1.1+'rem'};
+
+	&:before {
+		position: absolute;
+		top: 50%;
+		margin-top: -#{$iconSize*10/2+'px'};
+		margin-top: -#{$iconSize/2+'rem'};
+		left: 50%;
+		margin-left: -#{$iconSize*10/2+'px'};
+		margin-left: -#{$iconSize/2+'rem'};
+		display: block;
+		width: #{$iconSize*10+'px'};
+		width: #{$iconSize+'rem'};
+		height: #{$iconSize*10+'px'};
+		height: #{$iconSize+'rem'};
+		content: $content;
+		font-family: $glyphs;
+		font-size: #{$iconSize*10+'px'};
+		font-size: #{$iconSize+'rem'};
+		text-indent: 0;
+	}
+}
+
+// Adds an icon in front of an anchor's text
+@mixin iconBeforeText ($iconSize, $content) {
+	text-decoration: none;
+	line-height: #{$iconSize*10+'px'};
+	line-height: #{$iconSize+'rem'};
+	width: auto;
+	text-indent: 0;
+
+	&:before {
+		display: inline;
+		vertical-align: top;
+		width: #{$iconSize*10+'px'};
+		width: #{$iconSize+'rem'};
+		height: #{$iconSize*10+'px'};
+		height: #{$iconSize+'rem'};
+		padding-right: #{$iconSize*10/4+'px'};
+		padding-right: #{$iconSize/4+'rem'};
+		content: $content;
+		font-family: $glyphs;
+		font-size: #{$iconSize*10+'px'};
+		font-size: #{$iconSize+'rem'};
+
+	}
+}
+
+// Adds an icon after an anchor's text
+@mixin iconAfterText ($iconSize, $content) {
+	text-decoration: none;
+	line-height: #{$iconSize*10+'px'};
+	line-height: #{$iconSize+'rem'};
+	width: auto;
+
+	&:after {
+		display: inline;
+		vertical-align: top;
+		width: #{$iconSize*10+'px'};
+		width: #{$iconSize+'rem'};
+		height: #{$iconSize*10+'px'};
+		height: #{$iconSize+'rem'};
+		padding-left: #{$iconSize*10/4+'px'};
+		padding-left: #{$iconSize/4+'rem'};
+		content: $content;
+		font-family: $glyphs;
+		font-size: #{$iconSize*10+'px'};
+		font-size: #{$iconSize+'rem'};
+	}
+}

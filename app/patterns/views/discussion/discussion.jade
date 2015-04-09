@@ -1,0 +1,45 @@
+h1
+  = discussionInfo.discussionTitle
+
+if url.page === 1
+  p
+    != discussionInfo.discussionDescription
+  
+include ../partials/pagination
+
+if announcements
+  section.announcements
+    h2 Announcements
+    each announcement in announcements
+      article.announcement(data-announcement-id="#{announcement.id}")
+        h3
+          a(href="#{config.main.basePath}announcement/#{announcement.url}") #{announcement.titleHtml}
+          
+section.topics
+  h2 Topics
+  nav.discussion
+    ul
+      li.new-topic
+        a(href="#{config.main.basePath}topic/action/write/discussion/#{discussionInfo.discussionUrl}") Start a new topic
+      li.subscribe
+        a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe to this discussion
+  if topics
+    each topic in topics
+      article.topic(data-topic-id="#{topic.id}")
+        h3
+          a(href="#{config.main.basePath}topic/#{topic.url}")
+            != topic.titleHtml
+        p.details
+          | Posted by 
+          a(href="#{config.main.basePath}member/#{topic.topicStarterUrl}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+          |  on 
+          time #{topic.postDate}
+        p.stats
+          span.replies #{topic.replies} 
+          | replies with 
+          span.views #{topic.views} 
+          | views
+  else
+    p This discussion has no topics. <a href="#{config.main.basePath}topic/action/new/discussion/#{discussionInfo.discussionUrl}">Why not start one?</a>
+
+include ../partials/pagination

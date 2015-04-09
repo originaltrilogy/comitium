@@ -1,0 +1,24 @@
+h1
+  != topicInfo.titleHtml
+  
+include ../partials/pagination
+
+nav.topic
+  ul
+    li.reply
+      a(href="#{route.pathname}/action/reply") Reply to this topic
+    if !userIsSubscribed
+      li.subscribe
+        a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when people reply to this topic.") Subscribe to this topic
+    else
+      li.unsubscribe
+        a(href="#{route.pathname}/action/unsubscribe" title="Stop receiving e-mail notifications about this topic.") Unsubscribe from this topic
+          
+section.posts
+  if posts
+    each post in posts
+      include ../post/post
+  else
+    p This topic has no replies. <a href="#{config.main.basePath}topic-reply/topic/#{topicInfo.url}">Why not weigh in?</a>
+
+include ../partials/pagination

@@ -1,0 +1,36 @@
+h1 Edit a Post
+
+if preview
+  section.preview
+    h2 Post preview:
+    article.post
+      .content
+        != preview.content
+          
+section.post-edit-form
+  form#post-edit-form(action="#{config.main.basePath}post/#{url.post}/action/editForm" method="post" novalidate)
+    if edit && edit.message
+      .edit-messages
+        ul
+          li #{edit.message}
+    .data
+      input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
+      ul
+        li.post-content.textarea.required
+          label(for="post-content")
+            | Post content
+          textarea(id="post-content" name="content" required) #{form.content}
+        li.post-edit-reason.textarea
+          label(for="post-edit-reason")
+            | Reason for editing
+          textarea(id="post-edit-reason" name="reason") #{form.reason}
+    .actions
+      ul
+        li.secondary.preview
+          input(name="formAction" type="submit" value="Preview")
+        li.primary.edit
+          input(name="formAction" type="submit" value="Save changes")
+        //- li.tertiary.draft
+        //-   input(name="formAction" type="submit" value="Save as draft")
+        li.quaternary.cancel
+          a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back

@@ -1,0 +1,61 @@
+
+create index on "tblForumPosts" ( "intPostID", "intTopicID" );
+
+create table "topics" (
+  "id" serial not null,
+  "discussionID" integer,
+  -- make not null in installation script:
+  -- "discussionID" integer not null,
+  "firstPostID" integer,
+  "lastPostID" integer,
+  -- make not null for installation script:
+  -- "firstPostID" integer not null,
+  -- "lastPostID" integer not null,
+  "titleMarkdown" text not null,
+  "titleHtml" text,
+  -- make not null for installation script:
+  -- "titleHtml" text not null,
+  "url" text,
+  -- Make unique/not null for installation script:
+  -- "url" text unique not null,
+  "sortDate" timestamp not null,
+  "replies" integer not null,
+  "views" integer not null,
+  "draft" boolean not null,
+  "lockedByID" integer default 0,
+  "lockReason" text,
+  primary key (id)
+);
+
+insert into "topics" (
+  "id",
+  "discussionID",
+  "firstPostID",
+  "lastPostID",
+  "titleMarkdown",
+  "titleHtml",
+  "url",
+  "sortDate",
+  "replies",
+  "views",
+  "draft"
+)
+select
+  "intTopicID",
+  0,
+  "intFirstTopicPostID",
+  "intLastTopicPostID",
+  ' ',
+  (
+    select "vchPostTitle"
+    from "tblForumPosts"
+    where "intPostID" = "intFirstTopicPostID"
+  ),
+  ' ',
+  "dteStickyDate",
+  "intTopicReplyCount",
+  "intTopicViewCount",
+  "bitDraft"
+from "tblForumTopics" t where "intFirstTopicPostID" is not null;
+
+update topics set "titleHtml" = "id" where "titleHtml" is null;

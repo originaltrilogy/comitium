@@ -1,0 +1,31 @@
+section.sign-in-form
+  if !session.username
+    //- The form action requires a unique route so the results page isn't cached along with the default /login view
+    form(action="#{config.main.basePath}sign-in/action/submit" method="post" novalidate)
+      if authenticate && authenticate.message
+        .login-messages
+          ul
+            li
+              = authenticate.message
+      .data
+        input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
+        input(name="loginReferrer" type="hidden" value="#{form.loginReferrer}")
+        ul
+          li.username.text.required
+            label(for="username") Username
+            input(id="username" name="username" type="text" value="#{form.username}" required autofocus)
+          li.password.text.required
+            label(for="password") Password
+            input(id="password" name="password" type="password" value="#{form.password}" required)
+          li.remember.checkbox
+            input(id="remember" name="remember" type="checkbox" value="true" checked=form.remember)
+            label(for="remember") Remember my credentials
+      .actions
+        ul
+          li.primary
+            input(name="formAction" type="submit" value="Sign in")
+          li.secondary
+            a(href="#{config.main.basePath}password-reset" title="Reset your forum password and have your login credentials e-mailed to you.") I forgot my login credentials...
+  else
+    p You're already signed in as <strong>#{session.username}</strong>.
+    p Not you? <a href="#{config.main.basePath}sign-out">Sign out of the forum</a> and sign in as a different user.

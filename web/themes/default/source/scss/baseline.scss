@@ -1,0 +1,62 @@
+/*-------------------
+CSS baseline
+-------------------*/
+
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+	font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+	line-height: 1.6;
+}
+
+h1 { font-size: 150%; }
+h2 { font-size: 125%; }
+h3 { font-size: 110%; }
+
+ul,
+ol {
+	margin-left: 3.4rem;
+}
+
+nav {
+	ul {
+		margin: 0;
+		list-style: none;
+	}
+}
+
+p {
+	margin: 1.2rem 0;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+img {
+  display: block;
+  -ms-interpolation-mode: bicubic;
+}
+
+q:before,
+q:after {
+  content: '';
+}
+
+input,
+textarea {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}

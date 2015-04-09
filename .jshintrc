@@ -1,0 +1,13 @@
+{
+  "node":           true,
+  "curly":          true,
+  "eqeqeq":         true,
+  "forin":          true,
+  "freeze":         true,
+  "indent":         2,
+  "latedef":        "nofunc",
+  "quotmark":       "single",
+  "undef":          true,
+  "unused":         "vars",
+  "strict":         true
+}

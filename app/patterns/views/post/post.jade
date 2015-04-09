@@ -1,0 +1,33 @@
+article.post(id="#{post.id}" data-post-id="#{post.id}")
+  h2
+    img(src="#{config.main.staticAssetUrl}/avatars/#{post.authorUrl}.png")
+    a(href="#{config.main.basePath}member/#{post.authorUrl}")
+      = post.author
+    time
+      = post.dateCreated
+  .content
+    != post.html
+  nav.actions
+    ul
+      if url.topic
+        li.reply
+          a(href="#{route.pathname}/action/reply") Reply
+        li.quote
+          a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
+      if ( session.username === post.author && post.lockedByID === 0 ) || session.editPosts
+        li.edit
+          a(href="#{config.main.basePath}post/#{post.id}/action/edit") Edit
+      li.bookmark
+        a(href="#{config.main.basePath}post/#{post.id}/action/bookmark") Bookmark
+      li.report
+        a(href="#{config.main.basePath}post/#{post.id}/action/report") Report
+      if session.lockPosts
+        if post.lockedByID === 0
+          li.lock
+            a(href="#{config.main.basePath}post/#{post.id}/action/lock") Lock
+        else
+          li.unlock
+            a(href="#{config.main.basePath}post/#{post.id}/action/unlock") Unlock
+      if session.deletePosts
+        li.delete
+          a(href="#{config.main.basePath}post/#{post.id}/action/delete") Delete

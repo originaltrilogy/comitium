@@ -1,0 +1,47 @@
+{
+  "name": "comitium",
+  "version": "0.0.1",
+  "description": "Forum software for Node.js",
+  "author": {
+    "name": "Jay Sylvester",
+    "email": "jay@jaysylvester.com",
+    "url": "http://jaysylvester.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaysylvester/comitium"
+  },
+  "main": "index",
+  "scripts": {
+    "start": "node ./app/start.js",
+    "test": "./node_modules/.bin/mocha -u tdd",
+    "coverage": "./node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- -R spec"
+  },
+  "dependencies": {
+    "citizen": "~0.6.4",
+    "moment": "2.8.4",
+    "mysql": "2.5.5",
+    "nodemailer": "*",
+    "numeral": "*",
+    "pg": "^4.3.0",
+    "pg-native": "^1.8.0",
+    "remarkable": "~1.6.0",
+    "slug": "^0.8.0",
+    "to-markdown": "0.0.3"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-autoprefixer": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-imagemin": "*",
+    "grunt-contrib-sass": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "load-grunt-tasks": "*"
+  },
+  "engines": {
+    "node": ">= 0.10.x"
+  }
+}

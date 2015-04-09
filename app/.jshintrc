@@ -1,0 +1,7 @@
+{
+  "extends":        "../.jshintrc",
+  "globals": {
+      "CTZN":       false,
+      "app":        false
+    }
+}
