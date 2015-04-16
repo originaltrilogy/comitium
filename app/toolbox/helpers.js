@@ -3,30 +3,9 @@
 'use strict';
 
 module.exports = {
-  dashes: dashes,
   isoDate: isoDate,
   paginate: paginate
 };
-
-
-function dashes(text) {
-	var parsedText = text.trim();
-
-  parsedText = parsedText.replace(/&quot;/g, '-');
-  parsedText = parsedText.replace(/\./g, '');
-  parsedText = parsedText.replace(/'/g, '');
-	parsedText = parsedText.replace(/[^0-9A-Za-z]/g, '-');
-
-	if ( parsedText.replace(/-/g, '').length > 0 ) {
-    while ( parsedText.search(/--/) >= 0 ) {
-      parsedText = parsedText.replace(/--/g, '-');
-    }
-	} else {
-		parsedText = 'Untitled';
-	}
-
-  return parsedText;
-}
 
 
 function isoDate(date) {
@@ -49,7 +28,7 @@ function isoDate(date) {
 function paginate(url, page, itemCount) {
   var pagination = {
         current: +page,
-        total: Math.floor( itemCount / 20 )
+        total: Math.ceil( itemCount / 25 )
       };
 
   if ( pagination.current > 1 ) {

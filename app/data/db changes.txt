@@ -16,20 +16,4 @@ Migration order:
   - posts.sql
   - post-content-markdown-generation.js
 
-4. categories.sql
-
-5. discussions.sql
-
-6. announcements.sql
-
-x. bookmarks.sql
-
-x. permissions.sql
-
-x. subscriptions.sql
-
-x. topic-view-times.sql
-
-x. cleanup.sql (set not nulls and uniques for items that couldn't be set that way during migration)
-
-x. indexes.sql
+4. batch.sql

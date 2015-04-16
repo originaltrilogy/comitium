@@ -190,3 +190,93 @@
   subject: 'Forum registration confirmation',
   text: '<a href="//dev.originaltrilogy.com/forum/user/action/activate/id/16822/activationCode/919309358112514">Click here to activate your account</a>' }
 
+[2015-04-11T03:22:05.250Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'sing@duha.com',
+  subject: 'Forum registration confirmation',
+  text: '<a href="//10.211.55.4/forum/user/action/activate/id/16822/activationCode/4248899118974805">Click here to activate your account</a>' }
+
+[2015-04-11T07:35:54.545Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/CG-lightsabers-as-a-lightsource/#758998' }
+
+[2015-04-11T07:36:12.768Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/CG-lightsabers-as-a-lightsource/#758999' }
+
+[2015-04-11T07:39:41.387Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'sing@duha.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/CG-lightsabers-as-a-lightsource/#759000' }
+
+[2015-04-11T07:40:32.292Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/CG-lightsabers-as-a-lightsource/#759002' }
+
+[2015-04-11T07:40:57.352Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/CG-lightsabers-as-a-lightsource/#759004' }
+
+[2015-04-11T21:11:50.854Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'sing@duha.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/CG-lightsabers-as-a-lightsource/#759005' }
+
+[2015-04-12T08:49:57.431Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'harmystarwars@gmail.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/STAR-WARS-REBELS-New-animated-series/page/46/#758993' }
+
+[2015-04-16T01:36:30.065Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'brock_piano@hotmail.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/Politics/page/1036/#758993' }
+
+[2015-04-16T01:51:12.555Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'harmystarwars@gmail.com',
+  subject: 'Forum topic update',
+  text: '//10.211.55.4/forum/topic/STAR-WARS-REBELS-New-animated-series/page/46/#758995' }
+
+[2015-04-16T02:46:22.989Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Forum post report',
+  text: 'Submitted by: Jay\n\nPost: http://10.211.55.4/forum/post/758994\n\nReason: Poop. Poop and shit.' }
+
+[2015-04-16T03:39:35.900Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Forum post lock notification',
+  text: 'The following post has been locked by a moderator: http://10.211.55.4/forum/post/758994' }
+
+[2015-04-16T03:39:52.245Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Forum post lock notification',
+  text: 'The following post has been locked by a moderator: http://10.211.55.4/forum/post/758993' }
+
+[2015-04-16T03:48:58.951Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Your forum post was deleted',
+  text: 'The following post has been deleted by a moderator: http://10.211.55.4/forum/post/758993' }
+
+[2015-04-16T03:52:57.143Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'jay@originaltrilogy.com',
+  subject: 'Your forum post was deleted',
+  text: 'Your post has been deleted by a moderator.\n\nReason: foo bar\n\n<p>oeuaoeu</p>\n' }
+

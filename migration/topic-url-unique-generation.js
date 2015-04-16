@@ -54,7 +54,6 @@ app.listen('waterfall', {
                                         message: 'Error: ' + item.id
                                       });
                                     } else {
-                                      console.log(item.url + ' updated');
                                       emitter.emit('ready');
                                     }
                                   }

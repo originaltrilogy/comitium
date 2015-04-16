@@ -14,20 +14,19 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
           a(href="#{route.pathname}/action/reply") Reply
         li.quote
           a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
-      if ( session.username === post.author && post.lockedByID === 0 ) || session.editPosts
+      if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
         li.edit
           a(href="#{config.main.basePath}post/#{post.id}/action/edit") Edit
       li.bookmark
         a(href="#{config.main.basePath}post/#{post.id}/action/bookmark") Bookmark
       li.report
         a(href="#{config.main.basePath}post/#{post.id}/action/report") Report
-      if session.lockPosts
+      if session.moderateDiscussions
         if post.lockedByID === 0
           li.lock
             a(href="#{config.main.basePath}post/#{post.id}/action/lock") Lock
         else
           li.unlock
             a(href="#{config.main.basePath}post/#{post.id}/action/unlock") Unlock
-      if session.deletePosts
         li.delete
-          a(href="#{config.main.basePath}post/#{post.id}/action/delete") Delete
+          a(href="#{config.main.basePath}post/#{post.id}/action/trash") Delete

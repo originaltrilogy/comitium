@@ -1,0 +1,25 @@
+h1 Delete a Post
+    
+section.post-delete-form
+  if trash && trash.message
+    p.message
+      = trash.message
+  form#post-delete-form(action="#{config.main.basePath}post/#{url.post}/action/trashForm" method="post" novalidate)
+    .data
+      input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
+      ul
+        li.delete-reason.textarea
+          label(for="reason") Why are you deleting this post?
+          p.label-note Optional
+          textarea(id="reason" name="reason") #{form.reason}
+        li.notify.checkbox
+          input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
+          label(for="notify") Notify the author
+    .actions
+      ul
+        li.primary.report
+          input(name="formAction" type="submit" value="Delete this post")
+        li.secondary.cancel
+          a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
+
+!= include.post

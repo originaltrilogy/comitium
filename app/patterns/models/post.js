@@ -8,12 +8,13 @@ module.exports = {
   lock: lock,
   unlock: unlock,
   saveBookmark: saveBookmark,
-  saveReport: saveReport
+  saveReport: saveReport,
+  trash: trash
 };
 
 
 function edit(args, emitter) {
-  if ( !args.content.markdown.length ) {
+  if ( !args.markdown.length ) {
     emitter.emit('ready', {
       success: false,
       reason: 'requiredFieldsEmpty',
@@ -24,58 +25,81 @@ function edit(args, emitter) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
-        connection.beginTransaction( function (err) {
-          if ( err ) {
-            done();
-            emitter.emit('error', err);
-          } else {
+
+        app.listen('waterfall', {
+          begin: function (emitter) {
+            client.query('begin', function (err) {
+              if ( err ) {
+                done();
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready');
+              }
+            });
+          },
+          updatePost: function (previous, emitter) {
+
             client.query(
-              'update posts ' +
-              'set markdown = ' + connection.escape(args.content.markdown) + ', vchPostText = ' + connection.escape(args.content.html) + ', editorID = ' + connection.escape(args.editorID) + ', editReason = ' + connection.escape(args.reason) + ', lastModified = ' + connection.escape(args.time) + ' ' +
-              'where id = ' + connection.escape(args.postID),
+              'update "posts" set "markdown" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "lastModified" = $5 where "id" = $6',
+              [ args.markdown, args.html, args.editorID, args.reason, args.time, args.id ],
               function (err, result) {
                 if ( err ) {
-                  connection.rollback( function () {
+                  client.query('rollback', function (err) {
                     done();
-                    emitter.emit('error', err);
                   });
+                  emitter.emit('error', err);
                 } else {
-                  // timestamp is not being set
-                  client.query(
-                    'insert into postHistory ( postID, editorID, editReason, markdown, html, time ) ' +
-                    'values ( ' + connection.escape(args.currentPost.id) + ', ' + connection.escape(args.currentPost.editorID) + ', ' + connection.escape(args.currentPost.editReason) + ', ' + connection.escape(args.currentPost.markdown) + ', ' + connection.escape(args.currentPost.html) + ', ' + connection.escape(args.currentPost.lastModified) + ' )',
-                    function (err, result) {
-                      if ( err ) {
-                        connection.rollback( function () {
-                          done();
-                          emitter.emit('error', err);
-                        });
-                      } else {
-                        connection.commit( function (err) {
-                          if ( err ) {
-                            connection.rollback( function () {
-                              done();
-                              emitter.emit('error', err);
-                            });
-                          } else {
-                            done();
-
-                            // Clear the topic cache
-                            app.clear({ scope: args.currentPost.topicUrlTitle });
-
-                            emitter.emit('ready', {
-                              success: true
-                            });
-                          }
-                        });
-                      }
-                    }
-                  );
+                  emitter.emit('ready');
                 }
               }
             );
+
+          },
+          insertPostHistory: function (previous, emitter) {
+
+            client.query(
+              'insert into "postHistory" ( "postID", "editorID", "editReason", "markdown", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
+              [ args.id, args.currentPost.editorID, args.currentPost.editReason, args.currentPost.markdown, args.currentPost.html, args.currentPost.lastModified ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    id: result.rows[0].id
+                  });
+                }
+              }
+            );
+
+          },
+          commit: function (previous, emitter) {
+            client.query('commit', function () {
+              done();
+              emitter.emit('ready');
+            });
           }
+        }, function (output) {
+
+          if ( output.listen.success ) {
+
+            // Clear the topic cache
+            app.clear({ scope: args.currentPost.topicUrl });
+
+            emitter.emit('ready', {
+              success: true
+            });
+
+          } else {
+
+            emitter.emit('error', output.listen);
+
+          }
+
         });
+
       }
     });
   }
@@ -114,21 +138,19 @@ function lock(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'update tblForumPosts set ' +
-        'lockedBy = ' + connection.escape(args.lockedBy) + ', ' +
-        'lockReason = ' + connection.escape(args.lockReason) + ' ' +
-        'where intPostID = ' + connection.escape(args.postID),
+        'update "posts" set "lockedByID" = $1, "lockReason" = $2 where "id" = $3',
+        [ args.lockedByID, args.lockReason, args.postID ],
         function (err, result) {
           done();
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            // Clear the cache for this topic and discussion
+            // Clear the cache for this topic
             app.clear({ scope: args.topic });
 
             emitter.emit('ready', {
               success: true,
-              affectedRows: result.affectedRows
+              affectedRows: result.rows
             });
           }
         }
@@ -145,20 +167,19 @@ function unlock(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'update tblForumPosts set ' +
-        'lockedBy = 0, lockReason = ""' +
-        'where intPostID = ' + connection.escape(args.postID),
+        'update "posts" set "lockedByID" = 0, "lockReason" = null where "id" = $1',
+        [ args.postID ],
         function (err, result) {
           done();
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            // Clear the cache for this topic and discussion
+            // Clear the cache for this topic
             app.clear({ scope: args.topic });
 
             emitter.emit('ready', {
               success: true,
-              affectedRows: result.affectedRows
+              affectedRows: result.rows
             });
           }
         }
@@ -177,13 +198,14 @@ function saveBookmark(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            eval(app.db.sql.postBookmarkExists),
+            'select "id" from "bookmarks" where "userID" = $1 and "postID" = $2;',
+            [ args.userID, args.postID ],
             function (err, result) {
               done();
               if ( err ) {
                 emitter.emit('error', err);
               } else {
-                if ( rows.length ) {
+                if ( result.rows.length ) {
                   emitter.emit('ready', true);
                 } else {
                   emitter.emit('ready', false);
@@ -207,13 +229,17 @@ function saveBookmark(args, emitter) {
               emitter.emit('error', err);
             } else {
               client.query(
-                eval(app.db.sql.postBookmarkInsert),
+                'insert into "bookmarks" ( "userID", "postID", "notes" ) values ( $1, $2, $3 ) returning id;',
+                [ args.userID, args.postID, args.notes ],
                 function (err, result) {
                   done();
                   if ( err ) {
                     emitter.emit('error', err);
                   } else {
-                    emitter.emit('ready', result.insertId);
+                    emitter.emit('ready', {
+                      success: true,
+                      id: result.rows[0].id
+                    });
                   }
                 }
               );
@@ -243,10 +269,8 @@ function saveReport(args, emitter) {
         emitter.emit('error', err);
       } else {
         client.query(
-          'insert into tblForumPostReports ( intPostID, intPostReportedByID, vchPostReportReason ) values ( ' +
-          connection.escape(args.postID) + ', ' +
-          connection.escape(args.userID) + ', ' +
-          connection.escape(args.reason) + ');',
+          'insert into "postReports" ( "postID", "reportedByID", "reason" ) values ( $1, $2, $3 ) returning id;',
+          [ args.postID, args.userID, args.reason ],
           function (err, result) {
             done();
             if ( err ) {
@@ -254,7 +278,7 @@ function saveReport(args, emitter) {
             } else {
               emitter.emit('ready', {
                 success: true,
-                reportID: result.insertId
+                id: result.rows[0].id
               });
             }
           }
@@ -263,4 +287,108 @@ function saveReport(args, emitter) {
     });
   }
 
+}
+
+
+
+function trash(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+
+      app.listen('waterfall', {
+        begin: function (emitter) {
+          client.query('begin', function (err) {
+            if ( err ) {
+              done();
+              emitter.emit('error', err);
+            } else {
+              emitter.emit('ready');
+            }
+          });
+        },
+        insertTrashPost: function (previous, emitter) {
+
+          client.query(
+            'insert into "postTrash" ( "id", "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "editReason", "lastModified", "lockedByID", "lockReason", "deletedByID", "deleteReason" ) select "id", "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "editReason", "lastModified", "lockedByID", "lockReason", $2, $3 from "posts" where id = $1;',
+            [ args.postID, args.deletedByID, args.deleteReason ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready');
+              }
+            }
+          );
+
+        },
+        deletePost: function (previous, emitter) {
+
+          client.query(
+            'delete from "posts" where "id" = $1;',
+            [ args.postID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready');
+              }
+            }
+          );
+
+        },
+        updateStats: function (previous, emitter) {
+// update sortDate with last post date and firstPostID/lastPostID with non-draft posts 
+          client.query(
+            'update topics set "sortDate" = $3, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, "lastPostID" = $2 where "id" = $1;',
+            [ args.topicID, previous.insertPost.id, args.time ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  affectedRows: result.rowCount
+                });
+              }
+            }
+          );
+
+        },
+        commit: function (previous, emitter) {
+          client.query('commit', function () {
+            done();
+            emitter.emit('ready');
+          });
+        }
+      }, function (output) {
+
+        if ( output.listen.success ) {
+
+          // Clear the topic cache
+          app.clear({ scope: args.topic });
+
+          emitter.emit('ready', {
+            success: true
+          });
+
+        } else {
+
+          emitter.emit('error', output.listen);
+
+        }
+
+      });
+
+    }
+  });
 }

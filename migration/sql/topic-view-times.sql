@@ -22,4 +22,4 @@ select
 from "tblForumTopicViewTimes";
 
 
-SELECT SETVAL('topicViews_id_seq', ( select max("id") + 1 from "topicViews" ) );
+SELECT SETVAL('"topicViews_id_seq"', ( select max("id") + 1 from "topicViews" ) );

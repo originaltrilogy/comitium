@@ -28,7 +28,8 @@ function exists(topic, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            eval(app.db.sql.topicExists),
+            'select id from topics where url = $1;',
+            [ topic ],
             function (err, result) {
               done();
               if ( err ) {
@@ -158,9 +159,9 @@ function insert(args, emitter) {
             var url = previous.urlExists ? args.url + '-' + Date.now() : args.url;
 
             client.query(
-              'insert into topics ( "sortDate", "replies", "views", "draft", "titleHtml", "titleMarkdown", "url", "discussionID", "lockedByID" ) ' +
-              'values ( $1, 0, 0, $2, $3, $4, $5, $6, 0 ) returning id;',
-              [ args.time, args.draft, args.titleHtml, args.titleMarkdown, url, args.discussionID ],
+              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "views", "draft", "lockedByID" ) ' +
+              'values ( $1, 0, 0, $2, $3, $4, $5, 0, 0, $6, 0 ) returning id;',
+              [ args.discussionID, args.titleMarkdown, args.titleHtml, url, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -179,8 +180,8 @@ function insert(args, emitter) {
           insertPost: function (previous, emitter) {
             client.query(
               'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified" ) ' +
-              'values ( $1, $2, $3, $4, $5, $6, $2, $5 ) returning id;',
-              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft ],
+              'values ( $1, $2, $3, $4, $5, $6, $7, $8 ) returning id;',
+              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft, args.userID ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -191,6 +192,22 @@ function insert(args, emitter) {
                   emitter.emit('ready', {
                     id: result.rows[0].id
                   });
+                }
+              }
+            );
+          },
+          updateTopic: function (previous, emitter) {
+            client.query(
+              'update topics set "firstPostID" = $1, "lastPostID" = $1 where id = $2;',
+              [ previous.insertPost.id, previous.insertTopic.id ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready');
                 }
               }
             );
@@ -348,8 +365,9 @@ function postSubset(topic, start, end, emitter) {
             subset[i] = {};
             for ( var property in output.posts[i] ) {
               if ( output.posts[i].hasOwnProperty(property) ) {
-                if ( property === 'time' ) {
-                  subset[i][property] = app.toolbox.moment(app.toolbox.helpers.isoDate(output.posts[i][property])).format('MMMM D[,] YYYY [at] h:mm zz');
+                if ( property === 'dateCreated' ) {
+                  // subset[i][property] = app.toolbox.moment.utc(output.posts[i][property]).format();
+                  subset[i][property] = output.posts[i][property].toISOString();
                 } else {
                   subset[i][property] = output.posts[i][property];
                 }
@@ -425,8 +443,8 @@ function reply(args, emitter) {
           },
           updateStats: function (previous, emitter) {
             client.query(
-              'update topics set replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1 where "id" = $1;',
-              [ args.topicID ],
+              'update topics set "sortDate" = $3, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, "lastPostID" = $2 where "id" = $1;',
+              [ args.topicID, previous.insertPost.id, args.time ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -543,7 +561,7 @@ function subscribersToNotify(args, emitter) {
         } else {
           client.query(
             'select u.email from users u join subscriptions s on u.id = s."userID" and u.id <> $1 where s."topicID" = $2 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
-            [ args.topicID, args.replyAuthorID ],
+            [ args.replyAuthorID, args.topicID ],
             function (err, result) {
               done();
               if ( err ) {
@@ -577,7 +595,7 @@ function subscriptionNotificationSentUpdate(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'update subscriptions set notificationSent = $1 where topicID = $2;',
+            'update "subscriptions" set "notificationSent" = $1 where "topicID" = $2;',
             [ args.time, args.topicID ],
             function (err, result) {
               done();
@@ -693,7 +711,7 @@ function viewTimeUpdate(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            eval(app.db.sql.topicViewTimeUpdate),
+            'update "topicViews" set time = $3 where "userID" = $1 and "topicID" = $2;',
             [ args.userID, args.topicID, args.time ],
             function (err, result) {
               if ( err ) {
@@ -705,7 +723,7 @@ function viewTimeUpdate(args, emitter) {
                   emitter.emit('ready', result.rowCount);
                 } else {
                   client.query(
-                    eval(app.db.sql.topicViewTimeInsert),
+                    'insert into "topicViews" ( "userID", "topicID", "time" ) values ( $1, $2, $3 ) returning id;',
                     [ args.userID, args.topicID, args.time ],
                     function (err, result) {
                       done();

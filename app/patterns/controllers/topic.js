@@ -34,8 +34,8 @@ function handler(params, context, emitter) {
           app.models.topic.info(params.url.topic, emitter);
         },
         posts: function (emitter) {
-          var start = ( params.url.page - 1 ) * 20,
-              end = start + 20;
+          var start = ( params.url.page - 1 ) * 25,
+              end = start + 25;
           app.models.topic.postSubset(params.url.topic, start, end, emitter);
         },
         subscriptionExists: function (emitter) {
@@ -388,7 +388,7 @@ function replyForm(params, context, emitter) {
               }
             }, function (output) {
               var reply = output.reply,
-                  page = Math.ceil( ( topicInfo.replies + 2 ) / 20 ),
+                  page = Math.ceil( ( topicInfo.replies + 2 ) / 25 ),
                   pageParameter = page !== 1 ? '/page/' + page : '',
                   replyUrl = app.config.main.baseUrl + '/topic/' + topicInfo.url + pageParameter + '/#' + reply.id,
                   forwardToUrl = draft ? app.config.main.baseUrl + '/drafts' : replyUrl;
@@ -486,6 +486,7 @@ function notifySubscribers(args, emitter) {
       }, emitter);
     }
   }, function (output) {
+    console.log(output.subscribersToNotify);
     if ( output.listen.success && output.subscribersToNotify.length ) {
       for ( var i = 0; i < output.subscribersToNotify.length; i++ ) {
         app.mail.sendMail({

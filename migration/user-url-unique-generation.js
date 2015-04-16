@@ -50,7 +50,6 @@ app.listen('waterfall', {
                                     if ( err ) {
                                       emitter.emit('error', err);
                                     } else {
-                                      console.log(item.url + ' updated');
                                       emitter.emit('ready');
                                     }
                                   }

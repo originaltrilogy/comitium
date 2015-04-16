@@ -25,7 +25,7 @@ function activate(params, context, emitter) {
 
     if ( output.listen.success ) {
 
-      if ( output.activate.success || ( !output.activate.success && output.activate.reason === 'userAlreadyActivated' ) ) {
+      if ( output.activate.success || ( !output.activate.success && output.activate.reason === 'accountAlreadyActivated' ) ) {
 
         emitter.emit('ready', {
           content: output,

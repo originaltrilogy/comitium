@@ -12,7 +12,8 @@ module.exports = {
   topicReply: topicReply,
   postView: postView,
   postEdit: postEdit,
-  postLock: postLock
+  postLock: postLock,
+  postTrash: postTrash
 };
 
 
@@ -300,7 +301,9 @@ function postEdit(post, session, emitter) {
     },
     topicInfo: function (previous, emitter) {
       if ( previous.postInfo ) {
-        if ( ( session.username === previous.postInfo.author && session.editPosts && !previous.postInfo.lockedByID ) || session.editMemberPosts ) {
+        console.log(session.username);
+        console.log(previous.postInfo.author);
+        if ( ( session.username === previous.postInfo.author && !previous.postInfo.lockedByID ) || session.moderateDiscussions ) {
           app.models.topic.info(previous.postInfo.topicUrl, emitter);
         } else {
           emitter.emit('error', {
@@ -362,7 +365,7 @@ function postLock(post, session, emitter) {
     },
     topicInfo: function (previous, emitter) {
       if ( previous.postInfo ) {
-        if ( session.lockPosts ) {
+        if ( session.moderateDiscussions ) {
           app.models.topic.info(previous.postInfo.topicUrl, emitter);
         } else {
           emitter.emit('error', {
@@ -399,6 +402,68 @@ function postLock(post, session, emitter) {
     } else {
 
       // If the post exists but the group doesn't have lock access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.postInfo ) {
+        app.toolbox.access.challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
+  });
+
+}
+
+
+
+function postTrash(post, session, emitter) {
+
+	app.listen('waterfall', {
+    postInfo: function (emitter) {
+      app.models.post.info(post, emitter);
+    },
+    topicInfo: function (previous, emitter) {
+      if ( previous.postInfo ) {
+        if ( session.moderateDiscussions ) {
+          app.models.topic.info(previous.postInfo.topicUrl, emitter);
+        } else {
+          emitter.emit('error', {
+            statusCode: 403
+          });
+        }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    },
+    discussionView: function (previous, emitter) {
+      if ( previous.topicInfo ) {
+        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.discussionView ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+
+    } else {
+
+      // If the post exists but the group doesn't have trash access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.postInfo ) {

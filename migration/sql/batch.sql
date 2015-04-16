@@ -1,4 +1,195 @@
 
+-- categories
+
+create table "categories" (
+  "id" serial not null,
+  "title" text not null,
+  "url" text unique not null,
+  "description" text,
+  "metaDescription" text,
+  "keywords" text,
+  "sort" smallint unique not null,
+  "dateCreated" timestamp not null,
+  "hidden" boolean not null,
+  "system" boolean not null,
+  "locked" boolean not null,
+  primary key ("id")
+);
+
+
+insert into "categories" (
+  "id",
+  "title",
+  "url",
+  "description",
+  "metaDescription",
+  "keywords",
+  "sort",
+  "dateCreated",
+  "hidden",
+  "system",
+  "locked"
+)
+select
+  "intCategoryID",
+  "vchCategoryTitle",
+  "vchCategoryURLTitle",
+  "vchCategoryDescription",
+  "vchCategoryMetaDescription",
+  "vchCategoryMetaKeywords",
+  "intCategoryPosition",
+  "dteCategoryDateCreated",
+  "bitHidden",
+  "bitSystem",
+  "bitLocked"
+from "tblForumCategories";
+
+
+SELECT SETVAL('categories_id_seq', ( select max("id") + 1 from categories ) );
+
+
+
+
+-- discussions
+
+create table "discussions" (
+  "id" serial not null,
+  "categoryID" integer not null,
+  "title" text not null,
+  "url" text unique not null,
+  "description" text,
+  "metaDescription" text,
+  "keywords" text,
+  "posts" integer not null,
+  "topics" integer not null,
+  "sort" smallint not null,
+  "dateCreated" timestamp not null,
+  "hidden" boolean not null,
+  "system" boolean not null,
+  "locked" boolean not null,
+  primary key ("id")
+);
+
+
+insert into "discussions" (
+  "id",
+  "categoryID",
+  "title",
+  "url",
+  "description",
+  "metaDescription",
+  "keywords",
+  "posts",
+  "topics",
+  "sort",
+  "dateCreated",
+  "hidden",
+  "system",
+  "locked"
+)
+select
+  "intForumID",
+  "intCategoryID",
+  "vchForumTitle",
+  "vchForumURLTitle",
+  "vchForumDescription",
+  "vchForumMetaDescription",
+  "vchForumMetaKeywords",
+  "intForumPostCount",
+  "intForumTopicCount",
+  "intForumPosition",
+  "dteForumDateCreated",
+  "bitHidden",
+  "bitSystem",
+  "bitLocked"
+from "tblForumSubcategories";
+
+
+SELECT SETVAL('discussions_id_seq', ( select max("id") + 1 from discussions ) );
+
+
+update "discussions"
+set "metaDescription" = "description"
+where "metaDescription" = '';
+
+
+
+
+-- announcements
+
+create table "announcements" (
+  "id" serial not null,
+  "discussionID" integer not null,
+  "topicID" integer not null,
+  primary key ("id")
+);
+
+
+insert into "announcements" (
+  "id",
+  "discussionID",
+  "topicID"
+)
+select
+  "intTopicForumLookupID",
+  "intForumID",
+  "intTopicID"
+from "tblForumTopicForumLookup" where "bitAnnouncement" = true;
+
+
+SELECT SETVAL('announcements_id_seq', ( select max("id") + 1 from announcements ) );
+
+
+update "topics" t set "discussionID" = (
+  select "intForumID"
+  from "tblForumTopicForumLookup" l
+  where l."intTopicID" = t."id"
+)
+where t."id" not in (
+  select "topicID"
+  from "announcements"
+);
+
+
+-- Put any topics without a lookup record in the trash
+update "topics" t set "discussionID" = 1
+where t."discussionID" is null;
+
+
+
+
+-- bookmarks
+
+create table "bookmarks" (
+  "id" serial not null,
+  "userID" integer not null,
+  "postID" integer not null,
+  "notes" text,
+  primary key ("id")
+);
+
+
+insert into "bookmarks" (
+  "id",
+  "userID",
+  "postID",
+  "notes"
+)
+select
+  "intBookmarkID",
+  "intUserID",
+  "intPostID",
+  "vchBookmarkNotes"
+from "tblForumBookmarks";
+
+
+SELECT SETVAL('bookmarks_id_seq', ( select max("id") + 1 from bookmarks ) );
+
+
+
+
+-- permissions
+
 create table "groups" (
     "id" serial not null,
     "name" text not null,
@@ -230,3 +421,112 @@ values
 ( 5, 19, true, true, true ),
 ( 5, 20, true, true, true ),
 ( 5, 21, true, true, true );
+
+
+
+
+-- subscriptions
+
+create table "subscriptions" (
+  "id" serial not null,
+  "userID" integer not null,
+  "topicID" integer not null,
+  "notificationSent" timestamp not null,
+  primary key ("id")
+);
+
+
+insert into "subscriptions" (
+  "id",
+  "userID",
+  "topicID",
+  "notificationSent"
+)
+select
+  "intTopicSubscriptionID",
+  "intUserID",
+  "intTopicID",
+  "dteSubscriptionNotificationSent"
+from "tblForumTopicSubscriptions";
+
+
+SELECT SETVAL('subscriptions_id_seq', ( select max("id") + 1 from subscriptions ) );
+
+
+
+
+-- topicViews
+
+create table "topicViews" (
+  "id" serial not null,
+  "userID" integer not null,
+  "topicID" integer not null,
+  "time" timestamp not null,
+  primary key ("id")
+);
+
+
+insert into "topicViews" (
+  "id",
+  "userID",
+  "topicID",
+  "time"
+)
+select
+  "intTopicViewTimeID",
+  "intUserID",
+  "intTopicID",
+  "dteTopicViewTime"
+from "tblForumTopicViewTimes";
+
+
+SELECT SETVAL('"topicViews_id_seq"', ( select max("id") + 1 from "topicViews" ) );
+
+
+
+
+-- Column settings after migration
+
+alter table "users" add unique ("url");
+
+alter table "topics" alter column "discussionID" set not null;
+alter table "topics" alter column "firstPostID" set not null;
+alter table "topics" alter column "lastPostID" set not null;
+alter table "topics" alter column "titleHtml" set not null;
+alter table "topics" alter column "url" set not null;
+alter table "topics" add unique ("url");
+
+
+
+-- Indexes
+
+create index on "categories" ( "id" );
+create index on "categories" ( "sort" );
+create index on "categories" ( "url" );
+create index on "discussions" ( "id" );
+create index on "discussions" ( "categoryID" );
+create index on "discussions" ( "sort" );
+create index on "discussions" ( "url" );
+create index on "discussionPermissions" ( "discussionID" );
+create index on "discussionPermissions" ( "groupID" );
+create index on "discussionPermissions" ( "read" );
+create index on "discussionPermissions" ( "post" );
+create index on "discussionPermissions" ( "reply" );
+create index on "topics" ( "discussionID" );
+create index on "topics" ( "id" );
+create index on "topics" ( "url" );
+create index on "topics" ( "draft" );
+create index on "topics" ( "sortDate" );
+create index on "topics" ( "firstPostID" );
+create index on "topics" ( "lastPostID" );
+create index on "topics" ( "sortDate" );
+create index on "posts" ( "draft" );
+create index on "posts" ( "id" );
+create index on "posts" ( "topicID" );
+create index on "posts" ( "userID" );
+create index on "posts" ( "dateCreated" );
+create index on "users" ( "id" );
+create index on "users" ( "url" );
+create index on "topicViews" ( "userID" );
+create index on "topicViews" ( "topicID" );
+create index on "topicViews" ( "time" );

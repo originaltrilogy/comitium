@@ -23,8 +23,8 @@ function handler(params, context, emitter) {
         app.models.discussion.info(params.url.discussion, emitter);
       },
       topics: function (emitter) {
-        var start = ( params.url.page - 1 ) * 20,
-            end = start + 20;
+        var start = ( params.url.page - 1 ) * 25,
+            end = start + 25;
         app.models.discussion.topicSubset(params.url.discussion, start, end, emitter);
       }
     };
