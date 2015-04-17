@@ -8,8 +8,13 @@ module.exports = {
   discussionView: discussionView,
   discussionPost: discussionPost,
   discussionReply: discussionReply,
-  topicView: topicView,
+  topicLock: topicLock,
+  topicMerge: topicMerge,
+  topicMove: topicMove,
+  topicMoveForm: topicMoveForm,
   topicReply: topicReply,
+  topicTrash: topicTrash,
+  topicView: topicView,
   postView: postView,
   postEdit: postEdit,
   postLock: postLock,
@@ -161,6 +166,333 @@ function discussionReply(discussion, groupID, emitter) {
 
 
 
+function topicLock(topic, session, emitter) {
+
+	app.listen('waterfall', {
+    topicInfo: function (emitter) {
+      if ( session.moderateDiscussions ) {
+        app.models.topic.info(topic, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    },
+    discussionView: function (previous, emitter) {
+      if ( previous.topicInfo ) {
+        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.discussionView ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+
+    } else {
+
+      // If the topic exists but the group doesn't have lock access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.topicInfo ) {
+        app.toolbox.access.challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
+  });
+
+}
+
+
+
+function topicMerge(topic, session, emitter) {
+
+	app.listen('waterfall', {
+    topicInfo: function (emitter) {
+      if ( session.moderateDiscussions ) {
+        app.models.topic.info(topic, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    },
+    discussionView: function (previous, emitter) {
+      if ( previous.topicInfo ) {
+        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.discussionView ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+
+    } else {
+
+      // If the topic exists but the group doesn't have merge access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.topicInfo ) {
+        app.toolbox.access.challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
+  });
+
+}
+
+
+
+function topicMove(topic, session, emitter) {
+
+	app.listen('waterfall', {
+    topicInfo: function (emitter) {
+      if ( session.moderateDiscussions ) {
+        app.models.topic.info(topic, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    },
+    discussionView: function (previous, emitter) {
+      if ( previous.topicInfo ) {
+        if ( session.moderateDiscussions ) {
+          app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+        } else {
+          emitter.emit('error', {
+            statusCode: 403
+          });
+        }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.discussionView ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+
+    } else {
+
+      // If the topic exists but the group doesn't have move access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.topicInfo ) {
+        app.toolbox.access.challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
+  });
+
+}
+
+
+
+function topicMoveForm(topic, discussion, session, emitter) {
+
+	app.listen('waterfall', {
+    topicInfo: function (emitter) {
+      if ( session.moderateDiscussions ) {
+        app.models.topic.info(topic, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    },
+    discussionView: function (previous, emitter) {
+      if ( previous.topicInfo ) {
+        if ( session.moderateDiscussions ) {
+          app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+        } else {
+          emitter.emit('error', {
+            statusCode: 403
+          });
+        }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    },
+    discussionMoveView: function (previous, emitter) {
+      app.toolbox.access.discussionView(discussion, session.groupID, emitter);
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.discussionView && output.discussionMoveView ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+
+    } else {
+
+      // If the topic exists but the group doesn't have move access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.topicInfo ) {
+        app.toolbox.access.challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
+  });
+
+}
+
+
+
+function topicReply(topic, session, emitter) {
+
+	app.listen('waterfall', {
+    topicInfo: function (emitter) {
+      app.models.topic.info(topic, emitter);
+    },
+    discussionReply: function (previous, emitter) {
+      if ( previous.topicInfo ) {
+        if ( !previous.topicInfo.lockedByID || session.moderateDiscussions ) {
+          app.toolbox.access.discussionReply(previous.topicInfo.discussionUrl, session.groupID, emitter);
+        } else {
+          emitter.emit('error', {
+            statusCode: 403
+          });
+        }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      emitter.emit('ready', true);
+
+    } else {
+
+      // If the topic exists but the group doesn't have reply access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.topicInfo ) {
+        app.toolbox.access.challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
+  });
+
+}
+
+
+
+function topicTrash(topic, session, emitter) {
+
+	app.listen('waterfall', {
+    topicInfo: function (emitter) {
+      if ( session.moderateDiscussions ) {
+        app.models.topic.info(topic, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    },
+    discussionView: function (previous, emitter) {
+      if ( previous.topicInfo ) {
+        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.discussionView ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+
+    } else {
+
+      // If the topic exists but the group doesn't have trash access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.topicInfo ) {
+        app.toolbox.access.challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
+  });
+
+}
+
+
+
 function topicView(topic, groupID, emitter) {
 
 	app.listen('waterfall', {
@@ -185,47 +517,6 @@ function topicView(topic, groupID, emitter) {
     } else {
 
       // If the topic exists but the group doesn't have read access, redirect
-      // unauthenticated users to the sign in page, or throw a 403 for authenticated
-      // users
-      if ( output.topicInfo ) {
-        app.toolbox.access.challenge(groupID, emitter);
-      // Otherwise, 404
-      } else {
-        emitter.emit('error', output.listen);
-      }
-
-    }
-
-  });
-
-}
-
-
-
-function topicReply(topic, groupID, emitter) {
-
-	app.listen('waterfall', {
-    topicInfo: function (emitter) {
-      app.models.topic.info(topic, emitter);
-    },
-    discussionReply: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionReply(previous.topicInfo.discussionUrl, groupID, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', true);
-
-    } else {
-
-      // If the topic exists but the group doesn't have reply access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.topicInfo ) {

@@ -8,6 +8,9 @@ module.exports = {
   insert: insert,
   posts: posts,
   postSubset: postSubset,
+  lock: lock,
+  unlock: unlock,
+  move: move,
   reply: reply,
   subscriptionExists: subscriptionExists,
   subscribersToNotify: subscribersToNotify,
@@ -396,6 +399,185 @@ function postSubset(topic, start, end, emitter) {
 
 
 
+function lock(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'update "topics" set "lockedByID" = $1, "lockReason" = $2 where "id" = $3',
+        [ args.lockedByID, args.lockReason, args.topicID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            // Clear the cache for this topic
+            app.clear({ scope: args.topicUrl });
+
+            emitter.emit('ready', {
+              success: true,
+              affectedRows: result.rows
+            });
+          }
+        }
+      );
+    }
+  });
+}
+
+
+
+function unlock(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'update "topics" set "lockedByID" = 0, "lockReason" = null where "id" = $1',
+        [ args.topicID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            // Clear the cache for this topic
+            app.clear({ scope: args.topicUrl });
+
+            emitter.emit('ready', {
+              success: true,
+              affectedRows: result.rows
+            });
+          }
+        }
+      );
+    }
+  });
+}
+
+
+
+function move(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        if ( err ) {
+          emitter.emit('error', err);
+        } else {
+          app.listen('waterfall', {
+            begin: function (emitter) {
+
+              client.query('begin', function (err) {
+                if ( err ) {
+                  done();
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready');
+                }
+              });
+
+            },
+            moveTopic: function (previous, emitter) {
+
+              client.query(
+                'update "topics" set "discussionID" = ( select "id" from "discussions" where "url" = $1 ) where "id" = $2;',
+                [ args.newDiscussionUrl, args.topicID ],
+                function (err, result) {
+                  done();
+                  if ( err ) {
+                    client.query('rollback', function (err) {
+                      done();
+                    });
+                    emitter.emit('error', err);
+                  } else {
+                    emitter.emit('ready', {
+                      success: true,
+                      affectedRows: result.rows
+                    });
+                  }
+                }
+              );
+
+            },
+            updateOldDiscussionStats: function (previous, emitter) {
+
+              client.query(
+                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+                [ args.discussionID ],
+                function (err, result) {
+                  if ( err ) {
+                    client.query('rollback', function (err) {
+                      done();
+                    });
+                    emitter.emit('error', err);
+                  } else {
+                    emitter.emit('ready', {
+                      affectedRows: result.rowCount
+                    });
+                  }
+                }
+              );
+
+            },
+            updateNewDiscussionStats: function (previous, emitter) {
+
+              client.query(
+                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+                [ args.newDiscussionID ],
+                function (err, result) {
+                  if ( err ) {
+                    client.query('rollback', function (err) {
+                      done();
+                    });
+                    emitter.emit('error', err);
+                  } else {
+                    emitter.emit('ready', {
+                      affectedRows: result.rowCount
+                    });
+                  }
+                }
+              );
+
+            },
+            commit: function (previous, emitter) {
+
+              client.query('commit', function () {
+                done();
+                emitter.emit('ready');
+              });
+
+            }
+          }, function (output) {
+
+            if ( output.listen.success ) {
+
+              // Clear the cache for this topic
+              app.clear({ scope: args.topicUrl });
+              app.clear({ scope: args.discussionUrl });
+              app.clear({ scope: args.newDiscussionUrl });
+              app.clear({ scope: 'models-discussions-categories' });
+
+              emitter.emit('ready', {
+                success: true
+              });
+
+            } else {
+
+              emitter.emit('error', output.listen);
+
+            }
+
+          });
+        }
+      });
+    }
+  });
+}
+
+
+
 function reply(args, emitter) {
   var content = args.markdown.trim() || '';
 
@@ -441,7 +623,7 @@ function reply(args, emitter) {
               }
             );
           },
-          updateStats: function (previous, emitter) {
+          updateTopicStats: function (previous, emitter) {
             client.query(
               'update topics set "sortDate" = $3, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, "lastPostID" = $2 where "id" = $1;',
               [ args.topicID, previous.insertPost.id, args.time ],
@@ -458,6 +640,26 @@ function reply(args, emitter) {
                 }
               }
             );
+          },
+          updateDiscussionStats: function (previous, emitter) {
+
+            client.query(
+              'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+              [ args.discussionID ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    affectedRows: result.rowCount
+                  });
+                }
+              }
+            );
+
           },
           commit: function (previous, emitter) {
             client.query('commit', function () {

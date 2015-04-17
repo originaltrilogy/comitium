@@ -280,3 +280,15 @@
   subject: 'Your forum post was deleted',
   text: 'Your post has been deleted by a moderator.\n\nReason: foo bar\n\n<p>oeuaoeu</p>\n' }
 
+[2015-04-16T21:27:05.774Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'skyman8081@gmail.com',
+  subject: 'Your forum post was deleted',
+  text: 'Your post has been deleted by a moderator.\n\nYou can\'t take the sky from me, And we enforce that.<br /><br />*loads nail-gun, chain-gun, and shotgun*<br /><br />Who wants to join?  You get a free DEagle when you sign up today!<br /><br />Bwa ha ha ha ha. =D  ' }
+
+[2015-04-17T15:01:45.052Z] E-mail debug log (not sent): 
+{ from: 'jay@originaltrilogy.com',
+  to: 'sing@duha.com',
+  subject: 'Forum registration confirmation',
+  text: '<a href="//10.211.55.4/forum/user/action/activate/id/16822/activationCode/7874370217323303">Click here to activate your account</a>' }
+

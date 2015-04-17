@@ -11,7 +11,16 @@ module.exports = {
   reply: reply,
   replyForm: replyForm,
   subscribe: subscribe,
-  unsubscribe: unsubscribe
+  unsubscribe: unsubscribe,
+  lock: lock,
+  lockForm: lockForm,
+  unlock: unlock,
+  // merge: merge,
+  // mergeForm: mergeForm,
+  move: move,
+  moveForm: moveForm,
+  trash: trash,
+  trashForm: trashForm
 };
 
 
@@ -271,7 +280,7 @@ function reply(params, context, emitter) {
   // Verify the user's group has reply access to the topic
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicReply(params.url.topic, params.session.groupID, emitter);
+      app.toolbox.access.topicReply(params.url.topic, params.session, emitter);
     },
     topicInfo: function (previous, emitter) {
       app.models.topic.info(params.url.topic, emitter);
@@ -378,6 +387,7 @@ function replyForm(params, context, emitter) {
                 app.models.topic.reply({
                   topicID: topicInfo.id,
                   topicUrl: topicInfo.url,
+                  discussionID: topicInfo.discussionID,
                   discussionUrl: topicInfo.discussionUrl,
                   userID: params.session.userID,
                   html: parsedContent,
@@ -562,6 +572,409 @@ function unsubscribe(params, context, emitter) {
       });
     } else {
       emitter.emit('error', output.listen);
+    }
+
+  });
+
+}
+
+
+
+function lock(params, context, emitter) {
+
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.topic);
+  params.form.reason = '';
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicLock(params.url.topic, params.session, emitter);
+    },
+    topicInfo: function (previous, emitter) {
+      app.models.topic.info(params.url.topic, emitter);
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      emitter.emit('ready', {
+        content: {
+          topic: output.topicInfo
+        },
+        view: 'lock',
+        handoff: {
+          controller: '+_layout'
+        }
+      });
+
+    } else {
+
+      emitter.emit('error', output.listen);
+
+    }
+
+  });
+
+}
+
+
+
+function lockForm(params, context, emitter) {
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicLock(params.url.topic, params.session, emitter);
+    },
+    topicInfo: function (previous, emitter) {
+      app.models.topic.info(params.url.topic, emitter);
+    }
+  }, function (output) {
+    var topic = output.topicInfo,
+        markdown = new Remarkable({
+          breaks: true,
+          linkify: true
+        }),
+        parsedReason;
+
+    if ( output.listen.success ) {
+
+      parsedReason = markdown.render(params.form.reason);
+      // Get rid of the paragraph tags and line break added by Remarkable
+      parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
+
+      app.listen({
+        lock: function (emitter) {
+          app.models.topic.lock({
+            topicID: topic.id,
+            topicUrl: topic.url,
+            lockedByID: params.session.userID,
+            lockReason: parsedReason
+          }, emitter);
+        }
+      }, function (output) {
+
+        if ( output.listen.success ) {
+
+          if ( output.lock.success ) {
+
+            if ( params.form.notify ) {
+
+              // notify subscribers (if the author isn't subscribed, they probably don't care)
+
+            }
+
+            emitter.emit('ready', {
+              redirect: params.form.forwardToUrl
+            });
+
+          } else {
+
+            emitter.emit('ready', {
+              content: {
+                topic: topic,
+                lock: output.lock
+              },
+              view: 'lock',
+              handoff: {
+                controller: '+_layout'
+              }
+            });
+
+          }
+
+        } else {
+
+          emitter.emit('error', output.listen);
+
+        }
+
+      });
+
+    } else {
+
+      emitter.emit('error', output.listen);
+
+    }
+
+  });
+
+}
+
+
+
+function unlock(params, context, emitter) {
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicLock(params.url.topic, params.session, emitter);
+    },
+    topicInfo: function (previous, emitter) {
+      app.models.topic.info(params.url.topic, emitter);
+    }
+  }, function (output) {
+    var topic = output.topicInfo;
+
+    if ( output.listen.success ) {
+
+      app.listen({
+        unlock: function (emitter) {
+          app.models.topic.unlock({
+            topicID: topic.id,
+            topicUrl: topic.url,
+          }, emitter);
+        }
+      }, function (output) {
+
+        if ( output.listen.success ) {
+
+          emitter.emit('ready', {
+            redirect: params.request.headers.referer
+          });
+
+        } else {
+
+          emitter.emit('error', output.listen);
+
+        }
+
+      });
+
+    } else {
+
+      emitter.emit('error', output.listen);
+
+    }
+
+  });
+
+}
+
+
+
+function move(params, context, emitter) {
+
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.topic);
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicMove(params.url.topic, params.session, emitter);
+    },
+    topicInfo: function (previous, emitter) {
+      app.models.topic.info(params.url.topic, emitter);
+    },
+    categories: function (previous, emitter) {
+      app.models.discussions.categories(params.session.groupID, emitter);
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      emitter.emit('ready', {
+        content: {
+          topic: output.topicInfo,
+          categories: output.categories
+        },
+        view: 'move',
+        handoff: {
+          controller: '+_layout'
+        }
+      });
+
+    } else {
+
+      emitter.emit('error', output.listen);
+
+    }
+
+  });
+
+}
+
+
+
+function moveForm(params, context, emitter) {
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicMoveForm(params.url.topic, params.form.destination, params.session, emitter);
+    },
+    topicInfo: function (previous, emitter) {
+      app.models.topic.info(params.url.topic, emitter);
+    }
+  }, function (output) {
+    var topic = output.topicInfo;
+
+    if ( output.listen.success ) {
+
+      app.listen('waterfall', {
+        newDiscussionInfo: function (emitter) {
+          app.models.discussion.info(params.form.destination, emitter);
+        },
+        move: function (previous, emitter) {
+          app.models.topic.move({
+            topicID: topic.id,
+            topicUrl: topic.url,
+            discussionID: topic.discussionID,
+            discussionUrl: topic.discussionUrl,
+            newDiscussionID: previous.newDiscussionInfo.id,
+            newDiscussionUrl: params.form.destination
+          }, emitter);
+        }
+      }, function (output) {
+
+        if ( output.listen.success ) {
+
+          if ( output.move.success ) {
+
+            if ( params.form.notify ) {
+
+              // notify subscribers (if the author isn't subscribed, they probably don't care)
+
+            }
+
+            emitter.emit('ready', {
+              redirect: params.form.forwardToUrl
+            });
+
+          } else {
+
+            emitter.emit('ready', {
+              content: {
+                topic: topic,
+                move: output.move
+              },
+              view: 'move',
+              handoff: {
+                controller: '+_layout'
+              }
+            });
+
+          }
+
+        } else {
+
+          emitter.emit('error', output.listen);
+
+        }
+
+      });
+
+    } else {
+
+      emitter.emit('error', output.listen);
+
+    }
+
+  });
+
+}
+
+
+
+function trash(params, context, emitter) {
+
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.topic);
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicTrash(params.url.topic, params.session, emitter);
+    },
+    topicInfo: function (previous, emitter) {
+      app.models.topic.info(params.url.topic, emitter);
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      emitter.emit('ready', {
+        content: {
+          topic: output.topicInfo
+        },
+        view: 'trash',
+        handoff: {
+          controller: '+_layout'
+        }
+      });
+
+    } else {
+
+      emitter.emit('error', output.listen);
+
+    }
+
+  });
+
+}
+
+
+
+function trashForm(params, context, emitter) {
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicTrash(params.url.topic, params.session, emitter);
+    },
+    topicInfo: function (previous, emitter) {
+      app.models.topic.info(params.url.topic, emitter);
+    }
+  }, function (output) {
+    var topic = output.topicInfo;
+
+    if ( output.listen.success ) {
+
+      app.listen({
+        trash: function (emitter) {
+          app.models.topic.move({
+            topicID: topic.id,
+            topicUrl: topic.url,
+            discussionID: topic.discussionID,
+            discussionUrl: topic.discussionUrl,
+            newDiscussionID: 1,
+            newDiscussionUrl: 'Trash'
+          }, emitter);
+        }
+      }, function (output) {
+
+        if ( output.listen.success ) {
+
+          if ( output.trash.success ) {
+
+            if ( params.form.notify ) {
+
+              // notify subscribers (if the author isn't subscribed, they probably don't care)
+
+            }
+
+            emitter.emit('ready', {
+              redirect: params.form.forwardToUrl
+            });
+
+          } else {
+
+            emitter.emit('ready', {
+              content: {
+                topic: topic,
+                trash: output.trash
+              },
+              view: 'trash',
+              handoff: {
+                controller: '+_layout'
+              }
+            });
+
+          }
+
+        } else {
+
+          emitter.emit('error', output.listen);
+
+        }
+
+      });
+
+    } else {
+
+      emitter.emit('error', output.listen);
+
     }
 
   });

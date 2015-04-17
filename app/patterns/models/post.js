@@ -112,7 +112,7 @@ function info(postID, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select p.id, p."topicID", p.html, p.markdown, p."dateCreated", p.draft, p."editReason", p."editorID", p."lastModified", p."lockedByID", p."lockReason", u.id as "authorID", u.username as author, u.url as "authorUrl", t.url as "topicUrl" from posts p join users u on p."userID" = u.id join topics t on p."topicID" = t.id where p.id = $1;',
+        'select p.id, p."topicID", p.html, p.markdown, p."dateCreated", p.draft, p."editReason", p."editorID", p."lastModified", p."lockedByID", p."lockReason", t."discussionID", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", t.url as "topicUrl" from posts p join users u on p."userID" = u.id join topics t on p."topicID" = t.id join discussions d on t."discussionID" = d."id" where p.id = $1;',
         [ postID ],
         function (err, result) {
           done();
@@ -146,7 +146,7 @@ function lock(args, emitter) {
             emitter.emit('error', err);
           } else {
             // Clear the cache for this topic
-            app.clear({ scope: args.topic });
+            app.clear({ scope: args.topicUrl });
 
             emitter.emit('ready', {
               success: true,
@@ -175,7 +175,7 @@ function unlock(args, emitter) {
             emitter.emit('error', err);
           } else {
             // Clear the cache for this topic
-            app.clear({ scope: args.topic });
+            app.clear({ scope: args.topicUrl });
 
             emitter.emit('ready', {
               success: true,
@@ -344,11 +344,31 @@ function trash(args, emitter) {
           );
 
         },
-        updateStats: function (previous, emitter) {
-// update sortDate with last post date and firstPostID/lastPostID with non-draft posts 
+        updateTopicStats: function (previous, emitter) {
+
           client.query(
-            'update topics set "sortDate" = $3, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, "lastPostID" = $2 where "id" = $1;',
-            [ args.topicID, previous.insertPost.id, args.time ],
+            'update "topics" set "sortDate" = ( select min("dateCreated") from "posts" where "topicID" = $1 and "draft" = false ), "firstPostID" = ( select min("id") from "posts" where "topicID" = $1 and "draft" = false ), "lastPostID" = ( select max("id") from "posts" where "topicID" = $1 and "draft" = false ), "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1 where "id" = $1',
+            [ args.topicID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  affectedRows: result.rowCount
+                });
+              }
+            }
+          );
+
+        },
+        updateDiscussionStats: function (previous, emitter) {
+
+          client.query(
+            'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+            [ args.discussionID ],
             function (err, result) {
               if ( err ) {
                 client.query('rollback', function (err) {
@@ -375,7 +395,9 @@ function trash(args, emitter) {
         if ( output.listen.success ) {
 
           // Clear the topic cache
-          app.clear({ scope: args.topic });
+          app.clear({ scope: args.topicUrl });
+          app.clear({ scope: args.discussionUrl });
+          app.clear({ scope: 'models-discussions-categories' });
 
           emitter.emit('ready', {
             success: true

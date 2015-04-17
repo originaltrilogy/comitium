@@ -367,7 +367,7 @@ function lockForm(params, context, emitter) {
         lock: function (emitter) {
           app.models.post.lock({
             postID: post.id,
-            topic: post.topicUrl,
+            topicUrl: post.topicUrl,
             lockedByID: params.session.userID,
             lockReason: parsedReason
           }, emitter);
@@ -463,7 +463,7 @@ function unlock(params, context, emitter) {
         unlock: function (emitter) {
           app.models.post.unlock({
             postID: post.id,
-            topic: post.topicUrl,
+            topicUrl: post.topicUrl,
           }, emitter);
         }
       }, function (output) {
@@ -695,7 +695,10 @@ function trashForm(params, context, emitter) {
         trash: function (emitter) {
           app.models.post.trash({
             postID: post.id,
-            topic: post.topicUrl,
+            topicID: post.topicID,
+            topicUrl: post.topicUrl,
+            discussionID: post.discussionID,
+            discussionUrl: post.discussionUrl,
             deletedByID: params.session.userID,
             deleteReason: parsedReason
           }, emitter);

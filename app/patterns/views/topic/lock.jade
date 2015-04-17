@@ -1,15 +1,15 @@
-h1 Lock a Post
+h1 Lock a Topic
     
-section.post-lock-form
+section.topic-lock-form
   if lock && lock.message
     p.message
       = lock.message
-  form#post-lock-form(action="#{config.main.basePath}post/#{url.post}/action/lockForm" method="post" novalidate)
+  form#topic-lock-form(action="#{config.main.basePath}topic/#{url.topic}/action/lockForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul
         li.lock-reason.textarea
-          label(for="reason") Why are you locking this post?
+          label(for="reason") Why are you locking this topic?
           p.label-note Optional
           textarea(id="reason" name="reason") #{form.reason}
         //- li.notify.checkbox
@@ -18,8 +18,6 @@ section.post-lock-form
     .actions
       ul
         li.primary.report
-          input(name="formAction" type="submit" value="Lock this post")
+          input(name="formAction" type="submit" value="Lock this topic")
         li.secondary.cancel
           a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
-
-!= include.post

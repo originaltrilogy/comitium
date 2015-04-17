@@ -1,0 +1,27 @@
+h1 Move a Topic
+    
+section.topic-move-form
+  if move && move.message
+    p.message
+      = move.message
+  form#topic-move-form(action="#{config.main.basePath}topic/#{url.topic}/action/moveForm" method="post" novalidate)
+    .data
+      input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
+      ul
+        li.destination
+          label(for="destination") Where do you want to move this topic?
+          select(id="destination" name="destination")
+            each category in categories
+              optgroup(label=category.categoryTitle)
+              each discussion in category.discussions
+                option(value=discussion.discussionUrl)
+                  = discussion.discussionTitle
+        li.notify.checkbox
+          input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
+          label(for="notify") Notify the author
+    .actions
+      ul
+        li.primary.report
+          input(name="formAction" type="submit" value="Move this topic")
+        li.secondary.cancel
+          a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
