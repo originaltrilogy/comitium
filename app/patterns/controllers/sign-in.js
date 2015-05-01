@@ -9,7 +9,7 @@ module.exports = {
 
 
 function handler(params, context, emitter) {
-  params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctznReferer || params.request.headers.referer || app.config.main.baseUrl;
+  params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctzn_referer || params.request.headers.referer || app.config.main.baseUrl;
   params.form.loginReferrer = params.request.headers.referer || app.config.main.baseUrl;
   params.form.username = '';
   params.form.password = '';
@@ -56,11 +56,11 @@ function submit(params, context, emitter) {
           }
           emitter.emit('ready', {
             cookie: {
-              tehUsername: {
+              comitium_username: {
                 value: output.authenticate.user.username,
                 expires: cookieExpires
               },
-              tehPassword: {
+              comitium_password: {
                 value: output.authenticate.user.passwordHash,
                 expires: cookieExpires
               }

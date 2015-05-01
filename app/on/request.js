@@ -21,6 +21,17 @@ function start(params, context, emitter) {
   // page, where they'll be redirected to the original route after login.
 
   var authenticationRequired = {
+        conversation: {
+          start: true,
+          startForm: true,
+          reply: true,
+          replyForm: true,
+          view: true
+        },
+        user: {
+          ban: true,
+          unban: true
+        },
         topic: {
           write: true,
           writeForm: true,

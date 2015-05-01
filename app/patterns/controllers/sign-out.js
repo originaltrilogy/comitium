@@ -14,10 +14,10 @@ function handler(params, context, emitter) {
       directives: ['cookie', 'session', 'handoff']
     },
     cookie: {
-      tehUsername: {
+      comitium_username: {
         expires: 'now'
       },
-      tehPassword: {
+      comitium_password: {
         expires: 'now'
       }
     },

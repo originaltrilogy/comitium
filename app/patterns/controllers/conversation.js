@@ -1,4 +1,4 @@
-// topic controller
+// conversation controller
 
 'use strict';
 
@@ -6,8 +6,8 @@ var Remarkable = require('remarkable');
 
 module.exports = {
   handler: handler,
-  write: write,
-  writeForm: writeForm,
+  start: start,
+  startForm: startForm,
   reply: reply,
   replyForm: replyForm,
   subscribe: subscribe,
@@ -28,7 +28,7 @@ function handler(params, context, emitter) {
   // Verify the user's group has read access to the topic's parent discussion
   app.listen({
     access: function (emitter) {
-      app.toolbox.access.topicView(params.url.topic, params.session.groupID, emitter);
+      app.toolbox.access.conversationView(params.url.conversation, params.session.userID, emitter);
     }
   }, function (output) {
 
@@ -101,12 +101,12 @@ function handler(params, context, emitter) {
 }
 
 
-function write(params, context, emitter) {
+function start(params, context, emitter) {
 
-  // Verify the user's group has post access to the discussion
+  // Verify the user has permission to start a private conversation
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.discussionPost(params.url.discussion, params.session.groupID, emitter);
+      app.toolbox.access.conversationView(params.url.conversation, params.session, emitter);
     },
     discussionInfo: function (previous, emitter) {
       app.models.discussion.info(params.url.discussion, emitter);
@@ -140,7 +140,7 @@ function write(params, context, emitter) {
 }
 
 
-function writeForm(params, context, emitter) {
+function startForm(params, context, emitter) {
 
   if ( params.request.method === 'POST' ) {
     params.form.subscribe = params.form.subscribe || false;

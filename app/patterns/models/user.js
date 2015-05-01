@@ -8,6 +8,8 @@ module.exports = {
   activate: activate,
   activationStatus: activationStatus,
   authenticate: authenticate,
+  ban: ban,
+  unban: unban,
   create: create,
   emailExists: emailExists,
   exists: exists,
@@ -15,8 +17,10 @@ module.exports = {
   insert: insert,
   isActivated: isActivated,
   loginData: loginData,
+  posts: posts,
   urlExists: urlExists
 };
+
 
 
 function activate(args, emitter) {
@@ -171,7 +175,8 @@ function authenticate(credentials, emitter) {
                   passwordHash: passwordHash,
                   userID: output.loginData.id,
                   groupID: output.loginData.groupID,
-                  moderateDiscussions: output.loginData.moderateDiscussions
+                  moderateDiscussions: output.loginData.moderateDiscussions,
+                  moderateUsers: output.loginData.moderateUsers
                 }
               });
             } else {
@@ -209,6 +214,63 @@ function authenticate(credentials, emitter) {
     });
   }
 }
+
+
+
+function ban(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+
+      client.query(
+        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Users\' ) where "url" = $1;',
+        [ args.user ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', {
+              success: true,
+              affectedRows: result.rows
+            });
+          }
+        }
+      );
+
+    }
+  });
+}
+
+
+
+function unban(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+
+      client.query(
+        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'New Members\' ) where "url" = $1;',
+        [ args.user ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', {
+              success: true,
+              affectedRows: result.rows
+            });
+          }
+        }
+      );
+
+    }
+  });
+}
+
 
 
 function create(args, emitter) {
@@ -417,10 +479,7 @@ function info(user, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select u."id", u."username", u."url", u."groupID", u."email" ' +
-        'from "users" u ' +
-        'inner join "discussionPermissions" dp on u."groupID" = dp."groupID" ' +
-        'where u."username" = $1',
+        'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1',
         [ user ],
         function (err, result) {
           done();
@@ -575,7 +634,7 @@ function loginData(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select u."id", u."groupID", u."username", u."passwordHash", u."activationDate", g."login", g."moderateDiscussions" ' +
+        'select u."id", u."groupID", u."username", u."passwordHash", u."activationDate", g."login", g."moderateDiscussions", g."moderateUsers" ' +
         'from "users" u ' +
         'join "groups" g on u."groupID" = g."id" ' +
         'where u."username" = $1',
@@ -592,6 +651,83 @@ function loginData(args, emitter) {
     }
   });
 }
+
+
+
+function posts(args, emitter) {
+  // See if this topic subset is already cached
+  var user = args.user,
+      start = args.start || 0,
+      end = args.end || 25,
+      cacheKey = 'models-user-posts-subset-' + start + '-' + end,
+      scope = user,
+      cached = app.cache.get({ scope: scope, key: cacheKey });
+
+  // If it's cached, return the cache object
+  if ( cached ) {
+    emitter.emit('ready', cached);
+  // If it's not cached, retrieve the subset and cache it
+  } else {
+    app.listen({
+      posts: function (emitter) {
+        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            client.query(
+              'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."username" as "author", u."url" as "authorUrl" ' +
+              'from posts p ' +
+              'inner join users u on p."userID" = u.id ' +
+              'where u."url" = $1 and p.draft = false ' +
+              'order by p."dateCreated" desc ' +
+              'limit $2 offset $3;',
+              [ user, end - start, start ],
+              function (err, result) {
+                done();
+                if ( err ) {
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', result.rows);
+                }
+              }
+            );
+          }
+        });
+      }
+    }, function (output) {
+      var subset = {};
+
+      if ( output.listen.success ) {
+        // Build a view-ready object containing only the posts in the requested subset
+        for ( var i = 0; i < end - start; i += 1 ) {
+          if ( output.posts[i] ) {
+            subset[i] = {};
+            for ( var property in output.posts[i] ) {
+              if ( output.posts[i].hasOwnProperty(property) ) {
+                subset[i][property] = output.posts[i][property];
+              }
+            }
+          } else {
+            break;
+          }
+        }
+
+        // Cache the subset for future requests
+        app.cache.set({
+          scope: scope,
+          key: cacheKey,
+          value: subset
+        });
+
+        emitter.emit('ready', subset);
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    });
+  }
+}
+
 
 
 function urlExists(user, emitter) {

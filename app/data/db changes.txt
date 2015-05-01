@@ -16,4 +16,11 @@ Migration order:
   - posts.sql
   - post-content-markdown-generation.js
 
-4. batch.sql
+4. Private messages (conversations)
+  - private-topics.sql
+  - private-topic-title-markdown-generation.js
+  - private-topic-url-slug-generation.js
+  - private-topic-url-unique-generation.js
+
+5. Remaining items
+  - batch.sql

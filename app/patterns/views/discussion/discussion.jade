@@ -21,6 +21,9 @@ section.topics
     ul
       li.new-topic
         a(href="#{config.main.basePath}topic/action/write/discussion/#{discussionInfo.discussionUrl}") Start a new topic
+      if session.moderateDiscussions
+        li.new-announcement
+          a(href="#{config.main.basePath}announcement/action/write/discussion/#{discussionInfo.discussionUrl}") Make an announcement
       li.subscribe
         a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe to this discussion
   if topics
@@ -31,7 +34,7 @@ section.topics
             != topic.titleHtml
         p.details
           | Posted by 
-          a(href="#{config.main.basePath}member/#{topic.topicStarterUrl}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+          a(href="#{config.main.basePath}user/#{topic.topicStarterUrl}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
           |  on 
           time #{topic.postDate}
         p.stats

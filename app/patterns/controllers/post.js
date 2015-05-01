@@ -382,7 +382,7 @@ function lockForm(params, context, emitter) {
 
               app.listen({
                 userInfo: function (emitter) {
-                  app.models.user.info(post.author, emitter);
+                  app.models.user.info(post.authorUrl, emitter);
                 }
               }, function (output) {
                 var mailText = 'The following post has been locked by a moderator: ' + params.route.parsed.protocol + app.config.main.baseUrl + '/post/' + post.id;
@@ -713,7 +713,7 @@ function trashForm(params, context, emitter) {
 
               app.listen({
                 userInfo: function (emitter) {
-                  app.models.user.info(post.author, emitter);
+                  app.models.user.info(post.authorUrl, emitter);
                 }
               }, function (output) {
                 var mailText = 'Your post has been deleted by a moderator.';

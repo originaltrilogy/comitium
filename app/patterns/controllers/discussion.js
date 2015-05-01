@@ -25,7 +25,11 @@ function handler(params, context, emitter) {
       topics: function (emitter) {
         var start = ( params.url.page - 1 ) * 25,
             end = start + 25;
-        app.models.discussion.topicSubset(params.url.discussion, start, end, emitter);
+        app.models.discussion.topics({
+          discussion: params.url.discussion,
+          start: start,
+          end: end
+        }, emitter);
       }
     };
 

@@ -11,7 +11,7 @@ function discussionPermissions(discussion, groupID, emitter) {
   // See if this discussion's permissions are already cached
   var cacheKey = 'models-group-discussionPermissions-' + discussion,
       scope = 'group-' + groupID,
-      cached = app.retrieve({ scope: scope, key: cacheKey });
+      cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
   if ( cached ) {
@@ -41,7 +41,7 @@ function discussionPermissions(discussion, groupID, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
-        app.cache({
+        app.cache.set({
           scope: scope,
           key: cacheKey,
           value: output.discussionPermissions[0]

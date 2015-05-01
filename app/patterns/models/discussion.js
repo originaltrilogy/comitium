@@ -6,7 +6,6 @@ module.exports = {
   info: info,
   announcements: announcements,
   topics: topics,
-  topicSubset: topicSubset,
   breadcrumbs: breadcrumbs,
   metaData: metaData
 };
@@ -16,7 +15,7 @@ function info(discussion, emitter) {
   // See if this discussion info is already cached
   var cacheKey = 'models-discussion-info',
       scope = discussion,
-      cached = app.retrieve({ scope: scope, key: cacheKey });
+      cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
   if ( cached ) {
@@ -48,7 +47,7 @@ function info(discussion, emitter) {
 
       if ( output.listen.success ) {
         // Cache the discussion info object for future requests
-        app.cache({
+        app.cache.set({
           key: cacheKey,
           scope: scope,
           value: output.discussionInfo[0]
@@ -68,7 +67,7 @@ function announcements(discussion, emitter) {
   // See if this discussion page is already cached
   var cacheKey = 'models-discussion-announcements',
       scope = discussion,
-      cached = app.retrieve({ scope: scope, key: cacheKey });
+      cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
   if ( cached ) {
@@ -108,7 +107,7 @@ function announcements(discussion, emitter) {
               if ( property === 'replies' || property === 'views' ) {
                 announcements[announcement.titleHtml][property] = app.toolbox.numeral(announcement[property]).format('0,0');
               } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                announcements[announcement.titleHtml][property] = app.toolbox.moment(app.toolbox.helpers.isoDate(announcement[property])).format('MMMM Do YYYY');
+                announcements[announcement.titleHtml][property] = app.toolbox.moment(announcement[property]).format('MMMM Do YYYY');
               } else {
                 announcements[announcement.titleHtml][property] = announcement[property];
               }
@@ -117,7 +116,7 @@ function announcements(discussion, emitter) {
         });
 
         // Cache the topics object for future requests
-        app.cache({
+        app.cache.set({
           key: cacheKey,
           scope: scope,
           value: announcements
@@ -133,62 +132,15 @@ function announcements(discussion, emitter) {
 }
 
 
-function topics(discussion, emitter) {
-  // See if this discussion page is already cached
-  var cacheKey = 'models-discussion-topics',
-      scope = discussion,
-      cached = app.retrieve({ scope: scope, key: cacheKey });
 
-  // If it's cached, return the cache object
-  if ( cached ) {
-    emitter.emit('ready', cached);
-  // If it's not cached, retrieve it from the database and cache it
-  } else {
-    app.listen({
-      topics: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              eval(app.db.sql.topicsByDiscussion),
-              [ discussion ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
-          }
-        });
-      }
-    }, function (output) {
-
-      if ( output.listen.success ) {
-        app.cache({
-          key: cacheKey,
-          scope: scope,
-          value: output.topics
-        });
-
-        emitter.emit('ready', output.topics);
-      } else {
-        emitter.emit('error', output.listen);
-      }
-
-    });
-  }
-}
-
-
-function topicSubset(discussion, start, end, emitter) {
+function topics(args, emitter) {
   // See if this discussion subset is already cached
-  var cacheKey = 'models-discussion-topics-subset-' + start + '-' + end,
+  var discussion = args.discussion,
+      start = args.start || 0,
+      end = args.end || 25,
+      cacheKey = 'models-discussion-topics-subset-' + start + '-' + end,
       scope = discussion,
-      cached = app.retrieve({ scope: scope, key: cacheKey });
+      cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
   if ( cached ) {
@@ -252,7 +204,7 @@ function topicSubset(discussion, start, end, emitter) {
         }
 
         // Cache the subset for future requests
-        app.cache({
+        app.cache.set({
           key: cacheKey,
           scope: scope,
           value: subset

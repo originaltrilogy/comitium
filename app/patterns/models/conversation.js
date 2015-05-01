@@ -1,9 +1,10 @@
-// topic model
+// conversation model
 
 'use strict';
 
 module.exports = {
   exists: exists,
+  hasParticipant: hasParticipant,
   info: info,
   insert: insert,
   posts: posts,
@@ -20,6 +21,7 @@ module.exports = {
   breadcrumbs: breadcrumbs,
   metaData: metaData
 };
+
 
 
 function exists(topic, emitter) {
@@ -60,10 +62,50 @@ function exists(topic, emitter) {
 }
 
 
-function info(topic, emitter) {
-  // See if this topic info is already cached
-  var cacheKey = 'models-topic-info',
-      scope = topic,
+
+function hasParticipant(args, emitter) {
+  app.listen({
+    hasParticipant: function (emitter) {
+      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        if ( err ) {
+          emitter.emit('error', err);
+        } else {
+          client.query(
+            'select "id" from "conversationParticipants" where "conversationID" = $1 and "userID" = $2;',
+            [ args.conversationID, args.userID ],
+            function (err, result) {
+              done();
+              if ( err ) {
+                emitter.emit('error', err);
+              } else {
+                if ( result.rows.length ) {
+                  emitter.emit('ready', true);
+                } else {
+                  emitter.emit('ready', false);
+                }
+              }
+            }
+          );
+        }
+      });
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+      emitter.emit('ready', output.hasParticipant);
+    } else {
+      emitter.emit('error', output.listen);
+    }
+
+  });
+}
+
+
+
+function info(conversation, emitter) {
+  // See if this conversation info is already cached
+  var cacheKey = 'models-conversation-info',
+      scope = conversation,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -72,14 +114,14 @@ function info(topic, emitter) {
     // If it's not cached, retrieve it from the database and cache it
   } else {
     app.listen({
-      topicInfo: function (emitter) {
+      conversationInfo: function (emitter) {
         app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select d."id" as "discussionID", d."title" as "discussionTitle", d."url" as "discussionUrl", t."sortDate" as "time", t."id", t."url", t."replies", t."views", t."titleHtml", t."titleMarkdown", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t inner join "discussions" d on d."id" = t."discussionID" inner join "posts" p on p."id" = t."firstPostID" inner join "users" u on u."id" = p."userID" where t."url" = $1;',
-              [ topic ],
+              'select c."id", c."titleMarkdown", c."titleHtml", c."url", c."sortDate", c."replies", c."views", c."draft", m."userID" as "authorID", m."dateCreated" from "conversations" c join "messages" m on c."firstMessageID" where c."url" = $1;',
+              [ conversation ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -95,14 +137,14 @@ function info(topic, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
-        // Cache the topic info object for future requests
+        // Cache the conversation info object for future requests
         app.cache.set({
           scope: scope,
           key: cacheKey,
-          value: output.topicInfo[0]
+          value: output.conversationInfo[0]
         });
 
-        emitter.emit('ready', output.topicInfo[0]);
+        emitter.emit('ready', output.conversationInfo[0]);
       } else {
         emitter.emit('error', output.listen);
       }

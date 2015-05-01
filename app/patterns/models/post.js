@@ -86,7 +86,7 @@ function edit(args, emitter) {
           if ( output.listen.success ) {
 
             // Clear the topic cache
-            app.clear({ scope: args.currentPost.topicUrl });
+            app.cache.clear({ scope: args.currentPost.topicUrl });
 
             emitter.emit('ready', {
               success: true
@@ -146,7 +146,7 @@ function lock(args, emitter) {
             emitter.emit('error', err);
           } else {
             // Clear the cache for this topic
-            app.clear({ scope: args.topicUrl });
+            app.cache.clear({ scope: args.topicUrl });
 
             emitter.emit('ready', {
               success: true,
@@ -175,7 +175,7 @@ function unlock(args, emitter) {
             emitter.emit('error', err);
           } else {
             // Clear the cache for this topic
-            app.clear({ scope: args.topicUrl });
+            app.cache.clear({ scope: args.topicUrl });
 
             emitter.emit('ready', {
               success: true,
@@ -395,9 +395,9 @@ function trash(args, emitter) {
         if ( output.listen.success ) {
 
           // Clear the topic cache
-          app.clear({ scope: args.topicUrl });
-          app.clear({ scope: args.discussionUrl });
-          app.clear({ scope: 'models-discussions-categories' });
+          app.cache.clear({ scope: args.topicUrl });
+          app.cache.clear({ scope: args.discussionUrl });
+          app.cache.clear({ scope: 'models-discussions-categories' });
 
           emitter.emit('ready', {
             success: true

@@ -13,7 +13,7 @@ function categories(groupID, emitter) {
   // See if the category list is already cached
   var cacheKey = 'group-' + groupID,
       scope = 'models-discussions-categories',
-      cached = app.retrieve({ scope: scope, key: cacheKey });
+      cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
   if ( cached ) {
@@ -63,7 +63,7 @@ function categories(groupID, emitter) {
               if ( property === 'topics' || property === 'posts' ) {
                 categories[category.categoryTitle].discussions[category.discussionTitle][property] = app.toolbox.numeral(category[property]).format('0,0');
               } else if ( property === 'lastPostDate' ) {
-                categories[category.categoryTitle].discussions[category.discussionTitle][property] = app.toolbox.moment(app.toolbox.helpers.isoDate(category[property]), 'MMMM Do YYYY');
+                categories[category.categoryTitle].discussions[category.discussionTitle][property] = app.toolbox.moment(category[property]).format('MMMM Do YYYY');
               } else {
                 categories[category.categoryTitle].discussions[category.discussionTitle][property] = category[property];
               }
@@ -72,7 +72,7 @@ function categories(groupID, emitter) {
         });
 
         // Cache the categories object for future requests
-        app.cache({
+        app.cache.set({
           key: cacheKey,
           scope: scope,
           value: categories

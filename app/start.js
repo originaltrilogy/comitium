@@ -26,6 +26,11 @@ app.toolbox = {
   validate: require('./toolbox/validate')
 };
 
+app.toolbox.pg.types.setTypeParser(1114, function (stringValue) {
+  return new Date(Date.parse(stringValue + ' +0000')).toUTCString();
+});
+
+
 if ( app.config.citizen.mode === 'production' ) {
   app.mail = require('nodemailer').createTransport(app.config.mail);
 } else {
@@ -60,11 +65,5 @@ fs.readdirSync(app.config.main.appPath + '/data/sql').forEach( function (file, i
 });
 
 
-// HTTP
+// Start the server
 app.start();
-
-// HTTPS
-app.start({
-  key: fs.readFileSync(app.config.secure.key),
-  cert: fs.readFileSync(app.config.secure.cert)
-});

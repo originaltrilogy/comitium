@@ -5,6 +5,8 @@
 module.exports = {
   challenge: challenge,
   signInRedirect: signInRedirect,
+  conversationStart: conversationStart,
+  conversationView: conversationView,
   discussionView: discussionView,
   discussionPost: discussionPost,
   discussionReply: discussionReply,
@@ -44,6 +46,60 @@ function challenge(groupID, emitter) {
 function signInRedirect(params, url) {
 
   return params.request.headers.referer && params.request.headers.referer.search('/sign-in') < 0 ? params.request.headers.referer : url;
+
+}
+
+
+
+function conversationStart(user, emitter) {
+
+  app.listen({
+    userInfo: function (emitter) {
+      app.models.user.info(user, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.userInfo.talkPrivately ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+
+}
+
+
+
+function conversationView(conversation, session, emitter) {
+
+  app.listen('waterfall', {
+    conversationInfo: function (emitter) {
+      app.models.conversation.info(conversation, emitter);
+    },
+    userIsParticipant: function (previous, emitter) {
+      app.models.conversation.hasParticipant({
+        conversationID: previous.conversationInfo.id,
+        userID: session.userID
+      }, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( session.talkPrivately && output.userIsParticipant ) {
+        emitter.emit('ready', output.listen);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 
 }
 

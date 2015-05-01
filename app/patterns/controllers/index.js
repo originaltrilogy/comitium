@@ -18,6 +18,8 @@ function handler(params, context, emitter) {
         emitter.emit('ready', true);
       } else if ( params.url.end ) {
         emitter.emit('end', false);
+      } else if ( params.url.error ) {
+        emitter.emit('error', false);
       } else {
         emitter.emit('skip', false);
       }
@@ -41,6 +43,7 @@ function handler(params, context, emitter) {
 
     } else {
 
+      console.log(output.listen);
       emitter.emit('error', output.listen);
 
     }

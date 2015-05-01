@@ -1,7 +1,7 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
   h2
     img(src="#{config.main.staticAssetUrl}/avatars/#{post.authorUrl}.png")
-    a(href="#{config.main.basePath}member/#{post.authorUrl}")
+    a(href="#{config.main.basePath}user/#{post.authorUrl}")
       = post.author
     time
       = post.dateCreated

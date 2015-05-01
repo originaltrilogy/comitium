@@ -221,6 +221,12 @@ values
 ( 6, 'Banned Users', 'Users who have had their forum access privileges revoked.', false, false, false, false, false, false, false, false, false, false, true, false );
 
 
+-- Update banned user groupID (needs to be first due to conflicting IDs)
+update users set "groupID" = (
+  select id from groups where name = 'Banned Users'
+) where "groupID" = 4;
+
+
 update users set "groupID" = (
   select id from groups where name = 'Moderators'
 ) where username in (
@@ -481,6 +487,28 @@ from "tblForumTopicViewTimes";
 
 
 SELECT SETVAL('"topicViews_id_seq"', ( select max("id") + 1 from "topicViews" ) );
+
+
+
+-- ignored users
+
+create table "ignoredUsers" (
+  "id" serial not null,
+  "userID" integer not null,
+  "ignoredUserID" integer not null,
+  primary key ("id")
+);
+
+insert into "ignoredUsers" (
+  "id",
+  "userID",
+  "ignoredUserID"
+)
+select
+  "intIgnorePairID",
+  "intUserID",
+  "intIgnoreUserID"
+from "tblForumIgnoredUsers";
 
 
 
