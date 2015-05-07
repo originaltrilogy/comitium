@@ -16,6 +16,7 @@ module.exports = {
   info: info,
   insert: insert,
   isActivated: isActivated,
+  isIgnored: isIgnored,
   loginData: loginData,
   posts: posts,
   urlExists: urlExists
@@ -607,9 +608,7 @@ function isActivated(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "activationDate" ' +
-        'from "users" ' +
-        'where "id" = $1',
+        'select "activationDate" from "users" where "id" = $1',
         [ args.id ],
         function (err, result) {
           done();
@@ -617,6 +616,31 @@ function isActivated(args, emitter) {
             emitter.emit('error', err);
           } else {
             if ( result.rows[0] && result.rows[0].activationDate ) {
+              emitter.emit('ready', true);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+      });
+    }
+  });
+}
+
+
+function isIgnored(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select "id" from "ignoredUsers" where "userID" = $1 and "ignoredUserID" = $2',
+        [ args.ignoredBy, args.user ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
               emitter.emit('ready', true);
             } else {
               emitter.emit('ready', false);

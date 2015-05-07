@@ -1,29 +1,29 @@
-h1 Post a new topic
+h1 Start a private conversation
 
 if preview
   section.preview
-    h2 Topic preview:
-    article.post
+    h2 Message preview:
+    article.message
       .title
         != preview.title
       .content
         != preview.content
           
-section.topic-write-form
-  form#topic-write-form(action="#{config.main.basePath}topic/action/writeForm/discussion/#{url.discussion}" method="post" novalidate)
-    if write && write.message
-      .write-messages
+section.conversation-start-form
+  form#conversation-start-form(action="#{config.main.basePath}conversation/action/startForm/recipient/#{url.recipient}" method="post" novalidate)
+    if start && start.message
+      .start-messages
         ul
-          li #{write.message}
+          li #{start.message}
     .data
       ul
-        li.topic-title.text.required
+        li.subject.text.required
           label(for="topic-title")
-            | Topic title
+            | Conversation subject
           textarea(id="topic-title" name="title" required) #{form.title}
         li.post-content.textarea.required
           label(for="post-content")
-            | Post content
+            | Message
           textarea(id="post-content" name="content" required) #{form.content}
         li.subscribe.checkbox
           input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
@@ -34,7 +34,7 @@ section.topic-write-form
         li.secondary.preview
           input(name="formAction" type="submit" value="Preview")
         li.primary.post
-          input(name="formAction" type="submit" value="Post your topic")
+          input(name="formAction" type="submit" value="Send your message")
         li.tertiary.draft
           input(name="formAction" type="submit" value="Save as draft")
         li.quaternary.cancel
