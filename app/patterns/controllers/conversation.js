@@ -103,28 +103,32 @@ function handler(params, context, emitter) {
 
 function start(params, context, emitter) {
 
-  // Verify the user has permission to start a private conversation
+  // Verify the user has permission to start a private conversation with the recipient
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.conversationView(params.url.conversation, params.session, emitter);
+      app.toolbox.access.conversationStart({
+        userID: params.session.userID,
+        recipient: params.url.recipient
+      }, emitter);
     },
-    discussionInfo: function (previous, emitter) {
-      app.models.discussion.info(params.url.discussion, emitter);
+    recipient: function (previous, emitter) {
+      app.models.user.info({
+        user: params.url.recipient
+      }, emitter);
     }
   }, function (output) {
 
     if ( output.listen.success ) {
 
-      params.form.title = '';
-      params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
-      params.form.subscribe = false;
+      params.form.recipient = output.recipient.username;
+      params.form.subject = '';
+      params.form.message = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
 
       emitter.emit('ready', {
         content: {
-          discussionInfo: output.discussionInfo,
-          breadcrumbs: app.models.topic.breadcrumbs(output.discussionInfo.discussionTitle, output.discussionInfo.discussionUrl)
+          recipient: output.recipient
         },
-        view: 'write',
+        view: 'start',
         handoff: {
           controller: '+_layout'
         }

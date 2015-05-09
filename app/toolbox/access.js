@@ -51,15 +51,27 @@ function signInRedirect(params, url) {
 
 
 
-function conversationStart(user, emitter) {
+function conversationStart(args, emitter) {
 
   app.listen({
     userInfo: function (emitter) {
-      app.models.user.info(user, emitter);
+      app.models.user.info({
+        userID: args.userID
+      }, emitter);
+    },
+    userIsIgnored: function (emitter) {
+      if ( args.recipient ) {
+        app.models.user.isIgnored({
+          user: args.user,
+          ignoredBy: args.recipient
+        }, emitter);
+      } else {
+        emitter.emit('ready', false);
+      }
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.userInfo.talkPrivately ) {
+      if ( output.userInfo.talkPrivately && !output.userIsIgnored ) {
         emitter.emit('ready', true);
       } else {
         emitter.emit('error', {

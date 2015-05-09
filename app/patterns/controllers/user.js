@@ -17,7 +17,9 @@ function handler(params, context, emitter) {
 
   app.listen({
     userInfo: function (emitter) {
-      app.models.user.info(params.url.user, emitter);
+      app.models.user.info({
+        user: params.url.user
+      }, emitter);
     },
     posts: function (emitter) {
       var start = ( params.url.page - 1 ) * 25,
@@ -101,7 +103,9 @@ function ban(params, context, emitter) {
 
     app.listen('waterfall', {
       userInfo: function (emitter) {
-        app.models.user.info(params.url.user, emitter);
+        app.models.user.info({
+          user: params.url.user
+        }, emitter);
       },
       banUser: function (previous, emitter) {
         if ( previous.userInfo.group === 'Administrators' ) {
@@ -149,7 +153,9 @@ function unban(params, context, emitter) {
 
     app.listen('waterfall', {
       userInfo: function (emitter) {
-        app.models.user.info(params.url.user, emitter);
+        app.models.user.info({
+          user: params.url.user
+        }, emitter);
       },
       unbanUser: function (previous, emitter) {
         if ( previous.userInfo.group === 'Administrators' && params.session.group !== 'Administrators' ) {
