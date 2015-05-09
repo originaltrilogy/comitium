@@ -474,14 +474,24 @@ function exists(args, emitter) {
 }
 
 
-function info(user, emitter) {
+function info(args, emitter) {
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    var sql,
+        arg;
+
     if ( err ) {
       emitter.emit('error', err);
     } else {
+      if ( args.user ) {
+        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."talkPrivately", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1';
+        arg = args.user;
+      } else if ( args.userID ) {
+        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."talkPrivately", ( select count("id") from "posts" where "userID" = $1 ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
+        arg = args.userID;
+      }
       client.query(
-        'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1',
-        [ user ],
+        sql,
+        [ arg ],
         function (err, result) {
           done();
           if ( err ) {
@@ -633,7 +643,7 @@ function isIgnored(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "id" from "ignoredUsers" where "userID" = $1 and "ignoredUserID" = $2',
+        'select "id" from "ignoredUsers" where "userID" = ( select "id" from "users" where "url" = $1 ) and "ignoredUserID" = ( select "id" from "users" where "url" = $2 )',
         [ args.ignoredBy, args.user ],
         function (err, result) {
           done();

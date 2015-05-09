@@ -103,22 +103,31 @@ function handler(params, context, emitter) {
 
 function start(params, context, emitter) {
 
-  // Verify the user has permission to start a private conversation
+  // Verify the user has permission to start a private conversation with the recipient
   app.listen('waterfall', {
     access: function (emitter) {
       app.toolbox.access.conversationStart({
-        user: params.session.user,
+        userID: params.session.userID,
         recipient: params.url.recipient
+      }, emitter);
+    },
+    recipient: function (previous, emitter) {
+      app.models.user.info({
+        user: params.url.recipient
       }, emitter);
     }
   }, function (output) {
 
     if ( output.listen.success ) {
 
+      params.form.recipient = output.recipient.username;
       params.form.subject = '';
-      params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
+      params.form.message = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
 
       emitter.emit('ready', {
+        content: {
+          recipient: output.recipient
+        },
         view: 'start',
         handoff: {
           controller: '+_layout'

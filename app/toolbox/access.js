@@ -55,7 +55,9 @@ function conversationStart(args, emitter) {
 
   app.listen({
     userInfo: function (emitter) {
-      app.models.user.info(args.user, emitter);
+      app.models.user.info({
+        userID: args.userID
+      }, emitter);
     },
     userIsIgnored: function (emitter) {
       if ( args.recipient ) {

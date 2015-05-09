@@ -1,4 +1,4 @@
-h1 Start a private conversation
+h1 Start a private conversation with #{recipient.username}
 
 if preview
   section.preview
@@ -17,14 +17,18 @@ section.conversation-start-form
           li #{start.message}
     .data
       ul
+        li.recipient.text.required
+          label(for="recipient")
+            | Recipient
+          textarea(id="recipient" name="recippient" required) #{form.recipient}
         li.subject.text.required
-          label(for="topic-title")
+          label(for="subject")
             | Conversation subject
-          textarea(id="topic-title" name="title" required) #{form.title}
-        li.post-content.textarea.required
-          label(for="post-content")
+          textarea(id="subject" name="subject" required) #{form.subject}
+        li.message.textarea.required
+          label(for="message")
             | Message
-          textarea(id="post-content" name="content" required) #{form.content}
+          textarea(id="message" name="message" required) #{form.message}
         li.subscribe.checkbox
           input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
           label(for="subscribe")
