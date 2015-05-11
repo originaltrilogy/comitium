@@ -10,9 +10,9 @@ if preview
         != preview.content
           
 section.topic-write-form
-  form#topic-write-form(action="#{config.main.basePath}topic/action/writeForm/discussion/#{url.discussion}" method="post" novalidate)
-    if write && write.message
-      .write-messages
+  form#topic-write-form(action="#{config.main.basePath}topic/action/startForm/discussion/#{url.discussion}" method="post" novalidate)
+    if topic && topic.message
+      .messages
         ul
           li #{write.message}
     .data

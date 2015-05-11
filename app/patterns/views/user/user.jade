@@ -3,8 +3,9 @@ h1 User Profile: #{user.username}
 if session.moderateUsers
   nav.actions
     ul
-      li.private-topic
-        a(href="#{config.main.baseUrl}/conversation/action/start/recipient/#{url.user}") Start a private conversation
+      if talkPrivately
+        li.private-topic
+          a(href="#{config.main.baseUrl}/conversation/action/start/recipient/#{url.user}") Start a private conversation
       if user.group !== "Banned Users"
         li.ban
           a(href="#{route.pathname}/action/ban") Ban this user

@@ -17,7 +17,6 @@ module.exports = {
   insert: insert,
   isActivated: isActivated,
   isIgnored: isIgnored,
-  loginData: loginData,
   posts: posts,
   urlExists: urlExists
 };
@@ -145,40 +144,26 @@ function authenticate(credentials, emitter) {
       message: 'One or more required fields is empty.'
     });
   } else {
-    app.listen('waterfall', {
-      userExists: function (emitter) {
-        app.models.user.exists({ username: username }, emitter);
-      },
-      loginData: function (previous, emitter) {
-        if ( previous.userExists ) {
-          app.models.user.loginData({ username: username }, emitter);
-        } else {
-          emitter.emit('ready', false);
-        }
+    app.listen({
+      userInfo: function (emitter) {
+        app.models.user.info({ username: username }, emitter);
       }
     }, function (output) {
 
-      if ( output.listen.success && output.loginData ) {
-        if ( output.loginData.activationDate ) {
-          if ( output.loginData.login ) {
+      if ( output.listen.success && output.userInfo ) {
+        if ( output.userInfo.activationDate ) {
+          if ( output.userInfo.login ) {
             if ( password.length ) {
               // TODO: Fix existing hashes in db to use sha512 (issue new passwords to all users)
               // and remove toLowerCase() because the new hashes will be lowercase, or just loop
               // over the user table and update all hashes using toLowerCase()).
               passwordHash = crypto.createHash('md5').update(password).digest('hex');
             }
-            if ( output.loginData.passwordHash === passwordHash || output.loginData.passwordHash.toLowerCase() === passwordHash ) {
+            if ( output.userInfo.passwordHash === passwordHash || output.userInfo.passwordHash.toLowerCase() === passwordHash ) {
               emitter.emit('ready', {
                 success: true,
                 message: 'Cookies are set.',
-                user: {
-                  username: username,
-                  passwordHash: passwordHash,
-                  userID: output.loginData.id,
-                  groupID: output.loginData.groupID,
-                  moderateDiscussions: output.loginData.moderateDiscussions,
-                  moderateUsers: output.loginData.moderateUsers
-                }
+                user: output.userInfo
               });
             } else {
               emitter.emit('ready', {
@@ -483,11 +468,14 @@ function info(args, emitter) {
       emitter.emit('error', err);
     } else {
       if ( args.user ) {
-        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."talkPrivately", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1';
         arg = args.user;
       } else if ( args.userID ) {
-        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."talkPrivately", ( select count("id") from "posts" where "userID" = $1 ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
+      } else if ( args.username ) {
+        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
+        arg = args.username;
       }
       client.query(
         sql,
@@ -662,34 +650,9 @@ function isIgnored(args, emitter) {
 }
 
 
-function loginData(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'select u."id", u."groupID", u."username", u."passwordHash", u."activationDate", g."login", g."moderateDiscussions", g."moderateUsers" ' +
-        'from "users" u ' +
-        'join "groups" g on u."groupID" = g."id" ' +
-        'where u."username" = $1',
-        [ args.username ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            emitter.emit('ready', result.rows[0]);
-          }
-        }
-      );
-    }
-  });
-}
-
-
 
 function posts(args, emitter) {
-  // See if this topic subset is already cached
+  // See if this post subset is already cached
   var user = args.user,
       start = args.start || 0,
       end = args.end || 25,

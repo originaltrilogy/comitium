@@ -152,10 +152,10 @@ function startForm(params, context, emitter) {
     // Verify the user's group has post access to the discussion
     app.listen('waterfall', {
       access: function (emitter) {
-        app.toolbox.access.discussionPost(params.url.discussion, params.session.groupID, emitter);
-      },
-      discussionInfo: function (previous, emitter) {
-        app.models.discussion.info(params.url.discussion, emitter);
+        app.toolbox.access.conversationStart({
+          userID: params.session.userID,
+          recipient: params.url.recipient
+        }, emitter);
       }
     }, function (output) {
       var discussionInfo = output.discussionInfo,
@@ -275,9 +275,9 @@ function startForm(params, context, emitter) {
       }
 
     });
-  // If it's a GET, fall back to the default topic write action
+  // If it's a GET, fall back to the start action
   } else {
-    write(params, context, emitter);
+    start(params, context, emitter);
   }
 }
 

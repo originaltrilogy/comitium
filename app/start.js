@@ -27,7 +27,7 @@ app.toolbox = {
 };
 
 app.toolbox.pg.types.setTypeParser(1114, function (stringValue) {
-  return new Date(Date.parse(stringValue + ' +0000')).toUTCString();
+  return new Date(Date.parse(stringValue + ' +0000')).toISOString();
 });
 
 

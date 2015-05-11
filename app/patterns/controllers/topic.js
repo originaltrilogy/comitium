@@ -6,8 +6,8 @@ var Remarkable = require('remarkable');
 
 module.exports = {
   handler: handler,
-  write: write,
-  writeForm: writeForm,
+  start: start,
+  startForm: startForm,
   reply: reply,
   replyForm: replyForm,
   subscribe: subscribe,
@@ -101,7 +101,7 @@ function handler(params, context, emitter) {
 }
 
 
-function write(params, context, emitter) {
+function start(params, context, emitter) {
 
   // Verify the user's group has post access to the discussion
   app.listen('waterfall', {
@@ -124,7 +124,7 @@ function write(params, context, emitter) {
           discussionInfo: output.discussionInfo,
           breadcrumbs: app.models.topic.breadcrumbs(output.discussionInfo.discussionTitle, output.discussionInfo.discussionUrl)
         },
-        view: 'write',
+        view: 'start',
         handoff: {
           controller: '+_layout'
         }
@@ -140,7 +140,7 @@ function write(params, context, emitter) {
 }
 
 
-function writeForm(params, context, emitter) {
+function startForm(params, context, emitter) {
 
   if ( params.request.method === 'POST' ) {
     params.form.subscribe = params.form.subscribe || false;
@@ -185,7 +185,7 @@ function writeForm(params, context, emitter) {
                 discussionInfo: discussionInfo,
                 breadcrumbs: app.models.topic.breadcrumbs(discussionInfo.discussionTitle, discussionInfo.discussionUrl)
               },
-              view: 'write',
+              view: 'start',
               handoff: {
                 controller: '+_layout'
               }
@@ -248,11 +248,11 @@ function writeForm(params, context, emitter) {
                 } else {
                   emitter.emit('ready', {
                     content: {
-                      write: saveTopic,
+                      topic: saveTopic,
                       discussionInfo: discussionInfo,
                       breadcrumbs: app.models.topic.breadcrumbs(discussionInfo.discussionTitle, discussionInfo.discussionUrl)
                     },
-                    view: 'write',
+                    view: 'start',
                     handoff: {
                       controller: '+_layout'
                     }
@@ -271,9 +271,9 @@ function writeForm(params, context, emitter) {
       }
 
     });
-  // If it's a GET, fall back to the default topic write action
+  // If it's a GET, fall back to the default topic start action
   } else {
-    write(params, context, emitter);
+    start(params, context, emitter);
   }
 }
 

@@ -46,7 +46,11 @@ function submit(params, context, emitter) {
         app.models.user.authenticate(params.form, emitter);
       }
     }, function (output) {
-      var cookieExpires = 'session';
+      var user = output.authenticate.user,
+          cookieExpires = 'session';
+
+      user.userID = output.authenticate.user.id;
+      delete user.id;
 
       if ( output.listen.success ) {
 
@@ -65,7 +69,7 @@ function submit(params, context, emitter) {
                 expires: cookieExpires
               }
             },
-            session: app.extend(output.authenticate.user, { loginReferrer: params.form.loginReferrer }),
+            session: app.extend(user, { loginReferrer: params.form.loginReferrer }),
             redirect: {
               url: params.form.forwardToUrl
             }

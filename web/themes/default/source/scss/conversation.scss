@@ -1,9 +1,9 @@
 /*-------------------
 topic view
 -------------------*/
-body[data-controller="topic"] {
+body[data-controller="conversation"] {
 
-  &[data-view="topic"] {
+  &[data-view="conversation"] {
     h1 {
       text-transform: none;
       letter-spacing: 0;
@@ -20,7 +20,7 @@ body[data-controller="topic"] {
 
   &[data-view="start"],
   &[data-view="reply"] {
-    li.topic-title {
+    li.subject {
       textarea {
         height: 6.4rem;
       }

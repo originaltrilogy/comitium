@@ -26,12 +26,16 @@ function start(params, context, emitter) {
         }, emitter);
       }
     }, function (output) {
+      var user = output.authenticate.user;
+
+      user.userID = output.authenticate.user.id;
+      delete user.id;
 
       if ( output.listen.success ) {
 
         if ( output.authenticate.success ) {
           emitter.emit('ready', {
-            session: output.authenticate.user
+            session: user
           });
         } else {
           emitter.emit('ready', {

@@ -34,6 +34,7 @@ function handler(params, context, emitter) {
     if ( output.listen.success ) {
       emitter.emit('ready', {
         content: {
+          talkPrivately: output.userInfo.id !== params.session.userID ? true : false,
           user: output.userInfo,
           posts: output.posts,
           pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'user/' + output.userInfo.url, params.url.page, output.userInfo.postCount)

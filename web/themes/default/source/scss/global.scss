@@ -423,7 +423,7 @@ form {
 				}
         &.checkbox {
           margin-bottom: 3.4rem;
-          
+
           label {
             display: block;
             padding-left: 4.4rem;
@@ -431,7 +431,8 @@ form {
             font-size: 1.4rem;
           }
         }
-        &.post-content {
+        &.post-content,
+        &.message {
           textarea {
             height: 20.4rem;
           }

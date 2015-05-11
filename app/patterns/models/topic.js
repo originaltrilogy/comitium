@@ -352,7 +352,12 @@ function posts(args, emitter) {
             subset[i] = {};
             for ( var property in output.posts[i] ) {
               if ( output.posts[i].hasOwnProperty(property) ) {
-                subset[i][property] = output.posts[i][property];
+                if ( property !== 'dateCreated' ) {
+                  subset[i][property] = output.posts[i][property];
+                } else {
+                  subset[i][property] = app.toolbox.moment(output.posts[i][property]).format('MMMM Do YYYY [at] h:mm [GMT]');
+                }
+
               }
             }
           } else {

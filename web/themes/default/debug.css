@@ -762,7 +762,7 @@ form {
           padding-left: 4.4rem;
           padding-top: 0.4rem;
           font-size: 1.4rem; }
-      form .data ul > li.post-content textarea {
+      form .data ul > li.post-content textarea, form .data ul > li.message textarea {
         height: 20.4rem; }
   form .actions ul {
     margin: 0; }
@@ -849,7 +849,7 @@ body[data-controller="topic"][data-view="topic"] nav.actions {
   body[data-controller="topic"][data-view="topic"] nav.actions li {
     display: inline-block;
     margin: 0 0.4rem; }
-body[data-controller="topic"][data-view="write"] li.topic-title textarea, body[data-controller="topic"][data-view="reply"] li.topic-title textarea {
+body[data-controller="topic"][data-view="start"] li.topic-title textarea, body[data-controller="topic"][data-view="reply"] li.topic-title textarea {
   height: 6.4rem; }
 
 /*-------------------
@@ -893,5 +893,19 @@ report view
 -------------------*/
 body[data-controller="post"][data-view="report"] textarea {
   height: 10.2rem; }
+
+/*-------------------
+topic view
+-------------------*/
+body[data-controller="conversation"][data-view="conversation"] h1 {
+  text-transform: none;
+  letter-spacing: 0; }
+body[data-controller="conversation"][data-view="conversation"] nav.actions {
+  text-align: center; }
+  body[data-controller="conversation"][data-view="conversation"] nav.actions li {
+    display: inline-block;
+    margin: 0 0.4rem; }
+body[data-controller="conversation"][data-view="start"] li.subject textarea, body[data-controller="conversation"][data-view="reply"] li.subject textarea {
+  height: 6.4rem; }
 
 /*# sourceMappingURL=debug.css.map */

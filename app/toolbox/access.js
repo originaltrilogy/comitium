@@ -70,12 +70,24 @@ function conversationStart(args, emitter) {
       }
     }
   }, function (output) {
+    var message = '';
+
     if ( output.listen.success ) {
       if ( output.userInfo.talkPrivately && !output.userIsIgnored ) {
         emitter.emit('ready', true);
       } else {
+        if ( !output.userInfo.talkPrivately ) {
+          if ( output.userInfo.group === 'New Members' ) {
+            message = 'New members require a minimum of 5 posts before they can send private messages.';
+          } else {
+            message = 'Your private conversation privileges have been revoked. Please contact an administrator for details';
+          }
+        } else if ( output.userIsIgnored ) {
+          message = 'This user has you on their ignore list, so you can\'t send them private messages.';
+        }
         emitter.emit('error', {
-          statusCode: 403
+          statusCode: 403,
+          message: message
         });
       }
     } else {

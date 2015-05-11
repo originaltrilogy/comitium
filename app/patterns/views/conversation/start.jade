@@ -1,4 +1,4 @@
-h1 Start a private conversation with #{recipient.username}
+h1 Start a private conversation
 
 if preview
   section.preview
@@ -20,10 +20,13 @@ section.conversation-start-form
         li.recipient.text.required
           label(for="recipient")
             | Recipient
+          //-   | Participants
+          //- p.label-note
+          //-   | To include multiple recipients, put each username on its own line.
           textarea(id="recipient" name="recippient" required) #{form.recipient}
         li.subject.text.required
           label(for="subject")
-            | Conversation subject
+            | Subject
           textarea(id="subject" name="subject" required) #{form.subject}
         li.message.textarea.required
           label(for="message")

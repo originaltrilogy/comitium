@@ -20,7 +20,7 @@ section.topics
   nav.discussion
     ul
       li.new-topic
-        a(href="#{config.main.basePath}topic/action/write/discussion/#{discussionInfo.discussionUrl}") Start a new topic
+        a(href="#{config.main.basePath}topic/action/start/discussion/#{discussionInfo.discussionUrl}") Start a new topic
       if session.moderateDiscussions
         li.new-announcement
           a(href="#{config.main.basePath}announcement/action/write/discussion/#{discussionInfo.discussionUrl}") Make an announcement
