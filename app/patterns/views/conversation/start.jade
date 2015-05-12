@@ -3,11 +3,11 @@ h1 Start a private conversation
 if preview
   section.preview
     h2 Message preview:
-    article.message
+    article.post
       .title
-        != preview.title
+        != preview.subject
       .content
-        != preview.content
+        != preview.message
           
 section.conversation-start-form
   form#conversation-start-form(action="#{config.main.basePath}conversation/action/startForm/recipient/#{url.recipient}" method="post" novalidate)
@@ -23,7 +23,7 @@ section.conversation-start-form
           //-   | Participants
           //- p.label-note
           //-   | To include multiple recipients, put each username on its own line.
-          textarea(id="recipient" name="recippient" required) #{form.recipient}
+          textarea(id="recipient" name="recipient" required) #{form.recipient}
         li.subject.text.required
           label(for="subject")
             | Subject
@@ -32,10 +32,6 @@ section.conversation-start-form
           label(for="message")
             | Message
           textarea(id="message" name="message" required) #{form.message}
-        li.subscribe.checkbox
-          input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
-          label(for="subscribe")
-            | Notify me when someone replies
     .actions
       ul
         li.secondary.preview

@@ -9,18 +9,7 @@ module.exports = {
   start: start,
   startForm: startForm,
   reply: reply,
-  replyForm: replyForm,
-  subscribe: subscribe,
-  unsubscribe: unsubscribe,
-  lock: lock,
-  lockForm: lockForm,
-  unlock: unlock,
-  // merge: merge,
-  // mergeForm: mergeForm,
-  move: move,
-  moveForm: moveForm,
-  trash: trash,
-  trashForm: trashForm
+  replyForm: replyForm
 };
 
 
@@ -156,95 +145,72 @@ function startForm(params, context, emitter) {
           userID: params.session.userID,
           recipient: params.url.recipient
         }, emitter);
+      },
+      recipient: function (previous, emitter) {
+        app.models.user.info({
+          username: params.form.recipient
+        }, emitter);
       }
     }, function (output) {
-      var discussionInfo = output.discussionInfo,
-          titleMarkdown = new Remarkable(),
-          contentMarkdown = new Remarkable({
+      var subjectMarkdown = new Remarkable(),
+          messageMarkdown = new Remarkable({
             breaks: true,
             linkify: true
           }),
-          parsedTitle,
-          parsedContent,
+          parsedSubject,
+          parsedMessage,
           draft = false,
           time = app.toolbox.helpers.isoDate();
 
       // If the group has post access, process the topic form
       if ( output.listen.success ) {
 
-        parsedTitle = titleMarkdown.render(params.form.title);
+        parsedSubject = subjectMarkdown.render(params.form.subject);
         // Get rid of the paragraph tags and line break added by Remarkable
-        parsedTitle = parsedTitle.replace(/<p>(.*)<\/p>\n$/, '$1');
+        parsedSubject = parsedSubject.replace(/<p>(.*)<\/p>\n$/, '$1');
 
-        parsedContent = contentMarkdown.render(params.form.content);
+        parsedMessage = messageMarkdown.render(params.form.message);
 
         switch ( params.form.formAction ) {
           case 'Preview':
             emitter.emit('ready', {
               content: {
                 preview: {
-                  title: parsedTitle,
-                  content: parsedContent
-                },
-                discussionInfo: discussionInfo,
-                breadcrumbs: app.models.topic.breadcrumbs(discussionInfo.discussionTitle, discussionInfo.discussionUrl)
+                  subject: parsedSubject,
+                  message: parsedMessage
+                }
               },
-              view: 'write',
+              view: 'start',
               handoff: {
                 controller: '+_layout'
               }
             });
             break;
           case 'Save as draft':
-          case 'Post your topic':
+          case 'Send your message':
             if ( params.form.formAction === 'Save as draft' ) {
               draft = true;
             }
             app.listen({
-              saveTopic: function (emitter) {
-                app.models.topic.insert({
-                  discussionUrl: discussionInfo.discussionUrl,
-                  discussionID: discussionInfo.id,
+              saveConversation: function (emitter) {
+                app.models.conversation.insert({
                   userID: params.session.userID,
-                  titleMarkdown: params.form.title,
-                  titleHtml: parsedTitle,
-                  url: app.toolbox.slug(params.form.title),
-                  markdown: params.form.content,
-                  html: parsedContent,
+                  recipientID: output.recipient.id,
+                  subjectMarkdown: params.form.subject,
+                  subjectHtml: parsedSubject,
+                  markdown: params.form.message,
+                  html: parsedMessage,
                   draft: draft,
-                  announcement: false,
                   time: time
                 }, emitter);
               }
             }, function (output) {
-              var saveTopic = output.saveTopic;
+              var saveConversation = output.saveConversation;
 
-              if ( output.listen.success && saveTopic.success ) {
-                if ( params.form.subscribe ) {
-                  app.listen({
-                    subscribe: function (emitter) {
-                      app.models.topic.subscribe({
-                        userID: params.session.userID,
-                        topicID: saveTopic.id,
-                        time: time
-                      }, emitter);
-                    }
-                  }, function (output) {
-
-                    if ( output.listen.success ) {
-                      emitter.emit('ready', {
-                        redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/topic/' + saveTopic.url
-                      });
-                    } else {
-                      emitter.emit('error', output.listen);
-                    }
-
-                  });
-                } else {
-                  emitter.emit('ready', {
-                    redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/topic/' + saveTopic.url
-                  });
-                }
+              if ( output.listen.success && saveConversation.success ) {
+                emitter.emit('ready', {
+                  redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/conversation/' + saveConversation.id
+                });
               } else {
 
                 if ( !output.listen.success ) {
@@ -252,11 +218,9 @@ function startForm(params, context, emitter) {
                 } else {
                   emitter.emit('ready', {
                     content: {
-                      write: saveTopic,
-                      discussionInfo: discussionInfo,
-                      breadcrumbs: app.models.topic.breadcrumbs(discussionInfo.discussionTitle, discussionInfo.discussionUrl)
+                      start: saveConversation
                     },
-                    view: 'write',
+                    view: 'start',
                     handoff: {
                       controller: '+_layout'
                     }
@@ -305,13 +269,13 @@ function reply(params, context, emitter) {
     // If the group has reply access, display the topic reply form
     if ( output.listen.success ) {
 
-      params.form.content = '';
+      params.form.message = '';
       params.form.subscribe = false;
 
       // If the quoted post exists and its topic ID matches this topic ID, add the
       // quote to the post content (this is a security measure, don't remove it).
       if ( output.quote && output.quote.topicID === output.topicInfo.id && output.quote.markdown ) {
-        params.form.content = '[' + output.quote.author + ' said](' + app.config.main.basePath + 'post/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
+        params.form.message = '[' + output.quote.author + ' said](' + app.config.main.basePath + 'post/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
       } else if ( params.url.quote && !output.quote ) {
         message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.';
       }
@@ -355,25 +319,25 @@ function replyForm(params, context, emitter) {
       }
     }, function (output) {
       var topicInfo = output.topicInfo,
-          contentMarkdown = new Remarkable({
+          messageMarkdown = new Remarkable({
             breaks: true,
             linkify: true
           }),
-          parsedContent,
+          parsedMessage,
           draft = false,
           time = app.toolbox.helpers.isoDate();
 
       // If the group has reply access, process the form
       if ( output.listen.success ) {
 
-        parsedContent = contentMarkdown.render(params.form.content);
+        parsedMessage = messageMarkdown.render(params.form.message);
 
         switch ( params.form.formAction ) {
           case 'Preview':
             emitter.emit('ready', {
               content: {
                 preview: {
-                  content: parsedContent
+                  content: parsedMessage
                 },
                 topicInfo: topicInfo,
                 breadcrumbs: app.models.topic.breadcrumbs(topicInfo.discussionTitle, topicInfo.discussionUrl)
@@ -397,8 +361,8 @@ function replyForm(params, context, emitter) {
                   discussionID: topicInfo.discussionID,
                   discussionUrl: topicInfo.discussionUrl,
                   userID: params.session.userID,
-                  html: parsedContent,
-                  markdown: params.form.content,
+                  html: parsedMessage,
+                  markdown: params.form.message,
                   draft: draft,
                   time: time
                 }, emitter);
@@ -447,7 +411,7 @@ function replyForm(params, context, emitter) {
 
                   // If it's not a draft post, notify the topic subscribers
                   if ( !draft ) {
-                    notifySubscribers({
+                    notifyParticipants({
                       replyAuthorID: params.session.userID,
                       topicID: topicInfo.id,
                       time: time,
@@ -493,7 +457,7 @@ function replyForm(params, context, emitter) {
 }
 
 
-function notifySubscribers(args, emitter) {
+function notifyParticipants(args, emitter) {
 
   app.listen({
     subscribersToNotify: function (emitter) {
@@ -520,470 +484,6 @@ function notifySubscribers(args, emitter) {
     } else if ( !output.listen.success && emitter ) {
       emitter.emit('error', output.listen);
     }
-  });
-
-}
-
-
-function subscribe(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicView(params.url.topic, params.session.groupID, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    },
-    subscribe: function (previous, emitter) {
-      app.models.topic.subscribe({
-        userID: params.session.userID,
-        topicID: previous.topicInfo.id,
-        time: app.toolbox.helpers.isoDate()
-      }, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + output.topicInfo.urlTitle)
-      });
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-
-}
-
-
-function unsubscribe(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicView(params.url.topic, params.session.groupID, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    },
-    unsubscribe: function (previous, emitter) {
-      app.models.topic.unsubscribe({
-        userID: params.session.userID,
-        topicID: previous.topicInfo.id
-      }, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + output.topicInfo.urlTitle)
-      });
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-
-}
-
-
-
-function lock(params, context, emitter) {
-
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.topic);
-  params.form.reason = '';
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.topic, params.session, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          topic: output.topicInfo
-        },
-        view: 'lock',
-        handoff: {
-          controller: '+_layout'
-        }
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function lockForm(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.topic, params.session, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    }
-  }, function (output) {
-    var topic = output.topicInfo,
-        markdown = new Remarkable({
-          breaks: true,
-          linkify: true
-        }),
-        parsedReason;
-
-    if ( output.listen.success ) {
-
-      parsedReason = markdown.render(params.form.reason);
-      // Get rid of the paragraph tags and line break added by Remarkable
-      parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
-
-      app.listen({
-        lock: function (emitter) {
-          app.models.topic.lock({
-            topicID: topic.id,
-            topicUrl: topic.url,
-            lockedByID: params.session.userID,
-            lockReason: parsedReason
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          if ( output.lock.success ) {
-
-            if ( params.form.notify ) {
-
-              // notify subscribers (if the author isn't subscribed, they probably don't care)
-
-            }
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
-          } else {
-
-            emitter.emit('ready', {
-              content: {
-                topic: topic,
-                lock: output.lock
-              },
-              view: 'lock',
-              handoff: {
-                controller: '+_layout'
-              }
-            });
-
-          }
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function unlock(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.topic, params.session, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    }
-  }, function (output) {
-    var topic = output.topicInfo;
-
-    if ( output.listen.success ) {
-
-      app.listen({
-        unlock: function (emitter) {
-          app.models.topic.unlock({
-            topicID: topic.id,
-            topicUrl: topic.url,
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          emitter.emit('ready', {
-            redirect: params.request.headers.referer
-          });
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function move(params, context, emitter) {
-
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.topic);
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicMove(params.url.topic, params.session, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    },
-    categories: function (previous, emitter) {
-      app.models.discussions.categories(params.session.groupID, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          topic: output.topicInfo,
-          categories: output.categories
-        },
-        view: 'move',
-        handoff: {
-          controller: '+_layout'
-        }
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function moveForm(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicMoveForm(params.url.topic, params.form.destination, params.session, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    }
-  }, function (output) {
-    var topic = output.topicInfo;
-
-    if ( output.listen.success ) {
-
-      app.listen('waterfall', {
-        newDiscussionInfo: function (emitter) {
-          app.models.discussion.info(params.form.destination, emitter);
-        },
-        move: function (previous, emitter) {
-          app.models.topic.move({
-            topicID: topic.id,
-            topicUrl: topic.url,
-            discussionID: topic.discussionID,
-            discussionUrl: topic.discussionUrl,
-            newDiscussionID: previous.newDiscussionInfo.id,
-            newDiscussionUrl: params.form.destination
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          if ( output.move.success ) {
-
-            if ( params.form.notify ) {
-
-              // notify subscribers (if the author isn't subscribed, they probably don't care)
-
-            }
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
-          } else {
-
-            emitter.emit('ready', {
-              content: {
-                topic: topic,
-                move: output.move
-              },
-              view: 'move',
-              handoff: {
-                controller: '+_layout'
-              }
-            });
-
-          }
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function trash(params, context, emitter) {
-
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.topic);
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicTrash(params.url.topic, params.session, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          topic: output.topicInfo
-        },
-        view: 'trash',
-        handoff: {
-          controller: '+_layout'
-        }
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function trashForm(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicTrash(params.url.topic, params.session, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
-    }
-  }, function (output) {
-    var topic = output.topicInfo;
-
-    if ( output.listen.success ) {
-
-      app.listen({
-        trash: function (emitter) {
-          app.models.topic.move({
-            topicID: topic.id,
-            topicUrl: topic.url,
-            discussionID: topic.discussionID,
-            discussionUrl: topic.discussionUrl,
-            newDiscussionID: 1,
-            newDiscussionUrl: 'Trash'
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          if ( output.trash.success ) {
-
-            if ( params.form.notify ) {
-
-              // notify subscribers (if the author isn't subscribed, they probably don't care)
-
-            }
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
-          } else {
-
-            emitter.emit('ready', {
-              content: {
-                topic: topic,
-                trash: output.trash
-              },
-              view: 'trash',
-              handoff: {
-                controller: '+_layout'
-              }
-            });
-
-          }
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
   });
 
 }

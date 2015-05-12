@@ -213,15 +213,14 @@ function startForm(params, context, emitter) {
                 }, emitter);
               }
             }, function (output) {
-              var saveTopic = output.saveTopic;
 
-              if ( output.listen.success && saveTopic.success ) {
+              if ( output.listen.success && output.saveTopic.success ) {
                 if ( params.form.subscribe ) {
                   app.listen({
                     subscribe: function (emitter) {
                       app.models.topic.subscribe({
                         userID: params.session.userID,
-                        topicID: saveTopic.id,
+                        topicID: output.saveTopic.id,
                         time: time
                       }, emitter);
                     }
@@ -229,7 +228,7 @@ function startForm(params, context, emitter) {
 
                     if ( output.listen.success ) {
                       emitter.emit('ready', {
-                        redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/topic/' + saveTopic.url
+                        redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/topic/' + output.saveTopic.url
                       });
                     } else {
                       emitter.emit('error', output.listen);
@@ -238,7 +237,7 @@ function startForm(params, context, emitter) {
                   });
                 } else {
                   emitter.emit('ready', {
-                    redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/topic/' + saveTopic.url
+                    redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/topic/' + output.saveTopic.url
                   });
                 }
               } else {
@@ -248,7 +247,7 @@ function startForm(params, context, emitter) {
                 } else {
                   emitter.emit('ready', {
                     content: {
-                      topic: saveTopic,
+                      topic: output.saveTopic,
                       discussionInfo: discussionInfo,
                       breadcrumbs: app.models.topic.breadcrumbs(discussionInfo.discussionTitle, discussionInfo.discussionUrl)
                     },
@@ -400,15 +399,14 @@ function replyForm(params, context, emitter) {
                 }, emitter);
               }
             }, function (output) {
-              var reply = output.reply,
-                  page = Math.ceil( ( topicInfo.replies + 2 ) / 25 ),
+              var page = Math.ceil( ( topicInfo.replies + 2 ) / 25 ),
                   pageParameter = page !== 1 ? '/page/' + page : '',
-                  replyUrl = app.config.main.baseUrl + '/topic/' + topicInfo.url + pageParameter + '/#' + reply.id,
+                  replyUrl = app.config.main.baseUrl + '/topic/' + topicInfo.url + pageParameter + '/#' + output.reply.id,
                   forwardToUrl = draft ? app.config.main.baseUrl + '/drafts' : replyUrl;
 
               if ( output.listen.success ) {
 
-                if ( reply.success ) {
+                if ( output.reply.success ) {
                   if ( params.form.subscribe ) {
                     app.listen({
                       subscribe: function (emitter) {
@@ -423,7 +421,7 @@ function replyForm(params, context, emitter) {
                       if ( output.listen.success ) {
 
                         emitter.emit('ready', {
-                          content: reply,
+                          content: output.reply,
                           redirect: forwardToUrl
                         });
 
@@ -436,7 +434,7 @@ function replyForm(params, context, emitter) {
                     });
                   } else {
                     emitter.emit('ready', {
-                      content: reply,
+                      content: output.reply,
                       redirect: forwardToUrl
                     });
                   }
@@ -453,7 +451,7 @@ function replyForm(params, context, emitter) {
                 } else {
                   emitter.emit('ready', {
                     content: {
-                      reply: reply,
+                      reply: output.reply,
                       topicInfo: topicInfo,
                       breadcrumbs: app.models.topic.breadcrumbs(topicInfo.discussionTitle, topicInfo.discussionUrl)
                     },
