@@ -3,63 +3,15 @@
 'use strict';
 
 module.exports = {
-  exists: exists,
   hasParticipant: hasParticipant,
   info: info,
   insert: insert,
-  posts: posts,
-  lock: lock,
-  unlock: unlock,
-  move: move,
+  messages: messages,
   reply: reply,
-  subscriptionExists: subscriptionExists,
   subscribersToNotify: subscribersToNotify,
-  subscriptionNotificationSentUpdate: subscriptionNotificationSentUpdate,
-  subscribe: subscribe,
-  unsubscribe: unsubscribe,
-  viewTimeUpdate: viewTimeUpdate,
-  breadcrumbs: breadcrumbs,
-  metaData: metaData
+  notificationSentUpdate: notificationSentUpdate,
+  viewTimeUpdate: viewTimeUpdate
 };
-
-
-
-function exists(topic, emitter) {
-  app.listen({
-    exists: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'select id from topics where url = $1;',
-            [ topic ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                if ( result.rows.length ) {
-                  emitter.emit('ready', true);
-                } else {
-                  emitter.emit('ready', false);
-                }
-              }
-            }
-          );
-        }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.exists);
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-}
 
 
 
@@ -102,10 +54,10 @@ function hasParticipant(args, emitter) {
 
 
 
-function info(conversation, emitter) {
+function info(conversationID, emitter) {
   // See if this conversation info is already cached
   var cacheKey = 'models-conversation-info',
-      scope = conversation,
+      scope = conversationID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -120,8 +72,8 @@ function info(conversation, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select c."id", c."titleMarkdown", c."titleHtml", c."url", c."sortDate", c."replies", c."views", c."draft", m."userID" as "authorID", m."dateCreated" from "conversations" c join "messages" m on c."firstMessageID" where c."url" = $1;',
-              [ conversation ],
+              'select c."id", c."subjectMarkdown", c."subjectHtml", c."url", c."sortDate", c."replies", c."views", c."draft", m."userID" as "authorID", m."dateCreated" from "conversations" c join "messages" m on c."firstMessageID" where c."id" = $1;',
+              [ conversationID ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -155,10 +107,10 @@ function info(conversation, emitter) {
 
 
 function insert(args, emitter) {
-  var title = args.titleMarkdown.trim() || '',
-      content = args.markdown.trim() || '';
+  var subject = args.subjectMarkdown.trim() || '',
+      message = args.markdown.trim() || '';
 
-  if ( !title.length || !content.length ) {
+  if ( !subject.length || !message.length ) {
     emitter.emit('ready', {
       success: false,
       reason: 'requiredFieldsEmpty',
@@ -171,27 +123,7 @@ function insert(args, emitter) {
         emitter.emit('error', err);
       } else {
         app.listen('waterfall', {
-          urlExists: function (emitter) {
-
-            client.query(
-              'select id from topics where url = $1;',
-              [ args.url ],
-              function (err, result) {
-                if ( err ) {
-                  done();
-                  emitter.emit('error', err);
-                } else {
-                  if ( result.rows.length ) {
-                    emitter.emit('ready', true);
-                  } else {
-                    emitter.emit('ready', false);
-                  }
-                }
-              }
-            );
-
-          },
-          begin: function (previous, emitter) {
+          begin: function (emitter) {
 
             client.query('begin', function (err) {
               if ( err ) {
@@ -203,35 +135,12 @@ function insert(args, emitter) {
             });
 
           },
-          insertTopic: function (previous, emitter) {
-            var url = previous.urlExists ? args.url + '-' + Date.now() : args.url;
+          insertConversation: function (previous, emitter) {
 
             client.query(
-              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "views", "draft", "lockedByID" ) ' +
-              'values ( $1, 0, 0, $2, $3, $4, $5, 0, 0, $6, 0 ) returning id;',
-              [ args.discussionID, args.titleMarkdown, args.titleHtml, url, args.time, args.draft ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    id: result.rows[0].id,
-                    url: url
-                  });
-                }
-              }
-            );
-
-          },
-          insertPost: function (previous, emitter) {
-
-            client.query(
-              'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified" ) ' +
-              'values ( $1, $2, $3, $4, $5, $6, $7, $8 ) returning id;',
-              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft, args.userID, args.time ],
+              'insert into conversations ( "firstMessageID", "lastMessageID", "subjectMarkdown", "subjectHtml", "sortDate", "replies", "draft" ) ' +
+              'values ( 0, 0, $1, $2, $3, 0, $4 ) returning id;',
+              [ args.subjectMarkdown, args.subjectHtml, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -247,11 +156,32 @@ function insert(args, emitter) {
             );
 
           },
-          updateTopic: function (previous, emitter) {
+          insertMessage: function (previous, emitter) {
 
             client.query(
-              'update topics set "firstPostID" = $1, "lastPostID" = $1 where id = $2;',
-              [ previous.insertPost.id, previous.insertTopic.id ],
+              'insert into messages ( "conversationID", "userID", "html", "markdown", "dateCreated", "draft" ) ' +
+              'values ( $1, $2, $3, $4, $5, $6 ) returning id;',
+              [ previous.insertConversation.id, args.userID, args.html, args.markdown, args.time, args.draft ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    id: result.rows[0].id
+                  });
+                }
+              }
+            );
+
+          },
+          updateConversation: function (previous, emitter) {
+
+            client.query(
+              'update conversations set "firstMessageID" = $1, "lastMessageID" = $1 where id = $2;',
+              [ previous.insertMessage.id, previous.insertConversation.id ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -265,11 +195,11 @@ function insert(args, emitter) {
             );
 
           },
-          updateDiscussionStats: function (previous, emitter) {
+          insertParticipantAuthor: function (previous, emitter) {
 
             client.query(
-              'update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = $1 and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = $1 and t.draft = false ) where "id" = $1;',
-              [ args.discussionID ],
+              'insert into "conversationParticipants" ( "userID", "conversationID", "lastViewed", "notificationSent" ) values ( $1, $2, $3, $3 ) returning id;',
+              [ args.userID, previous.insertConversation.id, args.time ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -277,9 +207,25 @@ function insert(args, emitter) {
                   });
                   emitter.emit('error', err);
                 } else {
-                  emitter.emit('ready', {
-                    affectedRows: result.rowCount
+                  emitter.emit('ready');
+                }
+              }
+            );
+
+          },
+          insertParticipantRecipient: function (previous, emitter) {
+
+            client.query(
+              'insert into "conversationParticipants" ( "userID", "conversationID", "lastViewed", "notificationSent" ) values ( $1, $2, $3, $3 ) returning id;',
+              [ args.recipientID, previous.insertConversation.id, args.time ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
                   });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready');
                 }
               }
             );
@@ -319,15 +265,8 @@ function insert(args, emitter) {
 
             emitter.emit('ready', {
               success: true,
-              id: output.insertTopic.id,
-              url: output.insertTopic.url
+              id: output.insertConversation.id
             });
-
-            if ( !args.draft ) {
-              // Clear the cache for this discussion
-              app.cache.clear({ scope: args.discussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
-            }
 
           } else {
 
@@ -344,7 +283,7 @@ function insert(args, emitter) {
 
 
 
-function posts(args, emitter) {
+function messages(args, emitter) {
   // See if this topic subset is already cached
   var topic = args.topic,
       start = args.start || 0,
@@ -420,189 +359,10 @@ function posts(args, emitter) {
 
 
 
-function lock(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'update "topics" set "lockedByID" = $1, "lockReason" = $2 where "id" = $3',
-        [ args.lockedByID, args.lockReason, args.topicID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            // Clear the cache for this topic
-            app.cache.clear({ scope: args.topicUrl });
-
-            emitter.emit('ready', {
-              success: true,
-              affectedRows: result.rows
-            });
-          }
-        }
-      );
-    }
-  });
-}
-
-
-
-function unlock(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'update "topics" set "lockedByID" = 0, "lockReason" = null where "id" = $1',
-        [ args.topicID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            // Clear the cache for this topic
-            app.cache.clear({ scope: args.topicUrl });
-
-            emitter.emit('ready', {
-              success: true,
-              affectedRows: result.rows
-            });
-          }
-        }
-      );
-    }
-  });
-}
-
-
-
-function move(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          app.listen('waterfall', {
-            begin: function (emitter) {
-
-              client.query('begin', function (err) {
-                if ( err ) {
-                  done();
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready');
-                }
-              });
-
-            },
-            moveTopic: function (previous, emitter) {
-
-              client.query(
-                'update "topics" set "discussionID" = ( select "id" from "discussions" where "url" = $1 ) where "id" = $2;',
-                [ args.newDiscussionUrl, args.topicID ],
-                function (err, result) {
-                  done();
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      success: true,
-                      affectedRows: result.rows
-                    });
-                  }
-                }
-              );
-
-            },
-            updateOldDiscussionStats: function (previous, emitter) {
-
-              client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
-                [ args.discussionID ],
-                function (err, result) {
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      affectedRows: result.rowCount
-                    });
-                  }
-                }
-              );
-
-            },
-            updateNewDiscussionStats: function (previous, emitter) {
-
-              client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
-                [ args.newDiscussionID ],
-                function (err, result) {
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      affectedRows: result.rowCount
-                    });
-                  }
-                }
-              );
-
-            },
-            commit: function (previous, emitter) {
-
-              client.query('commit', function () {
-                done();
-                emitter.emit('ready');
-              });
-
-            }
-          }, function (output) {
-
-            if ( output.listen.success ) {
-
-              // Clear the cache for this topic
-              app.cache.clear({ scope: args.topicUrl });
-              app.cache.clear({ scope: args.discussionUrl });
-              app.cache.clear({ scope: args.newDiscussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
-
-              emitter.emit('ready', {
-                success: true
-              });
-
-            } else {
-
-              emitter.emit('error', output.listen);
-
-            }
-
-          });
-        }
-      });
-    }
-  });
-}
-
-
-
 function reply(args, emitter) {
-  var content = args.markdown.trim() || '';
+  var message = args.markdown.trim() || '';
 
-  if ( !content.length ) {
+  if ( !message.length ) {
     emitter.emit('ready', {
       success: false,
       reason: 'requiredFieldsEmpty',
@@ -743,64 +503,6 @@ function reply(args, emitter) {
 
 
 
-function subscriptionExists(args, emitter) {
-  app.listen({
-    subscriptionExists: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          if ( args.topicID ) {
-            client.query(
-              'select "id" from subscriptions where "userID" = $1 and "topicID" = $2;',
-              [ args.userID, args.topicID ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  if ( result.rows.length ) {
-                    emitter.emit('ready', true);
-                  } else {
-                    emitter.emit('ready', false);
-                  }
-                }
-              }
-            );
-          } else if ( args.topic ) {
-            client.query(
-              'select "id" from subscriptions where "userID" = $1 and "topicID" = ( select "id" from topics where url = $2 );',
-              [ args.userID, args.topic ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  if ( result.rows.length ) {
-                    emitter.emit('ready', true);
-                  } else {
-                    emitter.emit('ready', false);
-                  }
-                }
-              }
-            );
-          }
-        }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.subscriptionExists);
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-}
-
-
-
 function subscribersToNotify(args, emitter) {
   app.listen({
     subscribersToNotify: function (emitter) {
@@ -836,120 +538,27 @@ function subscribersToNotify(args, emitter) {
 
 
 
-function subscriptionNotificationSentUpdate(args, emitter) {
-  app.listen({
-    subscriptionNotificationSentUpdate: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'update "subscriptions" set "notificationSent" = $1 where "topicID" = $2;',
-            [ args.time, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready', result.affectedRows);
-              }
-            }
-          );
-        }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success && emitter ) {
-      emitter.emit('ready', {
-        success: true
-      });
-    } else if ( emitter ) {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-}
-
-
-
-function subscribe(args, emitter) {
-  app.listen({
-    subscriptionExists: function (emitter) {
-      app.models.topic.subscriptionExists(args, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      if ( !output.subscriptionExists ) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+function notificationSentUpdate(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'update "conversationParticipants" set "notificationSent" = $1 where "userID" = $2 and "conversationID" = $3;',
+        [ args.time, args.userID, args.conversationID ],
+        function (err, result) {
+          done();
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            client.query(
-              'insert into subscriptions ( "userID", "topicID", "notificationSent" ) values ( $1, $2, $3 ) returning id;',
-              [ args.userID, args.topicID, args.time ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    success: true,
-                    id: result.rows[0].id
-                  });
-                }
-              }
-            );
+            emitter.emit('ready', result.affectedRows);
           }
-        });
-      } else {
-        emitter.emit('ready', {
-          success: true
-        });
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-}
-
-
-function unsubscribe(args, emitter) {
-  app.listen({
-    subscriptionDelete: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'delete from subscriptions where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready');
-              }
-            }
-          );
         }
-      });
+      );
     }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', {
-        success: true
-      });
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
   });
 }
+
 
 
 function viewTimeUpdate(args, emitter) {
@@ -960,8 +569,8 @@ function viewTimeUpdate(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'update "topicViews" set time = $3 where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID, args.time ],
+            'update "conversationParticipants" set lastViewed = $3 where "userID" = $1 and "conversationID" = $2;',
+            [ args.userID, args.conversationID, args.time ],
             function (err, result) {
               if ( err ) {
                 done();
@@ -1001,31 +610,4 @@ function viewTimeUpdate(args, emitter) {
     }
 
   });
-}
-
-
-function breadcrumbs(discussionTitle, discussionUrlTitle) {
-  return {
-    a: {
-      name: 'Forum Home',
-      url: app.config.main.basePath
-    },
-    b: {
-      name: 'Discussion Categories',
-      url: app.config.main.basePath + 'discussions'
-    },
-    c: {
-      name: discussionTitle,
-      url: app.config.main.basePath + 'discussion/' + discussionUrlTitle
-    }
-  };
-}
-
-
-function metaData() {
-  return {
-    title: 'Discussion View',
-    description: 'This is the discussion view template.',
-    keywords: 'discussion, view'
-  };
 }

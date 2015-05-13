@@ -152,7 +152,8 @@ function startForm(params, context, emitter) {
         }, emitter);
       }
     }, function (output) {
-      var subjectMarkdown = new Remarkable(),
+      var recipient = output.recipient,
+          subjectMarkdown = new Remarkable(),
           messageMarkdown = new Remarkable({
             breaks: true,
             linkify: true
@@ -195,7 +196,7 @@ function startForm(params, context, emitter) {
               saveConversation: function (emitter) {
                 app.models.conversation.insert({
                   userID: params.session.userID,
-                  recipientID: output.recipient.id,
+                  recipientID: recipient.id,
                   subjectMarkdown: params.form.subject,
                   subjectHtml: parsedSubject,
                   markdown: params.form.message,
@@ -208,6 +209,15 @@ function startForm(params, context, emitter) {
               var saveConversation = output.saveConversation;
 
               if ( output.listen.success && saveConversation.success ) {
+
+                if ( recipient.pmEmailNotification && !draft ) {
+                  app.mail.sendMail({
+                    from: app.config.main.email,
+                    to: recipient.email,
+                    subject: 'New private conversation with ' + params.session.username,
+                    text: app.config.main.baseUrl + '/conversation/' + saveConversation.id
+                  });
+                }
                 emitter.emit('ready', {
                   redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/conversation/' + saveConversation.id
                 });
@@ -467,7 +477,6 @@ function notifyParticipants(args, emitter) {
       }, emitter);
     }
   }, function (output) {
-    console.log(output.subscribersToNotify);
     if ( output.listen.success && output.subscribersToNotify.length ) {
       for ( var i = 0; i < output.subscribersToNotify.length; i++ ) {
         app.mail.sendMail({
