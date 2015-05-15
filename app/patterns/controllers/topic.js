@@ -77,7 +77,7 @@ function handler(params, context, emitter) {
               topicInfo: output.topicInfo,
               posts: output.posts,
               userIsSubscribed: output.subscriptionExists,
-              pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'topic/' + output.topicInfo.url, params.url.page, output.topicInfo.replies + 1),
+              pagination: app.toolbox.helpers.paginate('topic/' + output.topicInfo.url, params.url.page, output.topicInfo.replies + 1),
               breadcrumbs: app.models.topic.breadcrumbs(output.topicInfo.discussionTitle, output.topicInfo.discussionUrl)
             },
             handoff: {
@@ -306,7 +306,7 @@ function reply(params, context, emitter) {
       // If the quoted post exists and its topic ID matches this topic ID, add the
       // quote to the post content (this is a security measure, don't remove it).
       if ( output.quote && output.quote.topicID === output.topicInfo.id && output.quote.markdown ) {
-        params.form.content = '[' + output.quote.author + ' said](' + app.config.main.basePath + 'post/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
+        params.form.content = '[' + output.quote.author + ' said](post/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
       } else if ( params.url.quote && !output.quote ) {
         message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.';
       }

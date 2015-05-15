@@ -16,39 +16,27 @@ module.exports = {
 
 
 function hasParticipant(args, emitter) {
-  app.listen({
-    hasParticipant: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'select "id" from "conversationParticipants" where "conversationID" = $1 and "userID" = $2;',
-            [ args.conversationID, args.userID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                if ( result.rows.length ) {
-                  emitter.emit('ready', true);
-                } else {
-                  emitter.emit('ready', false);
-                }
-              }
-            }
-          );
-        }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.hasParticipant);
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
     } else {
-      emitter.emit('error', output.listen);
+      client.query(
+        'select "id" from "conversationParticipants" where "conversationID" = $1 and "userID" = $2;',
+        [ args.conversationID, args.userID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', true);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+        }
+      );
     }
-
   });
 }
 
@@ -72,7 +60,7 @@ function info(conversationID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select c."id", c."subjectMarkdown", c."subjectHtml", c."url", c."sortDate", c."replies", c."views", c."draft", m."userID" as "authorID", m."dateCreated" from "conversations" c join "messages" m on c."firstMessageID" where c."id" = $1;',
+              'select c."id", c."subjectMarkdown", c."subjectHtml", c."sortDate", c."replies", c."draft", m."userID" as "authorID", m."dateCreated" from "conversations" c join "messages" m on c."firstMessageID" = m."id" where c."id" = $1;',
               [ conversationID ],
               function (err, result) {
                 done();
@@ -138,8 +126,8 @@ function insert(args, emitter) {
           insertConversation: function (previous, emitter) {
 
             client.query(
-              'insert into conversations ( "firstMessageID", "lastMessageID", "subjectMarkdown", "subjectHtml", "sortDate", "replies", "draft" ) ' +
-              'values ( 0, 0, $1, $2, $3, 0, $4 ) returning id;',
+              'insert into conversations ( "firstMessageID", "lastMessageID", "subjectMarkdown", "subjectHtml", "sortDate", "replies", "views", "draft" ) ' +
+              'values ( 0, 0, $1, $2, $3, 0, 0, $4 ) returning id;',
               [ args.subjectMarkdown, args.subjectHtml, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
@@ -284,12 +272,12 @@ function insert(args, emitter) {
 
 
 function messages(args, emitter) {
-  // See if this topic subset is already cached
-  var topic = args.topic,
+  // See if this conversation subset is already cached
+  var conversation = args.conversationID,
       start = args.start || 0,
       end = args.end || 25,
-      cacheKey = 'models-topic-posts-subset-' + start + '-' + end,
-      scope = topic,
+      cacheKey = 'models-conversation-messages-subset-' + start + '-' + end,
+      scope = conversation,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -298,19 +286,19 @@ function messages(args, emitter) {
   // If it's not cached, retrieve the subset and cache it
   } else {
     app.listen({
-      posts: function (emitter) {
+      messages: function (emitter) {
         app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."username" as "author", u."url" as "authorUrl" ' +
-              'from posts p ' +
-              'inner join users u on p."userID" = u.id ' +
-              'where p."topicID" = ( select id from topics where url = $1 ) and p.draft = false ' +
-              'order by p."dateCreated" asc ' +
+              'select m."id", m."html", m."dateCreated", u."username" as "author", u."url" as "authorUrl" ' +
+              'from messages m ' +
+              'inner join users u on m."userID" = u."id" ' +
+              'where m."conversationID" = $1 and m."draft" = false ' +
+              'order by m."dateCreated" asc ' +
               'limit $2 offset $3;',
-              [ topic, end - start, start ],
+              [ conversation, end - start, start ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -327,13 +315,13 @@ function messages(args, emitter) {
       var subset = {};
 
       if ( output.listen.success ) {
-        // Build a view-ready object containing only the posts in the requested subset
+        // Build a view-ready object containing only the messages in the requested subset
         for ( var i = 0; i < end - start; i += 1 ) {
-          if ( output.posts[i] ) {
+          if ( output.messages[i] ) {
             subset[i] = {};
-            for ( var property in output.posts[i] ) {
-              if ( output.posts[i].hasOwnProperty(property) ) {
-                subset[i][property] = output.posts[i][property];
+            for ( var property in output.messages[i] ) {
+              if ( output.messages[i].hasOwnProperty(property) ) {
+                subset[i][property] = output.messages[i][property];
               }
             }
           } else {
@@ -569,7 +557,7 @@ function viewTimeUpdate(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'update "conversationParticipants" set lastViewed = $3 where "userID" = $1 and "conversationID" = $2;',
+            'update "conversationParticipants" set "lastViewed" = $3 where "userID" = $1 and "conversationID" = $2;',
             [ args.userID, args.conversationID, args.time ],
             function (err, result) {
               if ( err ) {

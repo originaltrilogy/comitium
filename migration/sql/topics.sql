@@ -20,7 +20,7 @@ create table "topics" (
   -- "url" text unique not null,
   "sortDate" timestamp not null,
   "replies" integer not null,
-  "views" integer not null,
+  -- "views" integer not null,
   "draft" boolean not null,
   "lockedByID" integer default 0,
   "lockReason" text,
@@ -37,7 +37,7 @@ insert into "topics" (
   "url",
   "sortDate",
   "replies",
-  "views",
+  -- "views",
   "draft"
 )
 select
@@ -54,7 +54,7 @@ select
   ' ',
   "dteStickyDate",
   "intTopicReplyCount",
-  "intTopicViewCount",
+  -- "intTopicViewCount",
   "bitDraft"
 from "tblForumTopics" t where "intFirstTopicPostID" is not null;
 

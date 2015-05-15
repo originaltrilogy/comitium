@@ -1,11 +1,29 @@
 h1 Discussion Categories
+
+if session.talkPrivately
+  article(class="conversations")
+    h3
+      a(href="conversations") Private Conversations
+    p.description These topics are visible only to you and the other participants.
+    //- p.stats
+    //-   span.topics #{discussion.topics} 
+    //-   | topics with 
+    //-   span.posts #{discussion.posts} 
+    //-   | posts
+    //-   if discussion.lastPostID !== 0
+    //-     dt.last-post Last Post
+    //-     dd.last-post
+    //-       time #{discussion.lastPostDate}
+    //-       |  by 
+    //-       a(href="#{config.main.basePath}user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+
 each category in categories
   section(class="category" data-category-id="#{category.categoryID}")
     h2 #{category.categoryTitle}
     each discussion in category.discussions
       article(class="discussion" data-discussion-id="#{discussion.discussionID}")
         h3
-          a(href="#{config.main.basePath}discussion/#{discussion.discussionUrl}") #{discussion.discussionTitle}
+          a(href="discussion/#{discussion.discussionUrl}") #{discussion.discussionTitle}
         p.description !{discussion.discussionDescription}
         p.stats
           span.topics #{discussion.topics} 

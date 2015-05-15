@@ -14,10 +14,10 @@ module.exports = {
 
 
 function handler(params, context, emitter) {
-  // Verify the user's group has read access to the topic's parent discussion
+  // Verify the user has access to this conversation
   app.listen({
     access: function (emitter) {
-      app.toolbox.access.conversationView(params.url.conversation, params.session.userID, emitter);
+      app.toolbox.access.conversationView(params.url.conversation, params.session, emitter);
     }
   }, function (output) {
 
@@ -25,49 +25,35 @@ function handler(params, context, emitter) {
 
       params.url.page = params.url.page || 1;
 
-      // If the group has read access, get the posts for the requested page
+      // If the user is a participant, get the messages for the requested page
       app.listen({
-        topicInfo: function (emitter) {
-          app.models.topic.info(params.url.topic, emitter);
+        conversationInfo: function (emitter) {
+          app.models.conversation.info(params.url.conversation, emitter);
         },
-        posts: function (emitter) {
+        messages: function (emitter) {
           var start = ( params.url.page - 1 ) * 25,
               end = start + 25;
-          app.models.topic.posts({
-            topic: params.url.topic,
+          app.models.conversation.messages({
+            conversationID: params.url.conversation,
             start: start,
             end: end
           }, emitter);
-        },
-        subscriptionExists: function (emitter) {
-          if ( params.session.userID ) {
-            app.models.topic.subscriptionExists({
-              userID: params.session.userID,
-              topic: params.url.topic
-            }, emitter);
-          } else {
-            emitter.emit('ready', false);
-          }
         }
       }, function (output) {
 
         if ( output.listen.success ) {
 
-          if ( params.session.username ) {
-            app.models.topic.viewTimeUpdate({
-              userID: params.session.userID,
-              topicID: output.topicInfo.id,
-              time: app.toolbox.helpers.isoDate()
-            });
-          }
+          app.models.conversation.viewTimeUpdate({
+            userID: params.session.userID,
+            conversationID: output.conversationInfo.id,
+            time: app.toolbox.helpers.isoDate()
+          });
 
           emitter.emit('ready', {
             content: {
-              topicInfo: output.topicInfo,
-              posts: output.posts,
-              userIsSubscribed: output.subscriptionExists,
-              pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'topic/' + output.topicInfo.url, params.url.page, output.topicInfo.replies + 1),
-              breadcrumbs: app.models.topic.breadcrumbs(output.topicInfo.discussionTitle, output.topicInfo.discussionUrl)
+              conversation: output.conversationInfo,
+              messages: output.messages,
+              pagination: app.toolbox.helpers.paginate('conversation/id/' + output.conversationInfo.id, params.url.page, output.conversationInfo.replies + 1)
             },
             handoff: {
               controller: '+_layout'
@@ -215,11 +201,11 @@ function startForm(params, context, emitter) {
                     from: app.config.main.email,
                     to: recipient.email,
                     subject: 'New private conversation with ' + params.session.username,
-                    text: app.config.main.baseUrl + '/conversation/' + saveConversation.id
+                    text: app.config.main.baseUrl + '/conversation/id/' + saveConversation.id
                   });
                 }
                 emitter.emit('ready', {
-                  redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/conversation/' + saveConversation.id
+                  redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/conversation/id/' + saveConversation.id
                 });
               } else {
 
@@ -258,17 +244,17 @@ function startForm(params, context, emitter) {
 
 function reply(params, context, emitter) {
 
-  // Verify the user's group has reply access to the topic
+  // Verify the user is a conversation participant
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicReply(params.url.topic, params.session, emitter);
+      app.toolbox.access.conversationReply(params.url.conversation, params.session, emitter);
     },
-    topicInfo: function (previous, emitter) {
-      app.models.topic.info(params.url.topic, emitter);
+    conversationInfo: function (previous, emitter) {
+      app.models.conversation.info(params.url.conversation, emitter);
     },
     quote: function (previous, emitter) {
       if ( params.url.quote && app.isNumeric(params.url.quote) ) {
-        app.models.post.info(params.url.quote, emitter);
+        app.models.message.info(params.url.quote, emitter);
       } else {
         emitter.emit('ready');
       }
@@ -276,18 +262,18 @@ function reply(params, context, emitter) {
   }, function (output) {
     var message = '';
 
-    // If the group has reply access, display the topic reply form
+    // If the user is a participant, render the form
     if ( output.listen.success ) {
 
       params.form.message = '';
       params.form.subscribe = false;
 
-      // If the quoted post exists and its topic ID matches this topic ID, add the
-      // quote to the post content (this is a security measure, don't remove it).
-      if ( output.quote && output.quote.topicID === output.topicInfo.id && output.quote.markdown ) {
-        params.form.message = '[' + output.quote.author + ' said](' + app.config.main.basePath + 'post/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
+      // If the quoted message exists and its conversation ID matches this conversation ID, add the
+      // quote to the message content (this is a security measure, don't remove it).
+      if ( output.quote && output.quote.conversationID === output.conversationInfo.id && output.quote.markdown ) {
+        params.form.message = '[' + output.quote.author + ' said](message/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
       } else if ( params.url.quote && !output.quote ) {
-        message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.';
+        message = 'We couldn\'t find the message you\'d like to quote. It may have been deleted.';
       }
 
       emitter.emit('ready', {

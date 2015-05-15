@@ -22,19 +22,23 @@ function start(params, context, emitter) {
 
   var authenticationRequired = {
         conversation: {
+          handler: true,
           start: true,
           startForm: true,
           reply: true,
           replyForm: true,
           view: true
         },
+        conversations: {
+          handler: true
+        },
         user: {
           ban: true,
           unban: true
         },
         topic: {
-          write: true,
-          writeForm: true,
+          start: true,
+          startForm: true,
           reply: true,
           replyForm: true,
           subscribe: true,
@@ -57,7 +61,7 @@ function start(params, context, emitter) {
       redirect = {};
 
   if ( authenticationRequired[params.route.controller] && authenticationRequired[params.route.controller][params.route.action] && !params.session.username ) {
-    redirect = app.config.main.baseUrl + '/sign-in';
+    redirect = app.config.main.baseUrl + 'sign-in';
   }
 
   emitter.emit('ready', {

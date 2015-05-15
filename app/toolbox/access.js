@@ -5,6 +5,7 @@
 module.exports = {
   challenge: challenge,
   signInRedirect: signInRedirect,
+  conversationsView: conversationsView,
   conversationStart: conversationStart,
   conversationView: conversationView,
   discussionView: discussionView,
@@ -99,22 +100,33 @@ function conversationStart(args, emitter) {
 
 
 
-function conversationView(conversation, session, emitter) {
+function conversationsView(session, emitter) {
 
-  app.listen('waterfall', {
-    conversationInfo: function (emitter) {
-      app.models.conversation.info(conversation, emitter);
-    },
-    userIsParticipant: function (previous, emitter) {
+  if ( session.talkPrivately ) {
+    emitter.emit('ready', true);
+  } else {
+    emitter.emit('error', {
+      statusCode: 403
+    });
+  }
+
+}
+
+
+
+function conversationView(conversationID, session, emitter) {
+
+  app.listen({
+    userIsParticipant: function (emitter) {
       app.models.conversation.hasParticipant({
-        conversationID: previous.conversationInfo.id,
+        conversationID: conversationID,
         userID: session.userID
       }, emitter);
     }
   }, function (output) {
     if ( output.listen.success ) {
       if ( session.talkPrivately && output.userIsParticipant ) {
-        emitter.emit('ready', output.listen);
+        emitter.emit('ready', true);
       } else {
         emitter.emit('error', {
           statusCode: 403

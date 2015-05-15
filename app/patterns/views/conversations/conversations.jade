@@ -1,0 +1,32 @@
+h1 Private Conversations
+
+if url.page === 1
+  p These topics are visible only to you and the other participants.
+  
+include ../partials/pagination
+          
+section.topics
+  h2 Conversations
+  nav.discussion
+    ul
+      li.new-conversation
+        a(href="conversation/action/start") Start a private conversation
+  if conversations
+    each conversation in conversations
+      article.topic(data-conversation-id="#{conversation.id}")
+        h3
+          a(href="conversation/#{conversation.id}")
+            != conversation.subjectHtml
+        p.details
+          | Posted by 
+          a(href="user/#{conversation.conversationStarterUrl}" rel="author" title="View #{conversation.conversationStarter}'s profile.") #{conversation.conversationStarter}
+          |  on 
+          time #{conversation.messageDate}
+        p.stats
+          span.replies #{conversation.replies} replies
+          //- span.views #{conversation.views} 
+          //- | views
+  else
+    p You're not participating in any private conversations. <a href="conversation/action/start">Why not start one?</a>
+
+include ../partials/pagination
