@@ -5,7 +5,7 @@ if session.moderateUsers
     ul
       if talkPrivately
         li.private-topic
-          a(href="#{config.main.baseUrl}/conversation/action/start/recipient/#{url.user}") Start a private conversation
+          a(href="private-topic/action/start/recipient/#{url.user}") Start a private topic
       if user.group !== "Banned Users"
         li.ban
           a(href="#{route.pathname}/action/ban") Ban this user

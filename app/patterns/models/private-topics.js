@@ -1,20 +1,19 @@
-// discussion model
+// private topics model
 
 'use strict';
 
 module.exports = {
-  info: info,
-  announcements: announcements,
+  stats: stats,
   topics: topics,
   breadcrumbs: breadcrumbs,
   metaData: metaData
 };
 
 
-function info(discussion, emitter) {
-  // See if this discussion info is already cached
-  var cacheKey = 'models-discussion-info',
-      scope = discussion,
+function stats(userID, emitter) {
+  // See if this user's private topic stats are already cached
+  var cacheKey = 'models-private-topics-stats',
+      scope = 'user-' + userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -23,14 +22,14 @@ function info(discussion, emitter) {
     // If it's not cached, retrieve it from the database and cache it
   } else {
     app.listen({
-      discussionInfo: function (emitter) {
+      stats: function (emitter) {
         app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
             client.query(
-              eval(app.db.sql.discussionInfo),
-              [ discussion ],
+              'select count("topicID") as "privateTopicCount" from "topicInvitations" where "userID" = $1;',
+              [ userID ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -50,79 +49,10 @@ function info(discussion, emitter) {
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: output.discussionInfo[0]
+          value: output.stats[0]
         });
 
-        emitter.emit('ready', output.discussionInfo[0]);
-      } else {
-        emitter.emit('error', output.listen);
-      }
-
-    });
-  }
-}
-
-
-function announcements(discussion, emitter) {
-  // See if this discussion page is already cached
-  var cacheKey = 'models-discussion-announcements',
-      scope = discussion,
-      cached = app.cache.get({ scope: scope, key: cacheKey });
-
-  // If it's cached, return the cache object
-  if ( cached ) {
-    emitter.emit('ready', cached);
-  // If it's not cached, retrieve it from the database and cache it
-  } else {
-    app.listen({
-      announcements: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              eval(app.db.sql.announcementsByDiscussion),
-              [ discussion ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
-          }
-        });
-      }
-    }, function (output) {
-      var announcements = {};
-
-      if ( output.listen.success ) {
-        // Transform the data array into an object usable by the view
-        output.announcements.forEach( function (announcement, index, array) {
-          announcements[announcement.titleHtml] = {};
-          for ( var property in announcement ) {
-            if ( announcement.hasOwnProperty(property) ) {
-              if ( property === 'replies' || property === 'views' ) {
-                announcements[announcement.titleHtml][property] = app.toolbox.numeral(announcement[property]).format('0,0');
-              } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                announcements[announcement.titleHtml][property] = app.toolbox.moment(announcement[property]).format('MMMM Do YYYY');
-              } else {
-                announcements[announcement.titleHtml][property] = announcement[property];
-              }
-            }
-          }
-        });
-
-        // Cache the topics object for future requests
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: announcements
-        });
-
-        emitter.emit('ready', announcements);
+        emitter.emit('ready', output.stats[0]);
       } else {
         emitter.emit('error', output.listen);
       }
@@ -134,12 +64,11 @@ function announcements(discussion, emitter) {
 
 
 function topics(args, emitter) {
-  // See if this discussion subset is already cached
-  var discussion = args.discussion,
-      start = args.start || 0,
+  // See if this topic subset is already cached
+  var start = args.start || 0,
       end = args.end || 25,
-      cacheKey = 'models-discussion-topics-subset-' + start + '-' + end,
-      scope = discussion,
+      cacheKey = 'models-private-topics-subset-' + start + '-' + end,
+      scope = 'private-topics',
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -156,17 +85,17 @@ function topics(args, emitter) {
             client.query(
               'select t.id, t."sortDate", t."replies", t."titleHtml", t."url", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
+              'join "topicInvitations" ti on ti."userID" = $1 ' +
               'join posts p on p."topicID" = t.id ' +
               'and p."id" = t."firstPostID" ' +
               'join users u on u.id = p."userID" ' +
               'join posts p2 on p2."topicID" = t.id ' +
               'and p2."id" = t."lastPostID" ' +
               'join users u2 on u2.id = p2."userID" ' +
-              'where t."discussionID" = ( select id from discussions where url = $1 ) ' +
-              'and t.draft = false and t.private = false ' +
+              'and t.draft = false and t.private = true ' +
               'order by t."sortDate" desc ' +
               'limit $2 offset $3;',
-              [ discussion, end - start, start ],
+              [ args.userID, end - start, start ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -189,7 +118,7 @@ function topics(args, emitter) {
             subset[i] = {};
             for ( var property in output.topics[i] ) {
               if ( output.topics[i].hasOwnProperty(property) ) {
-                if ( property === 'replies' || property === 'views' ) {
+                if ( property === 'replies' ) {
                   subset[i][property] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
                 } else if ( property === 'postDate' || property === 'lastPostDate' ) {
                   subset[i][property] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');

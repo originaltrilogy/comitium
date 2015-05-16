@@ -22,9 +22,15 @@ create table "topics" (
   "replies" integer not null,
   -- "views" integer not null,
   "draft" boolean not null,
+  "private" boolean not null,
   "lockedByID" integer default 0,
   "lockReason" text,
   primary key (id)
+);
+
+create table "topicInvitations" (
+  "userID" integer not null,
+  "topicID" integer not null
 );
 
 insert into "topics" (
@@ -38,7 +44,8 @@ insert into "topics" (
   "sortDate",
   "replies",
   -- "views",
-  "draft"
+  "draft",
+  "private"
 )
 select
   "intTopicID",
@@ -55,7 +62,8 @@ select
   "dteStickyDate",
   "intTopicReplyCount",
   -- "intTopicViewCount",
-  "bitDraft"
+  "bitDraft",
+  false
 from "tblForumTopics" t where "intFirstTopicPostID" is not null;
 
 

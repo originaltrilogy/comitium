@@ -1,0 +1,35 @@
+h1 Private Topics
+
+if url.page === 1
+  p These topics are visible only to you and the other topic participants.
+  
+include ../partials/pagination
+          
+section.topics
+  h2 Topics
+  nav.discussion
+    ul
+      li.new-topic
+        a(href="private-topic/action/start") Start a new private topic
+      li.subscribe
+        a(href="private-topics/action/subscribe" title="Receive an e-mail notification when you're invited to a new private topic.") Notify me
+  if topics
+    each topic in topics
+      article.topic(data-topic-id="#{topic.id}")
+        h3
+          a(href="topic/#{topic.url}")
+            != topic.titleHtml
+        p.details
+          | Posted by 
+          a(href="user/#{topic.topicStarterUrl}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+          |  on 
+          time #{topic.postDate}
+        p.stats
+          span.replies #{topic.replies} 
+          | replies with 
+          span.views #{topic.views} 
+          | views
+  else
+    p You're not participating in any private topics. <a href="private-topic/action/start">Why not start one?</a>
+
+include ../partials/pagination

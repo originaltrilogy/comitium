@@ -5,9 +5,9 @@
 module.exports = {
   challenge: challenge,
   signInRedirect: signInRedirect,
-  conversationsView: conversationsView,
-  conversationStart: conversationStart,
-  conversationView: conversationView,
+  privateTopicsView: privateTopicsView,
+  privateTopicStart: privateTopicStart,
+  privateTopicView: privateTopicView,
   discussionView: discussionView,
   discussionPost: discussionPost,
   discussionReply: discussionReply,
@@ -52,7 +52,7 @@ function signInRedirect(params, url) {
 
 
 
-function conversationStart(args, emitter) {
+function privateTopicStart(args, emitter) {
 
   app.listen({
     userInfo: function (emitter) {
@@ -79,9 +79,9 @@ function conversationStart(args, emitter) {
       } else {
         if ( !output.userInfo.talkPrivately ) {
           if ( output.userInfo.group === 'New Members' ) {
-            message = 'New members require a minimum of 5 posts before they can send private messages.';
+            message = 'New members require a minimum of 5 posts before they can start private topics.';
           } else {
-            message = 'Your private conversation privileges have been revoked. Please contact an administrator for details';
+            message = 'Your private topic privileges have been revoked. Please contact an administrator for details.';
           }
         } else if ( output.userIsIgnored ) {
           message = 'This user has you on their ignore list, so you can\'t send them private messages.';
@@ -100,7 +100,7 @@ function conversationStart(args, emitter) {
 
 
 
-function conversationsView(session, emitter) {
+function privateTopicsView(session, emitter) {
 
   if ( session.talkPrivately ) {
     emitter.emit('ready', true);
@@ -114,12 +114,12 @@ function conversationsView(session, emitter) {
 
 
 
-function conversationView(conversationID, session, emitter) {
+function privateTopicView(topicID, session, emitter) {
 
   app.listen({
     userIsParticipant: function (emitter) {
-      app.models.conversation.hasParticipant({
-        conversationID: conversationID,
+      app.models.privateTopic.hasParticipant({
+        topicID: topicID,
         userID: session.userID
       }, emitter);
     }
