@@ -631,8 +631,8 @@ function isIgnored(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "id" from "ignoredUsers" where "userID" = ( select "id" from "users" where "url" = $1 ) and "ignoredUserID" = ( select "id" from "users" where "url" = $2 )',
-        [ args.ignoredBy, args.user ],
+        'select "id" from "ignoredUsers" where "userID" = ( select "id" from "users" where "username" = $1 ) and "ignoredUserID" = ( select "id" from "users" where "username" = $2 )',
+        [ args.ignoredBy, args.username ],
         function (err, result) {
           done();
           if ( err ) {

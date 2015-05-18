@@ -1,4 +1,4 @@
-// topic controller
+// private topic controller
 
 'use strict';
 
@@ -26,11 +26,15 @@ module.exports = {
 
 function handler(params, context, emitter) {
   // Verify the user's group has read access to the topic's parent discussion
-  app.listen({
-    access: function (emitter) {
-      app.toolbox.access.privateTopicView(params.url.topic, params.session.groupID, emitter);
+  app.listen('waterfall', {
+    topicInfo: function (emitter) {
+      app.models.topic.privateInfo(params.url['private-topic'], emitter);
+    },
+    access: function (previous, emitter) {
+      app.toolbox.access.privateTopicView(previous.topicInfo.id, params.session, emitter);
     }
   }, function (output) {
+    var topic = output.topicInfo;
 
     if ( output.listen.success ) {
 
@@ -38,14 +42,11 @@ function handler(params, context, emitter) {
 
       // If the group has read access, get the posts for the requested page
       app.listen({
-        topicInfo: function (emitter) {
-          app.models.topic.info(params.url.topic, emitter);
-        },
         posts: function (emitter) {
           var start = ( params.url.page - 1 ) * 25,
               end = start + 25;
           app.models.topic.posts({
-            topic: params.url.topic,
+            topic: topic.url,
             start: start,
             end: end
           }, emitter);
@@ -54,7 +55,7 @@ function handler(params, context, emitter) {
           if ( params.session.userID ) {
             app.models.topic.subscriptionExists({
               userID: params.session.userID,
-              topic: params.url.topic
+              topic: topic.url
             }, emitter);
           } else {
             emitter.emit('ready', false);
@@ -67,18 +68,18 @@ function handler(params, context, emitter) {
           if ( params.session.username ) {
             app.models.topic.viewTimeUpdate({
               userID: params.session.userID,
-              topicID: output.topicInfo.id,
+              topicID: topic.id,
               time: app.toolbox.helpers.isoDate()
             });
           }
 
           emitter.emit('ready', {
             content: {
-              topicInfo: output.topicInfo,
+              topic: topic,
               posts: output.posts,
               userIsSubscribed: output.subscriptionExists,
-              pagination: app.toolbox.helpers.paginate('topic/' + output.topicInfo.url, params.url.page, output.topicInfo.replies + 1),
-              breadcrumbs: app.models.topic.breadcrumbs(output.topicInfo.discussionTitle, output.topicInfo.discussionUrl)
+              pagination: app.toolbox.helpers.paginate('topic/' + topic.url, params.url.page, topic.replies + 1),
+              breadcrumbs: app.models.topic.breadcrumbs('Private Topics', 'private-topics')
             },
             handoff: {
               controller: '+_layout'
@@ -103,30 +104,47 @@ function handler(params, context, emitter) {
 
 function start(params, context, emitter) {
 
-  // Verify the user has permission to start a private conversation with the recipient
+  // Verify the user can start a private topic with the invitee(s)
   app.listen('waterfall', {
-    access: function (emitter) {
+    invitees: function (emitter) {
+      if ( params.url.invitee ) {
+        app.listen({
+          invitees: function (emitter) {
+            app.models.user.info({
+              user: params.url.invitee
+            }, emitter);
+          }
+        }, function (output) {
+          if ( output.listen.success ) {
+            emitter.emit('ready', [ output.invitees.username ]);
+          } else {
+            emitter.emit('error', output.listen);
+          }
+        });
+      } else if ( params.form.invitees ) {
+        emitter.emit('ready', params.form.invitees.split('\n'));
+      } else {
+        emitter.emit('ready');
+      }
+    },
+    access: function (previous, emitter) {
       app.toolbox.access.privateTopicStart({
         userID: params.session.userID,
-        recipient: params.url.recipient
-      }, emitter);
-    },
-    recipient: function (previous, emitter) {
-      app.models.user.info({
-        user: params.url.recipient
+        username: params.session.username,
+        invitees: previous.invitees
       }, emitter);
     }
   }, function (output) {
 
     if ( output.listen.success ) {
 
-      params.form.recipient = output.recipient.username;
-      params.form.subject = '';
-      params.form.message = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
+      params.form.invitees = output.invitees.join('\n');
+      params.form.title = '';
+      params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
 
       emitter.emit('ready', {
         content: {
-          recipient: output.recipient
+          invitees: output.invitees
         },
         view: 'start',
         handoff: {
@@ -145,21 +163,23 @@ function start(params, context, emitter) {
 
 
 function startForm(params, context, emitter) {
+  var inviteesArray;
 
   if ( params.request.method === 'POST' ) {
+    inviteesArray = params.form.invitees.split('\r\n');
     params.form.subscribe = params.form.subscribe || false;
 
-    // Verify the user's group has post access to the discussion
+    // Verify the user can start a private topic with the invitees
     app.listen('waterfall', {
       access: function (emitter) {
-        app.toolbox.access.discussionPost(params.url.discussion, params.session.groupID, emitter);
-      },
-      discussionInfo: function (previous, emitter) {
-        app.models.discussion.info(params.url.discussion, emitter);
+        app.toolbox.access.privateTopicStart({
+          userID: params.session.userID,
+          username: params.session.username,
+          invitees: inviteesArray
+        }, emitter);
       }
     }, function (output) {
-      var discussionInfo = output.discussionInfo,
-          titleMarkdown = new Remarkable(),
+      var titleMarkdown = new Remarkable(),
           contentMarkdown = new Remarkable({
             breaks: true,
             linkify: true
@@ -169,7 +189,7 @@ function startForm(params, context, emitter) {
           draft = false,
           time = app.toolbox.helpers.isoDate();
 
-      // If the group has post access, process the topic form
+      // If the user has permission, process the topic form
       if ( output.listen.success ) {
 
         parsedTitle = titleMarkdown.render(params.form.title);
@@ -185,9 +205,7 @@ function startForm(params, context, emitter) {
                 preview: {
                   title: parsedTitle,
                   content: parsedContent
-                },
-                discussionInfo: discussionInfo,
-                breadcrumbs: app.models.topic.breadcrumbs(discussionInfo.discussionTitle, discussionInfo.discussionUrl)
+                }
               },
               view: 'start',
               handoff: {
@@ -203,28 +221,60 @@ function startForm(params, context, emitter) {
             app.listen({
               saveTopic: function (emitter) {
                 app.models.topic.insert({
-                  discussionUrl: discussionInfo.discussionUrl,
-                  discussionID: discussionInfo.id,
                   userID: params.session.userID,
+                  username: params.session.username,
+                  invitees: inviteesArray,
+                  discussionID: 0,
                   titleMarkdown: params.form.title,
                   titleHtml: parsedTitle,
                   url: app.toolbox.slug(params.form.title),
                   markdown: params.form.content,
                   html: parsedContent,
                   draft: draft,
-                  announcement: false,
+                  private: true,
                   time: time
                 }, emitter);
               }
             }, function (output) {
+              var topic = output.saveTopic,
+                  methods = {};
 
-              if ( output.listen.success && output.saveTopic.success ) {
+              if ( output.listen.success && topic.success ) {
+
+                if ( !draft ) {
+                  inviteesArray.forEach( function (item, index, array) {
+                    methods[item] = function (emitter) {
+                      app.models.user.info({
+                        username: item
+                      }, emitter);
+                    };
+                  });
+
+                  app.listen(methods, function (output) {
+                    if ( output.listen.success ) {
+                      delete output.listen;
+                      for ( var invitee in output ) {
+                        if ( invitee.pmEmailNotification ) {
+                          app.mail.sendMail({
+                            from: app.config.main.email,
+                            to: invitee.email,
+                            subject: 'New private topic started by ' + params.session.username,
+                            text: app.config.main.baseUrl + '/private-topic/' + topic.id
+                          });
+                        }
+                      }
+                    } else {
+                      emitter.emit('error', output.listen);
+                    }
+                  });
+                }
+
                 if ( params.form.subscribe ) {
                   app.listen({
                     subscribe: function (emitter) {
                       app.models.topic.subscribe({
                         userID: params.session.userID,
-                        topicID: output.saveTopic.id,
+                        topicID: topic.id,
                         time: time
                       }, emitter);
                     }
@@ -232,7 +282,7 @@ function startForm(params, context, emitter) {
 
                     if ( output.listen.success ) {
                       emitter.emit('ready', {
-                        redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/topic/' + output.saveTopic.url
+                        redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'private-topic/' + topic.id
                       });
                     } else {
                       emitter.emit('error', output.listen);
@@ -241,7 +291,7 @@ function startForm(params, context, emitter) {
                   });
                 } else {
                   emitter.emit('ready', {
-                    redirect: draft ? app.config.main.baseUrl + '/drafts' : app.config.main.baseUrl + '/topic/' + output.saveTopic.url
+                    redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'private-topic/' + topic.id
                   });
                 }
               } else {
@@ -251,9 +301,7 @@ function startForm(params, context, emitter) {
                 } else {
                   emitter.emit('ready', {
                     content: {
-                      topic: output.saveTopic,
-                      discussionInfo: discussionInfo,
-                      breadcrumbs: app.models.topic.breadcrumbs(discussionInfo.discussionTitle, discussionInfo.discussionUrl)
+                      topic: topic
                     },
                     view: 'start',
                     handoff: {

@@ -10,20 +10,20 @@ if preview
         != preview.content
           
 section.topic-write-form
-  form#topic-write-form(action="#{config.main.basePath}topic/action/startForm/discussion/#{url.discussion}" method="post" novalidate)
+  p When you start a private topic, only those you invite can see the topic and reply. You can invite several members to participate, or just one.
+  form#topic-write-form(action="private-topic/action/startForm" method="post" novalidate)
     if topic && topic.message
       .messages
         ul
-          li #{write.message}
+          li #{topic.message}
     .data
       ul
-        li.recipient.text.required
-          label(for="recipient")
-            | Recipient
-          //-   | Participants
-          //- p.label-note
-          //-   | To include multiple recipients, put each username on its own line.
-          textarea(id="recipient" name="recipient" required) #{form.recipient}
+        li.invitees.text.required
+          label(for="invitees")
+            | Invitees
+          p.label-note
+            | To invite multiple participants, put each member's username on its own line.
+          textarea(id="invitees" name="invitees" required) #{form.invitees}
         li.topic-title.text.required
           label(for="topic-title")
             | Topic title

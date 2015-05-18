@@ -1,24 +1,24 @@
 h1
-  != topicInfo.titleHtml
+  != topic.titleHtml
   
 include ../partials/pagination
 
-if topicInfo.lockedByID
+if topic.lockedByID
   .notice
     if !session.moderateDiscussions
       p This topic is locked.
     else
       p This topic is locked, but as a moderator, you can still reply and make edits.
-    if topicInfo.lockReason.length
+    if topic.lockReason.length
       dl
         dt Why was this topic locked?
         dd
-          != topicInfo.lockReason
+          != topic.lockReason
       
 
 nav.topic
   ul
-    if topicInfo.discussionID !== 1
+    if topic.discussionID !== 1
       li.reply
         a(href="#{route.pathname}/action/reply") Reply
       if !userIsSubscribed
@@ -30,8 +30,8 @@ nav.topic
     if session.moderateDiscussions
       li.move
         a(href="#{route.pathname}/action/move" title="Move this topic to another discussion forum.") Move
-      if topicInfo.discussionID !== 1
-        if !topicInfo.lockedByID
+      if topic.discussionID !== 1
+        if !topic.lockedByID
           li.lock
             a(href="#{route.pathname}/action/lock" title="Lock this topic (no replies or edits).") Lock
         else
@@ -45,6 +45,6 @@ section.posts
     each post in posts
       include ../post/post
   else
-    p This topic has no replies. <a href="#{config.main.basePath}topic-reply/topic/#{topicInfo.url}">Why not weigh in?</a>
+    p This topic has no replies. <a href="#{config.main.basePath}topic-reply/topic/#{topic.url}">Why not weigh in?</a>
 
 include ../partials/pagination

@@ -61,11 +61,39 @@ function privateTopicStart(args, emitter) {
       }, emitter);
     },
     userIsIgnored: function (emitter) {
-      if ( args.recipient ) {
-        app.models.user.isIgnored({
-          user: args.user,
-          ignoredBy: args.recipient
-        }, emitter);
+      var methods = {};
+
+      if ( args.invitees ) {
+        args.invitees.forEach( function (item, index, array) {
+          methods[item] = function (emitter) {
+            app.models.user.isIgnored({
+              username: args.username,
+              ignoredBy: item
+            }, emitter);
+          };
+        });
+
+        app.listen(methods, function (output) {
+          var ignored = false;
+
+          if ( output.listen.success ) {
+            delete output.listen;
+            for ( var property in output ) {
+              if ( property === true ) {
+                ignored = true;
+                emitter.emit('error', {
+                  statusCode: 403,
+                  message: property + ' has you on their ignore list, so you can\'t invite them to a private topic.'
+                });
+              }
+            }
+            if ( !ignored ) {
+              emitter.emit('ready', false);
+            }
+          } else {
+            emitter.emit('error', output.listen);
+          }
+        });
       } else {
         emitter.emit('ready', false);
       }
@@ -83,8 +111,6 @@ function privateTopicStart(args, emitter) {
           } else {
             message = 'Your private topic privileges have been revoked. Please contact an administrator for details.';
           }
-        } else if ( output.userIsIgnored ) {
-          message = 'This user has you on their ignore list, so you can\'t send them private messages.';
         }
         emitter.emit('error', {
           statusCode: 403,
@@ -117,15 +143,15 @@ function privateTopicsView(session, emitter) {
 function privateTopicView(topicID, session, emitter) {
 
   app.listen({
-    userIsParticipant: function (emitter) {
-      app.models.privateTopic.hasParticipant({
+    userIsInvited: function (emitter) {
+      app.models.topic.hasInvitee({
         topicID: topicID,
         userID: session.userID
       }, emitter);
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( session.talkPrivately && output.userIsParticipant ) {
+      if ( session.talkPrivately && output.userIsInvited ) {
         emitter.emit('ready', true);
       } else {
         emitter.emit('error', {

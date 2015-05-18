@@ -68,7 +68,7 @@ function topics(args, emitter) {
   var start = args.start || 0,
       end = args.end || 25,
       cacheKey = 'models-private-topics-subset-' + start + '-' + end,
-      scope = 'private-topics',
+      scope = 'user-' + args.userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object

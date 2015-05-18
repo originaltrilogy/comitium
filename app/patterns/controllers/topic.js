@@ -208,7 +208,7 @@ function startForm(params, context, emitter) {
                   markdown: params.form.content,
                   html: parsedContent,
                   draft: draft,
-                  announcement: false,
+                  private: false,
                   time: time
                 }, emitter);
               }
