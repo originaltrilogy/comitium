@@ -17,7 +17,7 @@ section.topics
     each topic in topics
       article.topic(data-topic-id="#{topic.id}")
         h3
-          a(href="topic/#{topic.url}")
+          a(href="private-topic/#{topic.id}")
             != topic.titleHtml
         p.details
           | Posted by 

@@ -304,8 +304,7 @@ function insert(args, emitter) {
 
           },
           insertInvitation: function (previous, emitter) {
-            var userMethods = {},
-                methods = {};
+            var userMethods = {};
 
             if ( !args.private ) {
               emitter.emit('ready');
@@ -332,16 +331,19 @@ function insert(args, emitter) {
                 };
               });
 
-              app.listen(userMethods, function (output) {console.log(output);
+              app.listen(userMethods, function (output) {
+                var insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )';
+
                 if ( output.listen.success ) {
                   delete output.listen;
                   for ( var property in output ) {
-                    console.log(property);
-                    console.log(output[property]);
-                    methods[property] = function (emitter) {
+                    insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
+                  }
+
+                  app.listen({
+                    insert: function (emitter) {
                       client.query(
-                        'insert into "topicInvitations" ( "topicID", "userID" ) values ( $1, $2 );',
-                        [ previous.insertTopic.id, output[property].id ],
+                        'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
                         function (err, result) {
                           if ( err ) {
                             client.query('rollback', function (err) {
@@ -353,10 +355,8 @@ function insert(args, emitter) {
                           }
                         }
                       );
-                    };
-                  }
-
-                  app.listen(methods, function (output) {
+                    }
+                  }, function (output) {
                     if ( output.listen.success ) {
                       emitter.emit('ready');
                     } else {
