@@ -106,7 +106,7 @@ function info(topic, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select d."id" as "discussionID", d."title" as "discussionTitle", d."url" as "discussionUrl", t."sortDate" as "time", t."id", t."url", t."replies", t."views", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t join "discussions" d on d."id" = t."discussionID" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."url" = $1;',
+              'select d."id" as "discussionID", d."title" as "discussionTitle", d."url" as "discussionUrl", t."sortDate" as "time", t."id", t."url", t."replies", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t join "discussions" d on d."id" = t."discussionID" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."url" = $1;',
               [ topic ],
               function (err, result) {
                 done();
@@ -158,7 +158,7 @@ function privateInfo(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."sortDate" as "time", t."id", t."url", t."replies", t."views", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."id" = $1;',
+              'select t."sortDate" as "time", t."id", t."url", t."replies", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
@@ -245,8 +245,8 @@ function insert(args, emitter) {
             var url = previous.urlExists ? args.url + '-' + Date.now() : args.url;
 
             client.query(
-              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "views", "draft", "private", "lockedByID" ) ' +
-              'values ( $1, 0, 0, $2, $3, $4, $5, 0, 0, $6, $7, 0 ) returning id;',
+              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
+              'values ( $1, 0, 0, $2, $3, $4, $5, 0, $6, $7, 0 ) returning id;',
               [ args.discussionID, args.titleMarkdown, args.titleHtml, url, args.time, args.draft, args.private ],
               function (err, result) {
                 if ( err ) {
@@ -309,9 +309,6 @@ function insert(args, emitter) {
             if ( !args.private ) {
               emitter.emit('ready');
             } else {
-              userMethods[args.username] = function (emitter) {
-                emitter.emit('ready', { id: args.userID });
-              };
               args.invitees.forEach( function (item, indext, array) {
                 userMethods[item] = function (emitter) {
                   client.query(
@@ -332,37 +329,53 @@ function insert(args, emitter) {
               });
 
               app.listen(userMethods, function (output) {
-                var insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )';
+                var insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
+                    insert = true;
 
                 if ( output.listen.success ) {
                   delete output.listen;
                   for ( var property in output ) {
-                    insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
+                    if ( output[property] ) {
+                      insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
+                    } else {
+                      insert = false;
+                      break;
+                    }
                   }
 
-                  app.listen({
-                    insert: function (emitter) {
-                      client.query(
-                        'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
-                        function (err, result) {
-                          if ( err ) {
-                            client.query('rollback', function (err) {
-                              done();
-                            });
-                            emitter.emit('error', err);
-                          } else {
-                            emitter.emit('ready');
+                  if ( insert ) {
+                    app.listen({
+                      insert: function (emitter) {
+                        client.query(
+                          'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
+                          function (err, result) {
+                            if ( err ) {
+                              client.query('rollback', function (err) {
+                                done();
+                              });
+                              emitter.emit('error', err);
+                            } else {
+                              emitter.emit('ready');
+                            }
                           }
-                        }
-                      );
-                    }
-                  }, function (output) {
-                    if ( output.listen.success ) {
-                      emitter.emit('ready');
-                    } else {
-                      emitter.emit('error', output.listen);
-                    }
-                  });
+                        );
+                      }
+                    }, function (output) {
+                      if ( output.listen.success ) {
+                        emitter.emit('ready');
+                      } else {
+                        emitter.emit('error', output.listen);
+                      }
+                    });
+                  } else {
+                    client.query('rollback', function (err) {
+                      done();
+                      emitter.emit('error', {
+                        message: 'The user you specified (' + property + ') doesn\'t exist.'
+                      });
+                    });
+                  }
+
                 } else {
                   emitter.emit('error', output.listen);
                 }
