@@ -145,25 +145,25 @@ function authenticate(credentials, emitter) {
     });
   } else {
     app.listen({
-      userInfo: function (emitter) {
+      user: function (emitter) {
         app.models.user.info({ username: username }, emitter);
       }
     }, function (output) {
 
-      if ( output.listen.success && output.userInfo ) {
-        if ( output.userInfo.activationDate ) {
-          if ( output.userInfo.login ) {
+      if ( output.listen.success && output.user ) {
+        if ( output.user.activationDate ) {
+          if ( output.user.login ) {
             if ( password.length ) {
               // TODO: Fix existing hashes in db to use sha512 (issue new passwords to all users)
               // and remove toLowerCase() because the new hashes will be lowercase, or just loop
               // over the user table and update all hashes using toLowerCase()).
               passwordHash = crypto.createHash('md5').update(password).digest('hex');
             }
-            if ( output.userInfo.passwordHash === passwordHash || output.userInfo.passwordHash.toLowerCase() === passwordHash ) {
+            if ( output.user.passwordHash === passwordHash || output.user.passwordHash.toLowerCase() === passwordHash ) {
               emitter.emit('ready', {
                 success: true,
                 message: 'Cookies are set.',
-                user: output.userInfo
+                user: output.user
               });
             } else {
               emitter.emit('ready', {

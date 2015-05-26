@@ -674,9 +674,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   margin: 0 1.4rem 0.8rem;
   font-size: 1.8rem;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.14rem; }
+  color: white; }
 
 h2 {
   padding: 1.6rem 1.4rem;
@@ -841,15 +839,23 @@ body[data-controller="discussion"][data-view="discussion"] span.views {
 /*-------------------
 topic view
 -------------------*/
-body[data-controller="topic"][data-view="topic"] h1 {
+body[data-controller="topic"][data-view="topic"] h1, body[data-controller="topic"][data-view="private-topic"] h1,
+body[data-controller="private-topic"][data-view="topic"] h1,
+body[data-controller="private-topic"][data-view="private-topic"] h1 {
   text-transform: none;
   letter-spacing: 0; }
-body[data-controller="topic"][data-view="topic"] nav.actions {
+body[data-controller="topic"][data-view="topic"] nav.actions, body[data-controller="topic"][data-view="private-topic"] nav.actions,
+body[data-controller="private-topic"][data-view="topic"] nav.actions,
+body[data-controller="private-topic"][data-view="private-topic"] nav.actions {
   text-align: center; }
-  body[data-controller="topic"][data-view="topic"] nav.actions li {
+  body[data-controller="topic"][data-view="topic"] nav.actions li, body[data-controller="topic"][data-view="private-topic"] nav.actions li,
+  body[data-controller="private-topic"][data-view="topic"] nav.actions li,
+  body[data-controller="private-topic"][data-view="private-topic"] nav.actions li {
     display: inline-block;
     margin: 0 0.4rem; }
-body[data-controller="topic"][data-view="start"] li.topic-title textarea, body[data-controller="topic"][data-view="reply"] li.topic-title textarea {
+body[data-controller="topic"][data-view="start"] li.topic-title textarea, body[data-controller="topic"][data-view="reply"] li.topic-title textarea,
+body[data-controller="private-topic"][data-view="start"] li.topic-title textarea,
+body[data-controller="private-topic"][data-view="reply"] li.topic-title textarea {
   height: 6.4rem; }
 
 /*-------------------

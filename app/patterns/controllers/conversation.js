@@ -278,8 +278,8 @@ function reply(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          topicInfo: output.topicInfo,
-          breadcrumbs: app.models.topic.breadcrumbs(output.topicInfo.discussionTitle, output.topicInfo.discussionUrl),
+          topic: output.topic,
+          breadcrumbs: app.models.topic.breadcrumbs(output.topic.discussionTitle, output.topic.discussionUrl),
           reply: {
             message: message
           }
@@ -310,11 +310,11 @@ function replyForm(params, context, emitter) {
       access: function (emitter) {
         app.toolbox.access.topicReply(params.url.topic, params.session, emitter);
       },
-      topicInfo: function (previous, emitter) {
+      topic: function (previous, emitter) {
         app.models.topic.info(params.url.topic, emitter);
       }
     }, function (output) {
-      var topicInfo = output.topicInfo,
+      var topic = output.topic,
           messageMarkdown = new Remarkable({
             breaks: true,
             linkify: true
@@ -335,8 +335,8 @@ function replyForm(params, context, emitter) {
                 preview: {
                   content: parsedMessage
                 },
-                topicInfo: topicInfo,
-                breadcrumbs: app.models.topic.breadcrumbs(topicInfo.discussionTitle, topicInfo.discussionUrl)
+                topic: topic,
+                breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl)
               },
               view: 'reply',
               handoff: {
@@ -352,10 +352,10 @@ function replyForm(params, context, emitter) {
             app.listen({
               reply: function (emitter) {
                 app.models.topic.reply({
-                  topicID: topicInfo.id,
-                  topicUrl: topicInfo.url,
-                  discussionID: topicInfo.discussionID,
-                  discussionUrl: topicInfo.discussionUrl,
+                  topicID: topic.id,
+                  topicUrl: topic.url,
+                  discussionID: topic.discussionID,
+                  discussionUrl: topic.discussionUrl,
                   userID: params.session.userID,
                   html: parsedMessage,
                   markdown: params.form.message,
@@ -365,9 +365,9 @@ function replyForm(params, context, emitter) {
               }
             }, function (output) {
               var reply = output.reply,
-                  page = Math.ceil( ( topicInfo.replies + 2 ) / 25 ),
+                  page = Math.ceil( ( topic.replies + 2 ) / 25 ),
                   pageParameter = page !== 1 ? '/page/' + page : '',
-                  replyUrl = app.config.main.baseUrl + '/topic/' + topicInfo.url + pageParameter + '/#' + reply.id,
+                  replyUrl = app.config.main.baseUrl + '/topic/' + topic.url + pageParameter + '/#' + reply.id,
                   forwardToUrl = draft ? app.config.main.baseUrl + '/drafts' : replyUrl;
 
               if ( output.listen.success ) {
@@ -378,7 +378,7 @@ function replyForm(params, context, emitter) {
                       subscribe: function (emitter) {
                         app.models.topic.subscribe({
                           userID: params.session.userID,
-                          topicID: topicInfo.id,
+                          topicID: topic.id,
                           time: time
                         }, emitter);
                       }
@@ -409,7 +409,7 @@ function replyForm(params, context, emitter) {
                   if ( !draft ) {
                     notifyParticipants({
                       replyAuthorID: params.session.userID,
-                      topicID: topicInfo.id,
+                      topicID: topic.id,
                       time: time,
                       url: replyUrl
                     });
@@ -418,8 +418,8 @@ function replyForm(params, context, emitter) {
                   emitter.emit('ready', {
                     content: {
                       reply: reply,
-                      topicInfo: topicInfo,
-                      breadcrumbs: app.models.topic.breadcrumbs(topicInfo.discussionTitle, topicInfo.discussionUrl)
+                      topic: topic,
+                      breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl)
                     },
                     view: 'reply',
                     handoff: {

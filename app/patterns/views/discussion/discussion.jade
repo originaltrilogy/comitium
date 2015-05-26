@@ -1,9 +1,9 @@
 h1
-  = discussionInfo.discussionTitle
+  = discussion.title
 
 if url.page === 1
   p
-    != discussionInfo.discussionDescription
+    != discussion.description
   
 include ../partials/pagination
 
@@ -13,28 +13,28 @@ if announcements
     each announcement in announcements
       article.announcement(data-announcement-id="#{announcement.id}")
         h3
-          a(href="#{config.main.basePath}announcement/#{announcement.url}") #{announcement.titleHtml}
+          a(href="announcement/#{announcement.url}/id/#{announcement.id}") #{announcement.titleHtml}
           
 section.topics
   h2 Topics
   nav.discussion
     ul
       li.new-topic
-        a(href="#{config.main.basePath}topic/action/start/discussion/#{discussionInfo.discussionUrl}") Start a new topic
+        a(href="topic/action/start/id/#{discussion.id}") Start a new topic
       if session.moderateDiscussions
         li.new-announcement
-          a(href="#{config.main.basePath}announcement/action/write/discussion/#{discussionInfo.discussionUrl}") Make an announcement
+          a(href="announcement/action/write/id/#{discussion.id}") Make an announcement
       li.subscribe
         a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe to this discussion
   if topics
     each topic in topics
       article.topic(data-topic-id="#{topic.id}")
         h3
-          a(href="#{config.main.basePath}topic/#{topic.url}")
+          a(href="topic/#{topic.url}/id/#{topic.id}")
             != topic.titleHtml
         p.details
           | Posted by 
-          a(href="#{config.main.basePath}user/#{topic.topicStarterUrl}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+          a(href="user/#{topic.topicStarterUrl}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
           |  on 
           time #{topic.postDate}
         p.stats
@@ -43,6 +43,6 @@ section.topics
           span.views #{topic.views} 
           | views
   else
-    p This discussion has no topics. <a href="#{config.main.basePath}topic/action/new/discussion/#{discussionInfo.discussionUrl}">Why not start one?</a>
+    p This discussion has no topics. <a href="topic/action/write/id/#{discussion.id}">Why not start one?</a>
 
 include ../partials/pagination

@@ -475,7 +475,7 @@ function reply(args, emitter) {
               // Clear the cache for this topic and discussion
               app.cache.clear({ scope: args.topicUrl });
               app.cache.clear({ scope: args.discussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
+              app.cache.clear({ scope: 'discussions-categories' });
             }
 
           } else {

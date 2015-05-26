@@ -19,10 +19,10 @@ function handler(params, context, emitter) {
        // If the referrer isn't local...
        params.form.forwardToUrl.search(app.config.main.baseUrl) < 0 ||
        // ...or the referrer is one of these...
-       params.form.forwardToUrl.search(app.config.main.baseUrl + '/sign-in') >= 0 ||
-       params.form.forwardToUrl.search(app.config.main.baseUrl + '/sign-out') >= 0 ||
-       params.form.forwardToUrl.search(app.config.main.baseUrl + '/register') >= 0 ||
-       params.form.forwardToUrl.search(app.config.main.baseUrl + '/user/action/activate') >= 0
+       params.form.forwardToUrl.search(app.config.main.baseUrl + 'sign-in') >= 0 ||
+       params.form.forwardToUrl.search(app.config.main.baseUrl + 'sign-out') >= 0 ||
+       params.form.forwardToUrl.search(app.config.main.baseUrl + 'register') >= 0 ||
+       params.form.forwardToUrl.search(app.config.main.baseUrl + 'user/action/activate') >= 0
      ) {
     // ...forward the user to the forum home page after logging in.
     params.form.forwardToUrl = app.config.main.baseUrl;
@@ -49,15 +49,16 @@ function submit(params, context, emitter) {
       var user = output.authenticate.user,
           cookieExpires = 'session';
 
-      user.userID = output.authenticate.user.id;
-      delete user.id;
-
       if ( output.listen.success ) {
 
         if ( output.authenticate.success ) {
+          user.userID = output.authenticate.user.id;
+          delete user.id;
+
           if ( params.form.remember ) {
             cookieExpires = 'never';
           }
+
           emitter.emit('ready', {
             cookie: {
               comitium_username: {

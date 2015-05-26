@@ -16,7 +16,7 @@ function handler(params, context, emitter) {
   params.url.page = params.url.page || 1;
 
   app.listen({
-    userInfo: function (emitter) {
+    user: function (emitter) {
       app.models.user.info({
         user: params.url.user
       }, emitter);
@@ -34,10 +34,10 @@ function handler(params, context, emitter) {
     if ( output.listen.success ) {
       emitter.emit('ready', {
         content: {
-          talkPrivately: output.userInfo.id !== params.session.userID ? true : false,
-          user: output.userInfo,
+          talkPrivately: output.user.id !== params.session.userID ? true : false,
+          user: output.user,
           posts: output.posts,
-          pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'user/' + output.userInfo.url, params.url.page, output.userInfo.postCount)
+          pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'user/' + output.user.url, params.url.page, output.user.postCount)
         },
         handoff: {
           controller: '+_layout'
@@ -103,18 +103,18 @@ function ban(params, context, emitter) {
   if ( params.session.moderateUsers ) {
 
     app.listen('waterfall', {
-      userInfo: function (emitter) {
+      user: function (emitter) {
         app.models.user.info({
           user: params.url.user
         }, emitter);
       },
       banUser: function (previous, emitter) {
-        if ( previous.userInfo.group === 'Administrators' ) {
+        if ( previous.user.group === 'Administrators' ) {
           emitter.emit('error', {
             statusCode: 403,
             message: 'Administrators can\'t be banned.'
           });
-        } else if ( previous.userInfo.group === 'Moderators' && params.session.group !== 'Administrators' ) {
+        } else if ( previous.user.group === 'Moderators' && params.session.group !== 'Administrators' ) {
           emitter.emit('error', {
             statusCode: 403,
             message: 'Only an administrator can ban a moderator.'
@@ -127,7 +127,7 @@ function ban(params, context, emitter) {
       }
     }, function (output) {
       if ( output.listen.success ) {
-        app.session.end('userID', output.userInfo.id);
+        app.session.end('userID', output.user.id);
         emitter.emit('ready', {
           redirect: params.request.headers.referer
         });
@@ -153,18 +153,18 @@ function unban(params, context, emitter) {
   if ( params.session.moderateUsers ) {
 
     app.listen('waterfall', {
-      userInfo: function (emitter) {
+      user: function (emitter) {
         app.models.user.info({
           user: params.url.user
         }, emitter);
       },
       unbanUser: function (previous, emitter) {
-        if ( previous.userInfo.group === 'Administrators' && params.session.group !== 'Administrators' ) {
+        if ( previous.user.group === 'Administrators' && params.session.group !== 'Administrators' ) {
           emitter.emit('error', {
             statusCode: 403,
             message: 'Only an administrator can lift a ban on another administator.'
           });
-        } else if ( previous.userInfo.group === 'Moderators' && params.session.group !== 'Administrators' ) {
+        } else if ( previous.user.group === 'Moderators' && params.session.group !== 'Administrators' ) {
           emitter.emit('error', {
             statusCode: 403,
             message: 'Only an administrator can lift a ban on a moderator.'

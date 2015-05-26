@@ -7,9 +7,9 @@ module.exports = {
 };
 
 
-function discussionPermissions(discussion, groupID, emitter) {
+function discussionPermissions(discussionID, groupID, emitter) {
   // See if this discussion's permissions are already cached
-  var cacheKey = 'models-group-discussionPermissions-' + discussion,
+  var cacheKey = 'models-group-discussionPermissions-' + discussionID,
       scope = 'group-' + groupID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
@@ -25,8 +25,8 @@ function discussionPermissions(discussion, groupID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select id, "groupID", "discussionID", read, post, reply from "discussionPermissions" where "groupID" = $1 and "discussionID" = ( select d.id from discussions d where d.url = $2 );',
-              [ groupID, discussion ],
+              'select id, "groupID", "discussionID", read, post, reply from "discussionPermissions" where "groupID" = $1 and "discussionID" = $2;',
+              [ groupID, discussionID ],
               function (err, result) {
                 done();
                 if ( err ) {

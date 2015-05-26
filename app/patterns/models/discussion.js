@@ -11,10 +11,10 @@ module.exports = {
 };
 
 
-function info(discussion, emitter) {
+function info(discussionID, emitter) {
   // See if this discussion info is already cached
-  var cacheKey = 'models-discussion-info',
-      scope = discussion,
+  var cacheKey = 'info',
+      scope = 'discussion-' + discussionID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -23,14 +23,14 @@ function info(discussion, emitter) {
     // If it's not cached, retrieve it from the database and cache it
   } else {
     app.listen({
-      discussionInfo: function (emitter) {
+      discussion: function (emitter) {
         app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
             client.query(
-              eval(app.db.sql.discussionInfo),
-              [ discussion ],
+              'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description", d."topics", d."posts" from categories c join discussions d on c.id = d."categoryID" where d."id" = $1;',
+              [ discussionID ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -50,10 +50,10 @@ function info(discussion, emitter) {
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: output.discussionInfo[0]
+          value: output.discussion[0]
         });
 
-        emitter.emit('ready', output.discussionInfo[0]);
+        emitter.emit('ready', output.discussion[0]);
       } else {
         emitter.emit('error', output.listen);
       }
@@ -63,10 +63,10 @@ function info(discussion, emitter) {
 }
 
 
-function announcements(discussion, emitter) {
+function announcements(discussionID, emitter) {
   // See if this discussion page is already cached
-  var cacheKey = 'models-discussion-announcements',
-      scope = discussion,
+  var cacheKey = 'announcements',
+      scope = 'discussion-' + discussionID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -82,7 +82,7 @@ function announcements(discussion, emitter) {
           } else {
             client.query(
               eval(app.db.sql.announcementsByDiscussion),
-              [ discussion ],
+              [ discussionID ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -135,11 +135,10 @@ function announcements(discussion, emitter) {
 
 function topics(args, emitter) {
   // See if this discussion subset is already cached
-  var discussion = args.discussion,
-      start = args.start || 0,
+  var start = args.start || 0,
       end = args.end || 25,
-      cacheKey = 'models-discussion-topics-subset-' + start + '-' + end,
-      scope = discussion,
+      cacheKey = 'topics-' + start + '-' + end,
+      scope = 'discussion-' + args.discussionID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -162,11 +161,11 @@ function topics(args, emitter) {
               'join posts p2 on p2."topicID" = t.id ' +
               'and p2."id" = t."lastPostID" ' +
               'join users u2 on u2.id = p2."userID" ' +
-              'where t."discussionID" = ( select id from discussions where url = $1 ) ' +
+              'where t."discussionID" = $1 ' +
               'and t.draft = false and t.private = false ' +
               'order by t."sortDate" desc ' +
               'limit $2 offset $3;',
-              [ discussion, end - start, start ],
+              [ args.discussionID, end - start, start ],
               function (err, result) {
                 done();
                 if ( err ) {

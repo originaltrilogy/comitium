@@ -1,4 +1,4 @@
-h1 Reply to Topic: #{topicInfo.topicTitle}
+h1 Reply to Topic: #{topic.titleHtml}
 
 if preview
   section.preview
@@ -8,7 +8,7 @@ if preview
         != preview.content
           
 section.topic-reply-form
-  form#topic-reply-form(action="#{config.main.basePath}topic/#{url.topic}/action/replyForm" method="post" novalidate)
+  form#topic-reply-form(action="topic/id/#{url.id}/action/replyForm" method="post" novalidate)
     if reply && reply.message
       .reply-messages
         ul

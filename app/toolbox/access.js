@@ -5,12 +5,11 @@
 module.exports = {
   challenge: challenge,
   signInRedirect: signInRedirect,
-  privateTopicsView: privateTopicsView,
-  privateTopicStart: privateTopicStart,
-  privateTopicView: privateTopicView,
   discussionView: discussionView,
   discussionPost: discussionPost,
   discussionReply: discussionReply,
+  privateTopicsView: privateTopicsView,
+  privateTopicStart: privateTopicStart,
   topicLock: topicLock,
   topicMerge: topicMerge,
   topicMove: topicMove,
@@ -32,7 +31,7 @@ function challenge(groupID, emitter) {
 
   if ( groupID === 1 ) {
     emitter.emit('ready', {
-      redirect: app.config.main.baseUrl + '/sign-in'
+      redirect: app.config.main.baseUrl + 'sign-in'
     });
   } else {
     emitter.emit('error', {
@@ -55,7 +54,7 @@ function signInRedirect(params, url) {
 function privateTopicStart(args, emitter) {
 
   app.listen({
-    userInfo: function (emitter) {
+    user: function (emitter) {
       app.models.user.info({
         userID: args.userID
       }, emitter);
@@ -102,11 +101,11 @@ function privateTopicStart(args, emitter) {
     var message = '';
 
     if ( output.listen.success ) {
-      if ( output.userInfo.talkPrivately && !output.userIsIgnored ) {
+      if ( output.user.talkPrivately && !output.userIsIgnored ) {
         emitter.emit('ready', true);
       } else {
-        if ( !output.userInfo.talkPrivately ) {
-          if ( output.userInfo.group === 'New Members' ) {
+        if ( !output.user.talkPrivately ) {
+          if ( output.user.group === 'New Members' ) {
             message = 'New members require a minimum of 5 posts before they can start private topics.';
           } else {
             message = 'Your private topic privileges have been revoked. Please contact an administrator for details.';
@@ -139,8 +138,35 @@ function privateTopicsView(session, emitter) {
 }
 
 
+//
+// function privateTopicView(topicID, session, emitter) {
+//
+//   app.listen({
+//     userIsInvited: function (emitter) {
+//       app.models.topic.hasInvitee({
+//         topicID: topicID,
+//         userID: session.userID
+//       }, emitter);
+//     }
+//   }, function (output) {
+//     if ( output.listen.success ) {
+//       if ( session.talkPrivately && output.userIsInvited ) {
+//         emitter.emit('ready', true);
+//       } else {
+//         emitter.emit('error', {
+//           statusCode: 403
+//         });
+//       }
+//     } else {
+//       emitter.emit('error', output.listen);
+//     }
+//   });
+//
+// }
 
-function privateTopicView(topicID, session, emitter) {
+
+
+function privateTopicReply(topicID, session, emitter) {
 
   app.listen({
     userIsInvited: function (emitter) {
@@ -167,15 +193,15 @@ function privateTopicView(topicID, session, emitter) {
 
 
 
-function discussionView(discussion, groupID, emitter) {
+function discussionView(discussionID, groupID, emitter) {
 
 	app.listen('waterfall', {
-    discussionInfo: function (emitter) {
-      app.models.discussion.info(discussion, emitter);
+    discussion: function (emitter) {
+      app.models.discussion.info(discussionID, emitter);
     },
     discussionPermissions: function (previous, emitter) {
-      if ( previous.discussionInfo ) {
-        app.models.group.discussionPermissions(discussion, groupID, emitter);
+      if ( previous.discussion ) {
+        app.models.group.discussionPermissions(discussionID, groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -206,15 +232,15 @@ function discussionView(discussion, groupID, emitter) {
 
 
 
-function discussionPost(discussion, groupID, emitter) {
+function discussionPost(discussionID, session, emitter) {
 
 	app.listen('waterfall', {
-    discussionInfo: function (emitter) {
-      app.models.discussion.info(discussion, emitter);
+    discussion: function (emitter) {
+      app.models.discussion.info(discussionID, emitter);
     },
     discussionPermissions: function (previous, emitter) {
-      if ( previous.discussionInfo ) {
-        app.models.group.discussionPermissions(discussion, groupID, emitter);
+      if ( previous.discussion ) {
+        app.models.group.discussionPermissions(discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -248,11 +274,11 @@ function discussionPost(discussion, groupID, emitter) {
 function discussionReply(discussion, groupID, emitter) {
 
 	app.listen('waterfall', {
-    discussionInfo: function (emitter) {
+    discussion: function (emitter) {
       app.models.discussion.info(discussion, emitter);
     },
     discussionPermissions: function (previous, emitter) {
-      if ( previous.discussionInfo ) {
+      if ( previous.discussion ) {
         app.models.group.discussionPermissions(discussion, groupID, emitter);
       } else {
         emitter.emit('error', {
@@ -284,12 +310,12 @@ function discussionReply(discussion, groupID, emitter) {
 
 
 
-function topicLock(topic, session, emitter) {
+function topicLock(topicID, session, emitter) {
 
 	app.listen('waterfall', {
-    topicInfo: function (emitter) {
+    topic: function (emitter) {
       if ( session.moderateDiscussions ) {
-        app.models.topic.info(topic, emitter);
+        app.models.topic.info(topicID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 403
@@ -297,8 +323,8 @@ function topicLock(topic, session, emitter) {
       }
     },
     discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      if ( previous.topic ) {
+        app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -322,7 +348,7 @@ function topicLock(topic, session, emitter) {
       // If the topic exists but the group doesn't have lock access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
-      if ( output.topicInfo ) {
+      if ( output.topic ) {
         app.toolbox.access.challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
@@ -337,12 +363,12 @@ function topicLock(topic, session, emitter) {
 
 
 
-function topicMerge(topic, session, emitter) {
+function topicMerge(topicID, session, emitter) {
 
 	app.listen('waterfall', {
-    topicInfo: function (emitter) {
+    topic: function (emitter) {
       if ( session.moderateDiscussions ) {
-        app.models.topic.info(topic, emitter);
+        app.models.topic.info(topicID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 403
@@ -350,8 +376,8 @@ function topicMerge(topic, session, emitter) {
       }
     },
     discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      if ( previous.topic ) {
+        app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -375,7 +401,7 @@ function topicMerge(topic, session, emitter) {
       // If the topic exists but the group doesn't have merge access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
-      if ( output.topicInfo ) {
+      if ( output.topic ) {
         app.toolbox.access.challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
@@ -390,12 +416,12 @@ function topicMerge(topic, session, emitter) {
 
 
 
-function topicMove(topic, session, emitter) {
+function topicMove(topicID, session, emitter) {
 
 	app.listen('waterfall', {
-    topicInfo: function (emitter) {
+    topic: function (emitter) {
       if ( session.moderateDiscussions ) {
-        app.models.topic.info(topic, emitter);
+        app.models.topic.info(topicID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 403
@@ -403,9 +429,9 @@ function topicMove(topic, session, emitter) {
       }
     },
     discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
+      if ( previous.topic ) {
         if ( session.moderateDiscussions ) {
-          app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+          app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -434,7 +460,7 @@ function topicMove(topic, session, emitter) {
       // If the topic exists but the group doesn't have move access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
-      if ( output.topicInfo ) {
+      if ( output.topic ) {
         app.toolbox.access.challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
@@ -449,12 +475,12 @@ function topicMove(topic, session, emitter) {
 
 
 
-function topicMoveForm(topic, discussion, session, emitter) {
+function topicMoveForm(topicID, discussion, session, emitter) {
 
 	app.listen('waterfall', {
-    topicInfo: function (emitter) {
+    topic: function (emitter) {
       if ( session.moderateDiscussions ) {
-        app.models.topic.info(topic, emitter);
+        app.models.topic.info(topicID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 403
@@ -462,9 +488,9 @@ function topicMoveForm(topic, discussion, session, emitter) {
       }
     },
     discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
+      if ( previous.topic ) {
         if ( session.moderateDiscussions ) {
-          app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+          app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -496,7 +522,7 @@ function topicMoveForm(topic, discussion, session, emitter) {
       // If the topic exists but the group doesn't have move access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
-      if ( output.topicInfo ) {
+      if ( output.topic ) {
         app.toolbox.access.challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
@@ -511,19 +537,53 @@ function topicMoveForm(topic, discussion, session, emitter) {
 
 
 
-function topicReply(topic, session, emitter) {
+function topicReply(topicID, session, emitter) {
 
-	app.listen('waterfall', {
-    topicInfo: function (emitter) {
-      app.models.topic.info(topic, emitter);
-    },
-    discussionReply: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        if ( !previous.topicInfo.lockedByID || session.moderateDiscussions ) {
-          app.toolbox.access.discussionReply(previous.topicInfo.discussionUrl, session.groupID, emitter);
+	app.listen({
+    topic: function (emitter) {
+      app.models.topic.info(topicID, emitter);
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.topic ) {
+        if ( output.topic.private ) {
+          app.listen({
+            userIsInvited: function (emitter) {
+              app.models.topic.hasInvitee({
+                topicID: topicID,
+                userID: session.userID
+              }, emitter);
+            }
+          }, function (output) {
+            if ( output.listen.success ) {
+              if ( session.talkPrivately && output.userIsInvited ) {
+                emitter.emit('ready', true);
+              } else {
+                emitter.emit('error', {
+                  statusCode: 403
+                });
+              }
+            } else {
+              emitter.emit('error', output.listen);
+            }
+          });
         } else {
-          emitter.emit('error', {
-            statusCode: 403
+          app.listen({
+            discussionReply: function (emitter) {
+              app.toolbox.access.discussionReply(output.topic.discussionID, session.groupID, emitter);
+            }
+          }, function (output) {
+            if ( output.listen.success ) {
+              if ( output.discussionReply ) {
+                emitter.emit('ready', true);
+              } else {
+                app.toolbox.access.challenge(session.groupID, emitter);
+              }
+            } else {
+              emitter.emit('error', output.listen);
+            }
           });
         }
       } else {
@@ -531,25 +591,8 @@ function topicReply(topic, session, emitter) {
           statusCode: 404
         });
       }
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', true);
-
     } else {
-
-      // If the topic exists but the group doesn't have reply access, redirect
-      // unauthenticated users to the sign in page, or throw a 403 for authenticated
-      // users
-      if ( output.topicInfo ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
-      // Otherwise, 404
-      } else {
-        emitter.emit('error', output.listen);
-      }
-
+      emitter.emit('error', output.listen);
     }
 
   });
@@ -558,12 +601,12 @@ function topicReply(topic, session, emitter) {
 
 
 
-function topicTrash(topic, session, emitter) {
+function topicTrash(topicID, session, emitter) {
 
 	app.listen('waterfall', {
-    topicInfo: function (emitter) {
+    topic: function (emitter) {
       if ( session.moderateDiscussions ) {
-        app.models.topic.info(topic, emitter);
+        app.models.topic.info(topicID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 403
@@ -571,8 +614,8 @@ function topicTrash(topic, session, emitter) {
       }
     },
     discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      if ( previous.topic ) {
+        app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -596,7 +639,7 @@ function topicTrash(topic, session, emitter) {
       // If the topic exists but the group doesn't have trash access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
-      if ( output.topicInfo ) {
+      if ( output.topic ) {
         app.toolbox.access.challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
@@ -611,15 +654,79 @@ function topicTrash(topic, session, emitter) {
 
 
 
-function topicView(topic, groupID, emitter) {
+function topicView(topicID, session, emitter) {
 
-	app.listen('waterfall', {
-    topicInfo: function (emitter) {
-      app.models.topic.info(topic, emitter);
+	app.listen({
+    topic: function (emitter) {
+      app.models.topic.info(topicID, emitter);
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.topic ) {
+        if ( output.topic.private ) {
+          app.listen({
+            userIsInvited: function (emitter) {
+              app.models.topic.hasInvitee({
+                topicID: topicID,
+                userID: session.userID
+              }, emitter);
+            }
+          }, function (output) {
+            if ( output.listen.success ) {
+              if ( session.talkPrivately && output.userIsInvited ) {
+                emitter.emit('ready', true);
+              } else {
+                emitter.emit('error', {
+                  statusCode: 403
+                });
+              }
+            } else {
+              emitter.emit('error', output.listen);
+            }
+          });
+        } else {
+          app.listen({
+            discussionView: function (emitter) {
+              app.toolbox.access.discussionView(output.topic.discussionID, session.groupID, emitter);
+            }
+          }, function (output) {
+            if ( output.listen.success ) {
+              if ( output.discussionView ) {
+                emitter.emit('ready', true);
+              } else {
+                app.toolbox.access.challenge(session.groupID, emitter);
+              }
+            } else {
+              emitter.emit('error', output.listen);
+            }
+          });
+        }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+
+  });
+
+}
+
+
+
+function postView(postID, session, emitter) {
+
+	app.listen('waterfall',{
+    post: function (emitter) {
+      app.models.post.info(postID, emitter);
     },
-    discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, groupID, emitter);
+    topic: function (previous, emitter) {
+      if ( previous.post ) {
+        app.models.topic.info(previous.post.topicID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -630,20 +737,46 @@ function topicView(topic, groupID, emitter) {
 
     if ( output.listen.success ) {
 
-      emitter.emit('ready', true);
-
-    } else {
-
-      // If the topic exists but the group doesn't have read access, redirect
-      // unauthenticated users to the sign in page, or throw a 403 for authenticated
-      // users
-      if ( output.topicInfo ) {
-        app.toolbox.access.challenge(groupID, emitter);
-      // Otherwise, 404
+      if ( output.topic.private ) {
+        app.listen({
+          userIsInvited: function (emitter) {
+            app.models.topic.hasInvitee({
+              topicID: output.topic.id,
+              userID: session.userID
+            }, emitter);
+          }
+        }, function (output) {
+          if ( output.listen.success ) {
+            if ( session.talkPrivately && output.userIsInvited ) {
+              emitter.emit('ready', true);
+            } else {
+              emitter.emit('error', {
+                statusCode: 403
+              });
+            }
+          } else {
+            emitter.emit('error', output.listen);
+          }
+        });
       } else {
-        emitter.emit('error', output.listen);
+        app.listen({
+          discussionView: function (emitter) {
+            app.toolbox.access.discussionView(output.topic.discussionID, session.groupID, emitter);
+          }
+        }, function (output) {
+          if ( output.listen.success ) {
+            if ( output.discussionView ) {
+              emitter.emit('ready', true);
+            } else {
+              app.toolbox.access.challenge(session.groupID, emitter);
+            }
+          } else {
+            emitter.emit('error', output.listen);
+          }
+        });
       }
-
+    } else {
+      emitter.emit('error', output.listen);
     }
 
   });
@@ -652,68 +785,66 @@ function topicView(topic, groupID, emitter) {
 
 
 
-function postView(post, groupID, emitter) {
+// function postView(postID, session, emitter) {
+//
+// 	app.listen('waterfall', {
+//     post: function (emitter) {
+//       app.models.post.info(postID, emitter);
+//     },
+//     topic: function (previous, emitter) {
+//       if ( previous.post ) {
+//         app.models.topic.info(previous.post.topicID, emitter);
+//       } else {
+//         emitter.emit('error', {
+//           statusCode: 404
+//         });
+//       }
+//     },
+//     discussionView: function (previous, emitter) {
+//       if ( previous.topic ) {
+//         app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
+//       } else {
+//         emitter.emit('error', {
+//           statusCode: 404
+//         });
+//       }
+//     }
+//   }, function (output) {
+//
+//     if ( output.listen.success ) {
+//
+//       emitter.emit('ready', true);
+//
+//     } else {
+//
+//       // If the topic exists but the group doesn't have read access, redirect
+//       // unauthenticated users to the sign in page, or throw a 403 for authenticated
+//       // users
+//       if ( output.post ) {
+//         app.toolbox.access.challenge(session.groupID, emitter);
+//       // Otherwise, 404
+//       } else {
+//         emitter.emit('error', output.listen);
+//       }
+//
+//     }
+//
+//   });
+//
+// }
+
+
+
+function postEdit(postID, session, emitter) {
 
 	app.listen('waterfall', {
-    postInfo: function (emitter) {
-      app.models.post.info(post, emitter);
+    post: function (emitter) {
+      app.models.post.info(postID, emitter);
     },
-    topicInfo: function (previous, emitter) {
-      if ( previous.postInfo ) {
-        app.models.topic.info(previous.postInfo.topicUrl, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    },
-    discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, groupID, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', true);
-
-    } else {
-
-      // If the topic exists but the group doesn't have read access, redirect
-      // unauthenticated users to the sign in page, or throw a 403 for authenticated
-      // users
-      if ( output.postInfo ) {
-        app.toolbox.access.challenge(groupID, emitter);
-      // Otherwise, 404
-      } else {
-        emitter.emit('error', output.listen);
-      }
-
-    }
-
-  });
-
-}
-
-
-
-function postEdit(post, session, emitter) {
-
-	app.listen('waterfall', {
-    postInfo: function (emitter) {
-      app.models.post.info(post, emitter);
-    },
-    topicInfo: function (previous, emitter) {
-      if ( previous.postInfo ) {
-        console.log(session.username);
-        console.log(previous.postInfo.author);
-        if ( ( session.username === previous.postInfo.author && !previous.postInfo.lockedByID ) || session.moderateDiscussions ) {
-          app.models.topic.info(previous.postInfo.topicUrl, emitter);
+    topic: function (previous, emitter) {
+      if ( previous.post ) {
+        if ( ( session.username === previous.post.author && !previous.post.lockedByID ) || session.moderateDiscussions ) {
+          app.models.topic.info(previous.post.topicID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -726,8 +857,8 @@ function postEdit(post, session, emitter) {
       }
     },
     discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      if ( previous.topic ) {
+        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -751,7 +882,7 @@ function postEdit(post, session, emitter) {
       // If the post exists but the group doesn't have edit access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
-      if ( output.postInfo ) {
+      if ( output.post ) {
         app.toolbox.access.challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
@@ -766,16 +897,16 @@ function postEdit(post, session, emitter) {
 
 
 
-function postLock(post, session, emitter) {
+function postLock(postID, session, emitter) {
 
 	app.listen('waterfall', {
-    postInfo: function (emitter) {
-      app.models.post.info(post, emitter);
+    post: function (emitter) {
+      app.models.post.info(postID, emitter);
     },
-    topicInfo: function (previous, emitter) {
-      if ( previous.postInfo ) {
+    topic: function (previous, emitter) {
+      if ( previous.post ) {
         if ( session.moderateDiscussions ) {
-          app.models.topic.info(previous.postInfo.topicUrl, emitter);
+          app.models.topic.info(previous.post.topicID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -788,8 +919,8 @@ function postLock(post, session, emitter) {
       }
     },
     discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      if ( previous.topic ) {
+        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -813,7 +944,7 @@ function postLock(post, session, emitter) {
       // If the post exists but the group doesn't have lock access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
-      if ( output.postInfo ) {
+      if ( output.post ) {
         app.toolbox.access.challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
@@ -828,16 +959,16 @@ function postLock(post, session, emitter) {
 
 
 
-function postTrash(post, session, emitter) {
+function postTrash(postID, session, emitter) {
 
 	app.listen('waterfall', {
-    postInfo: function (emitter) {
-      app.models.post.info(post, emitter);
+    post: function (emitter) {
+      app.models.post.info(postID, emitter);
     },
-    topicInfo: function (previous, emitter) {
-      if ( previous.postInfo ) {
+    topic: function (previous, emitter) {
+      if ( previous.post ) {
         if ( session.moderateDiscussions ) {
-          app.models.topic.info(previous.postInfo.topicUrl, emitter);
+          app.models.topic.info(previous.post.topicID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -850,8 +981,8 @@ function postTrash(post, session, emitter) {
       }
     },
     discussionView: function (previous, emitter) {
-      if ( previous.topicInfo ) {
-        app.toolbox.access.discussionView(previous.topicInfo.discussionUrl, session.groupID, emitter);
+      if ( previous.topic ) {
+        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -875,7 +1006,7 @@ function postTrash(post, session, emitter) {
       // If the post exists but the group doesn't have trash access, redirect
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
-      if ( output.postInfo ) {
+      if ( output.post ) {
         app.toolbox.access.challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {

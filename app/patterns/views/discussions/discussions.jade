@@ -23,7 +23,7 @@ each category in categories
     each discussion in category.discussions
       article(class="discussion" data-discussion-id="#{discussion.discussionID}")
         h3
-          a(href="discussion/#{discussion.discussionUrl}") #{discussion.discussionTitle}
+          a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
         p.description !{discussion.discussionDescription}
         p.stats
           span.topics #{discussion.topics} 

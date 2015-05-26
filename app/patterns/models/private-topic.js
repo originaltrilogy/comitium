@@ -100,7 +100,7 @@ function info(topic, emitter) {
     // If it's not cached, retrieve it from the database and cache it
   } else {
     app.listen({
-      topicInfo: function (emitter) {
+      topic: function (emitter) {
         app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
@@ -127,10 +127,10 @@ function info(topic, emitter) {
         app.cache.set({
           scope: scope,
           key: cacheKey,
-          value: output.topicInfo[0]
+          value: output.topic[0]
         });
 
-        emitter.emit('ready', output.topicInfo[0]);
+        emitter.emit('ready', output.topic[0]);
       } else {
         emitter.emit('error', output.listen);
       }
@@ -312,7 +312,7 @@ function insert(args, emitter) {
             if ( !args.draft ) {
               // Clear the cache for this discussion
               app.cache.clear({ scope: args.discussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
+              app.cache.clear({ scope: 'discussions-categories' });
             }
 
           } else {
@@ -569,7 +569,7 @@ function move(args, emitter) {
               app.cache.clear({ scope: args.topicUrl });
               app.cache.clear({ scope: args.discussionUrl });
               app.cache.clear({ scope: args.newDiscussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
+              app.cache.clear({ scope: 'discussions-categories' });
 
               emitter.emit('ready', {
                 success: true
@@ -718,7 +718,7 @@ function reply(args, emitter) {
               // Clear the cache for this topic and discussion
               app.cache.clear({ scope: args.topicUrl });
               app.cache.clear({ scope: args.discussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
+              app.cache.clear({ scope: 'discussions-categories' });
             }
 
           } else {

@@ -11,7 +11,7 @@ function handler(params, context, emitter) {
 
   app.listen({
     access: function (emitter) {
-      app.toolbox.access.discussionView(params.url.discussion, params.session.groupID, emitter);
+      app.toolbox.access.discussionView(params.url.id, params.session.groupID, emitter);
     }
   }, function (output) {
     var models = {};
@@ -19,14 +19,14 @@ function handler(params, context, emitter) {
     params.url.page = params.url.page || 1;
 
     models = {
-      discussionInfo: function (emitter) {
-        app.models.discussion.info(params.url.discussion, emitter);
+      discussion: function (emitter) {
+        app.models.discussion.info(params.url.id, emitter);
       },
       topics: function (emitter) {
         var start = ( params.url.page - 1 ) * 25,
             end = start + 25;
         app.models.discussion.topics({
-          discussion: params.url.discussion,
+          discussionID: params.url.id,
           start: start,
           end: end
         }, emitter);
@@ -35,7 +35,7 @@ function handler(params, context, emitter) {
 
     if ( params.url.page === 1 ) {
       models.announcements = function (emitter) {
-        app.models.discussion.announcements(params.url.discussion, emitter);
+        app.models.discussion.announcements(params.url.id, emitter);
       };
     }
 
@@ -47,9 +47,9 @@ function handler(params, context, emitter) {
         if ( output.listen.success ) {
 
           content = {
-            discussionInfo: output.discussionInfo,
-            breadcrumbs: app.models.discussion.breadcrumbs(output.discussionInfo.discussionTitle),
-            pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'discussion/' + output.discussionInfo.discussionUrl, params.url.page, output.discussionInfo.topics)
+            discussion: output.discussion,
+            breadcrumbs: app.models.discussion.breadcrumbs(output.discussion.title),
+            pagination: app.toolbox.helpers.paginate('discussion/' + output.discussion.url + '/id/' + output.discussion.id, params.url.page, output.discussion.topics)
           };
 
           if ( output.announcements && app.size(output.announcements) ) {

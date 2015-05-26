@@ -1,7 +1,7 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
   h2
-    img(src="#{config.main.staticAssetUrl}/avatars/#{post.authorUrl}.png")
-    a(href="#{config.main.basePath}user/#{post.authorUrl}")
+    img(src="#{config.main.staticAssetUrl}avatars/#{post.authorUrl}.png")
+    a(href="user/#{post.authorUrl}")
       = post.author
     time
       = post.dateCreated
@@ -9,24 +9,25 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
     != post.html
   nav.actions
     ul
-      if url.topic
+      if route.controller === 'topic'
         li.reply
           a(href="#{route.pathname}/action/reply") Reply
         li.quote
           a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
       if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
         li.edit
-          a(href="#{config.main.basePath}post/#{post.id}/action/edit") Edit
+          a(href="post/#{post.id}/action/edit") Edit
       li.bookmark
-        a(href="#{config.main.basePath}post/#{post.id}/action/bookmark") Bookmark
-      li.report
-        a(href="#{config.main.basePath}post/#{post.id}/action/report") Report
+        a(href="post/#{post.id}/action/bookmark") Bookmark
+      if !topic.private
+        li.report
+          a(href="post/#{post.id}/action/report") Report
       if session.moderateDiscussions
         if post.lockedByID === 0
           li.lock
-            a(href="#{config.main.basePath}post/#{post.id}/action/lock") Lock
+            a(href="post/#{post.id}/action/lock") Lock
         else
           li.unlock
-            a(href="#{config.main.basePath}post/#{post.id}/action/unlock") Unlock
+            a(href="post/#{post.id}/action/unlock") Unlock
         li.delete
-          a(href="#{config.main.basePath}post/#{post.id}/action/trash") Delete
+          a(href="#post/#{post.id}/action/trash") Delete

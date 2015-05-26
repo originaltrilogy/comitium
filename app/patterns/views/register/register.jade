@@ -10,14 +10,15 @@ section.sign-up-form
         ul
           li.username.text.required
             label(for="username") Username
+            p.label-note What the public sees when you post in the forum
             input#username(name="username" type="text" value="#{form.username}" required)
           li.email.text.required
             label(for="email") E-mail Address
-            p.label-note Required for account activation
+            p.label-note Required for account activation and signing in
             input#email(name="email" type="email" value="#{form.email}" required)
           li.password.text.required
             label(for="password") Password
-            p.label-note At least 8 characters, letters and numbers only
+            p.label-note At least 8 characters, anything but spaces
             input#password(name="password" type="password" value="#{form.password}" required)
           li.verify-password.text.required
             label(for="verify-password") Verify Password

@@ -1,9 +1,11 @@
 /*-------------------
 topic view
 -------------------*/
-body[data-controller="topic"] {
+body[data-controller="topic"],
+body[data-controller="private-topic"] {
 
-  &[data-view="topic"] {
+  &[data-view="topic"],
+  &[data-view="private-topic"] {
     h1 {
       text-transform: none;
       letter-spacing: 0;

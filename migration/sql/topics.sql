@@ -15,9 +15,7 @@ create table "topics" (
   "titleHtml" text,
   -- make not null for installation script:
   -- "titleHtml" text not null,
-  "url" text,
-  -- Make unique/not null for installation script:
-  -- "url" text unique not null,
+  "url" text not null,
   "sortDate" timestamp not null,
   "replies" integer not null,
   -- "views" integer not null,

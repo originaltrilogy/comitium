@@ -67,8 +67,8 @@ function topics(args, emitter) {
   // See if this topic subset is already cached
   var start = args.start || 0,
       end = args.end || 25,
-      cacheKey = 'models-private-topics-subset-' + start + '-' + end,
-      scope = 'user-' + args.userID,
+      cacheKey = 'topics-' + start + '-' + end,
+      scope = 'private-topics-' + args.userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object

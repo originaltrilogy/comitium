@@ -27,7 +27,7 @@ function handler(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
@@ -36,7 +36,7 @@ function handler(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          post: output.postInfo
+          post: output.post
         },
         handoff: {
           controller: '+_layout'
@@ -64,7 +64,7 @@ function bookmark(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
@@ -73,7 +73,7 @@ function bookmark(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          post: output.postInfo
+          post: output.post
         },
         view: 'bookmark',
         include: {
@@ -104,7 +104,7 @@ function bookmarkForm(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
@@ -115,7 +115,7 @@ function bookmarkForm(params, context, emitter) {
         saveBookmark: function (emitter) {
           app.models.post.saveBookmark({
             userID: params.session.userID,
-            postID: output.postInfo.id,
+            postID: output.post.id,
             notes: params.form.notes
           }, emitter);
         }
@@ -306,7 +306,7 @@ function lock(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postLock(params.url.post, params.session, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
@@ -315,7 +315,7 @@ function lock(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          post: output.postInfo
+          post: output.post
         },
         view: 'lock',
         include: {
@@ -346,11 +346,11 @@ function lockForm(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postLock(params.url.post, params.session, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
-    var post = output.postInfo,
+    var post = output.post,
         markdown = new Remarkable({
           breaks: true,
           linkify: true
@@ -381,7 +381,7 @@ function lockForm(params, context, emitter) {
             if ( params.form.notify ) {
 
               app.listen({
-                userInfo: function (emitter) {
+                user: function (emitter) {
                   app.models.user.info({
                     user: post.authorUrl
                   }, emitter);
@@ -395,7 +395,7 @@ function lockForm(params, context, emitter) {
 
                 app.mail.sendMail({
                   from: app.config.main.email,
-                  to: output.userInfo.email,
+                  to: output.user.email,
                   subject: 'Forum post lock notification',
                   text: mailText
                 });
@@ -453,11 +453,11 @@ function unlock(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postLock(params.url.post, params.session, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
-    var post = output.postInfo;
+    var post = output.post;
 
     if ( output.listen.success ) {
 
@@ -505,7 +505,7 @@ function report(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
@@ -514,7 +514,7 @@ function report(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          post: output.postInfo
+          post: output.post
         },
         view: 'report',
         include: {
@@ -545,11 +545,11 @@ function reportForm(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
-    var post = output.postInfo,
+    var post = output.post,
         markdown = new Remarkable({
           breaks: true,
           linkify: true
@@ -636,7 +636,7 @@ function trash(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postTrash(params.url.post, params.session, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
@@ -645,7 +645,7 @@ function trash(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          post: output.postInfo
+          post: output.post
         },
         view: 'trash',
         include: {
@@ -676,11 +676,11 @@ function trashForm(params, context, emitter) {
     access: function (emitter) {
       app.toolbox.access.postTrash(params.url.post, params.session, emitter);
     },
-    postInfo: function (previous, emitter) {
+    post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
     }
   }, function (output) {
-    var post = output.postInfo,
+    var post = output.post,
         markdown = new Remarkable({
           breaks: true,
           linkify: true
@@ -714,7 +714,7 @@ function trashForm(params, context, emitter) {
             if ( params.form.notify ) {
 
               app.listen({
-                userInfo: function (emitter) {
+                user: function (emitter) {
                   app.models.user.info({
                     user: post.authorUrl
                   }, emitter);
@@ -730,7 +730,7 @@ function trashForm(params, context, emitter) {
 
                 app.mail.sendMail({
                   from: app.config.main.email,
-                  to: output.userInfo.email,
+                  to: output.user.email,
                   subject: 'Your forum post was deleted',
                   text: mailText
                 });

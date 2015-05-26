@@ -12,7 +12,7 @@ module.exports = {
 function categories(groupID, emitter) {
   // See if the category list is already cached
   var cacheKey = 'group-' + groupID,
-      scope = 'models-discussions-categories',
+      scope = 'discussions-categories',
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object

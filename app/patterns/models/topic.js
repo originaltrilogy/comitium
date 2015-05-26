@@ -5,8 +5,8 @@
 module.exports = {
   exists: exists,
   hasInvitee: hasInvitee,
+  invitees: invitees,
   info: info,
-  privateInfo: privateInfo,
   insert: insert,
   posts: posts,
   lock: lock,
@@ -24,7 +24,7 @@ module.exports = {
 };
 
 
-function exists(topic, emitter) {
+function exists(topicID, emitter) {
   app.listen({
     exists: function (emitter) {
       app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
@@ -32,8 +32,8 @@ function exists(topic, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select id from topics where url = $1;',
-            [ topic ],
+            'select id from topics where id = $1;',
+            [ topicID ],
             function (err, result) {
               done();
               if ( err ) {
@@ -88,61 +88,31 @@ function hasInvitee(args, emitter) {
 }
 
 
-function info(topic, emitter) {
-  // See if this topic info is already cached
-  var cacheKey = 'models-topic-info',
-      scope = topic,
-      cached = app.cache.get({ scope: scope, key: cacheKey });
-
-  // If it's cached, return the cache object
-  if ( cached ) {
-    emitter.emit('ready', cached);
-    // If it's not cached, retrieve it from the database and cache it
-  } else {
-    app.listen({
-      topicInfo: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+function invitees(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select "userID" from "topicInvitations" where "topicID" = $1;',
+        [ args.topicID ],
+        function (err, result) {
+          done();
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            client.query(
-              'select d."id" as "discussionID", d."title" as "discussionTitle", d."url" as "discussionUrl", t."sortDate" as "time", t."id", t."url", t."replies", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t join "discussions" d on d."id" = t."discussionID" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."url" = $1;',
-              [ topic ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
+            emitter.emit('ready', result.rows);
           }
-        });
-      }
-    }, function (output) {
-
-      if ( output.listen.success ) {
-        // Cache the topic info object for future requests
-        app.cache.set({
-          scope: scope,
-          key: cacheKey,
-          value: output.topicInfo[0]
-        });
-
-        emitter.emit('ready', output.topicInfo[0]);
-      } else {
-        emitter.emit('error', output.listen);
-      }
-
-    });
-  }
+        }
+      );
+    }
+  });
 }
 
 
-function privateInfo(topicID, emitter) {
+function info(topicID, emitter) {
   // See if this topic info is already cached
-  var cacheKey = 'models-topic-info',
+  var cacheKey = 'info',
       scope = 'topic-' + topicID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
@@ -152,13 +122,13 @@ function privateInfo(topicID, emitter) {
     // If it's not cached, retrieve it from the database and cache it
   } else {
     app.listen({
-      topicInfo: function (emitter) {
+      topic: function (emitter) {
         app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."sortDate" as "time", t."id", t."url", t."replies", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."id" = $1;',
+              'select d."id" as "discussionID", d."title" as "discussionTitle", d."url" as "discussionUrl", t."sortDate" as "time", t."id", t."url", t."replies", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
@@ -179,10 +149,10 @@ function privateInfo(topicID, emitter) {
         app.cache.set({
           scope: scope,
           key: cacheKey,
-          value: output.topicInfo[0]
+          value: output.topic[0]
         });
 
-        emitter.emit('ready', output.topicInfo[0]);
+        emitter.emit('ready', output.topic[0]);
       } else {
         emitter.emit('error', output.listen);
       }
@@ -192,11 +162,12 @@ function privateInfo(topicID, emitter) {
 }
 
 
+
 function insert(args, emitter) {
   var title = args.titleMarkdown.trim() || '',
       content = args.markdown.trim() || '';
 
-  if ( !title.length || !content.length ) {
+  if ( !title.length || !content.length || ( args.private && !args.invitees.length ) ) {
     emitter.emit('ready', {
       success: false,
       reason: 'requiredFieldsEmpty',
@@ -209,27 +180,7 @@ function insert(args, emitter) {
         emitter.emit('error', err);
       } else {
         app.listen('waterfall', {
-          urlExists: function (emitter) {
-
-            client.query(
-              'select id from topics where url = $1;',
-              [ args.url ],
-              function (err, result) {
-                if ( err ) {
-                  done();
-                  emitter.emit('error', err);
-                } else {
-                  if ( result.rows.length ) {
-                    emitter.emit('ready', true);
-                  } else {
-                    emitter.emit('ready', false);
-                  }
-                }
-              }
-            );
-
-          },
-          begin: function (previous, emitter) {
+          begin: function (emitter) {
 
             client.query('begin', function (err) {
               if ( err ) {
@@ -242,12 +193,11 @@ function insert(args, emitter) {
 
           },
           insertTopic: function (previous, emitter) {
-            var url = previous.urlExists ? args.url + '-' + Date.now() : args.url;
 
             client.query(
               'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
               'values ( $1, 0, 0, $2, $3, $4, $5, 0, $6, $7, 0 ) returning id;',
-              [ args.discussionID, args.titleMarkdown, args.titleHtml, url, args.time, args.draft, args.private ],
+              [ args.discussionID, args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft, args.private ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -256,8 +206,7 @@ function insert(args, emitter) {
                   emitter.emit('error', err);
                 } else {
                   emitter.emit('ready', {
-                    id: result.rows[0].id,
-                    url: url
+                    id: result.rows[0].id
                   });
                 }
               }
@@ -297,7 +246,11 @@ function insert(args, emitter) {
                   });
                   emitter.emit('error', err);
                 } else {
-                  emitter.emit('ready');
+                  if ( args.private ) {
+                    emitter.emit('ready');
+                  } else {
+                    emitter.emit('skip');
+                  }
                 }
               }
             );
@@ -306,81 +259,81 @@ function insert(args, emitter) {
           insertInvitation: function (previous, emitter) {
             var userMethods = {};
 
-            if ( !args.private ) {
-              emitter.emit('ready');
-            } else {
-              args.invitees.forEach( function (item, indext, array) {
-                userMethods[item] = function (emitter) {
-                  client.query(
-                    'select id from users where username = $1;',
-                    [ item ],
-                    function (err, result) {
-                      if ( err ) {
-                        client.query('rollback', function (err) {
-                          done();
-                        });
-                        emitter.emit('error', err);
-                      } else {
-                        emitter.emit('ready', result.rows[0]);
-                      }
-                    }
-                  );
-                };
-              });
-
-              app.listen(userMethods, function (output) {
-                var insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
-                    insert = true;
-
-                if ( output.listen.success ) {
-                  delete output.listen;
-                  for ( var property in output ) {
-                    if ( output[property] ) {
-                      insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
-                    } else {
-                      insert = false;
-                      break;
-                    }
-                  }
-
-                  if ( insert ) {
-                    app.listen({
-                      insert: function (emitter) {
-                        client.query(
-                          'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
-                          function (err, result) {
-                            if ( err ) {
-                              client.query('rollback', function (err) {
-                                done();
-                              });
-                              emitter.emit('error', err);
-                            } else {
-                              emitter.emit('ready');
-                            }
-                          }
-                        );
-                      }
-                    }, function (output) {
-                      if ( output.listen.success ) {
-                        emitter.emit('ready');
-                      } else {
-                        emitter.emit('error', output.listen);
-                      }
-                    });
-                  } else {
-                    client.query('rollback', function (err) {
-                      done();
-                      emitter.emit('error', {
-                        message: 'The user you specified (' + property + ') doesn\'t exist.'
+            args.invitees.forEach( function (item, indext, array) {
+              userMethods[item] = function (emitter) {
+                client.query(
+                  'select id from users where username = $1;',
+                  [ item ],
+                  function (err, result) {
+                    if ( err ) {
+                      client.query('rollback', function (err) {
+                        done();
                       });
-                    });
+                      emitter.emit('error', err);
+                    } else {
+                      emitter.emit('ready', result.rows[0]);
+                    }
                   }
+                );
+              };
+            });
 
-                } else {
-                  emitter.emit('error', output.listen);
+            app.listen(userMethods, function (output) {
+              var userIDs = [ args.userID ],
+                  insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
+                  insert = true;
+
+              if ( output.listen.success ) {
+                delete output.listen;
+                for ( var property in output ) {
+                  if ( output[property] ) {
+                    userIDs.push(output[property].id);
+                    insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
+                  } else {
+                    insert = false;
+                    break;
+                  }
                 }
-              });
-            }
+
+                if ( insert ) {
+                  app.listen({
+                    insert: function (emitter) {
+                      client.query(
+                        'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
+                        function (err, result) {
+                          if ( err ) {
+                            client.query('rollback', function (err) {
+                              done();
+                            });
+                            emitter.emit('error', err);
+                          } else {
+                            emitter.emit('ready');
+                          }
+                        }
+                      );
+                    }
+                  }, function (output) {
+                    if ( output.listen.success ) {
+                      emitter.emit('skip', {
+                        userIDs: userIDs
+                      });
+                    } else {
+                      emitter.emit('error', output.listen);
+                    }
+                  });
+                } else {
+                  client.query('rollback', function (err) {
+                    done();
+                    emitter.emit('error', {
+                      message: 'The user you specified (' + property + ') doesn\'t exist.'
+                    });
+                  });
+                }
+
+              } else {
+                emitter.emit('error', output.listen);
+              }
+            });
 
           },
           updateDiscussionStats: function (previous, emitter) {
@@ -434,17 +387,21 @@ function insert(args, emitter) {
         }, function (output) {
 
           if ( output.listen.success ) {
-
+console.log(output);
             emitter.emit('ready', {
               success: true,
-              id: output.insertTopic.id,
-              url: output.insertTopic.url
+              id: output.insertTopic.id
             });
 
-            if ( !args.draft && !args.private ) {
-              // Clear the cache for this discussion
-              app.cache.clear({ scope: args.discussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
+            if ( !args.draft ) {
+              if ( args.private ) {
+                output.insertInvitation.userIDs.forEach( function (item, index, array) {
+                  app.cache.clear({ scope: 'private-topics-' + item });
+                });
+              } else {
+                app.cache.clear({ scope: 'discussion-' + args.discussionID });
+                app.cache.clear({ scope: 'discussions-categories' });
+              }
             }
 
           } else {
@@ -464,11 +421,10 @@ function insert(args, emitter) {
 
 function posts(args, emitter) {
   // See if this topic subset is already cached
-  var topic = args.topic,
-      start = args.start || 0,
+  var start = args.start || 0,
       end = args.end || 25,
-      cacheKey = 'models-topic-posts-subset-' + start + '-' + end,
-      scope = topic,
+      cacheKey = 'posts-' + start + '-' + end,
+      scope = 'topic-' + args.topicID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -486,10 +442,10 @@ function posts(args, emitter) {
               'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."username" as "author", u."url" as "authorUrl" ' +
               'from posts p ' +
               'inner join users u on p."userID" = u.id ' +
-              'where p."topicID" = ( select id from topics where url = $1 ) and p.draft = false ' +
+              'where p."topicID" = $1 and p.draft = false ' +
               'order by p."dateCreated" asc ' +
               'limit $2 offset $3;',
-              [ topic, end - start, start ],
+              [ args.topicID, end - start, start ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -557,7 +513,7 @@ function lock(args, emitter) {
             emitter.emit('error', err);
           } else {
             // Clear the cache for this topic
-            app.cache.clear({ scope: args.topicUrl });
+            app.cache.clear({ scope: 'topic-' + args.topicID });
 
             emitter.emit('ready', {
               success: true,
@@ -586,7 +542,7 @@ function unlock(args, emitter) {
             emitter.emit('error', err);
           } else {
             // Clear the cache for this topic
-            app.cache.clear({ scope: args.topicUrl });
+            app.cache.clear({ scope: 'topic-' + args.topicID });
 
             emitter.emit('ready', {
               success: true,
@@ -698,10 +654,10 @@ function move(args, emitter) {
             if ( output.listen.success ) {
 
               // Clear the cache for this topic
-              app.cache.clear({ scope: args.topicUrl });
-              app.cache.clear({ scope: args.discussionUrl });
-              app.cache.clear({ scope: args.newDiscussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
+              app.cache.clear({ scope: 'topic-' + args.topicID });
+              app.cache.clear({ scope: 'discussion-' + args.discussionID });
+              app.cache.clear({ scope: 'discussion-' + args.newDiscussionID });
+              app.cache.clear({ scope: 'discussions-categories' });
 
               emitter.emit('ready', {
                 success: true
@@ -783,9 +739,15 @@ function reply(args, emitter) {
                   });
                   emitter.emit('error', err);
                 } else {
-                  emitter.emit('ready', {
-                    affectedRows: result.rowCount
-                  });
+                  if ( !args.private ) {
+                    emitter.emit('ready', {
+                      affectedRows: result.rowCount
+                    });
+                  } else {
+                    emitter.emit('skip', {
+                      affectedRows: result.rowCount
+                    });
+                  }
                 }
               }
             );
@@ -848,9 +810,22 @@ function reply(args, emitter) {
 
             if ( !args.draft ) {
               // Clear the cache for this topic and discussion
-              app.cache.clear({ scope: args.topicUrl });
-              app.cache.clear({ scope: args.discussionUrl });
-              app.cache.clear({ scope: 'models-discussions-categories' });
+              app.cache.clear({ scope: 'topic-' + args.topicID });
+
+              if ( args.private ) {
+                app.listen({
+                  invitees: function (emitter) {
+                    invitees(args.topicID, emitter);
+                  }
+                }, function (output) {
+                  output.invitees.forEach( function (item, index, array) {
+                    app.cache.clear({ scope: 'private-topics-' + item });
+                  });
+                });
+              } else {
+                app.cache.clear({ scope: 'discussion-' + args.discussionID });
+                app.cache.clear({ scope: 'discussions-categories' });
+              }
             }
 
           } else {
@@ -873,41 +848,22 @@ function subscriptionExists(args, emitter) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
-          if ( args.topicID ) {
-            client.query(
-              'select "id" from subscriptions where "userID" = $1 and "topicID" = $2;',
-              [ args.userID, args.topicID ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
+          client.query(
+            'select "id" from subscriptions where "userID" = $1 and "topicID" = $2;',
+            [ args.userID, args.topicID ],
+            function (err, result) {
+              done();
+              if ( err ) {
+                emitter.emit('error', err);
+              } else {
+                if ( result.rows.length ) {
+                  emitter.emit('ready', true);
                 } else {
-                  if ( result.rows.length ) {
-                    emitter.emit('ready', true);
-                  } else {
-                    emitter.emit('ready', false);
-                  }
+                  emitter.emit('ready', false);
                 }
               }
-            );
-          } else if ( args.topic ) {
-            client.query(
-              'select "id" from subscriptions where "userID" = $1 and "topicID" = ( select "id" from topics where url = $2 );',
-              [ args.userID, args.topic ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  if ( result.rows.length ) {
-                    emitter.emit('ready', true);
-                  } else {
-                    emitter.emit('ready', false);
-                  }
-                }
-              }
-            );
-          }
+            }
+          );
         }
       });
     }
@@ -1127,7 +1083,7 @@ function viewTimeUpdate(args, emitter) {
 }
 
 
-function breadcrumbs(discussionTitle, discussionUrlTitle) {
+function breadcrumbs(discussionTitle, discussionUrl, discussionID) {
   return {
     a: {
       name: 'Forum Home',
@@ -1135,11 +1091,11 @@ function breadcrumbs(discussionTitle, discussionUrlTitle) {
     },
     b: {
       name: 'Discussion Categories',
-      url: app.config.main.basePath + 'discussions'
+      url: 'discussions'
     },
     c: {
       name: discussionTitle,
-      url: app.config.main.basePath + 'discussion/' + discussionUrlTitle
+      url: discussionID ? 'discussion/' + discussionUrl + '/id/' + discussionID : discussionUrl
     }
   };
 }

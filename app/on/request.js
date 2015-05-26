@@ -9,8 +9,7 @@
 'use strict';
 
 module.exports = {
-  start: start,
-  end: end
+  start: start
 };
 
 
@@ -21,17 +20,6 @@ function start(params, context, emitter) {
   // page, where they'll be redirected to the original route after login.
 
   var authenticationRequired = {
-        conversation: {
-          handler: true,
-          start: true,
-          startForm: true,
-          reply: true,
-          replyForm: true,
-          view: true
-        },
-        conversations: {
-          handler: true
-        },
         user: {
           ban: true,
           unban: true
@@ -39,10 +27,15 @@ function start(params, context, emitter) {
         topic: {
           start: true,
           startForm: true,
+          startPrivate: true,
+          startPrivateForm: true,
           reply: true,
           replyForm: true,
           subscribe: true,
           unsubscribe: true
+        },
+        'private-topics': {
+          handler: true
         },
         post: {
           bookmark: true,
@@ -67,9 +60,4 @@ function start(params, context, emitter) {
   emitter.emit('ready', {
     redirect: redirect
   });
-}
-
-
-function end(params, context, emitter) {
-  emitter.emit('ready');
 }
