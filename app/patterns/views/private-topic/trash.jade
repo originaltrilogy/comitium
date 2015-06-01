@@ -4,7 +4,7 @@ section.topic-trash-form
   if trash && trash.message
     p.message
       = trash.message
-  form#topic-trash-form(action="#{config.main.basePath}topic/#{url.topic}/action/trashForm" method="post" novalidate)
+  form#topic-trash-form(action="topic/#{url.topic}/action/trashForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       //- ul

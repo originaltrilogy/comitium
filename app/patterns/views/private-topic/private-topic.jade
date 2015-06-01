@@ -45,6 +45,6 @@ section.posts
     each post in posts
       include ../post/post
   else
-    p This topic has no replies. <a href="#{config.main.basePath}topic-reply/topic/#{topic.url}">Why not weigh in?</a>
+    p This topic has no replies. <a href="topic-reply/topic/#{topic.url}">Why not weigh in?</a>
 
 include ../partials/pagination

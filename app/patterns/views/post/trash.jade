@@ -4,7 +4,7 @@ section.post-delete-form
   if trash && trash.message
     p.message
       = trash.message
-  form#post-delete-form(action="#{config.main.basePath}post/#{url.post}/action/trashForm" method="post" novalidate)
+  form#post-delete-form(action="post/#{url.post}/action/trashForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul

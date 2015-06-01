@@ -4,7 +4,7 @@ section.topic-move-form
   if move && move.message
     p.message
       = move.message
-  form#topic-move-form(action="#{config.main.basePath}topic/#{url.topic}/action/moveForm" method="post" novalidate)
+  form#topic-move-form(action="topic/#{url.topic}/action/moveForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul

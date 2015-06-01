@@ -4,23 +4,18 @@ Migration order:
 1. Users
   - users.sql
   - user-url-slug-generation.js
-  - user-url-unique-generation.js
 
 2. Topics
   - topics.sql
   - topic-title-markdown-generation.js
   - topic-url-slug-generation.js
-  - topic-url-unique-generation.js
 
 3. Posts
   - posts.sql
   - post-content-markdown-generation.js
 
-4. Private messages (conversations)
-  - conversations.sql
-  - conversation-title-markdown-generation.js
-  - conversation-url-slug-generation.js
-  - conversation-url-unique-generation.js
+4. Private topics (old PM migration)
+  - private-messages.sql
 
 5. Remaining items
   - batch.sql

@@ -20,7 +20,7 @@ app.listen('waterfall', {
         emitter.emit('error', err);
       } else {
         client.query(
-          'select "id", "html" from "posts" where "id" > 750000 and "markdown" = \' \' order by "id" asc;',
+          'select "id", "html" from "posts" where "markdown" = \' \' order by "id" desc limit 15000;',
           function (err, result) {
             done();
             if ( err ) {

@@ -15,7 +15,7 @@ if session.talkPrivately
     //-     dd.last-post
     //-       time #{discussion.lastPostDate}
     //-       |  by 
-    //-       a(href="#{config.main.basePath}user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+    //-       a(href="user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
 
 each category in categories
   section(class="category" data-category-id="#{category.categoryID}")
@@ -35,4 +35,4 @@ each category in categories
         //-     dd.last-post
         //-       time #{discussion.lastPostDate}
         //-       |  by 
-        //-       a(href="#{config.main.basePath}user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+        //-       a(href="user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}

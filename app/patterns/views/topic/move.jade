@@ -4,7 +4,7 @@ section.topic-move-form
   if move && move.message
     p.message
       = move.message
-  form#topic-move-form(action="#{config.main.basePath}topic/#{url.topic}/action/moveForm" method="post" novalidate)
+  form#topic-move-form(action="topic/id/#{url.id}/action/moveForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul
@@ -14,7 +14,7 @@ section.topic-move-form
             each category in categories
               optgroup(label=category.categoryTitle)
               each discussion in category.discussions
-                option(value=discussion.discussionUrl)
+                option(value=discussion.discussionID)
                   = discussion.discussionTitle
         li.notify.checkbox
           input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)

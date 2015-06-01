@@ -4,7 +4,7 @@ section.post-report-form
   if report && report.message
     p.message
       = report.message
-  form#post-report-form(action="#{config.main.basePath}post/#{url.post}/action/reportForm" method="post" novalidate)
+  form#post-report-form(action="post/#{url.post}/action/reportForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul

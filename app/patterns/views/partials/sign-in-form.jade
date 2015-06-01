@@ -1,7 +1,7 @@
 section.sign-in-form
   if !session.username
     //- The form action requires a unique route so the results page isn't cached along with the default /login view
-    form(action="#{config.main.basePath}sign-in/action/submit" method="post" novalidate)
+    form(action="sign-in/action/submit" method="post" novalidate)
       if authenticate && authenticate.message
         .login-messages
           ul
@@ -25,7 +25,7 @@ section.sign-in-form
           li.primary
             input(name="formAction" type="submit" value="Sign in")
           li.secondary
-            a(href="#{config.main.basePath}password-reset" title="Reset your forum password and have your login credentials e-mailed to you.") I forgot my login credentials...
+            a(href="password-reset" title="Reset your forum password and have your login credentials e-mailed to you.") I forgot my login credentials...
   else
     p You're already signed in as <strong>#{session.username}</strong>.
-    p Not you? <a href="#{config.main.basePath}sign-out">Sign out of the forum</a> and sign in as a different user.
+    p Not you? <a href="sign-out">Sign out of the forum</a> and sign in as a different user.

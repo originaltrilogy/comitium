@@ -138,60 +138,6 @@ function privateTopicsView(session, emitter) {
 }
 
 
-//
-// function privateTopicView(topicID, session, emitter) {
-//
-//   app.listen({
-//     userIsInvited: function (emitter) {
-//       app.models.topic.hasInvitee({
-//         topicID: topicID,
-//         userID: session.userID
-//       }, emitter);
-//     }
-//   }, function (output) {
-//     if ( output.listen.success ) {
-//       if ( session.talkPrivately && output.userIsInvited ) {
-//         emitter.emit('ready', true);
-//       } else {
-//         emitter.emit('error', {
-//           statusCode: 403
-//         });
-//       }
-//     } else {
-//       emitter.emit('error', output.listen);
-//     }
-//   });
-//
-// }
-
-
-
-function privateTopicReply(topicID, session, emitter) {
-
-  app.listen({
-    userIsInvited: function (emitter) {
-      app.models.topic.hasInvitee({
-        topicID: topicID,
-        userID: session.userID
-      }, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( session.talkPrivately && output.userIsInvited ) {
-        emitter.emit('ready', true);
-      } else {
-        emitter.emit('error', {
-          statusCode: 403
-        });
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
 
 function discussionView(discussionID, groupID, emitter) {
 
@@ -377,7 +323,7 @@ function topicMerge(topicID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
+        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -431,7 +377,7 @@ function topicMove(topicID, session, emitter) {
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
         if ( session.moderateDiscussions ) {
-          app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
+          app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -475,7 +421,7 @@ function topicMove(topicID, session, emitter) {
 
 
 
-function topicMoveForm(topicID, discussion, session, emitter) {
+function topicMoveForm(topicID, newDiscussionID, session, emitter) {
 
 	app.listen('waterfall', {
     topic: function (emitter) {
@@ -490,7 +436,7 @@ function topicMoveForm(topicID, discussion, session, emitter) {
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
         if ( session.moderateDiscussions ) {
-          app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
+          app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -503,7 +449,7 @@ function topicMoveForm(topicID, discussion, session, emitter) {
       }
     },
     discussionMoveView: function (previous, emitter) {
-      app.toolbox.access.discussionView(discussion, session.groupID, emitter);
+      app.toolbox.access.discussionView(newDiscussionID, session.groupID, emitter);
     }
   }, function (output) {
 
@@ -615,7 +561,7 @@ function topicTrash(topicID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
+        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -782,56 +728,6 @@ function postView(postID, session, emitter) {
   });
 
 }
-
-
-
-// function postView(postID, session, emitter) {
-//
-// 	app.listen('waterfall', {
-//     post: function (emitter) {
-//       app.models.post.info(postID, emitter);
-//     },
-//     topic: function (previous, emitter) {
-//       if ( previous.post ) {
-//         app.models.topic.info(previous.post.topicID, emitter);
-//       } else {
-//         emitter.emit('error', {
-//           statusCode: 404
-//         });
-//       }
-//     },
-//     discussionView: function (previous, emitter) {
-//       if ( previous.topic ) {
-//         app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
-//       } else {
-//         emitter.emit('error', {
-//           statusCode: 404
-//         });
-//       }
-//     }
-//   }, function (output) {
-//
-//     if ( output.listen.success ) {
-//
-//       emitter.emit('ready', true);
-//
-//     } else {
-//
-//       // If the topic exists but the group doesn't have read access, redirect
-//       // unauthenticated users to the sign in page, or throw a 403 for authenticated
-//       // users
-//       if ( output.post ) {
-//         app.toolbox.access.challenge(session.groupID, emitter);
-//       // Otherwise, 404
-//       } else {
-//         emitter.emit('error', output.listen);
-//       }
-//
-//     }
-//
-//   });
-//
-// }
 
 
 

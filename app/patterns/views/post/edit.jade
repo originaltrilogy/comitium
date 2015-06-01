@@ -8,7 +8,7 @@ if preview
         != preview.content
           
 section.post-edit-form
-  form#post-edit-form(action="#{config.main.basePath}post/#{url.post}/action/editForm" method="post" novalidate)
+  form#post-edit-form(action="post/#{url.post}/action/editForm" method="post" novalidate)
     if edit && edit.message
       .edit-messages
         ul

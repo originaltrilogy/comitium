@@ -4,7 +4,7 @@
 create table "categories" (
   "id" serial not null,
   "title" text not null,
-  "url" text unique not null,
+  "url" text not null,
   "description" text,
   "metaDescription" text,
   "keywords" text,
@@ -56,7 +56,7 @@ create table "discussions" (
   "id" serial not null,
   "categoryID" integer not null,
   "title" text not null,
-  "url" text unique not null,
+  "url" text not null,
   "description" text,
   "metaDescription" text,
   "keywords" text,
@@ -515,14 +515,11 @@ from "tblForumIgnoredUsers";
 
 -- Column settings after migration
 
-alter table "users" add unique ("url");
-
 alter table "topics" alter column "discussionID" set not null;
 alter table "topics" alter column "firstPostID" set not null;
 alter table "topics" alter column "lastPostID" set not null;
 alter table "topics" alter column "titleHtml" set not null;
 alter table "topics" alter column "url" set not null;
-alter table "topics" add unique ("url");
 
 
 
@@ -530,11 +527,9 @@ alter table "topics" add unique ("url");
 
 create index on "categories" ( "id" );
 create index on "categories" ( "sort" );
-create index on "categories" ( "url" );
 create index on "discussions" ( "id" );
 create index on "discussions" ( "categoryID" );
 create index on "discussions" ( "sort" );
-create index on "discussions" ( "url" );
 create index on "discussionPermissions" ( "discussionID" );
 create index on "discussionPermissions" ( "groupID" );
 create index on "discussionPermissions" ( "read" );
@@ -542,7 +537,6 @@ create index on "discussionPermissions" ( "post" );
 create index on "discussionPermissions" ( "reply" );
 create index on "topics" ( "discussionID" );
 create index on "topics" ( "id" );
-create index on "topics" ( "url" );
 create index on "topics" ( "draft" );
 create index on "topics" ( "sortDate" );
 create index on "topics" ( "firstPostID" );
@@ -557,7 +551,6 @@ create index on "posts" ( "topicID" );
 create index on "posts" ( "userID" );
 create index on "posts" ( "dateCreated" );
 create index on "users" ( "id" );
-create index on "users" ( "url" );
 create index on "topicViews" ( "userID" );
 create index on "topicViews" ( "topicID" );
 create index on "topicViews" ( "time" );

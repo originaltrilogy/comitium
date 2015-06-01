@@ -4,7 +4,7 @@ section.post-lock-form
   if lock && lock.message
     p.message
       = lock.message
-  form#post-lock-form(action="#{config.main.basePath}post/#{url.post}/action/lockForm" method="post" novalidate)
+  form#post-lock-form(action="post/#{url.post}/action/lockForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul

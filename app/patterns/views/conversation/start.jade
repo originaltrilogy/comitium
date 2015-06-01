@@ -10,7 +10,7 @@ if preview
         != preview.message
           
 section.conversation-start-form
-  form#conversation-start-form(action="#{config.main.basePath}conversation/action/startForm/recipient/#{url.recipient}" method="post" novalidate)
+  form#conversation-start-form(action="conversation/action/startForm/recipient/#{url.recipient}" method="post" novalidate)
     if start && start.message
       .start-messages
         ul

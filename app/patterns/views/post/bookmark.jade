@@ -1,7 +1,7 @@
 h1 Bookmark a Post
     
 section.post-bookmark-form
-  form#post-bookmark-form(action="#{config.main.basePath}post/#{url.post}/action/bookmarkForm" method="post" novalidate)
+  form#post-bookmark-form(action="post/#{url.post}/action/bookmarkForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul

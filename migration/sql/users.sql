@@ -4,8 +4,6 @@ create table "users" (
   "username" text not null,
   "passwordHash" text not null,
   "url" text not null,
-  -- Make unique for installation script:
-  -- "url" text unique not null,
   "email" text not null,
   "timezone" integer not null,
   "dateFormat" text not null,

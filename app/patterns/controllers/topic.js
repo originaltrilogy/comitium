@@ -1161,7 +1161,6 @@ function trashForm(params, context, emitter) {
             topicID: topic.id,
             topicUrl: topic.url,
             discussionID: topic.discussionID,
-            discussionUrl: topic.discussionUrl,
             newDiscussionID: 1,
             newDiscussionUrl: 'Trash'
           }, emitter);

@@ -6,11 +6,8 @@ create table "topics" (
   "discussionID" integer,
   -- make not null in installation script:
   -- "discussionID" integer not null,
-  "firstPostID" integer,
-  "lastPostID" integer,
-  -- make not null for installation script:
-  -- "firstPostID" integer not null,
-  -- "lastPostID" integer not null,
+  "firstPostID" integer not null,
+  "lastPostID" integer not null,
   "titleMarkdown" text not null,
   "titleHtml" text,
   -- make not null for installation script:
@@ -18,7 +15,6 @@ create table "topics" (
   "url" text not null,
   "sortDate" timestamp not null,
   "replies" integer not null,
-  -- "views" integer not null,
   "draft" boolean not null,
   "private" boolean not null,
   "lockedByID" integer default 0,
@@ -41,7 +37,6 @@ insert into "topics" (
   "url",
   "sortDate",
   "replies",
-  -- "views",
   "draft",
   "private"
 )
@@ -59,7 +54,6 @@ select
   ' ',
   "dteStickyDate",
   "intTopicReplyCount",
-  -- "intTopicViewCount",
   "bitDraft",
   false
 from "tblForumTopics" t where "intFirstTopicPostID" is not null;
