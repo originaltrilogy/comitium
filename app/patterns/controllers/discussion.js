@@ -60,10 +60,7 @@ function handler(params, context, emitter) {
           }
 
           emitter.emit('ready', {
-            content: content,
-            handoff: {
-              controller: '+_layout'
-            }
+            content: content
           });
 
         } else {

@@ -33,11 +33,10 @@ function form(params, context, emitter) {
         reset: {
           message: 'Your e-mail address is required.'
         }
-      },
-      handoff: {
-        controller: '+_layout'
       }
     });
+  } else {
+    
   }
 
 }

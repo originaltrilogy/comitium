@@ -35,10 +35,7 @@ function handler(params, context, emitter) {
     if ( output.listen.success ) {
 
       emitter.emit('ready', {
-        content: output,
-        handoff: {
-          controller: '+_layout'
-        }
+        content: output
       });
 
     } else {

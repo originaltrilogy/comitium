@@ -81,9 +81,6 @@ function handler(params, context, emitter) {
               userIsSubscribed: output.subscriptionExists,
               pagination: app.toolbox.helpers.paginate('topic/' + output.topic.url + '/id/' + output.topic.id, params.url.page, output.topic.replies + 1),
               breadcrumbs: app.models.topic.breadcrumbs(output.topic.discussionTitle || 'Private Topics', output.topic.discussionUrl || 'private-topics', output.topic.discussionID)
-            },
-            handoff: {
-              controller: '+_layout'
             }
           });
 
@@ -126,10 +123,7 @@ function start(params, context, emitter) {
           discussion: output.discussion,
           breadcrumbs: app.models.topic.breadcrumbs(output.discussion.title, output.discussion.url, output.discussion.id)
         },
-        view: 'start',
-        handoff: {
-          controller: '+_layout'
-        }
+        view: 'start'
       });
 
     } else {
@@ -190,10 +184,7 @@ function startForm(params, context, emitter) {
                 discussion: discussion,
                 breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url)
               },
-              view: 'start',
-              handoff: {
-                controller: '+_layout'
-              }
+              view: 'start'
             });
             break;
           case 'Save as draft':
@@ -256,10 +247,7 @@ function startForm(params, context, emitter) {
                       discussion: discussion,
                       breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url, discussion.id)
                     },
-                    view: 'start',
-                    handoff: {
-                      controller: '+_layout'
-                    }
+                    view: 'start'
                   });
                 }
 
@@ -326,10 +314,7 @@ function startPrivate(params, context, emitter) {
         content: {
           invitees: output.invitees
         },
-        view: 'start-private',
-        handoff: {
-          controller: '+_layout'
-        }
+        view: 'start-private'
       });
 
     } else {
@@ -390,10 +375,7 @@ function startPrivateForm(params, context, emitter) {
                   content: parsedContent
                 }
               },
-              view: 'start-private',
-              handoff: {
-                controller: '+_layout'
-              }
+              view: 'start-private'
             });
             break;
           case 'Save as draft':
@@ -486,10 +468,7 @@ function startPrivateForm(params, context, emitter) {
                     content: {
                       topic: topic
                     },
-                    view: 'start-private',
-                    handoff: {
-                      controller: '+_layout'
-                    }
+                    view: 'start-private'
                   });
                 }
 
@@ -554,10 +533,7 @@ function reply(params, context, emitter) {
             message: message
           }
         },
-        view: 'reply',
-        handoff: {
-          controller: '+_layout'
-        }
+        view: 'reply'
       });
 
     } else {
@@ -608,10 +584,7 @@ function replyForm(params, context, emitter) {
                 topic: topic,
                 breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID)
               },
-              view: 'reply',
-              handoff: {
-                controller: '+_layout'
-              }
+              view: 'reply'
             });
             break;
           case 'Save as draft':
@@ -689,10 +662,7 @@ function replyForm(params, context, emitter) {
                       topic: topic,
                       breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID)
                     },
-                    view: 'reply',
-                    handoff: {
-                      controller: '+_layout'
-                    }
+                    view: 'reply'
                   });
                 }
 
@@ -834,10 +804,7 @@ function lock(params, context, emitter) {
         content: {
           topic: output.topic
         },
-        view: 'lock',
-        handoff: {
-          controller: '+_layout'
-        }
+        view: 'lock'
       });
 
     } else {
@@ -907,10 +874,7 @@ function lockForm(params, context, emitter) {
                 topic: topic,
                 lock: output.lock
               },
-              view: 'lock',
-              handoff: {
-                controller: '+_layout'
-              }
+              view: 'lock'
             });
 
           }
@@ -1007,10 +971,7 @@ function move(params, context, emitter) {
           topic: output.topic,
           categories: output.categories
         },
-        view: 'move',
-        handoff: {
-          controller: '+_layout'
-        }
+        view: 'move'
       });
 
     } else {
@@ -1076,10 +1037,7 @@ function moveForm(params, context, emitter) {
                 topic: topic,
                 move: output.move
               },
-              view: 'move',
-              handoff: {
-                controller: '+_layout'
-              }
+              view: 'move'
             });
 
           }
@@ -1123,10 +1081,7 @@ function trash(params, context, emitter) {
         content: {
           topic: output.topic
         },
-        view: 'trash',
-        handoff: {
-          controller: '+_layout'
-        }
+        view: 'trash'
       });
 
     } else {
@@ -1188,10 +1143,7 @@ function trashForm(params, context, emitter) {
                 topic: topic,
                 trash: output.trash
               },
-              view: 'trash',
-              handoff: {
-                controller: '+_layout'
-              }
+              view: 'trash'
             });
 
           }

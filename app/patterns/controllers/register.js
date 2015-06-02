@@ -56,9 +56,6 @@ function form(params, context, emitter) {
           emitter.emit('ready', {
             content: {
               register: output.register
-            },
-            handoff: {
-              controller: '+_layout'
             }
           });
         }
@@ -79,9 +76,6 @@ function form(params, context, emitter) {
 
 function complete(params, context, emitter) {
   emitter.emit('ready', {
-    view: 'complete',
-    handoff: {
-      controller: '+_layout'
-    }
+    view: 'complete'
   });
 }

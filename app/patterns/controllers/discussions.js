@@ -21,9 +21,6 @@ function handler(params, context, emitter) {
         content: {
           categories: output.categories,
           breadcrumbs: app.models.discussions.breadcrumbs()
-        },
-        handoff: {
-          controller: '+_layout'
         }
       });
 

@@ -38,9 +38,6 @@ function handler(params, context, emitter) {
           user: output.user,
           posts: output.posts,
           pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'user/' + output.user.url, params.url.page, output.user.postCount)
-        },
-        handoff: {
-          controller: '+_layout'
         }
       });
     } else {
@@ -78,10 +75,7 @@ function activate(params, context, emitter) {
 
         emitter.emit('ready', {
           content: output,
-          view: 'activate',
-          handoff: {
-            controller: '+_layout'
-          }
+          view: 'activate'
         });
 
       }

@@ -28,11 +28,7 @@ function handler(params, context, emitter) {
     params.form.forwardToUrl = app.config.main.baseUrl;
   }
 
-  emitter.emit('ready', {
-    handoff: {
-      controller: '+_layout'
-    }
-  });
+  emitter.emit('ready');
 }
 
 
@@ -79,9 +75,6 @@ function submit(params, context, emitter) {
           emitter.emit('ready', {
             content: {
               authenticate: output.authenticate
-            },
-            handoff: {
-              controller: '+_layout'
             }
           });
         }

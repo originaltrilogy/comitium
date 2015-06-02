@@ -23,9 +23,6 @@ function handler(params, context, emitter) {
     },
     session: {
       expires: 'now'
-    },
-    handoff: {
-      controller: '+_layout'
     }
   });
 }

@@ -37,9 +37,6 @@ function handler(params, context, emitter) {
       emitter.emit('ready', {
         content: {
           post: output.post
-        },
-        handoff: {
-          controller: '+_layout'
         }
       });
 
@@ -80,9 +77,6 @@ function bookmark(params, context, emitter) {
           post: {
             route: '/post/' + params.url.post
           }
-        },
-        handoff: {
-          controller: '+_layout'
         }
       });
 
