@@ -512,6 +512,18 @@ from "tblForumIgnoredUsers";
 
 
 
+-- Password reset
+
+create table "passwordReset" (
+  "id" serial not null,
+  "userID" integer not null,
+  "verificationCode" text not null,
+  "timeRequested" timestamp without time zone not null,
+  primary key ("id")
+);
+
+
+
 
 -- Column settings after migration
 
@@ -554,3 +566,6 @@ create index on "users" ( "id" );
 create index on "topicViews" ( "userID" );
 create index on "topicViews" ( "topicID" );
 create index on "topicViews" ( "time" );
+create index on "passwordReset" ( "id" );
+create index on "passwordReset" ( "userID" );
+create index on "passwordReset" ( "verificationCode" );

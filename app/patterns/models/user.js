@@ -17,6 +17,9 @@ module.exports = {
   insert: insert,
   isActivated: isActivated,
   isIgnored: isIgnored,
+  passwordResetInsert: passwordResetInsert,
+  passwordResetVerify: passwordResetVerify,
+  passwordResetDelete: passwordResetDelete,
   posts: posts,
   urlExists: urlExists
 };
@@ -97,6 +100,7 @@ function activate(args, emitter) {
 }
 
 
+
 function activationStatus(args, emitter) {
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
     if ( err ) {
@@ -129,6 +133,7 @@ function activationStatus(args, emitter) {
 }
 
 
+
 function authenticate(credentials, emitter) {
   var username = credentials.username.trim(),
       password = credentials.password || '',
@@ -154,12 +159,9 @@ function authenticate(credentials, emitter) {
         if ( output.user.activationDate ) {
           if ( output.user.login ) {
             if ( password.length ) {
-              // TODO: Fix existing hashes in db to use sha512 (issue new passwords to all users)
-              // and remove toLowerCase() because the new hashes will be lowercase, or just loop
-              // over the user table and update all hashes using toLowerCase()).
-              passwordHash = crypto.createHash('md5').update(password).digest('hex');
+              passwordHash = crypto.createHash('sha512').update(password).digest('hex');
             }
-            if ( output.user.passwordHash === passwordHash || output.user.passwordHash.toLowerCase() === passwordHash ) {
+            if ( output.user.passwordHash === passwordHash ) {
               emitter.emit('ready', {
                 success: true,
                 message: 'Cookies are set.',
@@ -385,6 +387,7 @@ function create(args, emitter) {
 }
 
 
+
 function emailExists(args, emitter) {
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
     if ( err ) {
@@ -410,6 +413,7 @@ function emailExists(args, emitter) {
     }
   });
 }
+
 
 
 function exists(args, emitter) {
@@ -459,6 +463,7 @@ function exists(args, emitter) {
 }
 
 
+
 function info(args, emitter) {
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
     var sql,
@@ -467,15 +472,18 @@ function info(args, emitter) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
-      if ( args.user ) {
-        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1';
-        arg = args.user;
-      } else if ( args.userID ) {
+      if ( args.userID ) {
         sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
       } else if ( args.username ) {
         sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
         arg = args.username;
+      } else if ( args.user ) {
+        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1';
+        arg = args.user;
+      } else if ( args.email ) {
+        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "email" = $1';
+        arg = args.email;
       }
       client.query(
         sql,
@@ -495,6 +503,7 @@ function info(args, emitter) {
     }
   });
 }
+
 
 
 function insert(args, emitter) {
@@ -600,6 +609,7 @@ function insert(args, emitter) {
 }
 
 
+
 function isActivated(args, emitter) {
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
     if ( err ) {
@@ -625,6 +635,7 @@ function isActivated(args, emitter) {
 }
 
 
+
 function isIgnored(args, emitter) {
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
     if ( err ) {
@@ -643,6 +654,80 @@ function isIgnored(args, emitter) {
             } else {
               emitter.emit('ready', false);
             }
+          }
+      });
+    }
+  });
+}
+
+
+
+function passwordResetInsert(args, emitter) {
+  var verificationCode = Math.random().toString().replace('0.', '') + Math.random().toString().replace('0.', '');
+  
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'insert into "passwordReset" ( "userID", "verificationCode", "timeRequested" ) values ( $1, $2, $3 ) returning id;',
+        [ args.userID, verificationCode, app.toolbox.helpers.isoDate() ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', {
+              verificationCode: verificationCode
+            });
+          }
+      });
+    }
+  });
+}
+
+
+
+function passwordResetVerify(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select "id", "userID", "verificationCode", "timeRequested" from "passwordReset" where "userID" = $1 and "verificationCode" = $2;',
+        [ args.userID, args.verificationCode ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', true);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+      });
+    }
+  });
+}
+
+
+
+function passwordResetDelete(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'delete from "passwordReset" where "userID" = $1 and "verificationCode" = $2;',
+        [ args.userID, args.verificationCode ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready');
           }
       });
     }
