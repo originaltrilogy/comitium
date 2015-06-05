@@ -2,10 +2,28 @@
 
 'use strict';
 
+var crypto = require('crypto');
+
 module.exports = {
+  hash: hash,
+  ip: ip,
   isoDate: isoDate,
   paginate: paginate
 };
+
+
+function hash(str, method) {
+  method = method || 'sha512';
+  
+  return crypto.createHash(method).update(str).digest('hex');
+}
+
+
+
+function ip(request) {
+  return request.headers['x-forwarded-for'] || request.connection.remoteAddress || request.socket.remoteAddress || ( request.connection.socket ? request.connection.socket.remoteAddress : 'undefined' );
+}
+
 
 
 function isoDate(date) {
@@ -23,6 +41,7 @@ function isoDate(date) {
 
   return isoformattedDate;
 }
+
 
 
 function paginate(url, page, itemCount) {

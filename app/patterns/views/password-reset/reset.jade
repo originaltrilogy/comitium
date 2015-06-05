@@ -1,0 +1,20 @@
+h1 Reset your password
+p Thanks for confirming your e-mail address. Please enter your new password below.
+section.password-reset-form
+  form(action="password-reset/action/resetForm/id/#{url.id}/code/#{url.code}" method="post" novalidate)
+    if reset && reset.message
+      p.message
+        = reset.message
+    .data
+      ul
+        li.password.text.required
+          label(for="password") New password
+          p.label-note At least 8 characters, anything but spaces
+          input#password(name="password" type="password" value="#{form.password}" required)
+        li.verify-password.text.required
+          label(for="verify-password") Verify your password
+          input#verify-password(name="verifyPassword" type="password" value="#{form.verifyPassword}" required)
+    .actions
+      ul
+        li.primary
+          input(name="formAction" type="submit" value="Update your password")

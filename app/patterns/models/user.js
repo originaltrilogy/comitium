@@ -21,7 +21,8 @@ module.exports = {
   passwordResetVerify: passwordResetVerify,
   passwordResetDelete: passwordResetDelete,
   posts: posts,
-  urlExists: urlExists
+  urlExists: urlExists,
+  updatePassword: updatePassword
 };
 
 
@@ -159,7 +160,7 @@ function authenticate(credentials, emitter) {
         if ( output.user.activationDate ) {
           if ( output.user.login ) {
             if ( password.length ) {
-              passwordHash = crypto.createHash('sha512').update(password).digest('hex');
+              passwordHash = app.toolbox.helpers.hash(password);
             }
             if ( output.user.passwordHash === passwordHash ) {
               emitter.emit('ready', {
@@ -670,8 +671,8 @@ function passwordResetInsert(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'insert into "passwordReset" ( "userID", "verificationCode", "timeRequested" ) values ( $1, $2, $3 ) returning id;',
-        [ args.userID, verificationCode, app.toolbox.helpers.isoDate() ],
+        'insert into "passwordReset" ( "userID", "ip", "verificationCode", "timeRequested" ) values ( $1, $2, $3, $4 ) returning id;',
+        [ args.userID, args.ip, verificationCode, app.toolbox.helpers.isoDate() ],
         function (err, result) {
           done();
           if ( err ) {
@@ -833,6 +834,34 @@ function urlExists(user, emitter) {
           }
         }
       );
+    }
+  });
+}
+
+
+
+function updatePassword(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+
+      client.query(
+        'update "users" set "passwordHash" = $1 where "id" = $2;',
+        [ app.toolbox.helpers.hash(args.password), args.userID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', {
+              success: true,
+              affectedRows: result.rows
+            });
+          }
+        }
+      );
+
     }
   });
 }

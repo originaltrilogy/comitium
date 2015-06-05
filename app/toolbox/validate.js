@@ -16,7 +16,7 @@ function email(e) {
 
 
 function password(p) {
-  var passwordRegex = new RegExp(/^[A-Za-z0-9]{8,}$/);
+  var passwordRegex = new RegExp(/[^\s]{8,}$/);
   return passwordRegex.test(p);
 }
 

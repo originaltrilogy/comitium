@@ -517,6 +517,7 @@ from "tblForumIgnoredUsers";
 create table "passwordReset" (
   "id" serial not null,
   "userID" integer not null,
+  "ip" text not null,
   "verificationCode" text not null,
   "timeRequested" timestamp without time zone not null,
   primary key ("id")

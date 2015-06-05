@@ -445,15 +445,27 @@ Fonts
   font-style: normal;
 } */
 @font-face {
-  font-family: 'Montserrat Regular ff';
-  src: url("fonts/Montserrat-Regular/Montserrat-Regular-webfont.eot");
-  src: url("fonts/Montserrat-Regular/Montserrat-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/Montserrat-Regular/Montserrat-Regular-webfont.svg#MontserratRegular") format("svg"), url("fonts/Montserrat-Regular/Montserrat-Regular-webfont.woff") format("woff"), url("fonts/Montserrat-Regular/Montserrat-Regular-webfont.ttf") format("truetype");
+  font-family: 'Open Sans Regular';
+  src: url("fonts/open-sans/opensans-regular-webfont.eot");
+  src: url("fonts/open-sans/opensans-regular-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans/opensans-regular-webfont.svg#OpenSansRegular") format("svg"), url("fonts/open-sans/opensans-regular-webfont.woff") format("woff"), url("fonts/open-sans/opensans-regular-webfont.ttf") format("truetype");
   font-weight: normal;
   font-style: normal; }
 @font-face {
-  font-family: 'Montserrat Bold ff';
-  src: url("fonts/Montserrat-Bold/Montserrat-Bold-webfont.eot");
-  src: url("fonts/Montserrat-Bold/Montserrat-Bold-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/Montserrat-Bold/Montserrat-Bold-webfont.svg#MontserratBold") format("svg"), url("fonts/Montserrat-Bold/Montserrat-Bold-webfont.woff") format("woff"), url("fonts/Montserrat-Bold/Montserrat-Bold-webfont.ttf") format("truetype");
+  font-family: 'Open Sans Light';
+  src: url("fonts/open-sans/opensans-light-webfont.eot");
+  src: url("fonts/open-sans/opensans-light-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans/opensans-light-webfont.svg#OpenSansLight") format("svg"), url("fonts/open-sans/opensans-light-webfont.woff") format("woff"), url("fonts/open-sans/opensans-light-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+@font-face {
+  font-family: 'Open Sans Bold';
+  src: url("fonts/open-sans/opensans-bold-webfont.eot");
+  src: url("fonts/open-sans/opensans-bold-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans/opensans-bold-webfont.svg#OpenSansBold") format("svg"), url("fonts/open-sans/opensans-bold-webfont.woff") format("woff"), url("fonts/open-sans/opensans-bold-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+@font-face {
+  font-family: 'Open Sans Semibold';
+  src: url("fonts/open-sans/opensans-semibold-webfont.eot");
+  src: url("fonts/open-sans/opensans-semidbold-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans/opensans-semibold-webfont.svg#OpenSansSemibold") format("svg"), url("fonts/open-sans/opensans-semibold-webfont.woff") format("woff"), url("fonts/open-sans/opensans-semibold-webfont.ttf") format("truetype");
   font-weight: normal;
   font-style: normal; }
 /*-------------------
@@ -461,7 +473,7 @@ Global styles
 -------------------*/
 body {
   position: relative;
-  font-family: "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
   text-rendering: optimizeLegibility;
   background: #484D5E; }
   body.transitioning #main {
@@ -516,7 +528,7 @@ a {
 
 header {
   background: #3E4352;
-  font-family: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
   color: #efefef;
   box-shadow: 0 0.1rem 0.4rem 0 rgba(0, 0, 0, 0.5); }
   header > a {
@@ -606,7 +618,7 @@ header {
 
 nav.breadcrumbs {
   padding: 1.2rem 1.4rem 0.8rem;
-  font-family: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif, "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
   font-size: 1.4rem;
   color: white; }
   nav.breadcrumbs li {
@@ -620,7 +632,7 @@ nav.pagination {
   width: 24rem;
   margin: 0 auto;
   padding-bottom: 1.6rem;
-  font-family: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif, "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
   color: white;
   text-align: center;
   line-height: 1; }
@@ -667,7 +679,7 @@ article {
     height: auto; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
   /* font-family: \$MontserratRegular; */
   font-weight: normal; }
 
@@ -701,7 +713,7 @@ form {
     margin-left: 1.4rem;
     margin-right: 1.4rem; }
   form label {
-    font-family: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+    font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
     font-size: 1.6rem;
     color: white; }
   form p.label-note {
@@ -778,7 +790,7 @@ form {
           background: #CFDCFF;
           border-radius: 0.3rem;
           border: none;
-          font-family: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+          font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
           font-size: 2rem;
           color: #3E4352; }
   form li.textarea label {
@@ -791,7 +803,7 @@ form {
   padding: 1.6rem 1.8rem 1.5rem;
   background: #CFDCFF;
   border-radius: 0.3rem;
-  font-family: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
   font-size: 2rem;
   color: #3E4352;
   text-decoration: none;
@@ -803,7 +815,7 @@ section.preview article {
   padding-top: 1.2rem;
   border-bottom: none; }
   section.preview article .title {
-    font-family: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+    font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
     font-size: 1.6rem; }
 
 /*-------------------
@@ -879,7 +891,7 @@ article.post {
       left: 0; }
     article.post h2 time {
       display: block;
-      font-family: "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+      font-family: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
       font-size: 1.2rem; }
 
 /*-------------------
