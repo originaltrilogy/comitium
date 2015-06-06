@@ -651,7 +651,8 @@ nav.pagination {
       right: 0; }
 
 main {
-  clear: both; }
+  clear: both;
+  overflow: hidden; }
   main > h1:first-child {
     margin-top: 2rem;
     margin-bottom: 1.6rem; }
@@ -680,7 +681,6 @@ article {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
-  /* font-family: \$MontserratRegular; */
   font-weight: normal; }
 
 h1 {

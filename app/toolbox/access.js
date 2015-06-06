@@ -611,7 +611,23 @@ function topicView(topicID, session, emitter) {
     if ( output.listen.success ) {
 
       if ( output.topic ) {
-        if ( output.topic.private ) {
+        if ( !output.topic.private ) {
+          app.listen({
+            discussionView: function (emitter) {
+              app.toolbox.access.discussionView(output.topic.discussionID, session.groupID, emitter);
+            }
+          }, function (output) {
+            if ( output.listen.success ) {
+              if ( output.discussionView ) {
+                emitter.emit('ready', true);
+              } else {
+                app.toolbox.access.challenge(session.groupID, emitter);
+              }
+            } else {
+              emitter.emit('error', output.listen);
+            }
+          });
+        } else {
           app.listen({
             userIsInvited: function (emitter) {
               app.models.topic.hasInvitee({
@@ -627,22 +643,6 @@ function topicView(topicID, session, emitter) {
                 emitter.emit('error', {
                   statusCode: 403
                 });
-              }
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
-        } else {
-          app.listen({
-            discussionView: function (emitter) {
-              app.toolbox.access.discussionView(output.topic.discussionID, session.groupID, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              if ( output.discussionView ) {
-                emitter.emit('ready', true);
-              } else {
-                app.toolbox.access.challenge(session.groupID, emitter);
               }
             } else {
               emitter.emit('error', output.listen);
