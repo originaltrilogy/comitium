@@ -18,6 +18,7 @@ module.exports = {
   topicTrash: topicTrash,
   topicView: topicView,
   announcementView: announcementView,
+  announcementReply: announcementReply,
   postView: postView,
   postEdit: postEdit,
   postLock: postLock,
@@ -496,42 +497,21 @@ function topicReply(topicID, session, emitter) {
 
       if ( output.topic ) {
         if ( !output.topic.private ) {
-          if ( output.topic.discussionID ) {
-            app.listen({
-              discussionReply: function (emitter) {
-                discussionReply(output.topic.discussionID, session.groupID, emitter);
-              }
-            }, function (output) {
-              if ( output.listen.success ) {
-                if ( output.discussionReply ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(session.groupID, emitter);
-                }
+          app.listen({
+            discussionReply: function (emitter) {
+              discussionReply(output.topic.discussionID, session.groupID, emitter);
+            }
+          }, function (output) {
+            if ( output.listen.success ) {
+              if ( output.discussionReply ) {
+                emitter.emit('ready', true);
               } else {
-                emitter.emit('error', output.listen);
+                challenge(session.groupID, emitter);
               }
-            });
-          } else {
-            app.listen({
-              announcementReply: function (emitter) {
-                app.models.announcement.groupReply({
-                  topicID: topicID,
-                  groupID: session.groupID
-                }, emitter);
-              }
-            }, function (output) {
-              if ( output.listen.success ) {
-                if ( output.announcementReply ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(session.groupID, emitter);
-                }
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
-          }
+            } else {
+              emitter.emit('error', output.listen);
+            }
+          });
         } else {
           app.listen({
             userIsInvited: function (emitter) {
@@ -622,9 +602,77 @@ function topicTrash(topicID, session, emitter) {
 
 
 
+function announcementView(topicID, session, emitter) {
+  
+  app.listen('waterfall', {
+    announcement: function (emitter) {
+      app.models.announcement.info(topicID, emitter);
+    },
+    announcementView: function (previous, emitter) {
+      if ( previous.announcement ) {
+        app.models.announcement.groupView({
+          topicID: topicID,
+          groupID: session.groupID
+        }, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.announcementView ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(session.groupID, emitter);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+
+}
+
+
+
+function announcementReply(topicID, session, emitter) {
+  
+  app.listen('waterfall', {
+    announcement: function (emitter) {
+      app.models.announcement.info(topicID, emitter);
+    },
+    announcementReply: function (previous, emitter) {
+      if ( previous.announcement ) {
+        app.models.announcement.groupReply({
+          topicID: topicID,
+          groupID: session.groupID
+        }, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.announcementReply ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(session.groupID, emitter);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+
+}
+
+
+
 function topicView(topicID, session, emitter) {
 
-	app.listen({
+	app.listen('waterfall', {
     topic: function (emitter) {
       app.models.topic.info(topicID, emitter);
     }
@@ -634,38 +682,21 @@ function topicView(topicID, session, emitter) {
 
       if ( output.topic ) {
         if ( !output.topic.private ) {
-          if ( output.topic.discussionID ) {
-            app.listen({
-              discussionView: function (emitter) {
-                discussionView(output.topic.discussionID, session.groupID, emitter);
-              }
-            }, function (output) {
-              if ( output.listen.success ) {
-                if ( output.discussionView ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(session.groupID, emitter);
-                }
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
-          } else {
-            app.listen({
-              announcementView: function (emitter) {
-                app.models.announcement.groupView({
-                  topicID: topicID,
-                  groupID: session.groupID
-                }, emitter);
-              }
-            }, function (output) {
-              if ( output.announcementView ) {
+          app.listen({
+            discussionView: function (emitter) {
+              discussionView(output.topic.discussionID, session.groupID, emitter);
+            }
+          }, function (output) {
+            if ( output.listen.success ) {
+              if ( output.discussionView ) {
                 emitter.emit('ready', true);
               } else {
                 challenge(session.groupID, emitter);
               }
-            });
-          }
+            } else {
+              emitter.emit('error', output.listen);
+            }
+          });
         } else {
           app.listen({
             userIsInvited: function (emitter) {
@@ -688,46 +719,6 @@ function topicView(topicID, session, emitter) {
             }
           });
         }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-
-}
-
-
-
-function announcementView(topicID, session, emitter) {
-
-	app.listen({
-    topic: function (emitter) {
-      app.models.topic.info(topicID, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      if ( output.topic ) {
-        app.listen({
-          announcementView: function (emitter) {
-            app.models.announcement.groupView({
-              topicID: topicID,
-              groupID: session.groupID
-            }, emitter);
-          }
-        }, function (output) {
-          if ( output.listen.success ) {
-            emitter.emit('ready', output.announcementView);
-          } else {
-            emitter.emit('error', output.listen);
-          }
-        });
       } else {
         emitter.emit('error', {
           statusCode: 404

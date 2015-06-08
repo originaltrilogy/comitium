@@ -1,5 +1,4 @@
-h1
-  != topic.titleHtml
+h1 Announcement: #{topic.titleHtml}
   
 include ../partials/pagination
 
@@ -42,7 +41,7 @@ section.posts
   if posts
     each post in posts
       include ../post/post
-  else
+  if !topic.replies && topic.discussionID !== 1 && !topic.lockedByID
     p This topic has no replies. <a href="announcement/action/reply/id/#{topic.id}">Why not weigh in?</a>
 
 include ../partials/pagination

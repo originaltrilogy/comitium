@@ -1,28 +1,27 @@
 // announcement model
 
-// Since announcements are a variation of topics, the models point to the topic model
+// Since announcements are a variation of topics, some models point to the topic model
 
 'use strict';
 
+var topic = require('./topic');
+
 module.exports = {
-  exists: exists,
+  exists: topic.exists,
   groupView: groupView,
   groupReply: groupReply,
-  hasInvitee: hasInvitee,
-  invitees: invitees,
-  info: info,
+  info: topic.info,
   insert: insert,
-  posts: posts,
-  lock: lock,
-  unlock: unlock,
-  move: move,
-  reply: reply,
-  subscriptionExists: subscriptionExists,
-  subscribersToNotify: subscribersToNotify,
-  subscriptionNotificationSentUpdate: subscriptionNotificationSentUpdate,
-  subscribe: subscribe,
-  unsubscribe: unsubscribe,
-  viewTimeUpdate: viewTimeUpdate,
+  posts: topic.posts,
+  lock: topic.lock,
+  unlock: topic.unlock,
+  reply: topic.reply,
+  subscriptionExists: topic.subscriptionExists,
+  subscribersToNotify: topic.subscribersToNotify,
+  subscriptionNotificationSentUpdate: topic.subscriptionNotificationSentUpdate,
+  subscribe: topic.subscribe,
+  unsubscribe: topic.unsubscribe,
+  viewTimeUpdate: topic.viewTimeUpdate,
   breadcrumbs: breadcrumbs,
   metaData: metaData
 };
@@ -1142,7 +1141,7 @@ function viewTimeUpdate(args, emitter) {
 }
 
 
-function breadcrumbs(discussionTitle, discussionUrl, discussionID) {
+function breadcrumbs() {
   return {
     a: {
       name: 'Forum Home',
@@ -1153,8 +1152,8 @@ function breadcrumbs(discussionTitle, discussionUrl, discussionID) {
       url: 'discussions'
     },
     c: {
-      name: discussionTitle,
-      url: discussionID ? 'discussion/' + discussionUrl + '/id/' + discussionID : discussionUrl
+      name: 'Announcements',
+      url: 'announcements'
     }
   };
 }
