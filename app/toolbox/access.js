@@ -271,7 +271,7 @@ function topicLock(topicID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        discussionView(previous.topic.discussionUrl, session.groupID, emitter);
+        discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
