@@ -17,6 +17,7 @@ module.exports = {
   topicReply: topicReply,
   topicTrash: topicTrash,
   topicView: topicView,
+  announcementView: announcementView,
   postView: postView,
   postEdit: postEdit,
   postLock: postLock,
@@ -270,7 +271,7 @@ function topicLock(topicID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        app.toolbox.access.discussionView(previous.topic.discussionUrl, session.groupID, emitter);
+        discussionView(previous.topic.discussionUrl, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -295,7 +296,7 @@ function topicLock(topicID, session, emitter) {
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.topic ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
+        challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
         emitter.emit('error', output.listen);
@@ -323,7 +324,7 @@ function topicMerge(topicID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
+        discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -348,7 +349,7 @@ function topicMerge(topicID, session, emitter) {
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.topic ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
+        challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
         emitter.emit('error', output.listen);
@@ -377,7 +378,7 @@ function topicMove(topicID, session, emitter) {
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
         if ( session.moderateDiscussions ) {
-          app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
+          discussionView(previous.topic.discussionID, session.groupID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -407,7 +408,7 @@ function topicMove(topicID, session, emitter) {
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.topic ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
+        challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
         emitter.emit('error', output.listen);
@@ -436,7 +437,7 @@ function topicMoveForm(topicID, newDiscussionID, session, emitter) {
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
         if ( session.moderateDiscussions ) {
-          app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
+          discussionView(previous.topic.discussionID, session.groupID, emitter);
         } else {
           emitter.emit('error', {
             statusCode: 403
@@ -449,7 +450,7 @@ function topicMoveForm(topicID, newDiscussionID, session, emitter) {
       }
     },
     discussionMoveView: function (previous, emitter) {
-      app.toolbox.access.discussionView(newDiscussionID, session.groupID, emitter);
+      discussionView(newDiscussionID, session.groupID, emitter);
     }
   }, function (output) {
 
@@ -469,7 +470,7 @@ function topicMoveForm(topicID, newDiscussionID, session, emitter) {
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.topic ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
+        challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
         emitter.emit('error', output.listen);
@@ -494,7 +495,44 @@ function topicReply(topicID, session, emitter) {
     if ( output.listen.success ) {
 
       if ( output.topic ) {
-        if ( output.topic.private ) {
+        if ( !output.topic.private ) {
+          if ( output.topic.discussionID ) {
+            app.listen({
+              discussionReply: function (emitter) {
+                discussionReply(output.topic.discussionID, session.groupID, emitter);
+              }
+            }, function (output) {
+              if ( output.listen.success ) {
+                if ( output.discussionReply ) {
+                  emitter.emit('ready', true);
+                } else {
+                  challenge(session.groupID, emitter);
+                }
+              } else {
+                emitter.emit('error', output.listen);
+              }
+            });
+          } else {
+            app.listen({
+              announcementReply: function (emitter) {
+                app.models.announcement.groupReply({
+                  topicID: topicID,
+                  groupID: session.groupID
+                }, emitter);
+              }
+            }, function (output) {
+              if ( output.listen.success ) {
+                if ( output.announcementReply ) {
+                  emitter.emit('ready', true);
+                } else {
+                  challenge(session.groupID, emitter);
+                }
+              } else {
+                emitter.emit('error', output.listen);
+              }
+            });
+          }
+        } else {
           app.listen({
             userIsInvited: function (emitter) {
               app.models.topic.hasInvitee({
@@ -510,22 +548,6 @@ function topicReply(topicID, session, emitter) {
                 emitter.emit('error', {
                   statusCode: 403
                 });
-              }
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
-        } else {
-          app.listen({
-            discussionReply: function (emitter) {
-              app.toolbox.access.discussionReply(output.topic.discussionID, session.groupID, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              if ( output.discussionReply ) {
-                emitter.emit('ready', true);
-              } else {
-                app.toolbox.access.challenge(session.groupID, emitter);
               }
             } else {
               emitter.emit('error', output.listen);
@@ -561,7 +583,7 @@ function topicTrash(topicID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
+        discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -586,7 +608,7 @@ function topicTrash(topicID, session, emitter) {
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.topic ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
+        challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
         emitter.emit('error', output.listen);
@@ -612,21 +634,38 @@ function topicView(topicID, session, emitter) {
 
       if ( output.topic ) {
         if ( !output.topic.private ) {
-          app.listen({
-            discussionView: function (emitter) {
-              app.toolbox.access.discussionView(output.topic.discussionID, session.groupID, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              if ( output.discussionView ) {
+          if ( output.topic.discussionID ) {
+            app.listen({
+              discussionView: function (emitter) {
+                discussionView(output.topic.discussionID, session.groupID, emitter);
+              }
+            }, function (output) {
+              if ( output.listen.success ) {
+                if ( output.discussionView ) {
+                  emitter.emit('ready', true);
+                } else {
+                  challenge(session.groupID, emitter);
+                }
+              } else {
+                emitter.emit('error', output.listen);
+              }
+            });
+          } else {
+            app.listen({
+              announcementView: function (emitter) {
+                app.models.announcement.groupView({
+                  topicID: topicID,
+                  groupID: session.groupID
+                }, emitter);
+              }
+            }, function (output) {
+              if ( output.announcementView ) {
                 emitter.emit('ready', true);
               } else {
-                app.toolbox.access.challenge(session.groupID, emitter);
+                challenge(session.groupID, emitter);
               }
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
+            });
+          }
         } else {
           app.listen({
             userIsInvited: function (emitter) {
@@ -649,6 +688,46 @@ function topicView(topicID, session, emitter) {
             }
           });
         }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+
+  });
+
+}
+
+
+
+function announcementView(topicID, session, emitter) {
+
+	app.listen({
+    topic: function (emitter) {
+      app.models.topic.info(topicID, emitter);
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.topic ) {
+        app.listen({
+          announcementView: function (emitter) {
+            app.models.announcement.groupView({
+              topicID: topicID,
+              groupID: session.groupID
+            }, emitter);
+          }
+        }, function (output) {
+          if ( output.listen.success ) {
+            emitter.emit('ready', output.announcementView);
+          } else {
+            emitter.emit('error', output.listen);
+          }
+        });
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -707,14 +786,14 @@ function postView(postID, session, emitter) {
       } else {
         app.listen({
           discussionView: function (emitter) {
-            app.toolbox.access.discussionView(output.topic.discussionID, session.groupID, emitter);
+            discussionView(output.topic.discussionID, session.groupID, emitter);
           }
         }, function (output) {
           if ( output.listen.success ) {
             if ( output.discussionView ) {
               emitter.emit('ready', true);
             } else {
-              app.toolbox.access.challenge(session.groupID, emitter);
+              challenge(session.groupID, emitter);
             }
           } else {
             emitter.emit('error', output.listen);
@@ -754,7 +833,7 @@ function postEdit(postID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
+        discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -779,7 +858,7 @@ function postEdit(postID, session, emitter) {
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.post ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
+        challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
         emitter.emit('error', output.listen);
@@ -816,7 +895,7 @@ function postLock(postID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
+        discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -841,7 +920,7 @@ function postLock(postID, session, emitter) {
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.post ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
+        challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
         emitter.emit('error', output.listen);
@@ -878,7 +957,7 @@ function postTrash(postID, session, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        app.toolbox.access.discussionView(previous.topic.discussionID, session.groupID, emitter);
+        discussionView(previous.topic.discussionID, session.groupID, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -903,7 +982,7 @@ function postTrash(postID, session, emitter) {
       // unauthenticated users to the sign in page, or throw a 403 for authenticated
       // users
       if ( output.post ) {
-        app.toolbox.access.challenge(session.groupID, emitter);
+        challenge(session.groupID, emitter);
       // Otherwise, 404
       } else {
         emitter.emit('error', output.listen);

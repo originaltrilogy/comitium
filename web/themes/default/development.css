@@ -851,23 +851,28 @@ body[data-controller="discussion"][data-view="discussion"] span.views {
 /*-------------------
 topic view
 -------------------*/
-body[data-controller="topic"][data-view="topic"] h1, body[data-controller="topic"][data-view="private-topic"] h1,
-body[data-controller="private-topic"][data-view="topic"] h1,
-body[data-controller="private-topic"][data-view="private-topic"] h1 {
-  text-transform: none;
-  letter-spacing: 0; }
-body[data-controller="topic"][data-view="topic"] nav.actions, body[data-controller="topic"][data-view="private-topic"] nav.actions,
+body[data-controller="topic"][data-view="topic"] nav.actions, body[data-controller="topic"][data-view="private-topic"] nav.actions, body[data-controller="topic"][data-view="announcement"] nav.actions,
 body[data-controller="private-topic"][data-view="topic"] nav.actions,
-body[data-controller="private-topic"][data-view="private-topic"] nav.actions {
+body[data-controller="private-topic"][data-view="private-topic"] nav.actions,
+body[data-controller="private-topic"][data-view="announcement"] nav.actions,
+body[data-controller="announcement"][data-view="topic"] nav.actions,
+body[data-controller="announcement"][data-view="private-topic"] nav.actions,
+body[data-controller="announcement"][data-view="announcement"] nav.actions {
   text-align: center; }
-  body[data-controller="topic"][data-view="topic"] nav.actions li, body[data-controller="topic"][data-view="private-topic"] nav.actions li,
+  body[data-controller="topic"][data-view="topic"] nav.actions li, body[data-controller="topic"][data-view="private-topic"] nav.actions li, body[data-controller="topic"][data-view="announcement"] nav.actions li,
   body[data-controller="private-topic"][data-view="topic"] nav.actions li,
-  body[data-controller="private-topic"][data-view="private-topic"] nav.actions li {
+  body[data-controller="private-topic"][data-view="private-topic"] nav.actions li,
+  body[data-controller="private-topic"][data-view="announcement"] nav.actions li,
+  body[data-controller="announcement"][data-view="topic"] nav.actions li,
+  body[data-controller="announcement"][data-view="private-topic"] nav.actions li,
+  body[data-controller="announcement"][data-view="announcement"] nav.actions li {
     display: inline-block;
     margin: 0 0.4rem; }
 body[data-controller="topic"][data-view="start"] li.topic-title textarea, body[data-controller="topic"][data-view="reply"] li.topic-title textarea,
 body[data-controller="private-topic"][data-view="start"] li.topic-title textarea,
-body[data-controller="private-topic"][data-view="reply"] li.topic-title textarea {
+body[data-controller="private-topic"][data-view="reply"] li.topic-title textarea,
+body[data-controller="announcement"][data-view="start"] li.topic-title textarea,
+body[data-controller="announcement"][data-view="reply"] li.topic-title textarea {
   height: 6.4rem; }
 
 /*-------------------

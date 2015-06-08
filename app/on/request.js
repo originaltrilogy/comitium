@@ -24,6 +24,14 @@ function start(params, context, emitter) {
           ban: true,
           unban: true
         },
+        announcement: {
+          start: true,
+          startForm: true,
+          reply: true,
+          replyForm: true,
+          subscribe: true,
+          unsubscribe: true
+        },
         topic: {
           start: true,
           startForm: true,

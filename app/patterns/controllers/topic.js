@@ -608,7 +608,7 @@ function replyForm(params, context, emitter) {
             }, function (output) {
               var page = Math.ceil( ( topic.replies + 2 ) / 25 ),
                   pageParameter = page !== 1 ? '/page/' + page : '',
-                  replyUrl = app.config.main.baseUrl + 'topic/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
+                  replyUrl = app.config.main.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
                   forwardToUrl = draft ? app.config.main.baseUrl + '/drafts' : replyUrl;
 
               if ( output.listen.success ) {
@@ -726,7 +726,7 @@ function subscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicView(params.url.id, params.session.groupID, emitter);
+      app.toolbox.access.topicView(params.url.id, params.session, emitter);
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
@@ -742,7 +742,7 @@ function subscribe(params, context, emitter) {
 
     if ( output.listen.success ) {
       emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + output.topic.urlTitle)
+        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
       });
     } else {
       emitter.emit('error', output.listen);
@@ -757,7 +757,7 @@ function unsubscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicView(params.url.id, params.session.groupID, emitter);
+      app.toolbox.access.topicView(params.url.id, params.session, emitter);
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
@@ -772,7 +772,7 @@ function unsubscribe(params, context, emitter) {
 
     if ( output.listen.success ) {
       emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + output.topic.urlTitle)
+        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
       });
     } else {
       emitter.emit('error', output.listen);
@@ -786,7 +786,7 @@ function unsubscribe(params, context, emitter) {
 
 function lock(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url.id);
   params.form.reason = '';
 
   app.listen('waterfall', {
@@ -950,7 +950,7 @@ function unlock(params, context, emitter) {
 
 function move(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
 
   app.listen('waterfall', {
     access: function (emitter) {
@@ -1064,7 +1064,7 @@ function moveForm(params, context, emitter) {
 
 function trash(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
 
   app.listen('waterfall', {
     access: function (emitter) {

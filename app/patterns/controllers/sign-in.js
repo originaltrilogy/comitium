@@ -22,7 +22,8 @@ function handler(params, context, emitter) {
        params.form.forwardToUrl.search(app.config.main.baseUrl + 'sign-in') >= 0 ||
        params.form.forwardToUrl.search(app.config.main.baseUrl + 'sign-out') >= 0 ||
        params.form.forwardToUrl.search(app.config.main.baseUrl + 'register') >= 0 ||
-       params.form.forwardToUrl.search(app.config.main.baseUrl + 'user/action/activate') >= 0
+       params.form.forwardToUrl.search(app.config.main.baseUrl + 'user/action/activate') >= 0 ||
+       params.form.forwardToUrl.search(app.config.main.baseUrl + 'password-reset') >= 0
      ) {
     // ...forward the user to the forum home page after logging in.
     params.form.forwardToUrl = app.config.main.baseUrl;

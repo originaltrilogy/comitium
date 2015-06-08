@@ -240,6 +240,9 @@ update users set "groupID" = (
   select id from groups where name = 'Administrators'
 ) where username = 'Jay';
 
+-- Put existing members in the Trusted Members group
+update users set "groupID" = 3 where "groupID" = 2;
+
 
 create table "moderators" (
   "id" serial not null,

@@ -1,9 +1,13 @@
-// topic model
+// announcement model
+
+// Since announcements are a variation of topics, the models point to the topic model
 
 'use strict';
 
 module.exports = {
   exists: exists,
+  groupView: groupView,
+  groupReply: groupReply,
   hasInvitee: hasInvitee,
   invitees: invitees,
   info: info,
@@ -60,6 +64,61 @@ function exists(topicID, emitter) {
 
   });
 }
+
+
+
+function groupView(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select dp."discussionID" from "discussionPermissions" dp join "announcements" a on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and a."topicID" = $2 and dp."read" = true;',
+        [ args.groupID, args.topicID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', true);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+        }
+      );
+    }
+  });
+}
+
+
+
+function groupReply(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select dp."discussionID" from "discussionPermissions" dp join "announcements" a on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and a."topicID" = $2 and dp."reply" = true;',
+        [ args.groupID, args.topicID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', true);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+        }
+      );
+    }
+  });
+}
+
 
 
 function hasInvitee(args, emitter) {
@@ -387,7 +446,7 @@ function insert(args, emitter) {
         }, function (output) {
 
           if ( output.listen.success ) {
-
+console.log(output);
             emitter.emit('ready', {
               success: true,
               id: output.insertTopic.id
@@ -439,7 +498,7 @@ function posts(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl" ' +
+              'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."username" as "author", u."url" as "authorUrl" ' +
               'from posts p ' +
               'inner join users u on p."userID" = u.id ' +
               'where p."topicID" = $1 and p.draft = false ' +

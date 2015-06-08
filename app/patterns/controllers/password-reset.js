@@ -205,11 +205,12 @@ function resetForm(params, context, emitter) {
 
 
 function resetConfirmation(params, context, emitter) {
-  
-  params.form.username = '';
-  params.form.password = '';
-  
   emitter.emit('ready', {
-    view: 'reset-confirmation'
+    view: 'reset-confirmation',
+    include: {
+      'sign-in': {
+        controller: 'sign-in'
+      }
+    }
   });
 }

@@ -28,8 +28,6 @@ nav.topic
         li.unsubscribe
           a(href="#{route.pathname}/action/unsubscribe" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
     if session.moderateDiscussions
-      li.move
-        a(href="#{route.pathname}/action/move" title="Move this topic to another discussion forum.") Move
       if topic.discussionID !== 1
         if !topic.lockedByID
           li.lock
@@ -44,7 +42,7 @@ section.posts
   if posts
     each post in posts
       include ../post/post
-  if !topic.replies && topic.discussionID !== 1 && !topic.lockedByID
-    p This topic has no replies. <a href="topic/action/reply/id/#{topic.id}">Why not weigh in?</a>
+  else
+    p This topic has no replies. <a href="announcement/action/reply/id/#{topic.id}">Why not weigh in?</a>
 
 include ../partials/pagination

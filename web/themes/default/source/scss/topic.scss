@@ -2,14 +2,12 @@
 topic view
 -------------------*/
 body[data-controller="topic"],
-body[data-controller="private-topic"] {
+body[data-controller="private-topic"],
+body[data-controller="announcement"] {
 
   &[data-view="topic"],
-  &[data-view="private-topic"] {
-    h1 {
-      text-transform: none;
-      letter-spacing: 0;
-    }
+  &[data-view="private-topic"],
+  &[data-view="announcement"] {
     nav.actions {
       text-align: center;
 

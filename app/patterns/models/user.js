@@ -310,7 +310,9 @@ function create(args, emitter) {
           app.listen({
             userInsert: function (emitter) {
               app.models.user.insert({
-                groupID: 2,
+                // New members will eventually go into groupID 2 (New Members).
+                // Until new member logic is in place, new members are Trusted Members.
+                groupID: 3,
                 username: username,
                 passwordHash: crypto.createHash('md5').update(password).digest('hex'),
                 url: url,

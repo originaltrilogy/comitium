@@ -1,7 +1,7 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
   h2
     img(src="#{config.main.staticAssetUrl}avatars/#{post.authorUrl}.png")
-    a(href="user/#{post.authorUrl}")
+    a(href="user/#{post.authorUrl}/id/#{post.authorID}")
       = post.author
     time
       = post.dateCreated
@@ -9,7 +9,7 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
     != post.html
   nav.actions
     ul
-      if route.controller === 'topic'
+      if route.controller === 'topic' || route.controller === 'announcement'
         li.reply
           a(href="#{route.pathname}/action/reply") Reply
         li.quote
