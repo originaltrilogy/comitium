@@ -19,6 +19,7 @@ module.exports = {
   topicView: topicView,
   announcementView: announcementView,
   announcementReply: announcementReply,
+  announcementLock: announcementLock,
   postView: postView,
   postEdit: postEdit,
   postLock: postLock,
@@ -284,6 +285,59 @@ function topicLock(topicID, session, emitter) {
     if ( output.listen.success ) {
 
       if ( output.discussionView ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+
+    } else {
+
+      // If the topic exists but the group doesn't have lock access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.topic ) {
+        challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
+  });
+
+}
+
+
+
+function announcementLock(topicID, session, emitter) {
+
+	app.listen('waterfall', {
+    topic: function (emitter) {
+      if ( session.moderateDiscussions ) {
+        app.models.topic.info(topicID, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    },
+    announcementView: function (previous, emitter) {
+      if ( previous.topic ) {
+        announcementView(topicID, session, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.announcementView ) {
         emitter.emit('ready', true);
       } else {
         emitter.emit('error', {

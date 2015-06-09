@@ -21,7 +21,7 @@ module.exports = {
 
 
 function handler(params, context, emitter) {
-  // Verify the user's group has read access to the topic's parent discussion
+  // Verify the user's group has read access to the announcement's parent discussion
   app.listen({
     access: function (emitter) {
       app.toolbox.access.announcementView(params.url.id, params.session, emitter);
@@ -34,13 +34,13 @@ function handler(params, context, emitter) {
 
       // If the group has read access, get the posts for the requested page
       app.listen({
-        announcement: function (emitter) {
-          app.models.announcement.info(params.url.id, emitter);
+        topic: function (emitter) {
+          app.models.topic.info(params.url.id, emitter);
         },
         posts: function (emitter) {
           var start = ( params.url.page - 1 ) * 25,
               end = start + 25;
-          app.models.announcement.posts({
+          app.models.topic.posts({
             topicID: params.url.id,
             start: start,
             end: end
@@ -48,7 +48,7 @@ function handler(params, context, emitter) {
         },
         subscriptionExists: function (emitter) {
           if ( params.session.userID ) {
-            app.models.announcement.subscriptionExists({
+            app.models.topic.subscriptionExists({
               userID: params.session.userID,
               topicID: params.url.id
             }, emitter);
@@ -61,19 +61,19 @@ function handler(params, context, emitter) {
         if ( output.listen.success ) {
 
           if ( params.session.username ) {
-            app.models.announcement.viewTimeUpdate({
+            app.models.topic.viewTimeUpdate({
               userID: params.session.userID,
-              topicID: output.announcement.id,
+              topicID: output.topic.id,
               time: app.toolbox.helpers.isoDate()
             });
           }
 
           emitter.emit('ready', {
             content: {
-              topic: output.announcement,
+              topic: output.topic,
               posts: output.posts,
               userIsSubscribed: output.subscriptionExists,
-              pagination: app.toolbox.helpers.paginate('announcement/' + output.announcement.url + '/id/' + output.announcement.id, params.url.page, output.announcement.replies + 1),
+              pagination: app.toolbox.helpers.paginate('announcement/' + output.topic.url + '/id/' + output.topic.id, params.url.page, output.topic.replies + 1),
               breadcrumbs: app.models.announcement.breadcrumbs()
             }
           });
@@ -115,7 +115,7 @@ function start(params, context, emitter) {
       emitter.emit('ready', {
         content: {
           discussion: output.discussion,
-          breadcrumbs: app.models.topic.breadcrumbs(output.discussion.title, output.discussion.url, output.discussion.id)
+          breadcrumbs: app.models.announcement.breadcrumbs(output.discussion.title, output.discussion.url, output.discussion.id)
         },
         view: 'start'
       });
@@ -156,7 +156,7 @@ function startForm(params, context, emitter) {
           draft = false,
           time = app.toolbox.helpers.isoDate();
 
-      // If the group has post access, process the topic form
+      // If the group has post access, process the announcement form
       if ( output.listen.success ) {
 
         parsedTitle = titleMarkdown.render(params.form.title);
@@ -176,18 +176,18 @@ function startForm(params, context, emitter) {
                   content: parsedContent
                 },
                 discussion: discussion,
-                breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url)
+                breadcrumbs: app.models.announcement.breadcrumbs(discussion.title, discussion.url)
               },
               view: 'start'
             });
             break;
           case 'Save as draft':
-          case 'Post your topic':
+          case 'Post your announcement':
             if ( params.form.formAction === 'Save as draft' ) {
               draft = true;
             }
             app.listen({
-              saveTopic: function (emitter) {
+              savetopic: function (emitter) {
                 app.models.topic.insert({
                   discussionID: discussion.id,
                   userID: params.session.userID,
@@ -202,9 +202,9 @@ function startForm(params, context, emitter) {
                 }, emitter);
               }
             }, function (output) {
-              var topic = output.saveTopic;
+              var announcement = output.saveannouncement;
 
-              if ( output.listen.success && output.saveTopic.success ) {
+              if ( output.listen.success && output.savetopic.success ) {
                 if ( params.form.subscribe ) {
                   app.listen({
                     subscribe: function (emitter) {
@@ -218,7 +218,7 @@ function startForm(params, context, emitter) {
 
                     if ( output.listen.success ) {
                       emitter.emit('ready', {
-                        redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'topic/' + url + '/id/' + topic.id
+                        redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'announcement/' + url + '/id/' + topic.id
                       });
                     } else {
                       emitter.emit('error', output.listen);
@@ -227,7 +227,7 @@ function startForm(params, context, emitter) {
                   });
                 } else {
                   emitter.emit('ready', {
-                    redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'topic/' + url + '/id/' + topic.id
+                    redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'announcement/' + url + '/id/' + topic.id
                   });
                 }
               } else {
@@ -237,9 +237,9 @@ function startForm(params, context, emitter) {
                 } else {
                   emitter.emit('ready', {
                     content: {
-                      topic: output.saveTopic,
+                      topic: output.saveannouncement,
                       discussion: discussion,
-                      breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url, discussion.id)
+                      breadcrumbs: app.models.announcement.breadcrumbs(discussion.title, discussion.url, discussion.id)
                     },
                     view: 'start'
                   });
@@ -257,7 +257,7 @@ function startForm(params, context, emitter) {
       }
 
     });
-  // If it's a GET, fall back to the default topic start action
+  // If it's a GET, fall back to the default announcement start action
   } else {
     start(params, context, emitter);
   }
@@ -267,13 +267,13 @@ function startForm(params, context, emitter) {
 
 function reply(params, context, emitter) {
 
-  // Verify the user's group has reply access to the topic
+  // Verify the user's group has reply access to the announcement
   app.listen('waterfall', {
     access: function (emitter) {
       app.toolbox.access.announcementReply(params.url.id, params.session, emitter);
     },
-    announcement: function (previous, emitter) {
-      app.models.announcement.info(params.url.id, emitter);
+    topic: function (previous, emitter) {
+      app.models.topic.info(params.url.id, emitter);
     },
     quote: function (previous, emitter) {
       if ( params.url.quote && app.isNumeric(params.url.quote) ) {
@@ -285,13 +285,13 @@ function reply(params, context, emitter) {
   }, function (output) {
     var message = '';
 
-    // If the group has reply access, display the topic reply form
+    // If the group has reply access, display the announcement reply form
     if ( output.listen.success ) {
 
       params.form.content = '';
       params.form.subscribe = false;
 
-      // If the quoted post exists and its topic ID matches this topic ID, add the
+      // If the quoted post exists and its announcement ID matches this announcement ID, add the
       // quote to the post content (this is a security measure, don't remove it).
       if ( output.quote && output.quote.topicID === output.topic.id && output.quote.markdown ) {
         params.form.content = '[' + output.quote.author + ' said](post/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
@@ -301,7 +301,7 @@ function reply(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          topic: output.announcement,
+          topic: output.topic,
           breadcrumbs: app.models.announcement.breadcrumbs(),
           reply: {
             message: message
@@ -325,10 +325,10 @@ function replyForm(params, context, emitter) {
   if ( params.request.method === 'POST' ) {
     params.form.subscribe = params.form.subscribe || false;
 
-    // Verify the user's group has reply access to the topic
+    // Verify the user's group has reply access to the announcement
     app.listen('waterfall', {
       access: function (emitter) {
-        app.toolbox.access.topicReply(params.url.id, params.session, emitter);
+        app.toolbox.access.announcementReply(params.url.id, params.session, emitter);
       },
       topic: function (previous, emitter) {
         app.models.topic.info(params.url.id, emitter);
@@ -356,7 +356,7 @@ function replyForm(params, context, emitter) {
                   content: parsedContent
                 },
                 topic: topic,
-                breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID)
+                breadcrumbs: app.models.announcement.breadcrumbs()
               },
               view: 'reply'
             });
@@ -382,7 +382,7 @@ function replyForm(params, context, emitter) {
             }, function (output) {
               var page = Math.ceil( ( topic.replies + 2 ) / 25 ),
                   pageParameter = page !== 1 ? '/page/' + page : '',
-                  replyUrl = app.config.main.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
+                  replyUrl = app.config.main.baseUrl + 'announcement/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
                   forwardToUrl = draft ? app.config.main.baseUrl + '/drafts' : replyUrl;
 
               if ( output.listen.success ) {
@@ -434,7 +434,7 @@ function replyForm(params, context, emitter) {
                     content: {
                       reply: output.reply,
                       topic: topic,
-                      breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID)
+                      breadcrumbs: app.models.announcement.breadcrumbs()
                     },
                     view: 'reply'
                   });
@@ -458,11 +458,12 @@ function replyForm(params, context, emitter) {
 
     });
 
-  // If it's a GET, fall back to the default topic reply action
+  // If it's a GET, fall back to the default announcement reply action
   } else {
     reply(params, context, emitter);
   }
 }
+
 
 
 function notifySubscribers(args, emitter) {
@@ -480,7 +481,7 @@ function notifySubscribers(args, emitter) {
         app.mail.sendMail({
           from: app.config.main.email,
           to: output.subscribersToNotify[i].email,
-          subject: 'Forum topic update',
+          subject: 'Forum announcement update',
           text: args.url
         });
       }
@@ -496,11 +497,12 @@ function notifySubscribers(args, emitter) {
 }
 
 
+
 function subscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicView(params.url.id, params.session, emitter);
+      app.toolbox.access.announcementView(params.url.id, params.session, emitter);
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
@@ -516,7 +518,7 @@ function subscribe(params, context, emitter) {
 
     if ( output.listen.success ) {
       emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
+        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/announcement/' + output.topic.url + '/id/' + output.topic.id)
       });
     } else {
       emitter.emit('error', output.listen);
@@ -531,7 +533,7 @@ function unsubscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicView(params.url.id, params.session, emitter);
+      app.toolbox.access.announcementView(params.url.id, params.session, emitter);
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
@@ -546,7 +548,7 @@ function unsubscribe(params, context, emitter) {
 
     if ( output.listen.success ) {
       emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
+        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/announcement/' + output.topic.url + '/id/' + output.topic.id)
       });
     } else {
       emitter.emit('error', output.listen);
@@ -560,12 +562,12 @@ function unsubscribe(params, context, emitter) {
 
 function lock(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/announcement/' + params.url.id);
   params.form.reason = '';
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.id, params.session, emitter);
+      app.toolbox.access.announcementLock(params.url.id, params.session, emitter);
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
@@ -597,7 +599,7 @@ function lockForm(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.id, params.session, emitter);
+      app.toolbox.access.announcementLock(params.url.id, params.session, emitter);
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
@@ -677,13 +679,13 @@ function unlock(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.id, params.session, emitter);
+      app.toolbox.access.announcementLock(params.url.id, params.session, emitter);
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
     }
   }, function (output) {
-    var topic = output.topic;
+    var announcement = output.topic;
 
     if ( output.listen.success ) {
 
@@ -691,7 +693,7 @@ function unlock(params, context, emitter) {
         unlock: function (emitter) {
           app.models.topic.unlock({
             topicID: topic.id,
-            topicUrl: topic.url,
+            announcementUrl: topic.url,
           }, emitter);
         }
       }, function (output) {
@@ -770,7 +772,7 @@ function moveForm(params, context, emitter) {
       app.models.topic.info(params.url.id, emitter);
     }
   }, function (output) {
-    var topic = output.topic;
+    var announcement = output.topic;
 
     if ( output.listen.success ) {
 
@@ -781,7 +783,7 @@ function moveForm(params, context, emitter) {
         move: function (previous, emitter) {
           app.models.topic.move({
             topicID: topic.id,
-            topicUrl: topic.url,
+            announcementUrl: topic.url,
             discussionID: topic.discussionID,
             discussionUrl: topic.discussionUrl,
             newDiscussionID: previous.newdiscussion.id,
@@ -808,7 +810,7 @@ function moveForm(params, context, emitter) {
 
             emitter.emit('ready', {
               content: {
-                topic: topic,
+                topic: announcement,
                 move: output.move
               },
               view: 'move'
@@ -880,7 +882,7 @@ function trashForm(params, context, emitter) {
       app.models.topic.info(params.url.id, emitter);
     }
   }, function (output) {
-    var topic = output.topic;
+    var announcement = output.topic;
 
     if ( output.listen.success ) {
 
@@ -888,7 +890,7 @@ function trashForm(params, context, emitter) {
         trash: function (emitter) {
           app.models.topic.move({
             topicID: topic.id,
-            topicUrl: topic.url,
+            announcementUrl: topic.url,
             discussionID: topic.discussionID,
             newDiscussionID: 1,
             newDiscussionUrl: 'Trash'
@@ -914,7 +916,7 @@ function trashForm(params, context, emitter) {
 
             emitter.emit('ready', {
               content: {
-                topic: topic,
+                topic: announcement,
                 trash: output.trash
               },
               view: 'trash'

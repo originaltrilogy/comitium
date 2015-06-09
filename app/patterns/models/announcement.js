@@ -10,59 +10,21 @@ module.exports = {
   exists: topic.exists,
   groupView: groupView,
   groupReply: groupReply,
-  info: topic.info,
+  info: info,
   insert: insert,
-  posts: topic.posts,
-  lock: topic.lock,
-  unlock: topic.unlock,
-  reply: topic.reply,
-  subscriptionExists: topic.subscriptionExists,
+  // posts: topic.posts,
+  // lock: topic.lock,
+  // unlock: topic.unlock,
+  // reply: topic.reply,
+  // subscriptionExists: topic.subscriptionExists,
   subscribersToNotify: topic.subscribersToNotify,
   subscriptionNotificationSentUpdate: topic.subscriptionNotificationSentUpdate,
-  subscribe: topic.subscribe,
-  unsubscribe: topic.unsubscribe,
-  viewTimeUpdate: topic.viewTimeUpdate,
+  // subscribe: topic.subscribe,
+  // unsubscribe: topic.unsubscribe,
+  // viewTimeUpdate: topic.viewTimeUpdate,
   breadcrumbs: breadcrumbs,
   metaData: metaData
 };
-
-
-function exists(topicID, emitter) {
-  app.listen({
-    exists: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'select id from topics where id = $1;',
-            [ topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                if ( result.rows.length ) {
-                  emitter.emit('ready', true);
-                } else {
-                  emitter.emit('ready', false);
-                }
-              }
-            }
-          );
-        }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.exists);
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-}
 
 
 
@@ -120,58 +82,10 @@ function groupReply(args, emitter) {
 
 
 
-function hasInvitee(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'select "topicID" from "topicInvitations" where "topicID" = $1 and "userID" = $2;',
-        [ args.topicID, args.userID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            if ( result.rows.length ) {
-              emitter.emit('ready', true);
-            } else {
-              emitter.emit('ready', false);
-            }
-          }
-        }
-      );
-    }
-  });
-}
-
-
-function invitees(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'select "userID" from "topicInvitations" where "topicID" = $1;',
-        [ args.topicID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            emitter.emit('ready', result.rows);
-          }
-        }
-      );
-    }
-  });
-}
-
-
 function info(topicID, emitter) {
-  // See if this topic info is already cached
+  // See if this announcement info is already cached
   var cacheKey = 'info',
-      scope = 'topic-' + topicID,
+      scope = 'announcement-' + topicID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -180,7 +94,7 @@ function info(topicID, emitter) {
     // If it's not cached, retrieve it from the database and cache it
   } else {
     app.listen({
-      topic: function (emitter) {
+      announcement: function (emitter) {
         app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
@@ -203,14 +117,14 @@ function info(topicID, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
-        // Cache the topic info object for future requests
+        // Cache the announcement info object for future requests
         app.cache.set({
           scope: scope,
           key: cacheKey,
-          value: output.topic[0]
+          value: output.announcement[0]
         });
 
-        emitter.emit('ready', output.topic[0]);
+        emitter.emit('ready', output.announcement[0]);
       } else {
         emitter.emit('error', output.listen);
       }
@@ -250,10 +164,10 @@ function insert(args, emitter) {
             });
 
           },
-          insertTopic: function (previous, emitter) {
+          insertannouncement: function (previous, emitter) {
 
             client.query(
-              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
+              'insert into announcements ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
               'values ( $1, 0, 0, $2, $3, $4, $5, 0, $6, $7, 0 ) returning id;',
               [ args.discussionID, args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft, args.private ],
               function (err, result) {
@@ -276,7 +190,7 @@ function insert(args, emitter) {
             client.query(
               'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified" ) ' +
               'values ( $1, $2, $3, $4, $5, $6, $7, $8 ) returning id;',
-              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft, args.userID, args.time ],
+              [ previous.insertannouncement.id, args.userID, args.html, args.markdown, args.time, args.draft, args.userID, args.time ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -292,11 +206,11 @@ function insert(args, emitter) {
             );
 
           },
-          updateTopic: function (previous, emitter) {
+          updateannouncement: function (previous, emitter) {
 
             client.query(
-              'update topics set "firstPostID" = $1, "lastPostID" = $1 where id = $2;',
-              [ previous.insertPost.id, previous.insertTopic.id ],
+              'update announcements set "firstPostID" = $1, "lastPostID" = $1 where id = $2;',
+              [ previous.insertPost.id, previous.insertannouncement.id ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -338,7 +252,7 @@ function insert(args, emitter) {
 
             app.listen(userMethods, function (output) {
               var userIDs = [ args.userID ],
-                  insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
+                  insertIDs = '( ' + previous.insertannouncement.id + ', ' + args.userID + ' )',
                   insert = true;
 
               if ( output.listen.success ) {
@@ -346,7 +260,7 @@ function insert(args, emitter) {
                 for ( var property in output ) {
                   if ( output[property] ) {
                     userIDs.push(output[property].id);
-                    insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
+                    insertIDs += ', ( ' + previous.insertannouncement.id + ', ' + output[property].id + ' )';
                   } else {
                     insert = false;
                     break;
@@ -357,7 +271,7 @@ function insert(args, emitter) {
                   app.listen({
                     insert: function (emitter) {
                       client.query(
-                        'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
+                        'insert into "announcementInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
                         function (err, result) {
                           if ( err ) {
                             client.query('rollback', function (err) {
@@ -397,7 +311,7 @@ function insert(args, emitter) {
           updateDiscussionStats: function (previous, emitter) {
 
             client.query(
-              'update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = $1 and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = $1 and t.draft = false ) where "id" = $1;',
+              'update discussions set posts = ( select count(p.id) from posts p join announcements t on p."topicID" = t.id where t."discussionID" = $1 and p.draft = false ), announcements = ( select count(t.id) from announcements t where t."discussionID" = $1 and t.draft = false ) where "id" = $1;',
               [ args.discussionID ],
               function (err, result) {
                 if ( err ) {
@@ -448,13 +362,13 @@ function insert(args, emitter) {
 console.log(output);
             emitter.emit('ready', {
               success: true,
-              id: output.insertTopic.id
+              id: output.insertannouncement.id
             });
 
             if ( !args.draft ) {
               if ( args.private ) {
                 output.insertInvitation.userIDs.forEach( function (item, index, array) {
-                  app.cache.clear({ scope: 'private-topics-' + item });
+                  app.cache.clear({ scope: 'private-announcements-' + item });
                 });
               } else {
                 app.cache.clear({ scope: 'discussion-' + args.discussionID });
@@ -478,11 +392,11 @@ console.log(output);
 
 
 function posts(args, emitter) {
-  // See if this topic subset is already cached
+  // See if this announcement subset is already cached
   var start = args.start || 0,
       end = args.end || 25,
       cacheKey = 'posts-' + start + '-' + end,
-      scope = 'topic-' + args.topicID,
+      scope = 'announcement-' + args.announcementID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -503,7 +417,7 @@ function posts(args, emitter) {
               'where p."topicID" = $1 and p.draft = false ' +
               'order by p."dateCreated" asc ' +
               'limit $2 offset $3;',
-              [ args.topicID, end - start, start ],
+              [ args.announcementID, end - start, start ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -563,15 +477,15 @@ function lock(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'update "topics" set "lockedByID" = $1, "lockReason" = $2 where "id" = $3',
-        [ args.lockedByID, args.lockReason, args.topicID ],
+        'update "announcements" set "lockedByID" = $1, "lockReason" = $2 where "id" = $3',
+        [ args.lockedByID, args.lockReason, args.announcementID ],
         function (err, result) {
           done();
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            // Clear the cache for this topic
-            app.cache.clear({ scope: 'topic-' + args.topicID });
+            // Clear the cache for this announcement
+            app.cache.clear({ scope: 'announcement-' + args.announcementID });
 
             emitter.emit('ready', {
               success: true,
@@ -592,15 +506,15 @@ function unlock(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'update "topics" set "lockedByID" = 0, "lockReason" = null where "id" = $1',
-        [ args.topicID ],
+        'update "announcements" set "lockedByID" = 0, "lockReason" = null where "id" = $1',
+        [ args.announcementID ],
         function (err, result) {
           done();
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            // Clear the cache for this topic
-            app.cache.clear({ scope: 'topic-' + args.topicID });
+            // Clear the cache for this announcement
+            app.cache.clear({ scope: 'announcement-' + args.announcementID });
 
             emitter.emit('ready', {
               success: true,
@@ -637,11 +551,11 @@ function move(args, emitter) {
               });
 
             },
-            moveTopic: function (previous, emitter) {
+            moveannouncement: function (previous, emitter) {
 
               client.query(
-                'update "topics" set "discussionID" = ( select "id" from "discussions" where "url" = $1 ) where "id" = $2;',
-                [ args.newDiscussionUrl, args.topicID ],
+                'update "announcements" set "discussionID" = ( select "id" from "discussions" where "url" = $1 ) where "id" = $2;',
+                [ args.newDiscussionUrl, args.announcementID ],
                 function (err, result) {
                   done();
                   if ( err ) {
@@ -662,7 +576,7 @@ function move(args, emitter) {
             updateOldDiscussionStats: function (previous, emitter) {
 
               client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+                'update "discussions" set "announcements" = ( select count("id") from "announcements" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "announcements" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
                 [ args.discussionID ],
                 function (err, result) {
                   if ( err ) {
@@ -682,7 +596,7 @@ function move(args, emitter) {
             updateNewDiscussionStats: function (previous, emitter) {
 
               client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+                'update "discussions" set "announcements" = ( select count("id") from "announcements" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "announcements" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
                 [ args.newDiscussionID ],
                 function (err, result) {
                   if ( err ) {
@@ -711,8 +625,8 @@ function move(args, emitter) {
 
             if ( output.listen.success ) {
 
-              // Clear the cache for this topic
-              app.cache.clear({ scope: 'topic-' + args.topicID });
+              // Clear the cache for this announcement
+              app.cache.clear({ scope: 'announcement-' + args.announcementID });
               app.cache.clear({ scope: 'discussion-' + args.discussionID });
               app.cache.clear({ scope: 'discussion-' + args.newDiscussionID });
               app.cache.clear({ scope: 'discussions-categories' });
@@ -769,7 +683,7 @@ function reply(args, emitter) {
             client.query(
               'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified" ) ' +
               'values ( $1, $2, $3, $4, $5, $6, $2, $5 ) returning id;',
-              [ args.topicID, args.userID, args.html, args.markdown, args.time, args.draft ],
+              [ args.announcementID, args.userID, args.html, args.markdown, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -785,11 +699,11 @@ function reply(args, emitter) {
             );
 
           },
-          updateTopicStats: function (previous, emitter) {
+          updateannouncementStats: function (previous, emitter) {
 
             client.query(
-              'update topics set "sortDate" = $3, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, "lastPostID" = $2 where "id" = $1;',
-              [ args.topicID, previous.insertPost.id, args.time ],
+              'update announcements set "sortDate" = $3, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, "lastPostID" = $2 where "id" = $1;',
+              [ args.announcementID, previous.insertPost.id, args.time ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -814,7 +728,7 @@ function reply(args, emitter) {
           updateDiscussionStats: function (previous, emitter) {
 
             client.query(
-              'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+              'update "discussions" set "announcements" = ( select count("id") from "announcements" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "announcements" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
               [ args.discussionID ],
               function (err, result) {
                 if ( err ) {
@@ -867,17 +781,17 @@ function reply(args, emitter) {
             });
 
             if ( !args.draft ) {
-              // Clear the cache for this topic and discussion
-              app.cache.clear({ scope: 'topic-' + args.topicID });
+              // Clear the cache for this announcement and discussion
+              app.cache.clear({ scope: 'announcement-' + args.announcementID });
 
               if ( args.private ) {
                 app.listen({
                   invitees: function (emitter) {
-                    invitees(args.topicID, emitter);
+                    invitees(args.announcementID, emitter);
                   }
                 }, function (output) {
                   output.invitees.forEach( function (item, index, array) {
-                    app.cache.clear({ scope: 'private-topics-' + item });
+                    app.cache.clear({ scope: 'private-announcements-' + item });
                   });
                 });
               } else {
@@ -908,7 +822,7 @@ function subscriptionExists(args, emitter) {
         } else {
           client.query(
             'select "id" from subscriptions where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID ],
+            [ args.userID, args.announcementID ],
             function (err, result) {
               done();
               if ( err ) {
@@ -947,7 +861,7 @@ function subscribersToNotify(args, emitter) {
         } else {
           client.query(
             'select u.email from users u join subscriptions s on u.id = s."userID" and u.id <> $1 where s."topicID" = $2 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
-            [ args.replyAuthorID, args.topicID ],
+            [ args.replyAuthorID, args.announcementID ],
             function (err, result) {
               done();
               if ( err ) {
@@ -982,7 +896,7 @@ function subscriptionNotificationSentUpdate(args, emitter) {
         } else {
           client.query(
             'update "subscriptions" set "notificationSent" = $1 where "topicID" = $2;',
-            [ args.time, args.topicID ],
+            [ args.time, args.announcementID ],
             function (err, result) {
               done();
               if ( err ) {
@@ -1013,7 +927,7 @@ function subscriptionNotificationSentUpdate(args, emitter) {
 function subscribe(args, emitter) {
   app.listen({
     subscriptionExists: function (emitter) {
-      app.models.topic.subscriptionExists(args, emitter);
+      app.models.announcement.subscriptionExists(args, emitter);
     }
   }, function (output) {
 
@@ -1025,7 +939,7 @@ function subscribe(args, emitter) {
           } else {
             client.query(
               'insert into subscriptions ( "userID", "topicID", "notificationSent" ) values ( $1, $2, $3 ) returning id;',
-              [ args.userID, args.topicID, args.time ],
+              [ args.userID, args.announcementID, args.time ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -1062,7 +976,7 @@ function unsubscribe(args, emitter) {
         } else {
           client.query(
             'delete from subscriptions where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID ],
+            [ args.userID, args.announcementID ],
             function (err, result) {
               done();
               if ( err ) {
@@ -1098,7 +1012,7 @@ function viewTimeUpdate(args, emitter) {
         } else {
           client.query(
             'update "topicViews" set time = $3 where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID, args.time ],
+            [ args.userID, args.announcementID, args.time ],
             function (err, result) {
               if ( err ) {
                 done();
@@ -1110,7 +1024,7 @@ function viewTimeUpdate(args, emitter) {
                 } else {
                   client.query(
                     'insert into "topicViews" ( "userID", "topicID", "time" ) values ( $1, $2, $3 ) returning id;',
-                    [ args.userID, args.topicID, args.time ],
+                    [ args.userID, args.announcementID, args.time ],
                     function (err, result) {
                       done();
                       if ( err ) {
