@@ -2,8 +2,6 @@
 
 'use strict';
 
-var crypto = require('crypto');
-
 module.exports = {
   activate: activate,
   activationStatus: activationStatus,
@@ -314,7 +312,7 @@ function create(args, emitter) {
                 // Until new member logic is in place, new members are Trusted Members.
                 groupID: 3,
                 username: username,
-                passwordHash: crypto.createHash('md5').update(password).digest('hex'),
+                passwordHash: app.toolbox.helpers.hash(password),
                 url: url,
                 email: email,
                 timezone: 0,
@@ -376,7 +374,7 @@ function create(args, emitter) {
         output.message = 'The e-mail address you provided isn\'t valid.';
         break;
       case 'invalidPassword':
-        output.message = 'The password you requested doesn\'t meet the requirements (at least 8 characters, letters and numbers only).';
+        output.message = 'The password you requested doesn\'t meet the requirements (at least 8 characters, anything but spaces).';
         break;
       case 'passwordMismatch':
         output.message = 'The passwords you provided don\'t match.';

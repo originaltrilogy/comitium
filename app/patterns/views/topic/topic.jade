@@ -20,25 +20,25 @@ nav.topic
   ul
     if topic.discussionID !== 1
       li.reply
-        a(href="#{route.pathname}/action/reply") Reply
+        a(href="#{route.pathname}action/reply") Reply
       if !userIsSubscribed
         li.subscribe
-          a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when people reply to this topic.") Subscribe
+          a(href="#{route.pathname}action/subscribe" title="Receive an e-mail notification when people reply to this topic.") Subscribe
       else
         li.unsubscribe
-          a(href="#{route.pathname}/action/unsubscribe" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
+          a(href="#{route.pathname}action/unsubscribe" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
     if session.moderateDiscussions
       li.move
-        a(href="#{route.pathname}/action/move" title="Move this topic to another discussion forum.") Move
+        a(href="#{route.pathname}action/move" title="Move this topic to another discussion forum.") Move
       if topic.discussionID !== 1
         if !topic.lockedByID
           li.lock
-            a(href="#{route.pathname}/action/lock" title="Lock this topic (no replies or edits).") Lock
+            a(href="#{route.pathname}action/lock" title="Lock this topic (no replies or edits).") Lock
         else
           li.unlock
-            a(href="#{route.pathname}/action/unlock" title="Unlock this topic.") Unlock
+            a(href="#{route.pathname}action/unlock" title="Unlock this topic.") Unlock
         li.delete
-          a(href="#{route.pathname}/action/trash" title="Move this topic to the trash.") Delete
+          a(href="#{route.pathname}action/trash" title="Move this topic to the trash.") Delete
           
 section.posts
   if posts

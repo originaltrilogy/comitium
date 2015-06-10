@@ -846,7 +846,6 @@ function lockForm(params, context, emitter) {
         lock: function (emitter) {
           app.models.topic.lock({
             topicID: topic.id,
-            topicUrl: topic.url,
             lockedByID: params.session.userID,
             lockReason: parsedReason
           }, emitter);
@@ -916,8 +915,7 @@ function unlock(params, context, emitter) {
       app.listen({
         unlock: function (emitter) {
           app.models.topic.unlock({
-            topicID: topic.id,
-            topicUrl: topic.url,
+            topicID: topic.id
           }, emitter);
         }
       }, function (output) {

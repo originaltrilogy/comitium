@@ -67,3 +67,5 @@ fs.readdirSync(app.config.main.appPath + '/data/sql').forEach( function (file, i
 
 // Start the server
 app.start();
+
+console.log(app.toolbox.helpers.hash('password'));

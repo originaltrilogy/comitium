@@ -150,6 +150,42 @@ where t."id" not in (
   from "announcements"
 );
 
+-- Put announcements in discussion ID 2 and move General Discussion topics to a new discussion ID
+update "discussions"
+set "id" = 22
+where "id" = 2;
+
+update "topics"
+set "discussionID" = 22
+where "discussionID" = 2;
+
+update "announcements"
+set "discussionID" = 22
+where "discussionID" = 2;
+
+update "discussionPermissions"
+set "discussionID" = 22
+where "discussionID" = 2;
+
+update "moderators"
+set "discussionID" = 22
+where "discussionID" = 2;
+
+update "topics"
+set "discussionID" = 2
+where "id" in (
+  select distinct "topicID"
+  from "announcements"
+);
+
+create table "arcthreadscopy" as
+table "arcthreads";
+
+update "arcthreadscopy"
+set "icategoryid" = 22
+where "icategoryid" = 2;
+
+
 
 -- Put any topics without a lookup record in the trash
 update "topics" t set "discussionID" = 1

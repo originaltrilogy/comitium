@@ -189,7 +189,7 @@ function startForm(params, context, emitter) {
             app.listen({
               savetopic: function (emitter) {
                 app.models.topic.insert({
-                  discussionID: discussion.id,
+                  discussionID: 2,
                   userID: params.session.userID,
                   titleMarkdown: params.form.title,
                   titleHtml: parsedTitle,
@@ -370,12 +370,12 @@ function replyForm(params, context, emitter) {
               reply: function (emitter) {
                 app.models.topic.reply({
                   topicID: topic.id,
-                  discussionID: topic.discussionID,
+                  discussionID: 2,
                   userID: params.session.userID,
                   html: parsedContent,
                   markdown: params.form.content,
                   draft: draft,
-                  private: topic.private,
+                  private: false,
                   time: time
                 }, emitter);
               }
@@ -622,7 +622,6 @@ function lockForm(params, context, emitter) {
         lock: function (emitter) {
           app.models.topic.lock({
             topicID: topic.id,
-            topicUrl: topic.url,
             lockedByID: params.session.userID,
             lockReason: parsedReason
           }, emitter);
@@ -685,15 +684,14 @@ function unlock(params, context, emitter) {
       app.models.topic.info(params.url.id, emitter);
     }
   }, function (output) {
-    var announcement = output.topic;
-
+    var topic = output.topic;
+console.log(output);
     if ( output.listen.success ) {
 
       app.listen({
         unlock: function (emitter) {
           app.models.topic.unlock({
-            topicID: topic.id,
-            announcementUrl: topic.url,
+            topicID: topic.id
           }, emitter);
         }
       }, function (output) {
