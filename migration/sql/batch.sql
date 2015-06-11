@@ -151,10 +151,6 @@ where t."id" not in (
 );
 
 -- Put announcements in discussion ID 2 and move General Discussion topics to a new discussion ID
-update "discussions"
-set "id" = 22
-where "id" = 2;
-
 update "topics"
 set "discussionID" = 22
 where "discussionID" = 2;
@@ -184,6 +180,44 @@ table "arcthreads";
 update "arcthreadscopy"
 set "icategoryid" = 22
 where "icategoryid" = 2;
+
+update "discussions"
+set "id" = 22
+where "id" = 2;
+
+insert into "discussions" (
+  "id",
+  "categoryID",
+  "title",
+  "url",
+  "description",
+  "metaDescription",
+  "keywords",
+  "posts",
+  "topics",
+  "sort",
+  "dateCreated",
+  "hidden",
+  "system",
+  "locked"
+) values (
+  2,
+  0,
+  'Announcements',
+  'Announcements',
+  '',
+  'Site and forum announcements.',
+  'announcements, news',
+  0,
+  0,
+  0,
+  new Date().toISOString(),
+  false,
+  true,
+  true
+);
+
+SELECT SETVAL('discussions_id_seq', ( select max("id") + 1 from discussions ) );
 
 
 
@@ -368,6 +402,7 @@ insert into "discussionPermissions"
 values
 ( 1, 1, false, false, false ),
 ( 1, 2, true, false, false ),
+( 1, 22, true, false, false ),
 ( 1, 3, true, false, false ),
 ( 1, 4, true, false, false ),
 ( 1, 5, true, false, false ),
@@ -388,6 +423,7 @@ values
 ( 1, 21, true, false, false ),
 ( 2, 1, false, false, false ),
 ( 2, 2, true, false, true ),
+( 2, 22, true, false, true ),
 ( 2, 3, true, false, true ),
 ( 2, 4, true, false, true ),
 ( 2, 5, true, false, true ),
@@ -407,7 +443,8 @@ values
 ( 2, 20, true, false, true ),
 ( 2, 21, true, false, true ),
 ( 3, 1, false, false, false ),
-( 3, 2, true, true, true ),
+( 3, 2, true, false, true ),
+( 3, 22, true, true, true ),
 ( 3, 3, true, true, true ),
 ( 3, 4, true, true, true ),
 ( 3, 5, true, true, true ),
@@ -428,6 +465,7 @@ values
 ( 3, 21, true, true, true ),
 ( 4, 1, true, false, false ),
 ( 4, 2, true, true, true ),
+( 4, 22, true, true, true ),
 ( 4, 3, true, true, true ),
 ( 4, 4, true, true, true ),
 ( 4, 5, true, true, true ),
@@ -447,7 +485,8 @@ values
 ( 4, 20, true, true, true ),
 ( 4, 21, true, true, true ),
 ( 5, 1, true, false, false ),
-( 5, 2, true, true, true ),
+( 5, 2, true, true, false ),
+( 5, 22, true, true, true ),
 ( 5, 3, true, true, true ),
 ( 5, 4, true, true, true ),
 ( 5, 5, true, true, true ),
@@ -465,7 +504,28 @@ values
 ( 5, 18, true, true, true ),
 ( 5, 19, true, true, true ),
 ( 5, 20, true, true, true ),
-( 5, 21, true, true, true );
+( 5, 21, true, true, true ),
+( 6, 1, false, false, false ),
+( 6, 2, true, false, false ),
+( 6, 22, true, false, false ),
+( 6, 3, true, false, false ),
+( 6, 4, true, false, false ),
+( 6, 5, true, false, false ),
+( 6, 6, true, false, false ),
+( 6, 7, true, false, false ),
+( 6, 8, true, false, false ),
+( 6, 9, true, false, false ),
+( 6, 11, true, false, false ),
+( 6, 12, true, false, false ),
+( 6, 13, false, false, false ),
+( 6, 14, true, false, false ),
+( 6, 15, true, false, false ),
+( 6, 16, false, false, false ),
+( 6, 17, true, false, false ),
+( 6, 18, true, false, false ),
+( 6, 19, true, false, false ),
+( 6, 20, true, false, false ),
+( 6, 21, true, false, false );
 
 
 

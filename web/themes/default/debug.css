@@ -475,7 +475,8 @@ body {
   position: relative;
   font-family: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
   text-rendering: optimizeLegibility;
-  background: #484D5E; }
+  background: #484D5E;
+  color: white; }
   body.transitioning #main {
     position: relative; }
     body.transitioning #main > * {
@@ -622,7 +623,8 @@ nav.breadcrumbs {
   font-size: 1.4rem;
   color: white; }
   nav.breadcrumbs li {
-    display: inline-block; }
+    display: inline-block;
+    margin-bottom: 0.4rem; }
     nav.breadcrumbs li:after {
       content: '/';
       padding: 0 0.3rem 0 0.8rem; }
@@ -720,7 +722,6 @@ form {
     margin: 0;
     font-size: 1.2rem;
     color: #CDCDCD; }
-  form textarea,
   form input {
     width: 100%;
     padding: 1.2rem;
@@ -728,16 +729,10 @@ form {
     background: #5E667A;
     border: 0.1rem solid #343945;
     border-radius: 0.3rem; }
-    form textarea[type="checkbox"],
     form input[type="checkbox"] {
       width: 3rem;
       height: 3rem;
-      color: white;
-      background: #5E667A;
-      border: 0.1rem solid #343945;
-      border-radius: 0.3rem;
       position: absolute; }
-      form textarea[type="checkbox"]:checked:after,
       form input[type="checkbox"]:checked:after {
         position: absolute;
         top: 0;
@@ -749,6 +744,21 @@ form {
         font-size: 1.6rem;
         line-height: 1.6rem;
         text-align: center; }
+    form input[type="radio"] {
+      width: 3rem;
+      height: 3rem;
+      position: absolute;
+      border-radius: 50%; }
+      form input[type="radio"]:checked:after {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        display: block;
+        width: 1.8rem;
+        height: 1.8rem;
+        background: #a9aebc;
+        border-radius: 50%;
+        content: ''; }
   form textarea {
     /* width: 112%; */
     /* height: 20.5rem; */
@@ -757,7 +767,13 @@ form {
     /* padding-left: 6%; */
     /* padding-right: 6%; */
     font-family: Menlo, fixed-width;
-    font-size: 1.2rem; }
+    font-size: 1.2rem;
+    width: 100%;
+    padding: 1.2rem;
+    color: white;
+    background: #5E667A;
+    border: 0.1rem solid #343945;
+    border-radius: 0.3rem; }
   form .data ul {
     margin: 0; }
     form .data ul > li {
@@ -765,13 +781,16 @@ form {
       list-style: none; }
       form .data ul > li.text label, form .data ul > li.select label {
         display: block; }
+      form .data ul > li.checkbox label, form .data ul > li.radio label {
+        display: block;
+        padding-left: 4.4rem;
+        padding-top: 0.4rem;
+        font-family: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+        font-size: 1.4rem; }
       form .data ul > li.checkbox {
         margin-bottom: 3.4rem; }
-        form .data ul > li.checkbox label {
-          display: block;
-          padding-left: 4.4rem;
-          padding-top: 0.4rem;
-          font-size: 1.4rem; }
+      form .data ul > li.radio {
+        margin-bottom: 1rem; }
       form .data ul > li.post-content textarea, form .data ul > li.message textarea {
         height: 20.4rem; }
   form .actions ul {

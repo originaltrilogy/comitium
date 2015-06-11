@@ -6,21 +6,10 @@ if url.page === 1
     != discussion.description
   
 include ../partials/pagination
-
-if announcements
-  section.announcements
-    h2 Announcements
-    each announcement in announcements
-      article.announcement(data-announcement-id="#{announcement.id}")
-        h3
-          a(href="announcement/#{announcement.url}/id/#{announcement.id}") #{announcement.titleHtml}
           
 section.topics
-  h2 Topics
   nav
     ul
-      li.new-topic
-        a(href="topic/action/start/id/#{discussion.id}") Start a new topic
       if session.moderateDiscussions
         li.new-announcement
           a(href="announcement/action/start/id/#{discussion.id}") Make an announcement
@@ -30,11 +19,11 @@ section.topics
     each topic in topics
       article.topic(data-topic-id="#{topic.id}")
         h3
-          a(href="topic/#{topic.url}/id/#{topic.id}")
+          a(href="announcement/#{topic.url}/id/#{topic.id}")
             != topic.titleHtml
         p.details
           | Posted by 
-          a(href="user/#{topic.topicStarterUrl}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+          a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
           |  on 
           time #{topic.postDate}
         p.stats
@@ -43,6 +32,6 @@ section.topics
           span.views #{topic.views} 
           | views
   else
-    p This discussion has no topics. <a href="topic/action/start/id/#{discussion.id}">Why not start one?</a>
+    p There are no current announcements.
 
 include ../partials/pagination

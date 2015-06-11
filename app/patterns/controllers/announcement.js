@@ -99,10 +99,10 @@ function start(params, context, emitter) {
   // Verify the user's group has post access to the discussion
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.discussionPost(params.url.id, params.session, emitter);
+      app.toolbox.access.discussionPost(2, params.session, emitter);
     },
-    discussion: function (previous, emitter) {
-      app.models.discussion.info(params.url.id, emitter);
+    categoriesPost: function (previous, emitter) {
+      app.models.discussions.categoriesPost(params.session.groupID, emitter);
     }
   }, function (output) {
 
@@ -110,12 +110,13 @@ function start(params, context, emitter) {
 
       params.form.title = '';
       params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
+      params.form.discussions = [];
       params.form.subscribe = false;
 
       emitter.emit('ready', {
         content: {
-          discussion: output.discussion,
-          breadcrumbs: app.models.announcement.breadcrumbs(output.discussion.title, output.discussion.url, output.discussion.id)
+          categories: output.categoriesPost,
+          breadcrumbs: app.models.announcement.breadcrumbs('Announcements', 'Announcements')
         },
         view: 'start'
       });
@@ -722,127 +723,13 @@ console.log(output);
 
 
 
-function move(params, context, emitter) {
-
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicMove(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
-    },
-    categories: function (previous, emitter) {
-      app.models.discussions.categories(params.session.groupID, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          topic: output.topic,
-          categories: output.categories
-        },
-        view: 'move'
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function moveForm(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicMoveForm(params.url.id, params.form.destination, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
-    }
-  }, function (output) {
-    var announcement = output.topic;
-
-    if ( output.listen.success ) {
-
-      app.listen('waterfall', {
-        newdiscussion: function (emitter) {
-          app.models.discussion.info(params.form.destination, emitter);
-        },
-        move: function (previous, emitter) {
-          app.models.topic.move({
-            topicID: topic.id,
-            announcementUrl: topic.url,
-            discussionID: topic.discussionID,
-            discussionUrl: topic.discussionUrl,
-            newDiscussionID: previous.newdiscussion.id,
-            newDiscussionUrl: params.form.destination
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          if ( output.move.success ) {
-
-            if ( params.form.notify ) {
-
-              // notify subscribers (if the author isn't subscribed, they probably don't care)
-
-            }
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
-          } else {
-
-            emitter.emit('ready', {
-              content: {
-                topic: announcement,
-                move: output.move
-              },
-              view: 'move'
-            });
-
-          }
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
 function trash(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/announcement/' + params.url.announcement + '/id/' + params.url.id);
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicTrash(params.url.id, params.session, emitter);
+      app.toolbox.access.announcementTrash(params.url.id, params.session, emitter);
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
@@ -853,7 +740,7 @@ function trash(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          topic: output.topic
+          announcement: output.announcement
         },
         view: 'trash'
       });

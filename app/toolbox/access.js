@@ -20,6 +20,7 @@ module.exports = {
   announcementView: announcementView,
   announcementReply: announcementReply,
   announcementLock: announcementLock,
+  announcementTrash: announcementTrash,
   postView: postView,
   postEdit: postEdit,
   postLock: postLock,
@@ -718,6 +719,62 @@ function announcementReply(topicID, session, emitter) {
     } else {
       emitter.emit('error', output.listen);
     }
+  });
+
+}
+
+
+
+function announcementTrash(topicID, session, emitter) {
+
+	app.listen('waterfall', {
+    announcement: function (emitter) {
+      if ( session.moderateDiscussions ) {
+        app.models.announcement.info(topicID, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+    },
+    announcementView: function (previous, emitter) {
+      if ( previous.announcement ) {
+        app.models.announcement.groupView({
+          topicID: topicID,
+          groupID: session.groupID
+        }, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.announcementView ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('error', {
+          statusCode: 403
+        });
+      }
+
+    } else {
+
+      // If the topic exists but the group doesn't have trash access, redirect
+      // unauthenticated users to the sign in page, or throw a 403 for authenticated
+      // users
+      if ( output.announcement ) {
+        challenge(session.groupID, emitter);
+      // Otherwise, 404
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    }
+
   });
 
 }

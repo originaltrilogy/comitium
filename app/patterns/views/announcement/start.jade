@@ -1,4 +1,4 @@
-h1 Start a new private topic
+h1 Make an announcement
 
 if preview
   section.preview
@@ -10,20 +10,13 @@ if preview
         != preview.content
           
 section.topic-write-form
-  p When you start a private topic, only those you invite can see the topic and reply. Invite a single member for a private conversation or several members for a private group discussion.
-  form#topic-write-form(action="topic/action/startPrivateForm" method="post" novalidate)
+  form#topic-write-form(action="announcement/action/startForm" method="post" novalidate)
     if topic && topic.message
       .messages
         ul
           li #{topic.message}
     .data
       ul
-        li.invitees.text.required
-          label(for="invitees")
-            | Invitees
-          p.label-note
-            | To invite multiple participants, put each member's username on its own line. You can also send invitations after starting the topic.
-          textarea(id="invitees" name="invitees" required) #{form.invitees}
         li.topic-title.text.required
           label(for="topic-title")
             | Topic title
@@ -32,6 +25,32 @@ section.topic-write-form
           label(for="post-content")
             | Post content
           textarea(id="post-content" name="content" required) #{form.content}
+        li.discussions
+          p Where do you want this announcement to appear?
+          p.label-note Only people with access rights to the selected forums will see this announcement.
+          ul
+            li.radio
+              input(id="display-discussions-none" name="displayDiscussions" type="radio" value="none" checked=form.allDiscussions)
+              label(for="display-discussions-none")
+                | Only show it within <a href="announcements">Announcements</a>
+            li.radio
+              input(id="display-discussions-all" name="displayDiscussions" type="radio" value="all" checked=form.allDiscussions)
+              label(for="display-discussions-all")
+                | Show it within all discussion forums
+            li.radio
+              input(id="display-discussions-custom" name="displayDiscussions" type="radio" value="custom" checked=form.allDiscussions)
+              label(for="display-discussions-custom")
+                | Show it within the following forums:
+              ul
+                each category in categories
+                  li
+                    #{category.categoryTitle}
+                    ul
+                      each discussion in category.discussions
+                        li.discussion.checkbox
+                          input(id="discussion-#{discussion.discussionID}" name="discussions" type="checkbox" value="#{discussion.discussionID}" checked=form.discussions[discussion.discussionID])
+                          label(for="discussion-#{discussion.discussionID}")
+                            = discussion.discussionTitle
         li.subscribe.checkbox
           input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
           label(for="subscribe")
@@ -41,7 +60,7 @@ section.topic-write-form
         li.secondary.preview
           input(name="formAction" type="submit" value="Preview")
         li.primary.post
-          input(name="formAction" type="submit" value="Post your topic")
+          input(name="formAction" type="submit" value="Post your announcement")
         li.tertiary.draft
           input(name="formAction" type="submit" value="Save as draft")
         li.quaternary.cancel

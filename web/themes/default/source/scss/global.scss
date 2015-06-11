@@ -80,6 +80,7 @@ body {
 	font-family: $defaultFont;
 	text-rendering: optimizeLegibility;
   background: #484D5E;
+  color: white;
 
   &.transitioning {
     #main {
@@ -248,6 +249,7 @@ nav.breadcrumbs {
 
   li {
     display: inline-block;
+    margin-bottom: 0.4rem;
 
     &:after {
       content: '/';
@@ -383,7 +385,6 @@ form {
     font-size: 1.2rem;
     color: #CDCDCD;
   }
-	textarea,
   input {
     width: 100%;
     padding: 1.2rem;
@@ -395,10 +396,6 @@ form {
     &[type="checkbox"] {
       width: 3rem;
       height: 3rem;
-      color: white;
-      background: #5E667A;
-      border: 0.1rem solid #343945;
-      border-radius: 0.3rem;
       position: absolute;
 
       &:checked {
@@ -416,6 +413,27 @@ form {
         }
       }
     }
+    
+    &[type="radio"] {
+      width: 3rem;
+      height: 3rem;
+      position: absolute;
+      border-radius: 50%;
+      
+      &:checked {
+        &:after {
+          position: absolute;
+          top: 0.5rem;
+          left: 0.5rem;
+          display: block;
+          width: 1.8rem;
+          height: 1.8rem;
+          background: hsl(224, 12%, 70%);
+          border-radius: 50%;
+          content: '';
+        }
+      }
+    }
   }
   textarea {
     /* width: 112%; */
@@ -426,6 +444,12 @@ form {
     /* padding-right: 6%; */
     font-family: Menlo, fixed-width;
     font-size: 1.2rem;
+    width: 100%;
+    padding: 1.2rem;
+    color: white;
+    background: #5E667A;
+    border: 0.1rem solid #343945;
+    border-radius: 0.3rem;
   }
 	.data {
 		ul {
@@ -441,15 +465,21 @@ form {
 						display: block;
 					}
 				}
-        &.checkbox {
-          margin-bottom: 3.4rem;
-
+        &.checkbox,
+        &.radio {
           label {
             display: block;
             padding-left: 4.4rem;
             padding-top: 0.4rem;
+            font-family: $defaultFont;
             font-size: 1.4rem;
           }
+        }
+        &.checkbox {
+          margin-bottom: 3.4rem;
+        }
+        &.radio {
+          margin-bottom: 1rem;
         }
         &.post-content,
         &.message {

@@ -29,7 +29,7 @@ function info(discussionID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description", d."topics", d."posts" from categories c join discussions d on c.id = d."categoryID" where d."id" = $1;',
+              'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description", d."topics", d."posts" from discussions d left join categories c on d."categoryID" = c.id where d."id" = $1;',
               [ discussionID ],
               function (err, result) {
                 done();

@@ -1,5 +1,15 @@
 h1 Discussion Categories
 
+article(class="discussion")
+  h3
+    a(href="announcements") Announcements
+  // p.description !{discussion.discussionDescription}
+  // p.stats
+  //   span.topics #{discussion.topics} 
+  //   | topics with 
+  //   span.posts #{discussion.posts} 
+  //   | posts
+
 if session.talkPrivately
   article(class="private-topics")
     h3
