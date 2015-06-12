@@ -28,12 +28,12 @@ function start(params, context, emitter) {
     }, function (output) {
       var user = output.authenticate.user;
 
-      user.userID = output.authenticate.user.id;
-      delete user.id;
-
       if ( output.listen.success ) {
 
         if ( output.authenticate.success ) {
+          user.userID = output.authenticate.user.id;
+          delete user.id;
+          
           emitter.emit('ready', {
             session: user
           });

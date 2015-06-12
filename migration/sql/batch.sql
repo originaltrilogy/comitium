@@ -115,119 +115,6 @@ where "metaDescription" = '';
 
 
 
--- announcements
-
-create table "announcements" (
-  "id" serial not null,
-  "discussionID" integer not null,
-  "topicID" integer not null,
-  primary key ("id")
-);
-
-
-insert into "announcements" (
-  "id",
-  "discussionID",
-  "topicID"
-)
-select
-  "intTopicForumLookupID",
-  "intForumID",
-  "intTopicID"
-from "tblForumTopicForumLookup" where "bitAnnouncement" = true;
-
-
-SELECT SETVAL('announcements_id_seq', ( select max("id") + 1 from announcements ) );
-
-
-update "topics" t set "discussionID" = (
-  select "intForumID"
-  from "tblForumTopicForumLookup" l
-  where l."intTopicID" = t."id"
-)
-where t."id" not in (
-  select "topicID"
-  from "announcements"
-);
-
--- Put announcements in discussion ID 2 and move General Discussion topics to a new discussion ID
-update "topics"
-set "discussionID" = 22
-where "discussionID" = 2;
-
-update "announcements"
-set "discussionID" = 22
-where "discussionID" = 2;
-
-update "discussionPermissions"
-set "discussionID" = 22
-where "discussionID" = 2;
-
-update "moderators"
-set "discussionID" = 22
-where "discussionID" = 2;
-
-update "topics"
-set "discussionID" = 2
-where "id" in (
-  select distinct "topicID"
-  from "announcements"
-);
-
-create table "arcthreadscopy" as
-table "arcthreads";
-
-update "arcthreadscopy"
-set "icategoryid" = 22
-where "icategoryid" = 2;
-
-update "discussions"
-set "id" = 22
-where "id" = 2;
-
-insert into "discussions" (
-  "id",
-  "categoryID",
-  "title",
-  "url",
-  "description",
-  "metaDescription",
-  "keywords",
-  "posts",
-  "topics",
-  "sort",
-  "dateCreated",
-  "hidden",
-  "system",
-  "locked"
-) values (
-  2,
-  0,
-  'Announcements',
-  'Announcements',
-  '',
-  'Site and forum announcements.',
-  'announcements, news',
-  0,
-  0,
-  0,
-  new Date().toISOString(),
-  false,
-  true,
-  true
-);
-
-SELECT SETVAL('discussions_id_seq', ( select max("id") + 1 from discussions ) );
-
-
-
--- Put any topics without a lookup record in the trash
-update "topics" t set "discussionID" = 1
-where t."discussionID" is null;
-
-
-
-
 -- bookmarks
 
 create table "bookmarks" (
@@ -624,6 +511,114 @@ create table "passwordReset" (
   "timeRequested" timestamp without time zone not null,
   primary key ("id")
 );
+
+
+
+-- announcements
+
+create table "announcements" (
+  "id" serial not null,
+  "discussionID" integer not null,
+  "topicID" integer not null,
+  primary key ("id")
+);
+
+
+insert into "announcements" (
+  "id",
+  "discussionID",
+  "topicID"
+)
+select
+  "intTopicForumLookupID",
+  "intForumID",
+  "intTopicID"
+from "tblForumTopicForumLookup" where "bitAnnouncement" = true;
+
+
+SELECT SETVAL('announcements_id_seq', ( select max("id") + 1 from announcements ) );
+
+
+update "topics" t set "discussionID" = (
+  select "intForumID"
+  from "tblForumTopicForumLookup" l
+  where l."intTopicID" = t."id"
+)
+where t."id" not in (
+  select "topicID"
+  from "announcements"
+);
+
+-- Put announcements in discussion ID 2 and move General Discussion topics to a new discussion ID
+update "topics"
+set "discussionID" = 22
+where "discussionID" = 2;
+
+update "announcements"
+set "discussionID" = 22
+where "discussionID" = 2;
+
+update "moderators"
+set "discussionID" = 22
+where "discussionID" = 2;
+
+update "topics"
+set "discussionID" = 2
+where "id" in (
+  select distinct "topicID"
+  from "announcements"
+);
+
+create table "arcthreadscopy" as
+table "arcthreads";
+
+update "arcthreadscopy"
+set "icategoryid" = 22
+where "icategoryid" = 2;
+
+update "discussions"
+set "id" = 22
+where "id" = 2;
+
+insert into "discussions" (
+  "id",
+  "categoryID",
+  "title",
+  "url",
+  "description",
+  "metaDescription",
+  "keywords",
+  "posts",
+  "topics",
+  "sort",
+  "dateCreated",
+  "hidden",
+  "system",
+  "locked"
+) values (
+  2,
+  0,
+  'Announcements',
+  'Announcements',
+  '',
+  'Site and forum announcements.',
+  'announcements, news',
+  0,
+  0,
+  0,
+  now(),
+  false,
+  true,
+  true
+);
+
+SELECT SETVAL('discussions_id_seq', ( select max("id") + 1 from discussions ) );
+
+
+
+-- Put any topics without a lookup record in the trash
+update "topics" t set "discussionID" = 1
+where t."discussionID" is null;
 
 
 
