@@ -110,6 +110,7 @@ function start(params, context, emitter) {
 
       params.form.title = '';
       params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
+      params.form.displayDiscussions = 'none';
       params.form.discussions = [];
       params.form.subscribe = false;
 
@@ -132,20 +133,29 @@ function start(params, context, emitter) {
 
 
 function startForm(params, context, emitter) {
-
+  var discussions = [];
+  
   if ( params.request.method === 'POST' ) {
     params.form.subscribe = params.form.subscribe || false;
+    params.form.displayDiscussions = params.form.displayDiscussions || 'none';
+    params.form.discussions = params.form.discussions || [];
+    
+    params.form.discussions.forEach( function (item, index, array) {
+      discussions[item] = item;
+    });
+    
+    params.form.discussions = discussions;
 
     // Verify the user's group has post access to the discussion
     app.listen('waterfall', {
       access: function (emitter) {
-        app.toolbox.access.discussionPost(params.url.id, params.session, emitter);
+        app.toolbox.access.discussionPost(2, params.session, emitter);
       },
-      discussion: function (previous, emitter) {
-        app.models.discussion.info(params.url.id, emitter);
+      categoriesPost: function (previous, emitter) {
+        app.models.discussions.categoriesPost(params.session.groupID, emitter);
       }
     }, function (output) {
-      var discussion = output.discussion,
+      var categories = output.categoriesPost,
           titleMarkdown = new Remarkable(),
           contentMarkdown = new Remarkable({
             breaks: true,
@@ -176,8 +186,8 @@ function startForm(params, context, emitter) {
                   title: parsedTitle,
                   content: parsedContent
                 },
-                discussion: discussion,
-                breadcrumbs: app.models.announcement.breadcrumbs(discussion.title, discussion.url)
+                categories: categories,
+                breadcrumbs: app.models.announcement.breadcrumbs('Announcements', 'announcements')
               },
               view: 'start'
             });
@@ -187,10 +197,25 @@ function startForm(params, context, emitter) {
             if ( params.form.formAction === 'Save as draft' ) {
               draft = true;
             }
+        
+            switch ( params.form.displayDiscussions ) {
+              case 'none':
+                params.form.discussions = [];
+                break;
+              case 'all':
+              console.log(categories);
+                for ( var category in categories ) {
+                  for ( var discussion in categories[category].discussions ) {
+                    params.form.discussions.push(categories[category].discussions[discussion].discussionID);
+                  }
+                }
+                break;
+            }
+        console.log(params.form.discussions);
             app.listen({
-              savetopic: function (emitter) {
-                app.models.topic.insert({
-                  discussionID: 2,
+              saveTopic: function (emitter) {
+                app.models.announcement.insert({
+                  discussions: params.form.discussions,
                   userID: params.session.userID,
                   titleMarkdown: params.form.title,
                   titleHtml: parsedTitle,
@@ -198,14 +223,13 @@ function startForm(params, context, emitter) {
                   markdown: params.form.content,
                   html: parsedContent,
                   draft: draft,
-                  private: false,
                   time: time
                 }, emitter);
               }
             }, function (output) {
-              var announcement = output.saveannouncement;
+              var topic = output.saveTopic;
 
-              if ( output.listen.success && output.savetopic.success ) {
+              if ( output.listen.success && output.saveTopic.success ) {
                 if ( params.form.subscribe ) {
                   app.listen({
                     subscribe: function (emitter) {
@@ -238,9 +262,9 @@ function startForm(params, context, emitter) {
                 } else {
                   emitter.emit('ready', {
                     content: {
-                      topic: output.saveannouncement,
-                      discussion: discussion,
-                      breadcrumbs: app.models.announcement.breadcrumbs(discussion.title, discussion.url, discussion.id)
+                      topic: topic,
+                      categories: categories,
+                      breadcrumbs: app.models.announcement.breadcrumbs('Announcements', 'announcements')
                     },
                     view: 'start'
                   });
@@ -294,7 +318,7 @@ function reply(params, context, emitter) {
 
       // If the quoted post exists and its announcement ID matches this announcement ID, add the
       // quote to the post content (this is a security measure, don't remove it).
-      if ( output.quote && output.quote.topicID === output.topic.id && output.quote.markdown ) {
+      if ( output.quote && output.quote.topicID === output.topic.id ) {
         params.form.content = '[' + output.quote.author + ' said](post/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
       } else if ( params.url.quote && !output.quote ) {
         message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.';

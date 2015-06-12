@@ -30,21 +30,21 @@ section.topic-write-form
           p.label-note Only people with access rights to the selected forums will see this announcement.
           ul
             li.radio
-              input(id="display-discussions-none" name="displayDiscussions" type="radio" value="none" checked=form.allDiscussions)
+              input(id="display-discussions-none" name="displayDiscussions" type="radio" value="none" checked=(form.displayDiscussions === 'none'))
               label(for="display-discussions-none")
                 | Only show it within <a href="announcements">Announcements</a>
             li.radio
-              input(id="display-discussions-all" name="displayDiscussions" type="radio" value="all" checked=form.allDiscussions)
+              input(id="display-discussions-all" name="displayDiscussions" type="radio" value="all" checked=(form.displayDiscussions === 'all'))
               label(for="display-discussions-all")
-                | Show it within all discussion forums
+                | Show it at the top of all discussion forums
             li.radio
-              input(id="display-discussions-custom" name="displayDiscussions" type="radio" value="custom" checked=form.allDiscussions)
+              input(id="display-discussions-custom" name="displayDiscussions" type="radio" value="custom" checked=(form.displayDiscussions === 'custom'))
               label(for="display-discussions-custom")
                 | Show it within the following forums:
               ul
                 each category in categories
                   li
-                    #{category.categoryTitle}
+                    = category.categoryTitle
                     ul
                       each discussion in category.discussions
                         li.discussion.checkbox

@@ -139,7 +139,7 @@ function insert(args, emitter) {
   var title = args.titleMarkdown.trim() || '',
       content = args.markdown.trim() || '';
 
-  if ( !title.length || !content.length || ( args.private && !args.invitees.length ) ) {
+  if ( !title.length || !content.length ) {
     emitter.emit('ready', {
       success: false,
       reason: 'requiredFieldsEmpty',
@@ -164,12 +164,12 @@ function insert(args, emitter) {
             });
 
           },
-          insertannouncement: function (previous, emitter) {
+          insertTopic: function (previous, emitter) {
 
             client.query(
-              'insert into announcements ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
-              'values ( $1, 0, 0, $2, $3, $4, $5, 0, $6, $7, 0 ) returning id;',
-              [ args.discussionID, args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft, args.private ],
+              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
+              'values ( 2, 0, 0, $1, $2, $3, $4, 0, $5, false, 0 ) returning id;',
+              [ args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -190,7 +190,7 @@ function insert(args, emitter) {
             client.query(
               'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified" ) ' +
               'values ( $1, $2, $3, $4, $5, $6, $7, $8 ) returning id;',
-              [ previous.insertannouncement.id, args.userID, args.html, args.markdown, args.time, args.draft, args.userID, args.time ],
+              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft, args.userID, args.time ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -206,11 +206,11 @@ function insert(args, emitter) {
             );
 
           },
-          updateannouncement: function (previous, emitter) {
+          updateTopic: function (previous, emitter) {
 
             client.query(
-              'update announcements set "firstPostID" = $1, "lastPostID" = $1 where id = $2;',
-              [ previous.insertPost.id, previous.insertannouncement.id ],
+              'update "topics" set "firstPostID" = $1, "lastPostID" = $1 where id = $2;',
+              [ previous.insertPost.id, previous.insertTopic.id ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -218,24 +218,25 @@ function insert(args, emitter) {
                   });
                   emitter.emit('error', err);
                 } else {
-                  if ( args.private ) {
-                    emitter.emit('ready');
-                  } else {
-                    emitter.emit('skip');
-                  }
+                  emitter.emit('ready');
                 }
               }
             );
 
           },
-          insertInvitation: function (previous, emitter) {
-            var userMethods = {};
+          insertAnnouncement: function (previous, emitter) {
+            var insertIDs = '( 2, ' + previous.insertTopic.id + ' )';
+            
+            if ( args.discussions.length ) {
+              args.discussions.forEach( function (item, index, array) {
+                insertIDs += ', ( ' + item + ', ' + previous.insertTopic.id + ' )';
+              });
+            }
 
-            args.invitees.forEach( function (item, indext, array) {
-              userMethods[item] = function (emitter) {
+            app.listen({
+              insert: function (emitter) {
                 client.query(
-                  'select id from users where username = $1;',
-                  [ item ],
+                  'insert into "announcements" ( "discussionID", "topicID" ) values ' + insertIDs + ';',
                   function (err, result) {
                     if ( err ) {
                       client.query('rollback', function (err) {
@@ -243,65 +244,14 @@ function insert(args, emitter) {
                       });
                       emitter.emit('error', err);
                     } else {
-                      emitter.emit('ready', result.rows[0]);
+                      emitter.emit('ready');
                     }
                   }
                 );
-              };
-            });
-
-            app.listen(userMethods, function (output) {
-              var userIDs = [ args.userID ],
-                  insertIDs = '( ' + previous.insertannouncement.id + ', ' + args.userID + ' )',
-                  insert = true;
-
+              }
+            }, function (output) {
               if ( output.listen.success ) {
-                delete output.listen;
-                for ( var property in output ) {
-                  if ( output[property] ) {
-                    userIDs.push(output[property].id);
-                    insertIDs += ', ( ' + previous.insertannouncement.id + ', ' + output[property].id + ' )';
-                  } else {
-                    insert = false;
-                    break;
-                  }
-                }
-
-                if ( insert ) {
-                  app.listen({
-                    insert: function (emitter) {
-                      client.query(
-                        'insert into "announcementInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
-                        function (err, result) {
-                          if ( err ) {
-                            client.query('rollback', function (err) {
-                              done();
-                            });
-                            emitter.emit('error', err);
-                          } else {
-                            emitter.emit('ready');
-                          }
-                        }
-                      );
-                    }
-                  }, function (output) {
-                    if ( output.listen.success ) {
-                      emitter.emit('skip', {
-                        userIDs: userIDs
-                      });
-                    } else {
-                      emitter.emit('error', output.listen);
-                    }
-                  });
-                } else {
-                  client.query('rollback', function (err) {
-                    done();
-                    emitter.emit('error', {
-                      message: 'The user you specified (' + property + ') doesn\'t exist.'
-                    });
-                  });
-                }
-
+                emitter.emit('ready');
               } else {
                 emitter.emit('error', output.listen);
               }
@@ -311,8 +261,7 @@ function insert(args, emitter) {
           updateDiscussionStats: function (previous, emitter) {
 
             client.query(
-              'update discussions set posts = ( select count(p.id) from posts p join announcements t on p."topicID" = t.id where t."discussionID" = $1 and p.draft = false ), announcements = ( select count(t.id) from announcements t where t."discussionID" = $1 and t.draft = false ) where "id" = $1;',
-              [ args.discussionID ],
+              'update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = 2 and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = 2 and t.draft = false ) where "id" = 2;',
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -359,21 +308,17 @@ function insert(args, emitter) {
         }, function (output) {
 
           if ( output.listen.success ) {
-console.log(output);
+
             emitter.emit('ready', {
               success: true,
-              id: output.insertannouncement.id
+              id: output.insertTopic.id
             });
 
             if ( !args.draft ) {
-              if ( args.private ) {
-                output.insertInvitation.userIDs.forEach( function (item, index, array) {
-                  app.cache.clear({ scope: 'private-announcements-' + item });
-                });
-              } else {
-                app.cache.clear({ scope: 'discussion-' + args.discussionID });
-                app.cache.clear({ scope: 'discussions-categories' });
-              }
+              app.cache.clear({ scope: 'discussion-2' });
+              args.discussions.forEach( function (item, index, array) {
+                app.cache.clear({ scope: 'discussion-' + item, key: 'announcements' });
+              });
             }
 
           } else {
