@@ -65,8 +65,8 @@ function info(discussionID, emitter) {
 
 function announcements(discussionID, emitter) {
   // See if this discussion page is already cached
-  var cacheKey = 'announcements',
-      scope = 'discussion-' + discussionID,
+  var cacheKey = 'discussion-' + discussionID,
+      scope = 'announcements',
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object

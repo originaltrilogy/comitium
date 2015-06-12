@@ -749,7 +749,7 @@ console.log(output);
 
 function trash(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/announcement/' + params.url.announcement + '/id/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.announcement + '/id/' + params.url.id);
 
   app.listen('waterfall', {
     access: function (emitter) {
@@ -764,7 +764,7 @@ function trash(params, context, emitter) {
 
       emitter.emit('ready', {
         content: {
-          announcement: output.announcement
+          topic: output.topic
         },
         view: 'trash'
       });
@@ -791,18 +791,14 @@ function trashForm(params, context, emitter) {
       app.models.topic.info(params.url.id, emitter);
     }
   }, function (output) {
-    var announcement = output.topic;
+    var topic = output.topic;
 
     if ( output.listen.success ) {
 
       app.listen({
         trash: function (emitter) {
-          app.models.topic.move({
-            topicID: topic.id,
-            announcementUrl: topic.url,
-            discussionID: topic.discussionID,
-            newDiscussionID: 1,
-            newDiscussionUrl: 'Trash'
+          app.models.announcement.trash({
+            topicID: topic.id
           }, emitter);
         }
       }, function (output) {
@@ -825,7 +821,7 @@ function trashForm(params, context, emitter) {
 
             emitter.emit('ready', {
               content: {
-                topic: announcement,
+                topic: topic,
                 trash: output.trash
               },
               view: 'trash'
