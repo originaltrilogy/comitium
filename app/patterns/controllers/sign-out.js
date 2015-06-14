@@ -10,8 +10,9 @@ module.exports = {
 function handler(params, context, emitter) {
   emitter.emit('ready', {
     cache: {
-      controller: true,
-      directives: ['cookie', 'session']
+      controller: {
+        directives: ['cookie', 'session']
+      }
     },
     cookie: {
       comitium_id: {
