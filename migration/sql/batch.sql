@@ -622,6 +622,40 @@ where t."discussionID" is null;
 
 
 
+-- Delete stray topics without any posts and clean up topic and post counts
+create function cleanup() returns text as $$
+
+  declare
+    discussion record;
+  
+  begin
+  
+    for discussion in select * from discussions order by id asc
+    
+      loop
+      
+        raise notice 'cleaning %', discussion.title;
+        
+        delete from "topics" t where t."discussionID" = discussion.id and t."id" not in (
+          select t."id" from topics t join posts p on p."topicID" = t."id" and p."id" = t."firstPostID" where t."discussionID" = discussion.id
+        );
+        
+        update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = discussion.id and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = discussion.id and t.draft = false ) where "id" = discussion.id;
+      
+      end loop;
+    
+    return 'topic and post counts cleaned up';
+  
+  end;
+
+$$ language 'plpgsql';
+
+select cleanup();
+
+drop function cleanup();
+
+
+
 
 -- Column settings after migration
 

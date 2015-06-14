@@ -13,7 +13,7 @@ body[data-controller="discussions"] {
     }
     span.topics,
     span.posts {
-      font-weight: bold;
+      font-family: $boldFont;
     }
   }
 

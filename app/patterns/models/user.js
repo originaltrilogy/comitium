@@ -359,7 +359,7 @@ function create(args, emitter) {
 
     switch ( reason ) {
       case 'requiredFieldsEmpty':
-        output.message = 'One or more required fields is empty.';
+        output.message = 'All fields are required.';
         break;
       case 'userExists':
         output.message = 'The username you requested already exists.';
@@ -426,7 +426,7 @@ function exists(args, emitter) {
         client.query(
           'select id ' +
           'from users ' +
-          'where username = $1',
+          'where username ilike $1',
           [ args.username ],
           function (err, result) {
             done();

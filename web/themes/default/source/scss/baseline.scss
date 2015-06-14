@@ -15,12 +15,13 @@ html {
 }
 
 body {
-  font-size: 1.6rem;
-	line-height: 1.6;
+  font-size: 1.4rem;
+  font-size: 4vw;
+	line-height: 1.75;
 }
 
-h1 { font-size: 150%; }
-h2 { font-size: 125%; }
+h1 { font-size: 125%; }
+h2 { font-size: 115%; }
 h3 { font-size: 110%; }
 
 ul,
@@ -36,7 +37,8 @@ nav {
 }
 
 p {
-	margin: 1.2rem 0;
+	margin: 1.4rem 0 1.8rem;
+  margin: 4vw 0 6vw;
 }
 
 table {
@@ -59,4 +61,25 @@ textarea {
   -moz-appearance: none;
   -webkit-appearance: none;
   border-radius: 0;
+}
+
+b,
+strong {
+  font-weight: normal;
+  font-family: $boldFont;
+  
+  i,
+  em {
+    font-family: $boldItalicFont;
+  }
+}
+
+i,
+em {
+  font-family: $italicFont;
+  
+  b,
+  strong {
+    font-family: $boldItalicFont;
+  }
 }

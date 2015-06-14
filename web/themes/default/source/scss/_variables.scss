@@ -5,6 +5,9 @@ $version: '0.1';
 $glyphs: 'EntypoDev';
 $defaultFont: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
 $titleFont: 'Open Sans Regular', $defaultFont;
+$boldFont: 'Open Sans Semibold', $titleFont;
+$italicFont: 'Open Sans Italic', $defaultFont;
+$boldItalicFont: 'Open Sans Semibold Italic', $defaultFont;
 
 /*-------------------
 Mixins

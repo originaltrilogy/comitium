@@ -71,6 +71,28 @@ Fonts
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Open Sans Italic';
+  src: url('fonts/open-sans/opensans-italic-webfont.eot');
+  src: url('fonts/open-sans/opensans-italic-webfont.eot?#iefix') format('embedded-opentype'),
+     url('fonts/open-sans/opensans-italic-webfont.svg#OpenSansItalic') format('svg'),
+     url('fonts/open-sans/opensans-italic-webfont.woff') format('woff'),
+     url('fonts/open-sans/opensans-italic-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans Semibold Italic';
+  src: url('fonts/open-sans/opensans-semibolditalic-webfont.eot');
+  src: url('fonts/open-sans/opensans-semibolditalic-webfont.eot?#iefix') format('embedded-opentype'),
+     url('fonts/open-sans/opensans-semibolditalic-webfont.svg#OpenSansSemiboldItalic') format('svg'),
+     url('fonts/open-sans/opensans-semibolditalic-webfont.woff') format('woff'),
+     url('fonts/open-sans/opensans-semibolditalic-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 
 /*-------------------
 Global styles
@@ -173,6 +195,9 @@ header {
     text-align: center;
     text-decoration: none;
   }
+  nav {
+    font-size: 125%;
+  }
   li {
     display: block;
     border-top: 0.1rem solid #4F566B;
@@ -244,7 +269,6 @@ header {
 nav.breadcrumbs {
   padding: 1.2rem 1.4rem 0.8rem;
   font-family: $titleFont, $defaultFont;
-  font-size: 1.4rem;
   color: white;
 
   li {
@@ -306,7 +330,6 @@ main {
   & > p {
     margin-left: 1.4rem;
     margin-right: 1.4rem;
-    font-size: 1.4rem;
     color: white;
   }
 }
@@ -318,7 +341,6 @@ section {
 
 article {
   padding: 1.2rem 0 1.4rem;
-  font-size: 1.2rem;
   color: white;
   background: #484D5E;
   border-top: 0.1rem solid #586175;
@@ -341,20 +363,15 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   margin: 0 1.4rem 0.8rem;
-  font-size: 1.8rem;
+  line-height: 1.5;
   color: white;
 }
 
 h2 {
   padding: 1.6rem 1.4rem;
-  font-size: 1.6rem;
   color: white;
   text-align: center;
   background: #3E4352;
-}
-
-h3 {
-  font-size: 1.4rem;
 }
 
 footer {
@@ -377,17 +394,17 @@ form {
   }
 	label {
     font-family: $titleFont;
-    font-size: 1.6rem;
+    font-size: 120%;
     color: white;
 	}
   p.label-note {
     margin: 0;
-    font-size: 1.2rem;
     color: #CDCDCD;
   }
   input {
     width: 100%;
     padding: 1.2rem;
+    font-size: 120%;
     color: white;
     background: #5E667A;
     border: 0.1rem solid #343945;
@@ -407,8 +424,7 @@ form {
           width: 1.8rem;
           height: 1.8rem;
           content: 'x';
-          font-size: 1.6rem;
-          line-height: 1.6rem;
+          line-height: 1;
           text-align: center;
         }
       }
@@ -443,7 +459,7 @@ form {
     /* padding-left: 6%; */
     /* padding-right: 6%; */
     font-family: Menlo, fixed-width;
-    font-size: 1.2rem;
+    font-size: 120%;
     width: 100%;
     padding: 1.2rem;
     color: white;
@@ -457,6 +473,7 @@ form {
 
 			& > li {
 				margin: 1rem auto 2rem;
+        margin: 1vw auto 9vw;
         list-style: none;
 
 				&.text,
@@ -472,7 +489,7 @@ form {
             padding-left: 4.4rem;
             padding-top: 0.4rem;
             font-family: $defaultFont;
-            font-size: 1.4rem;
+            font-size: 100%;
           }
         }
         &.checkbox {
@@ -502,7 +519,7 @@ form {
 
 				input {
 					width: 100%;
-					font-size: 2rem;
+					font-size: 150%;
 
 					&[type="submit"] {
             margin-bottom: 1rem;
@@ -511,7 +528,7 @@ form {
             border-radius: 0.3rem;
             border: none;
             font-family: $titleFont;
-            font-size: 2rem;
+            font-size: 150%;
             color: #3E4352;
 					}
 				}
@@ -535,7 +552,7 @@ form {
         background: #CFDCFF;
         border-radius: 0.3rem;
         font-family: $titleFont;
-        font-size: 2rem;
+        font-size: 130%;
         color: #3E4352;
         text-decoration: none;
         text-align: center;
@@ -555,7 +572,6 @@ section.preview {
 
     .title {
       font-family: $titleFont;
-      font-size: 1.6rem;
     }
   }
 }
