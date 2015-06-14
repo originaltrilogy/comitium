@@ -15,15 +15,9 @@ module.exports = {
 
 
 function hash(str, emitter) {
-  bcrypt.genSalt(10, function(err, salt) {
+  bcrypt.hash(str, 10, function(err, hash) {
     if ( !err ) {
-      bcrypt.hash(str, salt, function(err, hash) {
-        if ( !err ) {
-          emitter.emit('ready', hash);
-        } else {
-          emitter.emit('error', err);
-        }
-      });
+      emitter.emit('ready', hash);
     } else {
       emitter.emit('error', err);
     }
