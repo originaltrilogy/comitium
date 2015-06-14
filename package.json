@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "citizen": "~0.6.4",
+    "bcrypt": "*",
     "moment": "2.8.4",
     "nodemailer": "*",
     "numeral": "*",

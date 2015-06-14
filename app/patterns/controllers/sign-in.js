@@ -11,7 +11,7 @@ module.exports = {
 function handler(params, context, emitter) {
   params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctzn_referer || params.request.headers.referer || app.config.main.baseUrl;
   params.form.loginReferrer = params.request.headers.referer || app.config.main.baseUrl;
-  params.form.username = '';
+  params.form.email = '';
   params.form.password = '';
   params.form.remember = false;
 
@@ -40,7 +40,10 @@ function submit(params, context, emitter) {
 
     app.listen({
       authenticate: function (emitter) {
-        app.models.user.authenticate(params.form, emitter);
+        app.models.user.authenticate({
+          email: params.form.email,
+          password: params.form.password
+        }, emitter);
       }
     }, function (output) {
       var user = output.authenticate.user,
@@ -58,12 +61,8 @@ function submit(params, context, emitter) {
 
           emitter.emit('ready', {
             cookie: {
-              comitium_username: {
-                value: output.authenticate.user.username,
-                expires: cookieExpires
-              },
-              comitium_password: {
-                value: output.authenticate.user.passwordHash,
+              comitium_id: {
+                value: output.authenticate.user.usernameHash,
                 expires: cookieExpires
               }
             },

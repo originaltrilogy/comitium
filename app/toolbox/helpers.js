@@ -2,20 +2,44 @@
 
 'use strict';
 
-var crypto = require('crypto');
+var bcrypt = require('bcrypt');
 
 module.exports = {
   hash: hash,
+  compareHash: compareHash,
   ip: ip,
   isoDate: isoDate,
   paginate: paginate
 };
 
 
-function hash(str, method) {
-  method = method || 'sha512';
-  
-  return crypto.createHash(method).update(str).digest('hex');
+
+function hash(str, emitter) {
+  bcrypt.genSalt(10, function(err, salt) {
+    if ( !err ) {
+      bcrypt.hash(str, salt, function(err, hash) {
+        if ( !err ) {
+          emitter.emit('ready', hash);
+        } else {
+          emitter.emit('error', err);
+        }
+      });
+    } else {
+      emitter.emit('error', err);
+    }
+  });
+}
+
+
+
+function compareHash(str, hash, emitter) {
+  bcrypt.compare(str, hash, function(err, result) {
+    if ( !err ) {
+      emitter.emit('ready', result);
+    } else {
+      emitter.emit('error', err);
+    }
+  });
 }
 
 

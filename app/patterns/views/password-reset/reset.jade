@@ -9,7 +9,7 @@ section.password-reset-form
       ul
         li.password.text.required
           label(for="password") New password
-          p.label-note At least 8 characters, anything but spaces
+          p.label-note At least 8 characters, anything but spaces, case-sensitive
           input#password(name="password" type="password" value="#{form.password}" required)
         li.verify-password.text.required
           label(for="verify-password") Verify your password

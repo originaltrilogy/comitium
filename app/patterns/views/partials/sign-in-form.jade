@@ -11,9 +11,9 @@ section.sign-in-form
         input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
         input(name="loginReferrer" type="hidden" value="#{form.loginReferrer}")
         ul
-          li.username.text.required
-            label(for="username") Username
-            input(id="username" name="username" type="text" value="#{form.username}" required autofocus)
+          li.email.text.required
+            label(for="email") E-mail
+            input(id="email" name="email" type="text" value="#{form.email}" required autofocus)
           li.password.text.required
             label(for="password") Password
             input(id="password" name="password" type="password" value="#{form.password}" required)

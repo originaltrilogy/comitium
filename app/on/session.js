@@ -16,13 +16,12 @@ module.exports = {
 function start(params, context, emitter) {
   // If the user has cookies from a previous session, authenticate and start a new
   // session.
-  if ( params.cookie.comitium_username && params.cookie.comitium_password ) {
+  if ( params.cookie.comitium_id ) {
 
     app.listen({
       authenticate: function (emitter) {
         app.models.user.authenticate({
-          username: params.cookie.comitium_username,
-          passwordHash: params.cookie.comitium_password
+          usernameHash: params.cookie.comitium_id
         }, emitter);
       }
     }, function (output) {
@@ -40,10 +39,7 @@ function start(params, context, emitter) {
         } else {
           emitter.emit('ready', {
             cookie: {
-              comitium_username: {
-                expires: 'now'
-              },
-              comitium_password: {
+              comitium_id: {
                 expires: 'now'
               }
             },

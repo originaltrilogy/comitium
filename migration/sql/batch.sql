@@ -195,7 +195,7 @@ update users set "groupID" = (
 
 update users set "groupID" = (
   select id from groups where name = 'Administrators'
-) where username = 'Jay';
+) where username = 'Jay' and username = 'Administrator';
 
 -- Put existing members in the Trusted Members group
 update users set "groupID" = 3 where "groupID" = 2;

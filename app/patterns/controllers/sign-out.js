@@ -10,14 +10,11 @@ module.exports = {
 function handler(params, context, emitter) {
   emitter.emit('ready', {
     cache: {
-      scope: 'controller',
-      directives: ['cookie', 'session', 'handoff']
+      controller: true,
+      directives: ['cookie', 'session']
     },
     cookie: {
-      comitium_username: {
-        expires: 'now'
-      },
-      comitium_password: {
+      comitium_id: {
         expires: 'now'
       }
     },

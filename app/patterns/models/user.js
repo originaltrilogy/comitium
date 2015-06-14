@@ -134,69 +134,84 @@ function activationStatus(args, emitter) {
 
 
 function authenticate(credentials, emitter) {
-  var username = credentials.username.trim(),
-      password = credentials.password || '',
-      passwordHash = credentials.passwordHash || '';
+  var email = '',
+      password = '',
+      usernameHash = '';
+  
+  if ( credentials.email ) {
+    email = credentials.email.trim();
+    password = credentials.password || '';
+    password = password.trim();
+  } else if ( credentials.usernameHash ) {
+    usernameHash = credentials.usernameHash || '';
+    usernameHash = usernameHash.trim();
+  }
 
-  password = password.trim();
-  passwordHash = passwordHash.trim();
-
-  if ( !passwordHash.length && ( !username.length || !password.length ) ) {
+  if ( !usernameHash.length && ( !email.length || !password.length ) ) {
     emitter.emit('ready', {
       success: false,
       reason: 'requiredFieldsEmpty',
-      message: 'One or more required fields is empty.'
+      message: 'All fields are required.'
     });
   } else {
-    app.listen({
+    app.listen('waterfall', {
       user: function (emitter) {
-        app.models.user.info({ username: username }, emitter);
+        if ( usernameHash.length ) {
+          info({ usernameHash: usernameHash }, emitter);
+        } else if ( email.length ) {
+          info({ email: email }, emitter);
+        }
+      },
+      compareHash: function (previous, emitter) {
+        if ( password.length && previous.user && previous.user.passwordHash ) {
+          app.toolbox.helpers.compareHash(password, previous.user.passwordHash, emitter);
+        } else {
+          emitter.emit('ready');
+        }
       }
     }, function (output) {
 
-      if ( output.listen.success && output.user ) {
-        if ( output.user.activationDate ) {
-          if ( output.user.login ) {
-            if ( password.length ) {
-              passwordHash = app.toolbox.helpers.hash(password);
-            }
-            if ( output.user.passwordHash === passwordHash ) {
-              emitter.emit('ready', {
-                success: true,
-                message: 'Cookies are set.',
-                user: output.user
-              });
+      if ( output.listen.success ) {
+        if ( output.user ) {
+          if ( output.user.activationDate ) {
+            if ( output.user.login ) {
+              if ( usernameHash.length || output.compareHash === true ) {
+                emitter.emit('ready', {
+                  success: true,
+                  message: 'Cookies are set.',
+                  user: output.user
+                });
+              } else {
+                emitter.emit('ready', {
+                  success: false,
+                  reason: 'passwordMismatch',
+                  message: 'The password you provided doesn\'t match our records.'
+                });
+              }
             } else {
               emitter.emit('ready', {
                 success: false,
-                reason: 'passwordMismatch',
-                message: 'The password you provided doesn\'t match our records.'
+                reason: 'banned',
+                message: 'This account has had its login privileges revoked.'
               });
             }
           } else {
             emitter.emit('ready', {
               success: false,
-              reason: 'banned',
-              message: 'The username you provided has had its login privileges revoked.'
+              reason: 'notActivated',
+              message: 'This account is awaiting activation. Did you follow the instructions in your welcome e-mail to activate your account? If you\'ve activated your account and you\'re still getting this message, please contact an administrator for assistance.'
             });
           }
         } else {
           emitter.emit('ready', {
             success: false,
-            reason: 'notActivated',
-            message: 'This account is awaiting activation. Did you follow the instructions in your welcome e-mail to activate your account? If you\'ve activated your account and you\'re still getting this message, please contact an administrator for assistance.'
-          });
-        }
-      } else {
-        if ( output.listen.success ) {
-          emitter.emit('ready', {
-            success: false,
             reason: 'noRecord',
-            message: 'The username you provided doesn\'t exist.'
+            message: 'The credentials you entered don\'t match our records.'
           });
-        } else {
-          emitter.emit('error', output.listen);
         }
+        
+      } else {
+        emitter.emit('error', output.listen);
       }
     });
   }
@@ -305,14 +320,17 @@ function create(args, emitter) {
           time = app.toolbox.helpers.isoDate();
           activationCode = Math.random().toString().replace('0.', '');
 
-          app.listen({
-            userInsert: function (emitter) {
+          app.listen('waterfall', {
+            passwordHash: function (emitter) {
+              app.toolbox.helpers.hash(password, emitter);
+            },
+            userInsert: function (previous, emitter) {
               app.models.user.insert({
                 // New members will eventually go into groupID 2 (New Members).
                 // Until new member logic is in place, new members are Trusted Members.
                 groupID: 3,
                 username: username,
-                passwordHash: app.toolbox.helpers.hash(password),
+                passwordHash: previous.passwordHash,
                 url: url,
                 email: email,
                 timezone: 0,
@@ -474,16 +492,19 @@ function info(args, emitter) {
       emitter.emit('error', err);
     } else {
       if ( args.userID ) {
-        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
       } else if ( args.username ) {
-        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
         arg = args.username;
+      } else if ( args.usernameHash ) {
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" = $1';
+        arg = args.usernameHash;
       } else if ( args.user ) {
-        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1';
         arg = args.user;
       } else if ( args.email ) {
-        sql = 'select u."id", u."groupID", u."username", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "email" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "email" = $1';
         arg = args.email;
       }
       client.query(
@@ -841,27 +862,43 @@ function urlExists(user, emitter) {
 
 
 function updatePassword(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-
-      client.query(
-        'update "users" set "passwordHash" = $1 where "id" = $2;',
-        [ app.toolbox.helpers.hash(args.password), args.userID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            emitter.emit('ready', {
-              success: true,
-              affectedRows: result.rows
-            });
-          }
+  
+  app.listen('waterfall', {
+    passwordHash: function (emitter) {
+      app.toolbox.helpers.hash(args.password, emitter);
+    },
+    passwordUpdate: function (previous, emitter) {
+      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        if ( err ) {
+          emitter.emit('error', err);
+        } else {
+    
+          client.query(
+            'update "users" set "passwordHash" = $1 where "id" = $2;',
+            [ previous.passwordHash, args.userID ],
+            function (err, result) {
+              done();
+              if ( err ) {
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  success: true,
+                  affectedRows: result.rows
+                });
+              }
+            }
+          );
+    
         }
-      );
-
+      });
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      emitter.emit('ready', output.passwordUpdate);
+    } else {
+      emitter.emit('error', output.listen);
     }
   });
+  
+  
 }
