@@ -15,7 +15,7 @@ module.exports = {
 
 
 function hash(str, emitter) {
-  bcrypt.hash(str, 10, function(err, hash) {
+  bcrypt.hash(str, 10, function (err, hash) {
     if ( !err ) {
       emitter.emit('ready', hash);
     } else {
@@ -27,7 +27,7 @@ function hash(str, emitter) {
 
 
 function compareHash(str, hash, emitter) {
-  bcrypt.compare(str, hash, function(err, result) {
+  bcrypt.compare(str, hash, function (err, result) {
     if ( !err ) {
       emitter.emit('ready', result);
     } else {

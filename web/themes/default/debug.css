@@ -431,6 +431,7 @@ strong {
 
 i,
 em {
+  font-style: normal;
   font-family: "Open Sans Italic", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
   i b,
   i strong,
@@ -794,7 +795,7 @@ form {
     /* padding-left: 6%; */
     /* padding-right: 6%; */
     font-family: Menlo, fixed-width;
-    font-size: 120%;
+    font-size: 90%;
     width: 100%;
     padding: 1.2rem;
     color: white;

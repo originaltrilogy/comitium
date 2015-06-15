@@ -208,18 +208,26 @@ function insert(args, emitter) {
                   });
                   emitter.emit('error', err);
                 } else {
-                  emitter.emit('ready');
+                  if ( args.discussions.length ) {
+                    emitter.emit('ready');
+                  } else {
+                    emitter.emit('skip');
+                  }
                 }
               }
             );
 
           },
           insertAnnouncement: function (previous, emitter) {
-            var insertIDs = '( 2, ' + previous.insertTopic.id + ' )';
+            var insertIDs = '';
             
             if ( args.discussions.length ) {
               args.discussions.forEach( function (item, index, array) {
-                insertIDs += ', ( ' + item + ', ' + previous.insertTopic.id + ' )';
+                insertIDs += '( ' + item + ', ' + previous.insertTopic.id + ' )';
+                
+                if ( index + 1 !== array.length ) {
+                  insertIDs += ', ';
+                }
               });
             }
 

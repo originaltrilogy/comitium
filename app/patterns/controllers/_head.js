@@ -17,7 +17,6 @@ function handler(params, context, emitter) {
     cache: {
       controller: {
         scope: 'route',
-        lifespan: 300000,
         resetOnAccess: true
       }
     }

@@ -1,4 +1,4 @@
-// discussion model
+// announcements model
 
 'use strict';
 

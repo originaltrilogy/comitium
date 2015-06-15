@@ -1,0 +1,24 @@
+h1
+  != topic.titleHtml
+  
+include ../partials/pagination      
+
+nav.topic
+  ul
+    li.reply
+      a(href="#{route.pathname}/action/reply") Reply
+    if !userIsSubscribed
+      li.subscribe
+        a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when people reply to this topic.") Subscribe
+    else
+      li.unsubscribe
+        a(href="#{route.pathname}/action/unsubscribe" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
+          
+section.posts
+  if posts
+    each post in posts
+      include ../post/post
+  if !topic.replies
+    p This topic has no replies. <a href="topic/action/reply/id/#{topic.id}">Why not weigh in?</a>
+
+include ../partials/pagination

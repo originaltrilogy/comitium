@@ -821,9 +821,7 @@ function topicView(topicID, session, emitter) {
               if ( session.talkPrivately && output.userIsInvited ) {
                 emitter.emit('ready', true);
               } else {
-                emitter.emit('error', {
-                  statusCode: 403
-                });
+                challenge(session.groupID, emitter);
               }
             } else {
               emitter.emit('error', output.listen);
