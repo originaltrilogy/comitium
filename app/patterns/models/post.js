@@ -86,7 +86,7 @@ function edit(args, emitter) {
           if ( output.listen.success ) {
 
             // Clear the topic cache
-            app.cache.clear({ scope: args.currentPost.topicUrl });
+            app.cache.clear({ scope: 'topic-' + args.currentPost.topicID });
 
             emitter.emit('ready', {
               success: true
@@ -112,7 +112,7 @@ function info(postID, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select p.id, p."topicID", p.html, p.markdown, p."dateCreated", p.draft, p."editReason", p."editorID", p."lastModified", p."lockedByID", p."lockReason", t."discussionID", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", t.url as "topicUrl" from posts p join users u on p."userID" = u.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
+        'select p.id, p."topicID", p.html, p.markdown, p."dateCreated", p.draft, p."editReason", p."editorID", p."lastModified", p."lockedByID", p."lockReason", t."discussionID", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl" from posts p join users u on p."userID" = u.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
         [ postID ],
         function (err, result) {
           done();

@@ -19,6 +19,7 @@ app.db = {
 app.toolbox = {
   access: require('./toolbox/access'),
   helpers: require('./toolbox/helpers'),
+  bcrypt: require('bcrypt'),
   moment: require('moment'),
   numeral: require('numeral'),
   pg: require('pg'),

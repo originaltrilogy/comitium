@@ -159,7 +159,7 @@ function discussionView(discussionID, groupID, emitter) {
       }
     }
   }, function (output) {
-
+console.log(output);
     if ( output.listen.success ) {
 
       if ( output.discussionPermissions.read ) {
@@ -793,21 +793,27 @@ function topicView(topicID, session, emitter) {
 
       if ( output.topic ) {
         if ( !output.topic.private ) {
-          app.listen({
-            discussionView: function (emitter) {
-              discussionView(output.topic.discussionID, session.groupID, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              if ( output.discussionView ) {
-                emitter.emit('ready', true);
-              } else {
-                challenge(session.groupID, emitter);
+          if ( output.topic.discussionID !== 2 ) {
+            app.listen({
+              discussionView: function (emitter) {
+                discussionView(output.topic.discussionID, session.groupID, emitter);
               }
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
+            }, function (output) {
+              if ( output.listen.success ) {
+                if ( output.discussionView ) {
+                  emitter.emit('ready', true);
+                } else {
+                  challenge(session.groupID, emitter);
+                }
+              } else {
+                emitter.emit('error', output.listen);
+              }
+            });
+          } else {
+            emitter.emit('error', {
+              statusCode: 403
+            });
+          }
         } else {
           app.listen({
             userIsInvited: function (emitter) {
@@ -849,9 +855,13 @@ function postView(postID, session, emitter) {
     post: function (emitter) {
       app.models.post.info(postID, emitter);
     },
-    topic: function (previous, emitter) {
+    view: function (previous, emitter) {
       if ( previous.post ) {
-        app.models.topic.info(previous.post.topicID, emitter);
+        if ( previous.post.discussionID !== 2 ) {
+          topicView(previous.post.topicID, session, emitter);
+        } else {
+          announcementView(previous.post.topicID, session, emitter);
+        }
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -862,44 +872,14 @@ function postView(postID, session, emitter) {
 
     if ( output.listen.success ) {
 
-      if ( output.topic.private ) {
-        app.listen({
-          userIsInvited: function (emitter) {
-            app.models.topic.hasInvitee({
-              topicID: output.topic.id,
-              userID: session.userID
-            }, emitter);
-          }
-        }, function (output) {
-          if ( output.listen.success ) {
-            if ( session.talkPrivately && output.userIsInvited ) {
-              emitter.emit('ready', true);
-            } else {
-              emitter.emit('error', {
-                statusCode: 403
-              });
-            }
-          } else {
-            emitter.emit('error', output.listen);
-          }
-        });
+      if ( output.view ) {
+        emitter.emit('ready', true);
       } else {
-        app.listen({
-          discussionView: function (emitter) {
-            discussionView(output.topic.discussionID, session.groupID, emitter);
-          }
-        }, function (output) {
-          if ( output.listen.success ) {
-            if ( output.discussionView ) {
-              emitter.emit('ready', true);
-            } else {
-              challenge(session.groupID, emitter);
-            }
-          } else {
-            emitter.emit('error', output.listen);
-          }
+        emitter.emit('error', {
+          statusCode: 403
         });
       }
+      
     } else {
       emitter.emit('error', output.listen);
     }

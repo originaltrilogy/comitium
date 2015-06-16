@@ -1,0 +1,11 @@
+Issues
+
+- When posting an announcement, selecting only one forum throws an error because a single forum comes through as a string (controller expects an array)
+- Link Markdown tutorial in textareas to Remarkable tutorial:
+	https://jonschlinkert.github.io/remarkable/demo/
+- Bookmarks pattern
+- When adding a new post bookmark from a topic page, if the user is asked to sign in, they should be redirected back to the topic page, not their bookmark list.
+- The private topic list should display a list of topic participants beneath each topic so it's clear who has been invited
+- Private topics should display a list of topic participants at the top of the topic
+- Add edit notes to posts (or just an icon/link to post history if there have been edits)
+- If an unauthenticated user tries to access a page that requires login, then abandons it, then goes to the sign in page and signs in, they're redirected to the initial page they requested. ctzn_referer needs to be cleared somehow.

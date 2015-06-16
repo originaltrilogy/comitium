@@ -16,11 +16,7 @@ function handler(params, context, emitter) {
   params.form.verifyPassword = '';
   params.form.tos = false;
 
-  emitter.emit('ready', {
-    handoff: {
-      controller: '+_layout'
-    }
-  });
+  emitter.emit('ready');
 }
 
 
@@ -40,7 +36,7 @@ function form(params, context, emitter) {
       if ( output.listen.success ) {
 
         if ( output.register.success ) {
-          email.text = '<a href="' + app.config.main.baseUrl + 'user/action/activate/id/' + output.register.id + '/activationCode/' + output.register.activationCode + '">Click here to activate your account</a>';
+          email.text = '<a href="' + params.route.parsed.protocol + app.config.main.baseUrl + 'user/action/activate/id/' + output.register.id + '/activationCode/' + output.register.activationCode + '">Click here to activate your account</a>';
 
           app.mail.sendMail({
             from: app.config.main.email,

@@ -43,7 +43,7 @@ nav.topic
 section.posts
   if posts
     each post in posts
-      include ../post/post
+      include ../post/_topic-post
   if !topic.replies && topic.discussionID !== 1 && !topic.lockedByID
     p This topic has no replies. <a href="topic/action/reply/id/#{topic.id}">Why not weigh in?</a>
 

@@ -195,7 +195,13 @@ update users set "groupID" = (
 
 update users set "groupID" = (
   select id from groups where name = 'Administrators'
-) where username = 'Jay' and username = 'Administrator';
+) where username in ( 'Jay', 'Administrator');
+
+-- Clean up admins
+delete from "users" where "id" in ( 1, 2 );
+
+update "users" set "email" = 'jay@jaysylvester.com' where "username" = 'Jay';
+update "users" set "email" = 'jay@tehinnernets.com' where "username" = 'testaccount';
 
 -- Put existing members in the Trusted Members group
 update users set "groupID" = 3 where "groupID" = 2;
@@ -653,7 +659,6 @@ $$ language 'plpgsql';
 select cleanup();
 
 drop function cleanup();
-
 
 
 

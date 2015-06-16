@@ -4,6 +4,7 @@ Migration order:
 1. Users
   - users.sql
   - user-url-slug-generation.js
+  - user-hash-generation.js
 
 2. Topics
   - topics.sql

@@ -1,0 +1,20 @@
+article.post(id="#{post.id}" data-post-id="#{post.id}")
+  h2
+    img(src="#{config.main.staticAssetUrl}avatars/#{post.authorUrl}.png")
+    a(href="user/#{post.authorUrl}/id/#{post.authorID}")
+      = post.author
+    time
+      = post.dateCreated
+  .content
+    != post.html
+  nav.actions
+    ul
+      li.reply
+        a(href="#{route.pathname}/action/reply") Reply
+      li.quote
+        a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
+      if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
+        li.edit
+          a(href="post/#{post.id}/action/edit") Edit
+      li.bookmark
+        a(href="post/#{post.id}/action/bookmark") Bookmark

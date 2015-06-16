@@ -153,6 +153,12 @@ function authenticate(credentials, emitter) {
       reason: 'requiredFieldsEmpty',
       message: 'All fields are required.'
     });
+  } else if ( !usernameHash.length && app.toolbox.validate.email(email) === false ) {
+    emitter.emit('ready', {
+      success: false,
+      reason: 'invalidEmail',
+      message: 'That doesn\'t seem to be a properly formatted e-mail address. Did you enter your username by mistake?'
+    });
   } else {
     app.listen('waterfall', {
       user: function (emitter) {
@@ -321,15 +327,19 @@ function create(args, emitter) {
           activationCode = Math.random().toString().replace('0.', '');
 
           app.listen('waterfall', {
-            passwordHash: function (emitter) {
+            usernameHash: function (emitter) {
+              app.toolbox.helpers.hash(username, emitter);
+            },
+            passwordHash: function (previous, emitter) {
               app.toolbox.helpers.hash(password, emitter);
             },
             userInsert: function (previous, emitter) {
-              app.models.user.insert({
+              insert({
                 // New members will eventually go into groupID 2 (New Members).
                 // Until new member logic is in place, new members are Trusted Members.
                 groupID: 3,
                 username: username,
+                usernameHash: previous.usernameHash,
                 passwordHash: previous.passwordHash,
                 url: url,
                 email: email,
@@ -535,25 +545,7 @@ function insert(args, emitter) {
       emitter.emit('error', err);
     } else {
       app.listen('waterfall', {
-        urlExists: function (emitter) {
-          client.query(
-            'select id from users where url = $1;',
-            [ args.url ],
-            function (err, result) {
-              if ( err ) {
-                done();
-                emitter.emit('error', err);
-              } else {
-                if ( result.rows.length ) {
-                  emitter.emit('ready', true);
-                } else {
-                  emitter.emit('ready', false);
-                }
-              }
-            }
-          );
-        },
-        begin: function (previous, emitter) {
+        begin: function (emitter) {
           client.query('begin', function (err) {
             if ( err ) {
               done();
@@ -565,8 +557,8 @@ function insert(args, emitter) {
         },
         insertUser: function (previous, emitter) {
           client.query(
-            'insert into "users" ( "groupID", "username", "passwordHash", "url", "email", "timezone", "dateFormat", "lastActivity", "joinDate", "pmEmailNotification", "subscriptionEmailNotification", "activationCode", "system", "locked" ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14 ) returning id;',
-            [ args.groupID, args.username, args.passwordHash, args.activationCode, args.email, args.timezone, args.dateFormat, args.lastActivity, args.joinDate, args.pmEmailNotification, args.subscriptionEmailNotification, args.activationCode, args.system, args.locked ],
+            'insert into "users" ( "groupID", "username", "usernameHash", "passwordHash", "url", "email", "timezone", "dateFormat", "lastActivity", "joinDate", "pmEmailNotification", "subscriptionEmailNotification", "activationCode", "system", "locked" ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15 ) returning id;',
+            [ args.groupID, args.username, args.usernameHash, args.passwordHash, args.url, args.email, args.timezone, args.dateFormat, args.lastActivity, args.joinDate, args.pmEmailNotification, args.subscriptionEmailNotification, args.activationCode, args.system, args.locked ],
             function (err, result) {
               if ( err ) {
                 client.query('rollback', function (err) {
@@ -580,31 +572,6 @@ function insert(args, emitter) {
               }
             }
           );
-        },
-        updateUrl: function (previous, emitter) {
-          var sql;
-
-          if ( previous.urlExists ) {
-            sql = 'update "users" set "url" = $1 || \'-\' || "id" where "username" = $2;';
-          } else {
-            sql = 'update "users" set "url" = $1 where "username" = $2;';
-          }
-
-          client.query(
-            sql,
-            [ args.url, args.username ],
-            function (err, result) {
-              if ( err ) {
-                client.query('rollback', function (err) {
-                  done();
-                });
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready', {
-                  rowsAffected: result.rowCount
-                });
-              }
-          });
         },
         commit: function (previous, emitter) {
           client.query('commit', function () {

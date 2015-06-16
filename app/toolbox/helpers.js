@@ -2,8 +2,6 @@
 
 'use strict';
 
-var bcrypt = require('bcrypt');
-
 module.exports = {
   hash: hash,
   compareHash: compareHash,
@@ -15,7 +13,7 @@ module.exports = {
 
 
 function hash(str, emitter) {
-  bcrypt.hash(str, 10, function (err, hash) {
+  app.toolbox.bcrypt.hash(str, 10, function (err, hash) {
     if ( !err ) {
       emitter.emit('ready', hash);
     } else {
@@ -27,7 +25,7 @@ function hash(str, emitter) {
 
 
 function compareHash(str, hash, emitter) {
-  bcrypt.compare(str, hash, function (err, result) {
+  app.toolbox.bcrypt.compare(str, hash, function (err, result) {
     if ( !err ) {
       emitter.emit('ready', result);
     } else {
@@ -82,6 +80,7 @@ function paginate(url, page, itemCount) {
       pagination.previous.url = url + '/page/' + pagination.previous.number;
     }
   }
+  
   if ( pagination.current < pagination.total ) {
     pagination.next = {
       number: pagination.current + 1

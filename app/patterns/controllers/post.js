@@ -25,7 +25,7 @@ function handler(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
+      app.toolbox.access.postView(params.url.post, params.session, emitter);
     },
     post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
@@ -33,6 +33,9 @@ function handler(params, context, emitter) {
   }, function (output) {
 
     if ( output.listen.success ) {
+      
+      output.post.topicLink = output.post.discussionID !== 2 ? 'topic' : 'announcement';
+      output.post.topicLink += '/' + output.post.topicUrl + '/id/' + output.post.topicID;
 
       emitter.emit('ready', {
         content: {
@@ -54,12 +57,12 @@ function handler(params, context, emitter) {
 
 function bookmark(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/bookmarks');
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + 'bookmarks');
   params.form.notes = '';
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
+      app.toolbox.access.postView(params.url.post, params.session, emitter);
     },
     post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
@@ -96,7 +99,7 @@ function bookmarkForm(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
+      app.toolbox.access.postView(params.url.post, params.session, emitter);
     },
     post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
@@ -164,10 +167,7 @@ function edit(params, context, emitter) {
         content: {
           post: output.post
         },
-        view: 'edit',
-        handoff: {
-          controller: '+_layout'
-        }
+        view: 'edit'
       });
 
     } else {
@@ -219,10 +219,7 @@ function editForm(params, context, emitter) {
                 },
                 post: post
               },
-              view: 'edit',
-              handoff: {
-                controller: '+_layout'
-              }
+              view: 'edit'
             });
             break;
           case 'Save as draft':
@@ -258,10 +255,7 @@ function editForm(params, context, emitter) {
                       edit: output.edit,
                       post: post
                     },
-                    view: 'edit',
-                    handoff: {
-                      controller: '+_layout'
-                    }
+                    view: 'edit'
                   });
                 }
 
@@ -316,9 +310,6 @@ function lock(params, context, emitter) {
           post: {
             route: '/post/' + params.url.post
           }
-        },
-        handoff: {
-          controller: '+_layout'
         }
       });
 
@@ -413,9 +404,6 @@ function lockForm(params, context, emitter) {
                 post: {
                   route: '/post/' + params.url.post
                 }
-              },
-              handoff: {
-                controller: '+_layout'
               }
             });
 
@@ -497,7 +485,7 @@ function report(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
+      app.toolbox.access.postView(params.url.post, params.session, emitter);
     },
     post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
@@ -515,9 +503,6 @@ function report(params, context, emitter) {
           post: {
             route: '/post/' + params.url.post
           }
-        },
-        handoff: {
-          controller: '+_layout'
         }
       });
 
@@ -537,7 +522,7 @@ function reportForm(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session.groupID, emitter);
+      app.toolbox.access.postView(params.url.post, params.session, emitter);
     },
     post: function (previous, emitter) {
       app.models.post.info(params.url.post, emitter);
@@ -593,9 +578,6 @@ function reportForm(params, context, emitter) {
                 post: {
                   route: '/post/' + params.url.post
                 }
-              },
-              handoff: {
-                controller: '+_layout'
               }
             });
 
@@ -646,9 +628,6 @@ function trash(params, context, emitter) {
           post: {
             route: '/post/' + params.url.post
           }
-        },
-        handoff: {
-          controller: '+_layout'
         }
       });
 
@@ -748,9 +727,6 @@ function trashForm(params, context, emitter) {
                 post: {
                   route: '/post/' + params.url.post
                 }
-              },
-              handoff: {
-                controller: '+_layout'
               }
             });
 
