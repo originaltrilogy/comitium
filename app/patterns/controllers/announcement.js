@@ -717,7 +717,7 @@ function unlock(params, context, emitter) {
     }
   }, function (output) {
     var topic = output.topic;
-console.log(output);
+
     if ( output.listen.success ) {
 
       app.listen({

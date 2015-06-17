@@ -159,7 +159,7 @@ function discussionView(discussionID, groupID, emitter) {
       }
     }
   }, function (output) {
-console.log(output);
+
     if ( output.listen.success ) {
 
       if ( output.discussionPermissions.read ) {

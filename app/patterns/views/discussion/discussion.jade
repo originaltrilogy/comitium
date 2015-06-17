@@ -34,7 +34,7 @@ section.topics
             != topic.titleHtml
         p.details
           | Posted by 
-          a(href="user/#{topic.topicStarterUrl}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+          a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
           |  on 
           time #{topic.postDate}
         p.stats

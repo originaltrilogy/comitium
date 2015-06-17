@@ -60,7 +60,6 @@ function activate(args, emitter) {
             }
           });
         } else {
-          console.log(previous.userActivationStatus);
           if ( !previous.userActivationStatus.userExists ) {
             emitter.emit('ready', {
               success: false,
@@ -495,8 +494,8 @@ function exists(args, emitter) {
 
 function info(args, emitter) {
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    var sql,
-        arg;
+    var sql = '',
+        arg = '';
 
     if ( err ) {
       emitter.emit('error', err);
@@ -510,28 +509,34 @@ function info(args, emitter) {
       } else if ( args.usernameHash ) {
         sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" = $1';
         arg = args.usernameHash;
-      } else if ( args.user ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "url" = $1';
-        arg = args.user;
       } else if ( args.email ) {
         sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "email" = $1';
         arg = args.email;
       }
-      client.query(
-        sql,
-        [ arg ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            if ( result.rows.length ) {
-              emitter.emit('ready', result.rows[0]);
+      
+      if ( sql.length ) {
+        client.query(
+          sql,
+          [ arg ],
+          function (err, result) {
+            done();
+            if ( err ) {
+              emitter.emit('error', err);
             } else {
-              emitter.emit('ready', false);
+              if ( result.rows.length ) {
+                emitter.emit('ready', result.rows[0]);
+              } else {
+                emitter.emit('ready', false);
+              }
             }
-          }
-      });
+        });
+      } else {
+        done();
+        emitter.emit('error', {
+          message: 'Error in user model: no argument specified.'
+        });
+      }
+      
     }
   });
 }
@@ -727,11 +732,10 @@ function passwordResetDelete(args, emitter) {
 
 function posts(args, emitter) {
   // See if this post subset is already cached
-  var user = args.user,
-      start = args.start || 0,
+  var start = args.start || 0,
       end = args.end || 25,
       cacheKey = 'models-user-posts-subset-' + start + '-' + end,
-      scope = user,
+      scope = 'user-' + args.userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -749,10 +753,10 @@ function posts(args, emitter) {
               'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."username" as "author", u."url" as "authorUrl" ' +
               'from posts p ' +
               'inner join users u on p."userID" = u.id ' +
-              'where u."url" = $1 and p.draft = false ' +
+              'where u."id" = $1 and p.draft = false ' +
               'order by p."dateCreated" desc ' +
               'limit $2 offset $3;',
-              [ user, end - start, start ],
+              [ args.userID, end - start, start ],
               function (err, result) {
                 done();
                 if ( err ) {

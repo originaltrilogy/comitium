@@ -549,7 +549,6 @@ function notifySubscribers(args, emitter) {
       }, emitter);
     }
   }, function (output) {
-    console.log(output.subscribersToNotify);
     if ( output.listen.success && output.subscribersToNotify.length ) {
       for ( var i = 0; i < output.subscribersToNotify.length; i++ ) {
         app.mail.sendMail({

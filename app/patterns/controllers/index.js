@@ -40,7 +40,7 @@ function handler(params, context, emitter) {
 
     } else {
 
-      console.log(output.listen);
+      // console.log(output.listen);
       emitter.emit('error', output.listen);
 
     }

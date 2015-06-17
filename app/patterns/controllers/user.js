@@ -15,20 +15,26 @@ function handler(params, context, emitter) {
 
   params.url.page = params.url.page || 1;
 
-  app.listen({
+  app.listen('waterfall', {
     user: function (emitter) {
       app.models.user.info({
-        user: params.url.user
+        userID: params.url.id
       }, emitter);
     },
-    posts: function (emitter) {
-      var start = ( params.url.page - 1 ) * 25,
-          end = start + 25;
-      app.models.user.posts({
-        user: params.url.user,
-        start: start,
-        end: end
-      }, emitter);
+    posts: function (previous, emitter) {
+      if ( previous.user ) {
+        var start = ( params.url.page - 1 ) * 25,
+            end = start + 25;
+        app.models.user.posts({
+          userID: params.url.id,
+          start: start,
+          end: end
+        }, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
     }
   }, function (output) {
     if ( output.listen.success ) {

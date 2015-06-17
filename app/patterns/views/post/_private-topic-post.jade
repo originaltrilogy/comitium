@@ -1,6 +1,6 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
   h2
-    img(src="#{config.main.staticAssetUrl}avatars/#{post.authorUrl}.png")
+    img(src="#{config.main.staticAssetUrl}avatars/#{post.authorUrl}-#{post.authorID}.png")
     a(href="user/#{post.authorUrl}/id/#{post.authorID}")
       = post.author
     time
