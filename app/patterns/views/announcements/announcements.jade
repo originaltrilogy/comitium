@@ -27,10 +27,8 @@ section.topics
           |  on 
           time #{topic.postDate}
         p.stats
-          span.replies #{topic.replies} 
-          | replies with 
-          span.views #{topic.views} 
-          | views
+          span.replies #{topic.repliesFormatted} 
+          | replies
   else
     p There are no current announcements.
 

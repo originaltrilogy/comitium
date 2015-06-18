@@ -42,25 +42,71 @@ function handler(params, context, emitter) {
     if ( output.listen.success ) {
 
       app.listen(models, function (output) {
-        var content = {};
+        var discussion = output.discussion,
+            announcements = output.announcements,
+            topics = output.topics;
 
         if ( output.listen.success ) {
-
-          content = {
-            discussion: output.discussion,
-            breadcrumbs: app.models.discussion.breadcrumbs(output.discussion.title),
-            pagination: app.toolbox.helpers.paginate('discussion/' + output.discussion.url + '/id/' + output.discussion.id, params.url.page, output.discussion.topics)
-          };
-
-          if ( output.announcements && app.size(output.announcements) ) {
-            content.announcements = output.announcements;
-          }
-          if ( output.topics && app.size(output.topics) ) {
-            content.topics = output.topics;
-          }
-
-          emitter.emit('ready', {
-            content: content
+          
+          app.listen({
+            viewTimes: function (emitter) {
+              var topicID = [];
+              
+              topics.forEach( function (item, index, array) {
+                topicID.push(item.id);
+              });
+              
+              app.models.user.topicViewTimes({
+                userID: params.session.userID,
+                topicID: topicID.join(', ')
+              }, emitter);
+            }
+          }, function (output) {
+            var viewTimes = {},
+                content = {};
+            
+            if ( output.listen.success ) {
+            
+              if ( output.viewTimes ) {
+                output.viewTimes.forEach( function (item, index, array) {
+                  viewTimes[item.id] = item;
+                });
+              }
+              
+              content = {
+                discussion: discussion,
+                breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
+                pagination: app.toolbox.helpers.paginate('discussion/' + discussion.url + '/id/' + discussion.id, params.url.page, discussion.topics)
+              };
+    
+              if ( announcements && announcements.length ) {
+                announcements.forEach( function (item, index, array) {
+                  if ( ( !viewTimes[item.id] && item.lastPostDate > params.session.lastActivity ) || ( viewTimes[item.id] && item.lastPostDate > viewTimes[item.id].time ) ) {
+                    announcements[index].updated = true;
+                  }
+                });
+                content.announcements = announcements;
+              }
+              
+              if ( topics && topics.length ) {
+                topics.forEach( function (item, index, array) {
+                  if ( ( !viewTimes[item.id] && item.lastPostDate > params.session.lastActivity ) || ( viewTimes[item.id] && item.lastPostDate > viewTimes[item.id].time ) ) {
+                    topics[index].updated = true;
+                  }
+                });
+                content.topics = topics;
+              }
+    
+              emitter.emit('ready', {
+                content: content
+              });
+              
+            } else {
+              
+              emitter.emit('error', output.listen);
+              
+            }
+            
           });
 
         } else {

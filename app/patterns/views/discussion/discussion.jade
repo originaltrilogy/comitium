@@ -11,7 +11,7 @@ if announcements
   section.announcements
     h2 Announcements
     each announcement in announcements
-      article.announcement(data-announcement-id="#{announcement.id}")
+      article(class="announcement#{ announcement.updated ? ' updated' : '' }" data-announcement-id="#{announcement.id}")
         h3
           a(href="announcement/#{announcement.url}/id/#{announcement.id}") #{announcement.titleHtml}
           
@@ -28,7 +28,7 @@ section.topics
         a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe to this discussion
   if topics
     each topic in topics
-      article.topic(data-topic-id="#{topic.id}")
+      article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")
         h3
           a(href="topic/#{topic.url}/id/#{topic.id}")
             != topic.titleHtml
@@ -36,12 +36,10 @@ section.topics
           | Posted by 
           a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
           |  on 
-          time #{topic.postDate}
+          time #{topic.postDateFormatted}
         p.stats
-          span.replies #{topic.replies} 
-          | replies with 
-          span.views #{topic.views} 
-          | views
+          span.replies #{topic.repliesFormatted} 
+          | replies
   else
     p This discussion has no topics. <a href="topic/action/start/id/#{discussion.id}">Why not start one?</a>
 

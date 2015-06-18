@@ -5,6 +5,7 @@
 module.exports = {
   activate: activate,
   activationStatus: activationStatus,
+  activityUpdate: activityUpdate,
   authenticate: authenticate,
   ban: ban,
   unban: unban,
@@ -19,6 +20,7 @@ module.exports = {
   passwordResetVerify: passwordResetVerify,
   passwordResetDelete: passwordResetDelete,
   posts: posts,
+  topicViewTimes: topicViewTimes,
   urlExists: urlExists,
   updatePassword: updatePassword
 };
@@ -132,6 +134,34 @@ function activationStatus(args, emitter) {
 
 
 
+function activityUpdate(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+
+      client.query(
+        'update "users" set "lastActivity" = $1 where "id" = $2;',
+        [ args.time || app.toolbox.helpers.isoDate(), args.userID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', {
+              success: true,
+              affectedRows: result.rows
+            });
+          }
+        }
+      );
+
+    }
+  });
+}
+
+
+
 function authenticate(credentials, emitter) {
   var email = '',
       password = '',
@@ -175,16 +205,29 @@ function authenticate(credentials, emitter) {
         }
       }
     }, function (output) {
+      var user = output.user;
 
       if ( output.listen.success ) {
-        if ( output.user ) {
-          if ( output.user.activationDate ) {
-            if ( output.user.login ) {
+        if ( user ) {
+          if ( user.activationDate ) {
+            if ( user.login ) {
               if ( usernameHash.length || output.compareHash === true ) {
-                emitter.emit('ready', {
-                  success: true,
-                  message: 'Cookies are set.',
-                  user: output.user
+                app.listen({
+                  activityUpdate: function (emitter) {
+                    activityUpdate({
+                      userID: user.id
+                    }, emitter);
+                  }
+                }, function (output) {
+                  if ( output.listen.success ) {
+                    emitter.emit('ready', {
+                      success: true,
+                      message: 'Cookies are set.',
+                      user: user
+                    });
+                  } else {
+                    emitter.emit('error', output.listen);
+                  }
                 });
               } else {
                 emitter.emit('ready', {
@@ -801,6 +844,33 @@ function posts(args, emitter) {
 
     });
   }
+}
+
+
+
+function topicViewTimes(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select "time" from "topicViews" where "userID" = $1 and "topicID" in ( ' + args.topicID + ' );',
+        [ args.userID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', result.rows);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+        }
+      );
+    }
+  });
 }
 
 

@@ -97,15 +97,18 @@ function topics(args, emitter) {
         });
       }
     }, function (output) {
-      var announcements = {};
 
       if ( output.listen.success ) {
-        // Transform the data array into an object usable by the view
+
         output.announcements.forEach( function (announcement, index, array) {
-          announcements[announcement.titleHtml] = {};
           for ( var property in announcement ) {
             if ( announcement.hasOwnProperty(property) ) {
-              announcements[announcement.titleHtml][property] = announcement[property];
+              if ( property === 'replies' || property === 'views' ) {
+                output.announcements[index][property] = app.toolbox.numeral(announcement[property]).format('0,0');
+              } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+                output.announcements[index][property] = announcement[property];
+                output.announcements[index][property + 'Formatted'] = app.toolbox.moment(announcement[property]).format('MMMM Do YYYY');
+              }
             }
           }
         });
@@ -114,10 +117,10 @@ function topics(args, emitter) {
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: announcements
+          value: output.announcements
         });
 
-        emitter.emit('ready', announcements);
+        emitter.emit('ready', output.announcements);
       } else {
         emitter.emit('error', output.listen);
       }

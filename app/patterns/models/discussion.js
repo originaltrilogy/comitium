@@ -104,33 +104,28 @@ function announcements(discussionID, emitter) {
         });
       }
     }, function (output) {
-      var announcements = {};
-
+      
       if ( output.listen.success ) {
-        // Transform the data array into an object usable by the view
         output.announcements.forEach( function (announcement, index, array) {
-          announcements[announcement.titleHtml] = {};
           for ( var property in announcement ) {
             if ( announcement.hasOwnProperty(property) ) {
               if ( property === 'replies' || property === 'views' ) {
-                announcements[announcement.titleHtml][property] = app.toolbox.numeral(announcement[property]).format('0,0');
+                output.announcements[index][property + 'Formatted'] = app.toolbox.numeral(announcement[property]).format('0,0');
               } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                announcements[announcement.titleHtml][property] = app.toolbox.moment(announcement[property]).format('MMMM Do YYYY');
-              } else {
-                announcements[announcement.titleHtml][property] = announcement[property];
+                output.announcements[index][property + 'Formatted'] = app.toolbox.moment(announcement[property]).format('MMMM Do YYYY');
               }
             }
           }
         });
 
-        // Cache the topics object for future requests
+        // Cache the announcements for future requests
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: announcements
+          value: output.announcements
         });
 
-        emitter.emit('ready', announcements);
+        emitter.emit('ready', output.announcements);
       } else {
         emitter.emit('error', output.listen);
       }
@@ -185,37 +180,28 @@ function topics(args, emitter) {
         });
       }
     }, function (output) {
-      var subset = {};
 
       if ( output.listen.success ) {
-        // Build a view-ready object containing only the posts in the requested subset
-        for ( var i = 0; i < end - start; i += 1 ) {
-          if ( output.topics[i] ) {
-            subset[i] = {};
-            for ( var property in output.topics[i] ) {
-              if ( output.topics[i].hasOwnProperty(property) ) {
-                if ( property === 'replies' || property === 'views' ) {
-                  subset[i][property] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
-                } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                  subset[i][property] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');
-                } else {
-                  subset[i][property] = output.topics[i][property];
-                }
+        output.topics.forEach( function (topic, index, array) {
+          for ( var property in topic ) {
+            if ( topic.hasOwnProperty(property) ) {
+              if ( property === 'replies' || property === 'views' ) {
+                output.topics[index][property + 'Formatted'] = app.toolbox.numeral(topic[property]).format('0,0');
+              } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+                output.topics[index][property + 'Formatted'] = app.toolbox.moment(topic[property]).format('MMMM Do YYYY');
               }
             }
-          } else {
-            break;
           }
-        }
+        });
 
-        // Cache the subset for future requests
+        // Cache the topics for future requests
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: subset
+          value: output.topics
         });
 
-        emitter.emit('ready', subset);
+        emitter.emit('ready', output.topics);
       } else {
         emitter.emit('error', output.listen);
       }
