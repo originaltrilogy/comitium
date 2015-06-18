@@ -6,14 +6,14 @@ inner join posts p on p."topicID" = t.id
 and p.id = (
   select min(id)
   from posts p
-  where p."topicID" = t.id
+  where p."topicID" = t.id and p."draft" = false
 )
 inner join users u on u.id = p."userID"
 inner join posts p2 on p2."topicID" = t.id
 and p2.id = (
   select max(id)
   from posts p2
-  where p2."topicID" = t.id
+  where p2."topicID" = t.id and p."draft" = false
 )
 inner join users u2 on u2.id = p2."userID"
 where t.draft = false

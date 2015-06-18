@@ -81,7 +81,15 @@ function announcements(discussionID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              eval(app.db.sql.announcementsByDiscussion),
+              'select t.id, t."sortDate", t."replies", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."dateCreated" as "postDate", p2."dateCreated" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'from topics t ' +
+              'join announcements a on t.id = a."topicID" and a."discussionID" = $1 ' +
+              'join posts p on p.id = t."firstPostID" ' +
+              'join users u on u.id = p."userID" ' +
+              'join posts p2 on p2.id = t."lastPostID" ' +
+              'join users u2 on u2.id = p2."userID" ' +
+              'where t.draft = false ' +
+              'order by t."sortDate" desc;',
               [ discussionID ],
               function (err, result) {
                 done();
@@ -155,11 +163,9 @@ function topics(args, emitter) {
             client.query(
               'select t.id, t."sortDate", t."replies", t."titleHtml", t."url", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
-              'join posts p on p."topicID" = t.id ' +
-              'and p."id" = t."firstPostID" ' +
+              'join posts p on p."id" = t."firstPostID" ' +
               'join users u on u.id = p."userID" ' +
-              'join posts p2 on p2."topicID" = t.id ' +
-              'and p2."id" = t."lastPostID" ' +
+              'join posts p2 on p2."id" = t."lastPostID" ' +
               'join users u2 on u2.id = p2."userID" ' +
               'where t."discussionID" = $1 ' +
               'and t.draft = false and t.private = false ' +

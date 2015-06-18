@@ -1,5 +1,6 @@
 Issues
 
+- User profile editing
 - When posting an announcement, selecting only one forum throws an error because a single forum comes through as a string (controller expects an array)
 - Link Markdown tutorial in textareas to Remarkable tutorial:
 	https://jonschlinkert.github.io/remarkable/demo/
@@ -9,3 +10,9 @@ Issues
 - Private topics should display a list of topic participants at the top of the topic
 - Add edit notes to posts (or just an icon/link to post history if there have been edits)
 - If an unauthenticated user tries to access a page that requires login, then abandons it, then goes to the sign in page and signs in, they're redirected to the initial page they requested. ctzn_referer needs to be cleared somehow.
+- User profile styles
+- Topic move author notification doesn't work
+- Topic lock notification at the top of the topic page needs to be styled
+- "Subscribe to this discussion" links: either make them work or comment them out for now
+- "Notify me" link in private topics: make it work
+- Announcements: if "Show it within the following forums" is selected, verify that at least one discussion is selected in the form validation.

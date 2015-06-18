@@ -582,8 +582,8 @@ function move(args, emitter) {
             moveTopic: function (previous, emitter) {
 
               client.query(
-                'update "topics" set "discussionID" = ( select "id" from "discussions" where "url" = $1 ) where "id" = $2;',
-                [ args.newDiscussionUrl, args.topicID ],
+                'update "topics" set "discussionID" = $1 where "id" = $2;',
+                [ args.newDiscussionID, args.topicID ],
                 function (err, result) {
                   done();
                   if ( err ) {

@@ -1008,7 +1008,7 @@ function moveForm(params, context, emitter) {
     if ( output.listen.success ) {
 
       app.listen('waterfall', {
-        newdiscussion: function (emitter) {
+        newDiscussion: function (emitter) {
           app.models.discussion.info(params.form.destination, emitter);
         },
         move: function (previous, emitter) {
@@ -1017,8 +1017,7 @@ function moveForm(params, context, emitter) {
             topicUrl: topic.url,
             discussionID: topic.discussionID,
             discussionUrl: topic.discussionUrl,
-            newDiscussionID: previous.newdiscussion.id,
-            newDiscussionUrl: params.form.destination
+            newDiscussionID: previous.newDiscussion.id
           }, emitter);
         }
       }, function (output) {

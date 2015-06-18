@@ -43,7 +43,7 @@ function handler(params, context, emitter) {
           talkPrivately: output.user.id !== params.session.userID ? true : false,
           user: output.user,
           posts: output.posts,
-          pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'user/' + output.user.url, params.url.page, output.user.postCount)
+          pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
         }
       });
     } else {
