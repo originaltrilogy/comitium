@@ -883,6 +883,8 @@ discussion view
 body[data-controller="discussion"][data-view="discussion"] main > p {
   margin: 1.2rem 1.4rem 1.8rem;
   color: white; }
+body[data-controller="discussion"][data-view="discussion"] article.updated {
+  background: black; }
 body[data-controller="discussion"][data-view="discussion"] article:last-child {
   border-bottom: none; }
 body[data-controller="discussion"][data-view="discussion"] p.details {

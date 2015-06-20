@@ -8,8 +8,13 @@ body[data-controller="discussion"] {
       margin: 1.2rem 1.4rem 1.8rem;
       color: white;
     }
-    article:last-child {
-      border-bottom: none;
+    article {
+      &.updated {
+        background: black;
+      }
+      &:last-child {
+        border-bottom: none;
+      }
     }
     p.details {
       margin-top: 0.4rem;

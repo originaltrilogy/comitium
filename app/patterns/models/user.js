@@ -854,7 +854,7 @@ function topicViewTimes(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "time" from "topicViews" where "userID" = $1 and "topicID" in ( ' + args.topicID + ' );',
+        'select "id", "topicID", "time" from "topicViews" where "userID" = $1 and "topicID" in ( ' + args.topicID + ' );',
         [ args.userID ],
         function (err, result) {
           done();

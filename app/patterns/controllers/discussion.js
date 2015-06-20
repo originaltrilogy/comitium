@@ -56,6 +56,10 @@ function handler(params, context, emitter) {
                 topicID.push(item.id);
               });
               
+              // for ( var item in topics ) {
+              //   topicID.push(topics[item].id);
+              // }
+              
               app.models.user.topicViewTimes({
                 userID: params.session.userID,
                 topicID: topicID.join(', ')
@@ -63,13 +67,14 @@ function handler(params, context, emitter) {
             }
           }, function (output) {
             var viewTimes = {},
+                updatedTopics = {},
                 content = {};
             
             if ( output.listen.success ) {
             
               if ( output.viewTimes ) {
                 output.viewTimes.forEach( function (item, index, array) {
-                  viewTimes[item.id] = item;
+                  viewTimes[item.topicID] = item;
                 });
               }
               
@@ -90,11 +95,19 @@ function handler(params, context, emitter) {
               
               if ( topics && topics.length ) {
                 topics.forEach( function (item, index, array) {
-                  if ( ( !viewTimes[item.id] && item.lastPostDate > params.session.lastActivity ) || ( viewTimes[item.id] && item.lastPostDate > viewTimes[item.id].time ) ) {
-                    topics[index].updated = true;
+                  if ( ( !viewTimes[item.id] && app.toolbox.moment(item.lastPostDate).isAfter(params.session.lastActivity) ) || ( viewTimes[item.id] && app.toolbox.moment(item.lastPostDate).isAfter(viewTimes[item.id].time) ) ) {
+                    updatedTopics[item.id] = true;
+                    // topics[index].updated = true;
                   }
                 });
+              // if ( topics && app.size(topics) ) {
+              //   for ( var item in topics ) {
+              //     if ( ( !viewTimes[topics[item].id] && app.toolbox.moment(topics[item].lastPostDate).isAfter(params.session.lastActivity) ) || ( viewTimes[topics[item].id] && app.toolbox.moment(topics[item].lastPostDate).isAfter(viewTimes[topics[item].id].time) ) ) {
+              //       topics[item].updated = true;
+              //     }
+              //   }
                 content.topics = topics;
+                content.updatedTopics = updatedTopics;
               }
     
               emitter.emit('ready', {

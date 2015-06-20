@@ -180,8 +180,28 @@ function topics(args, emitter) {
         });
       }
     }, function (output) {
+      // var subset = {};
 
       if ( output.listen.success ) {
+        
+        // for ( var i = 0; i < end - start; i += 1 ) {
+        //   if ( output.topics[i] ) {
+        //     subset[i] = {};
+        //     for ( var property in output.topics[i] ) {
+        //       if ( output.topics[i].hasOwnProperty(property) ) {
+        //         subset[i][property] = output.topics[i][property];
+        //         if ( property === 'replies' || property === 'views' ) {
+        //           subset[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
+        //         } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+        //           subset[i][property + 'Formatted'] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');
+        //         }
+        //       }
+        //     }
+        //   } else {
+        //     break;
+        //   }
+        // }
+
         output.topics.forEach( function (topic, index, array) {
           for ( var property in topic ) {
             if ( topic.hasOwnProperty(property) ) {
@@ -199,9 +219,11 @@ function topics(args, emitter) {
           key: cacheKey,
           scope: scope,
           value: output.topics
+          // value: subset
         });
 
         emitter.emit('ready', output.topics);
+        // emitter.emit('ready', subset);
       } else {
         emitter.emit('error', output.listen);
       }
