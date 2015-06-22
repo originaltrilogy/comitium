@@ -1,10 +1,25 @@
 Issues
 
+- Jump to first unread post
 - User profile editing
+	- Avatar and picture uploads
+	- E-mail
+	- Password
+	- Signature
+	- Timezone
+	- Theme
+- Subscriptions manager (topics and discussions)
+- Bookmarks pattern
+- E-mails
+	- Registration activation
+	- Registration confirmation
+	- Password reset
+	- Private topic invitation
+	- Topic subscription update
+- Sticky topics
 - When posting an announcement, selecting only one forum throws an error because a single forum comes through as a string (controller expects an array)
 - Link Markdown tutorial in textareas to Remarkable tutorial:
 	https://jonschlinkert.github.io/remarkable/demo/
-- Bookmarks pattern
 - When adding a new post bookmark from a topic page, if the user is asked to sign in, they should be redirected back to the topic page, not their bookmark list.
 - The private topic list should display a list of topic participants beneath each topic so it's clear who has been invited
 - Private topics should display a list of topic participants at the top of the topic
@@ -16,3 +31,6 @@ Issues
 - "Subscribe to this discussion" links: either make them work or comment them out for now
 - "Notify me" link in private topics: make it work
 - Announcements: if "Show it within the following forums" is selected, verify that at least one discussion is selected in the form validation.
+- Cookie users with lastActivity (current time at session start) so visitors can see what discussions and topics have been updated
+- Styles for discussion template to show topics that have been updated since last visit
+- Logic for discussions template to show discussions that have been updated since last visit

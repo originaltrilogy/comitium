@@ -14,6 +14,10 @@ module.exports = {
 
 
 function start(params, context, emitter) {
+  var cookie = {},
+      session = {},
+      active;
+  
   // If the user has cookies from a previous session, authenticate and start a new
   // session.
   if ( params.cookie.comitium_id ) {
@@ -41,6 +45,9 @@ function start(params, context, emitter) {
             cookie: {
               comitium_id: {
                 expires: 'now'
+              },
+              comitium_active: {
+                expires: 'now'
               }
             },
             session: {
@@ -58,11 +65,24 @@ function start(params, context, emitter) {
     });
 
   } else {
+    
+    session.groupID = 1;
+    active = app.toolbox.helpers.isoDate();
+    
+    cookie.comitium_active = {
+      value: active,
+      expires: 'never'
+    };
+    
+    if ( params.cookie.comitium_active ) {
+      session.lastActivity = params.cookie.comitium_active;
+    } else {
+      session.lastActivity = active;
+    }
 
     emitter.emit('ready', {
-      session: {
-        groupID: 1
-      }
+      cookie: cookie,
+      session: session
     });
 
   }

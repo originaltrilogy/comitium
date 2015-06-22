@@ -341,6 +341,7 @@ section {
 
 article {
   padding: 1.2rem 0 1.4rem;
+  padding: 3.6vw 0 4vw;
   color: white;
   background: #484D5E;
   border-top: 0.1rem solid #586175;
@@ -348,6 +349,7 @@ article {
 
   & > * {
     margin: 0 1.4rem;
+    margin: 0 4vw;
   }
 
   img {
@@ -549,6 +551,7 @@ form {
         width: 100%;
         margin-bottom: 1rem;
         padding: 1.6rem 1.8rem 1.5rem;
+        padding: 1.3vw 3vw 1.2vw;
         background: #CFDCFF;
         border-radius: 0.3rem;
         font-family: $titleFont;

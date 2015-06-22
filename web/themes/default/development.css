@@ -704,12 +704,14 @@ section {
 
 article {
   padding: 1.2rem 0 1.4rem;
+  padding: 3.6vw 0 4vw;
   color: white;
   background: #484D5E;
   border-top: 0.1rem solid #586175;
   border-bottom: 0.1rem solid #3E4352; }
   article > * {
-    margin: 0 1.4rem; }
+    margin: 0 1.4rem;
+    margin: 0 4vw; }
   article img {
     max-width: 100%;
     height: auto; }
@@ -849,6 +851,7 @@ form {
   width: 100%;
   margin-bottom: 1rem;
   padding: 1.6rem 1.8rem 1.5rem;
+  padding: 1.3vw 3vw 1.2vw;
   background: #CFDCFF;
   border-radius: 0.3rem;
   font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
@@ -866,7 +869,7 @@ section.preview article {
     font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
 
 /*-------------------
-discussions view
+discussions pattern
 -------------------*/
 body[data-controller="discussions"][data-view="discussions"] p.description {
   margin-top: 0.4rem;
@@ -878,7 +881,7 @@ body[data-controller="discussions"][data-view="discussions"] span.posts {
   font-family: "Open Sans Semibold", "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
 
 /*-------------------
-discussion view
+discussion pattern
 -------------------*/
 body[data-controller="discussion"][data-view="discussion"] main > p {
   margin: 1.2rem 1.4rem 1.8rem;
@@ -892,33 +895,22 @@ body[data-controller="discussion"][data-view="discussion"] p.details {
   margin-bottom: 1.2rem; }
 body[data-controller="discussion"][data-view="discussion"] p.stats {
   margin-top: 0.8rem; }
-body[data-controller="discussion"][data-view="discussion"] span.replies,
-body[data-controller="discussion"][data-view="discussion"] span.views {
-  font-weight: bold; }
+body[data-controller="discussion"][data-view="discussion"] span.replies {
+  font-family: "Open Sans Semibold", "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
 
 /*-------------------
-topic view
+topic patterns
 -------------------*/
-body[data-controller="topic"][data-view="topic"] nav.actions, body[data-controller="topic"][data-view="private-topic"] nav.actions, body[data-controller="topic"][data-view="announcement"] nav.actions,
-body[data-controller="private-topic"][data-view="topic"] nav.actions,
-body[data-controller="private-topic"][data-view="private-topic"] nav.actions,
-body[data-controller="private-topic"][data-view="announcement"] nav.actions,
+body[data-controller="topic"][data-view="topic"] nav.actions, body[data-controller="topic"][data-view="announcement"] nav.actions,
 body[data-controller="announcement"][data-view="topic"] nav.actions,
-body[data-controller="announcement"][data-view="private-topic"] nav.actions,
 body[data-controller="announcement"][data-view="announcement"] nav.actions {
   text-align: center; }
-  body[data-controller="topic"][data-view="topic"] nav.actions li, body[data-controller="topic"][data-view="private-topic"] nav.actions li, body[data-controller="topic"][data-view="announcement"] nav.actions li,
-  body[data-controller="private-topic"][data-view="topic"] nav.actions li,
-  body[data-controller="private-topic"][data-view="private-topic"] nav.actions li,
-  body[data-controller="private-topic"][data-view="announcement"] nav.actions li,
+  body[data-controller="topic"][data-view="topic"] nav.actions li, body[data-controller="topic"][data-view="announcement"] nav.actions li,
   body[data-controller="announcement"][data-view="topic"] nav.actions li,
-  body[data-controller="announcement"][data-view="private-topic"] nav.actions li,
   body[data-controller="announcement"][data-view="announcement"] nav.actions li {
     display: inline-block;
     margin: 0 0.4rem; }
 body[data-controller="topic"][data-view="start"] li.topic-title textarea, body[data-controller="topic"][data-view="reply"] li.topic-title textarea,
-body[data-controller="private-topic"][data-view="start"] li.topic-title textarea,
-body[data-controller="private-topic"][data-view="reply"] li.topic-title textarea,
 body[data-controller="announcement"][data-view="start"] li.topic-title textarea,
 body[data-controller="announcement"][data-view="reply"] li.topic-title textarea {
   height: 6.4rem; }

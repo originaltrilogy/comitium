@@ -104,28 +104,36 @@ function announcements(discussionID, emitter) {
         });
       }
     }, function (output) {
+      var announcements = {};
       
       if ( output.listen.success ) {
-        output.announcements.forEach( function (announcement, index, array) {
-          for ( var property in announcement ) {
-            if ( announcement.hasOwnProperty(property) ) {
-              if ( property === 'replies' || property === 'views' ) {
-                output.announcements[index][property + 'Formatted'] = app.toolbox.numeral(announcement[property]).format('0,0');
-              } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                output.announcements[index][property + 'Formatted'] = app.toolbox.moment(announcement[property]).format('MMMM Do YYYY');
+      
+        for ( var i = 0; i < output.announcements.length; i += 1 ) {
+          if ( output.announcements[i] ) {
+            announcements[i] = {};
+            for ( var property in output.announcements[i] ) {
+              if ( output.announcements[i].hasOwnProperty(property) ) {
+                announcements[i][property] = output.announcements[i][property];
+                if ( property === 'replies' ) {
+                  announcements[i][property + 'Formatted'] = app.toolbox.numeral(output.announcements[i][property]).format('0,0');
+                } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+                  announcements[i][property + 'Formatted'] = app.toolbox.moment(output.announcements[i][property]).format('MMMM Do YYYY');
+                }
               }
             }
+          } else {
+            break;
           }
-        });
+        }
 
         // Cache the announcements for future requests
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: output.announcements
+          value: announcements
         });
 
-        emitter.emit('ready', output.announcements);
+        emitter.emit('ready', announcements);
       } else {
         emitter.emit('error', output.listen);
       }
@@ -180,50 +188,36 @@ function topics(args, emitter) {
         });
       }
     }, function (output) {
-      // var subset = {};
+      var topics = {};
 
       if ( output.listen.success ) {
         
-        // for ( var i = 0; i < end - start; i += 1 ) {
-        //   if ( output.topics[i] ) {
-        //     subset[i] = {};
-        //     for ( var property in output.topics[i] ) {
-        //       if ( output.topics[i].hasOwnProperty(property) ) {
-        //         subset[i][property] = output.topics[i][property];
-        //         if ( property === 'replies' || property === 'views' ) {
-        //           subset[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
-        //         } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-        //           subset[i][property + 'Formatted'] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');
-        //         }
-        //       }
-        //     }
-        //   } else {
-        //     break;
-        //   }
-        // }
-
-        output.topics.forEach( function (topic, index, array) {
-          for ( var property in topic ) {
-            if ( topic.hasOwnProperty(property) ) {
-              if ( property === 'replies' || property === 'views' ) {
-                output.topics[index][property + 'Formatted'] = app.toolbox.numeral(topic[property]).format('0,0');
-              } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                output.topics[index][property + 'Formatted'] = app.toolbox.moment(topic[property]).format('MMMM Do YYYY');
+        for ( var i = 0; i < end - start; i += 1 ) {
+          if ( output.topics[i] ) {
+            topics[i] = {};
+            for ( var property in output.topics[i] ) {
+              if ( output.topics[i].hasOwnProperty(property) ) {
+                topics[i][property] = output.topics[i][property];
+                if ( property === 'replies' ) {
+                  topics[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
+                } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+                  topics[i][property + 'Formatted'] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');
+                }
               }
             }
+          } else {
+            break;
           }
-        });
+        }
 
         // Cache the topics for future requests
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: output.topics
-          // value: subset
+          value: topics
         });
 
-        emitter.emit('ready', output.topics);
-        // emitter.emit('ready', subset);
+        emitter.emit('ready', topics);
       } else {
         emitter.emit('error', output.listen);
       }

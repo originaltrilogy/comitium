@@ -33,13 +33,13 @@ section.topics
           a(href="topic/#{topic.url}/id/#{topic.id}")
             != topic.titleHtml
         p.details
-          | Posted by 
           a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
-          |  on 
+          |  &mdash;
           time #{topic.postDateFormatted}
         p.stats
           span.replies #{topic.repliesFormatted} 
-          | replies
+          | replies 
+          time (last on #{topic.lastPostDateFormatted})
   else
     p This discussion has no topics. <a href="topic/action/start/id/#{discussion.id}">Why not start one?</a>
 

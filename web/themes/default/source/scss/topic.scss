@@ -1,12 +1,10 @@
 /*-------------------
-topic view
+topic patterns
 -------------------*/
 body[data-controller="topic"],
-body[data-controller="private-topic"],
 body[data-controller="announcement"] {
 
   &[data-view="topic"],
-  &[data-view="private-topic"],
   &[data-view="announcement"] {
     nav.actions {
       text-align: center;

@@ -1,5 +1,5 @@
 /*-------------------
-discussion view
+discussion pattern
 -------------------*/
 body[data-controller="discussion"] {
 
@@ -23,9 +23,8 @@ body[data-controller="discussion"] {
     p.stats {
       margin-top: 0.8rem;
     }
-    span.replies,
-    span.views {
-      font-weight: bold;
+    span.replies {
+      font-family: $boldFont;
     }
   }
 

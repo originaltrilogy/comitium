@@ -64,6 +64,9 @@ function submit(params, context, emitter) {
               comitium_id: {
                 value: output.authenticate.user.usernameHash,
                 expires: cookieExpires
+              },
+              comitium_active: {
+                expires: 'now'
               }
             },
             session: app.extend(user, { loginReferrer: params.form.loginReferrer }),
