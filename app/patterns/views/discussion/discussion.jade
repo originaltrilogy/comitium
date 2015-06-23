@@ -30,8 +30,7 @@ section.topics
     each topic in topics
       article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")
         h3
-          a(href="topic/#{topic.url}/id/#{topic.id}")
-            != topic.titleHtml
+          a(href="topic/#{topic.url}/id/#{topic.id}") #{topic.titleHtml}
         p.details
           a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
           |  &mdash;
@@ -40,6 +39,8 @@ section.topics
           span.replies #{topic.repliesFormatted} 
           | replies 
           time (last on #{topic.lastPostDateFormatted})
+        if topic.unreadPosts
+          a(href="topic/#{topic.url}/id/#{topic.id}/unread/true") First unread post
   else
     p This discussion has no topics. <a href="topic/action/start/id/#{discussion.id}">Why not start one?</a>
 

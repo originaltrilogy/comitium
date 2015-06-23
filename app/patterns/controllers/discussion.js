@@ -81,8 +81,24 @@ function handler(params, context, emitter) {
     
               if ( announcements && app.size(announcements) ) {
                 for ( var announcement in announcements ) {
-                  if ( ( !viewTimes[announcements[announcement].id] && app.toolbox.moment(announcements[announcement].lastPostDate).isAfter(params.session.lastActivity) ) || ( viewTimes[announcements[announcement].id] && app.toolbox.moment(announcements[announcement].lastPostDate).isAfter(viewTimes[announcements[announcement].id].time) && app.toolbox.moment(announcements[announcement].lastPostDate).isAfter(params.session.lastActivity) ) ) {
-                    announcements[announcement].updated = true;
+                  if ( params.session.groupID > 1 ) {
+                    if ( !viewTimes[announcements[announcement].id] ) {
+                      announcements[announcement].unreadPosts = true;
+                      if ( app.toolbox.moment(announcements[announcement].lastPostDate).isAfter(params.session.lastActivity) ) {
+                        announcements[announcement].updated = true;
+                      }
+                    } else {
+                      if ( app.toolbox.moment(announcements[announcement].lastPostDate).isAfter(viewTimes[announcements[announcement].id].time) ) {
+                        announcements[announcement].unreadPosts = true;
+                        if ( app.toolbox.moment(announcements[announcement].lastPostDate).isAfter(params.session.lastActivity) ) {
+                          announcements[announcement].updated = true;
+                        }
+                      }
+                    }
+                  } else {
+                    if ( app.toolbox.moment(announcements[announcement].lastPostDate).isAfter(params.session.lastActivity) ) {
+                      announcements[announcement].updated = true;
+                    }
                   }
                 }
                 content.announcements = announcements;
@@ -90,8 +106,24 @@ function handler(params, context, emitter) {
               
               if ( topics && app.size(topics) ) {
                 for ( var topic in topics ) {
-                  if ( ( !viewTimes[topics[topic].id] && app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) || ( viewTimes[topics[topic].id] && app.toolbox.moment(topics[topic].lastPostDate).isAfter(viewTimes[topics[topic].id].time) && app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) ) {
-                    topics[topic].updated = true;
+                  if ( params.session.groupID > 1 ) {
+                    if ( !viewTimes[topics[topic].id] ) {
+                      topics[topic].unreadPosts = true;
+                      if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
+                        topics[topic].updated = true;
+                      }
+                    } else {
+                      if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(viewTimes[topics[topic].id].time) ) {
+                        topics[topic].unreadPosts = true;
+                        if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
+                          topics[topic].updated = true;
+                        }
+                      }
+                    }
+                  } else {
+                    if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
+                      topics[topic].updated = true;
+                    }
                   }
                 }
                 content.topics = topics;
