@@ -46,13 +46,36 @@ function handler(params, context, emitter) {
             app.models.topic.info(params.url.id, emitter);
           },
           posts: function (emitter) {
-            var start = ( params.url.page - 1 ) * 25,
-                end = start + 25;
-            app.models.topic.posts({
-              topicID: params.url.id,
-              start: start,
-              end: end
-            }, emitter);
+            var start,
+                end;
+                
+            if ( params.url.unread && params.session.userID ) {
+              app.listen({
+                firstUnreadPost: function (emitter) {
+                  app.models.topic.firstUnreadPost({
+                    topicID: params.url.id,
+                    userID: params.session.userID
+                  }, emitter);
+                }
+              }, function (output) {
+                if ( output.listen.success ) {
+                  emitter.emit('ready', {
+                    redirect: params.route.parsed.protocol + app.config.main.baseUrl + params.url.topic || '' + '/id/' + params.url.id + '/page/' + output.page + '/#' + output.postID
+                  });
+                } else {
+                  emitter.emit('error', output.listen);
+                }
+              });
+            } else {
+              start = ( params.url.page - 1 ) * 25;
+              end = start + 25;
+              
+              app.models.topic.posts({
+                topicID: params.url.id,
+                start: start,
+                end: end
+              }, emitter);
+            }
           },
           subscriptionExists: function (emitter) {
             if ( params.session.userID ) {
