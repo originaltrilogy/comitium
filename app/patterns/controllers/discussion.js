@@ -47,15 +47,17 @@ function handler(params, context, emitter) {
             topics = output.topics;
 
         if ( output.listen.success ) {
-          
+
           app.listen({
             viewTimes: function (emitter) {
               var topicID = [];
-              
+
               for ( var topic in topics ) {
-                topicID.push(topics[topic].id)
+                if ( topics.hasOwnProperty(topic) ) {
+                  topicID.push(topics[topic].id);
+                }
               }
-              
+
               app.models.user.topicViewTimes({
                 userID: params.session.userID,
                 topicID: topicID.join(', ')
@@ -64,21 +66,21 @@ function handler(params, context, emitter) {
           }, function (output) {
             var viewTimes = {},
                 content = {};
-            
+
             if ( output.listen.success ) {
-            
+
               if ( output.viewTimes.length ) {
                 output.viewTimes.forEach( function (item, index, array) {
                   viewTimes[item.topicID] = item;
                 });
               }
-              
+
               content = {
                 discussion: discussion,
                 breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
                 pagination: app.toolbox.helpers.paginate('discussion/' + discussion.url + '/id/' + discussion.id, params.url.page, discussion.topics)
               };
-    
+
               if ( announcements && app.size(announcements) ) {
                 for ( var announcement in announcements ) {
                   if ( params.session.groupID > 1 ) {
@@ -103,7 +105,7 @@ function handler(params, context, emitter) {
                 }
                 content.announcements = announcements;
               }
-              
+
               if ( topics && app.size(topics) ) {
                 for ( var topic in topics ) {
                   if ( params.session.groupID > 1 ) {
@@ -128,17 +130,17 @@ function handler(params, context, emitter) {
                 }
                 content.topics = topics;
               }
-    
+
               emitter.emit('ready', {
                 content: content
               });
-              
+
             } else {
-              
+
               emitter.emit('error', output.listen);
-              
+
             }
-            
+
           });
 
         } else {

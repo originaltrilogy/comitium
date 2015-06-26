@@ -1,6 +1,7 @@
 Issues
 
 - Jump to first unread post
+	- Only show "First new post" link if there is a view time (might be better UX)
 - User profile editing
 	- Avatar and picture uploads
 	- E-mail

@@ -64,58 +64,60 @@ function exists(topicID, emitter) {
 
 
 function firstUnreadPost(args, emitter) {
-  // transaction
-  // 1. Get topic info (replies)
-  // 2. Get topic view time
-  // 3. If no view time, return page number 1
-  // 4. If view time, return page number: Math.floor((replies + 1 - posts since view time) / 25)
-  // 6. If no unread posts, return last page number: Math.floor((replies + 1) / 25)
-  // 5. Controller redirects to page number
-  app.listen({
-    topic: function (emitter) {
-      info(args.topicID, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
+  app.listen('waterfall', {
+    viewTime: function (emitter) {
+      app.models.user.topicViewTimes({
+        userID: args.userID,
+        topicID: args.topicID
+      }, emitter);
+    },
+    topic: function (previous, emitter) {
+      if ( previous.viewTime ) {
+        info(args.topicID, emitter);
+      } else {
+        emitter.emit('end', {
+          page: 1
+        });
+      }
+    },
+    posts: function (previous, emitter) {
       app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select "time" from "topicViews" where "userID" = $1 and "topicID" = $2;',
+            'select * from "posts" where "topicID" = $2 and "dateCreated" > ( select "time" from "topicViews" where "userID" = $1 and "topicID" = $2 ) order by "dateCreated" asc;',
             [ args.userID, args.topicID ],
             function (err, result) {
+              done();
               if ( err ) {
-                done();
                 emitter.emit('error', err);
               } else {
-                if ( !result.rowCount ) {
-                  done();
-                  emitter.emit('ready', false);
+                if ( result.rows.length ) {
+                  emitter.emit('ready', {
+                    post: result.rows[0],
+                    page: Math.ceil(( previous.topic.replies + 1 - result.rows.length ) / 25)
+                  });
                 } else {
-                  client.query(
-                    'select * from "posts" where "topicID" = $2 and "dateCreated" >= ( select "time" from "topicViews" where "topicID" = $2 and "userID" = $1 ) limit 1;',
-                    [ args.userID, args.topicID ],
-                    function (err, result) {
-                      done();
-                      if ( err ) {
-                        emitter.emit('error', err);
-                      } else {
-                        emitter.emit('ready', result.rowCount > 0 ? result.rows[0] : result.rowCount);
-                      }
-                    }
-                  );
+                  emitter.emit('ready', {
+                    page: Math.ceil(( previous.topic.replies + 1 ) / 25)
+                  });
                 }
               }
             }
           );
         }
       });
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      emitter.emit('ready', output.posts || output.topic );
     } else {
       emitter.emit('error', output.listen);
     }
   });
 }
+
 
 
 function hasInvitee(args, emitter) {

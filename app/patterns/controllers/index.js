@@ -34,6 +34,12 @@ function handler(params, context, emitter) {
 
     if ( output.listen.success ) {
 
+      var myMap = new Map();
+
+      console.log('myMap:');
+      console.log('constructor: ' + myMap.constructor);
+      console.log('typof: ' + typeof myMap);
+
       emitter.emit('ready', {
         content: output
       });

@@ -18,8 +18,8 @@
     "coverage": "./node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- -R spec"
   },
   "dependencies": {
-    "citizen": "~0.6.4",
     "bcrypt": "*",
+    "citizen": "~0.6.4",
     "moment": "2.8.4",
     "nodemailer": "*",
     "numeral": "*",

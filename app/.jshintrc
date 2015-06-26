@@ -1,7 +1,4 @@
 {
   "extends":        "../.jshintrc",
-  "globals": {
-      "CTZN":       false,
-      "app":        false
-  }
+  "predef":         [ "CTZN", "app" ]
 }
