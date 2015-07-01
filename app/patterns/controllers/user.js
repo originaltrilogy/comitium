@@ -6,7 +6,9 @@ module.exports = {
   handler: handler,
   activate: activate,
   ban: ban,
-  unban: unban
+  unban: unban,
+  edit: edit,
+  editForm: editForm
 };
 
 
@@ -40,7 +42,9 @@ function handler(params, context, emitter) {
     if ( output.listen.success ) {
       emitter.emit('ready', {
         content: {
-          talkPrivately: output.user.id !== params.session.userID ? true : false,
+          talkPrivately: params.session.talkPrivately && output.user.id !== params.session.userID,
+          editProfile: output.user.id === params.session.userID || params.session.moderateUsers,
+          banUser: output.user.id !== params.session.userID && params.session.moderateUsers,
           user: output.user,
           posts: output.posts,
           pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
@@ -192,5 +196,44 @@ function unban(params, context, emitter) {
     });
 
   }
+
+}
+
+
+
+function edit(params, context, emitter) {
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.userEdit(params.url.id, params.session, emitter);
+    },
+    user: function (previous, emitter) {
+      if ( previous.access ) {
+        app.models.user.info({
+          userID: params.url.id
+        }, emitter);
+      } else {
+        emitter.emit('end');
+      }
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( !output.access.redirect ) {
+        emitter.emit('ready', {
+          view: 'edit'
+        });
+      } else {
+        emitter.emit('ready', output.access);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+
+}
+
+
+
+function editForm(params, context, emitter) {
 
 }

@@ -24,7 +24,8 @@ module.exports = {
   postView: postView,
   postEdit: postEdit,
   postLock: postLock,
-  postTrash: postTrash
+  postTrash: postTrash,
+  userEdit: userEdit
 };
 
 
@@ -658,7 +659,7 @@ function topicTrash(topicID, session, emitter) {
 
 
 function announcementView(topicID, session, emitter) {
-  
+
   app.listen('waterfall', {
     announcement: function (emitter) {
       app.models.announcement.info(topicID, emitter);
@@ -692,7 +693,7 @@ function announcementView(topicID, session, emitter) {
 
 
 function announcementReply(topicID, session, emitter) {
-  
+
   app.listen('waterfall', {
     announcement: function (emitter) {
       app.models.announcement.info(topicID, emitter);
@@ -879,7 +880,7 @@ function postView(postID, session, emitter) {
           statusCode: 403
         });
       }
-      
+
     } else {
       emitter.emit('error', output.listen);
     }
@@ -1071,5 +1072,17 @@ function postTrash(postID, session, emitter) {
     }
 
   });
+
+}
+
+
+
+function userEdit(userID, session, emitter) {
+
+  if ( userID === session.userID || session.moderateUsers ) {
+    emitter.emit('ready', true);
+  } else {
+    emitter.emit('ready', false);
+  }
 
 }

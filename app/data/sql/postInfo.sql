@@ -1,1 +1,0 @@
-'select p.id, p.topicID, p.html, p.markdown, p.dateCreated, p.draft, p.editReason, p.editorID, p.lastModified, p.lockedByID, p.lockReason, u.id as authorID, u.username as author, u.url as authorUrl, t.url as topicUrl from posts p join users u on p.userID = u.id join topics t on p.topicID = t.id where p.id = $1;'

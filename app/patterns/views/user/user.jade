@@ -1,19 +1,25 @@
 h1 User Profile: #{user.username}
 
-if session.moderateUsers
+if talkPrivately || editProfile || banUser
   nav.actions
     ul
       if talkPrivately
         li.private-topic
           a(href="private-topic/action/start/invitee/#{url.user}") Start a private topic
-      if user.group !== "Banned Users"
-        li.ban
-          a(href="#{route.pathname}/action/ban") Ban this user
-      else
-        li.unban
-          a(href="#{route.pathname}/action/unban") Unban this user
+      if editProfile
+        li.edit
+          a(href="#{route.pathname}/action/edit") Edit profile
+      if banUser
+        if user.group !== "Banned Users"
+          li.ban
+            a(href="#{route.pathname}/action/ban") Ban this user
+        else
+          li.unban
+            a(href="#{route.pathname}/action/unban") Unban this user
 
 section.bio
+  img(src="users/avatars/#{user.url}-#{user.id}.jpg")
+  .signature !{user.signature}
   dl
     dt User Group
     dd #{user.group}

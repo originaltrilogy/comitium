@@ -166,7 +166,7 @@ function authenticate(credentials, emitter) {
   var email = '',
       password = '',
       usernameHash = '';
-  
+
   if ( credentials.email ) {
     email = credentials.email.trim();
     password = credentials.password || '';
@@ -257,7 +257,7 @@ function authenticate(credentials, emitter) {
             message: 'The credentials you entered don\'t match our records.'
           });
         }
-        
+
       } else {
         emitter.emit('error', output.listen);
       }
@@ -556,7 +556,7 @@ function info(args, emitter) {
         sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "email" = $1';
         arg = args.email;
       }
-      
+
       if ( sql.length ) {
         client.query(
           sql,
@@ -579,7 +579,7 @@ function info(args, emitter) {
           message: 'Error in user model: no argument specified.'
         });
       }
-      
+
     }
   });
 }
@@ -701,7 +701,7 @@ function isIgnored(args, emitter) {
 
 function passwordResetInsert(args, emitter) {
   var verificationCode = Math.random().toString().replace('0.', '') + Math.random().toString().replace('0.', '');
-  
+
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
@@ -795,8 +795,10 @@ function posts(args, emitter) {
             client.query(
               'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."username" as "author", u."url" as "authorUrl" ' +
               'from posts p ' +
-              'inner join users u on p."userID" = u.id ' +
-              'where u."id" = $1 and p.draft = false ' +
+              'join topics t on p."topicID" = t."id" ' +
+              'join users u on p."userID" = u.id ' +
+              // Only grab public posts, not posts from private topics!
+              'where u."id" = $1 and t."discussionID" <> 0 and p.draft = false ' +
               'order by p."dateCreated" desc ' +
               'limit $2 offset $3;',
               [ args.userID, end - start, start ],
@@ -881,7 +883,7 @@ function urlExists(user, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        eval(app.db.sql.userUrlExists),
+        'select id from users where url = $1;',
         [ user ],
         function (err, result) {
           done();
@@ -903,7 +905,7 @@ function urlExists(user, emitter) {
 
 
 function updatePassword(args, emitter) {
-  
+
   app.listen('waterfall', {
     passwordHash: function (emitter) {
       app.toolbox.helpers.hash(args.password, emitter);
@@ -913,7 +915,7 @@ function updatePassword(args, emitter) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
-    
+
           client.query(
             'update "users" set "passwordHash" = $1 where "id" = $2;',
             [ previous.passwordHash, args.userID ],
@@ -929,7 +931,7 @@ function updatePassword(args, emitter) {
               }
             }
           );
-    
+
         }
       });
     }
@@ -940,6 +942,6 @@ function updatePassword(args, emitter) {
       emitter.emit('error', output.listen);
     }
   });
-  
-  
+
+
 }
