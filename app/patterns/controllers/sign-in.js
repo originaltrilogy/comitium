@@ -29,7 +29,16 @@ function handler(params, context, emitter) {
     params.form.forwardToUrl = app.config.main.baseUrl;
   }
 
-  emitter.emit('ready');
+  // If the referrer is the account controller requesting authentication, render
+  // the authenticate view, which just asks for the user's password
+  if ( params.form.forwardToUrl.search(app.config.main.baseUrl + 'account') >= 0 ) {
+    emitter.emit('ready', {
+      view: 'authenticate'
+    });
+  } else {
+    emitter.emit('ready');
+  }
+
 }
 
 
@@ -41,7 +50,7 @@ function submit(params, context, emitter) {
     app.listen({
       authenticate: function (emitter) {
         app.models.user.authenticate({
-          email: params.form.email,
+          email: params.form.email || params.session.email,
           password: params.form.password
         }, emitter);
       }
@@ -69,7 +78,7 @@ function submit(params, context, emitter) {
                 expires: 'now'
               }
             },
-            session: app.extend(user, { loginReferrer: params.form.loginReferrer }),
+            session: app.extend(user, { authenticated: true, loginReferrer: params.form.loginReferrer }),
             redirect: {
               url: params.form.forwardToUrl
             }

@@ -2,7 +2,7 @@ Issues
 
 - Don't allow users to access their account settings without authenticating first
 	- When the user's session starts, set a session variable called "authenticated" (boolean) if they signed in with their password
-	- If the session starts via comitium_id, don't set the authenticated cookie
+	- If the session starts via comitium_id, don't set the authenticated session variable
 	- If session.authenticated, allow access to their account. If not, send them to the sign in form first to verify their credentials
 - Only show "First new post" link if there is a view time (might be better UX)
 - User profile/preferences

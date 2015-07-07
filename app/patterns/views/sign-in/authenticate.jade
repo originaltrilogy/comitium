@@ -1,3 +1,7 @@
+h1 Authentication Required
+p Your password is required to access your account.
+p Forgotten your password? <a href="password-reset">Create a new one</a>.
+
 section.sign-in-form
   form(action="sign-in/action/submit" method="post" novalidate)
     if authenticate && authenticate.message
@@ -9,15 +13,9 @@ section.sign-in-form
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       input(name="loginReferrer" type="hidden" value="#{form.loginReferrer}")
       ul
-        li.email.text.required
-          label(for="email") E-mail
-          input(id="email" name="email" type="email" value="#{form.email}" required autofocus)
         li.password.text.required
           label(for="password") Password
           input(id="password" name="password" type="password" value="#{form.password}" required)
-        li.remember.checkbox
-          input(id="remember" name="remember" type="checkbox" value="true" checked=form.remember)
-          label(for="remember") Remember my credentials
     .actions
       ul
         li.primary

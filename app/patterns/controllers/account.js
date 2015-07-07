@@ -10,10 +10,16 @@ module.exports = {
 // default action
 function handler(params, context, emitter) {
 
-  var content = app.models.account.content();
+  if ( params.session.authenticated ) {
+    var content = app.models.account.content();
 
-  emitter.emit('ready', {
-    content: content
-  });
+    emitter.emit('ready', {
+      content: content
+    });
+  } else {
+    emitter.emit('ready', {
+      redirect: app.config.main.basePath + 'sign-in'
+    });
+  }
 
 }
