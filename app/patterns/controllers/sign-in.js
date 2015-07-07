@@ -29,9 +29,9 @@ function handler(params, context, emitter) {
     params.form.forwardToUrl = app.config.main.baseUrl;
   }
 
-  // If the referrer is the account controller requesting authentication, render
-  // the authenticate view, which just asks for the user's password
-  if ( params.form.forwardToUrl.search(app.config.main.baseUrl + 'account') >= 0 ) {
+  // If the referrer only requires password authentication because the user has
+  // the comitium_id cookie, render the authenticate view.
+  if ( params.url.authenticate ) {
     emitter.emit('ready', {
       view: 'authenticate'
     });

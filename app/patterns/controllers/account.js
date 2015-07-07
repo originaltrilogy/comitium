@@ -18,7 +18,7 @@ function handler(params, context, emitter) {
     });
   } else {
     emitter.emit('ready', {
-      redirect: app.config.main.basePath + 'sign-in'
+      redirect: app.config.main.basePath + 'sign-in/authenticate/true'
     });
   }
 
