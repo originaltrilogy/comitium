@@ -22,7 +22,9 @@ module.exports = {
   posts: posts,
   topicViewTimes: topicViewTimes,
   urlExists: urlExists,
-  updatePassword: updatePassword
+  updateEmail: updateEmail,
+  updatePassword: updatePassword,
+  updateSettings: updateSettings
 };
 
 
@@ -40,14 +42,14 @@ function activate(args, emitter) {
       },
       activateUser: function (previous, emitter) {
         // If the account isn't activated, activate it
-        if ( previous.userActivationStatus.userExists && !previous.userActivationStatus.activationDate && previous.userActivationStatus.activationCode === args.activationCode ) {
+        if ( previous.userActivationStatus.userExists && !previous.userActivationStatus.activated && previous.userActivationStatus.activationCode === args.activationCode ) {
           app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
             if ( err ) {
               emitter.emit('error', err);
             } else {
               client.query(
-                'update users set "activationDate" = $1 where id = $2 and "activationCode" = $3',
-                [ app.toolbox.helpers.isoDate(), args.id, args.activationCode ],
+                'update users set "activated" = true where id = $1 and "activationCode" = $2',
+                [ args.id, args.activationCode ],
                 function (err, result) {
                   done();
                   if ( err ) {
@@ -68,7 +70,7 @@ function activate(args, emitter) {
               reason: 'userDoesNotExist',
               message: 'The account you\'re trying to activate doesn\'t exist. Please contact us for help.'
             });
-          } else if ( previous.userActivationStatus.activationDate ) {
+          } else if ( previous.userActivationStatus.activated ) {
             emitter.emit('ready', {
               success: false,
               reason: 'accountAlreadyActivated',
@@ -107,7 +109,7 @@ function activationStatus(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "id", "activationCode", "activationDate" from "users" where "id" = $1',
+        'select "id", "activated", "activationCode" from "users" where "id" = $1',
         [ args.id ],
         function (err, result) {
           done();
@@ -119,7 +121,7 @@ function activationStatus(args, emitter) {
                 userExists: true,
                 id: result.rows[0].id,
                 activationCode: result.rows[0].activationCode,
-                activationDate: result.rows[0].activationDate
+                activated: result.rows[0].activated
               });
             } else {
               emitter.emit('ready', {
@@ -209,7 +211,7 @@ function authenticate(credentials, emitter) {
 
       if ( output.listen.success ) {
         if ( user ) {
-          if ( user.activationDate ) {
+          if ( user.activated ) {
             if ( user.login ) {
               if ( usernameHash.length || output.compareHash === true ) {
                 app.listen({
@@ -327,7 +329,6 @@ function create(args, emitter) {
   var username = args.username.trim(),
       email = args.email.trim(),
       password = args.password.trim(),
-      verifyPassword = args.verifyPassword.trim(),
       tos = args.tos || false;
 
   // Defeat attempts to mimic a username with extra internal spaces
@@ -335,7 +336,7 @@ function create(args, emitter) {
     username = username.replace(/\s\s/g, ' ');
   }
 
-  if ( !username.length || !password.length || !verifyPassword.length || !email.length || !tos ) {
+  if ( !username.length || !password.length || !email.length || !tos ) {
     emitter.emit('ready', failed('requiredFieldsEmpty'));
   } else if ( app.toolbox.validate.username(username) === false ) {
     emitter.emit('ready', failed('invalidUsername'));
@@ -343,8 +344,6 @@ function create(args, emitter) {
     emitter.emit('ready', failed('invalidEmail'));
   } else if ( app.toolbox.validate.password(password) === false ) {
     emitter.emit('ready', failed('invalidPassword'));
-  } else if ( password !== verifyPassword ) {
-    emitter.emit('ready', failed('passwordMismatch'));
   } else {
     app.listen({
       userExists: function (emitter) {
@@ -366,7 +365,7 @@ function create(args, emitter) {
         } else {
           url = app.toolbox.slug(username);
           time = app.toolbox.helpers.isoDate();
-          activationCode = Math.random().toString().replace('0.', '');
+          activationCode = app.toolbox.helpers.activationCode();
 
           app.listen('waterfall', {
             usernameHash: function (emitter) {
@@ -385,12 +384,14 @@ function create(args, emitter) {
                 passwordHash: previous.passwordHash,
                 url: url,
                 email: email,
-                timezone: 0,
+                timezone: 'GMT',
                 dateFormat: 'mmmm d, yyyy',
+                theme: 'Default',
                 lastActivity: time,
                 joinDate: time,
-                pmEmailNotification: true,
+                privateTopicEmailNotification: true,
                 subscriptionEmailNotification: true,
+                activated: false,
                 activationCode: activationCode,
                 system: false,
                 locked: false
@@ -435,7 +436,7 @@ function create(args, emitter) {
         output.message = 'The username you requested already exists.';
         break;
       case 'emailExists':
-        output.message = 'The e-mail address you provided already exists. Are you sure you don\'t have an account already?';
+        output.message = 'The e-mail address you provided already exists. Are you sure you don\'t have an account already? You can <a href="password-reset">reset your password</a> if so.';
         break;
       case 'invalidUsername':
         output.message = 'The username you requested contains characters that aren\'t allowed.';
@@ -444,10 +445,7 @@ function create(args, emitter) {
         output.message = 'The e-mail address you provided isn\'t valid.';
         break;
       case 'invalidPassword':
-        output.message = 'The password you requested doesn\'t meet the requirements (at least 8 characters, anything but spaces).';
-        break;
-      case 'passwordMismatch':
-        output.message = 'The passwords you provided don\'t match.';
+        output.message = 'Your password doesn\'t meet the minimum requirements (at least 8 characters, anything but spaces).';
         break;
       default:
         output.message = 'An unspecified error occurred. Please try again later.';
@@ -544,16 +542,16 @@ function info(args, emitter) {
       emitter.emit('error', err);
     } else {
       if ( args.userID ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joinDate", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
       } else if ( args.username ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joinDate", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
         arg = args.username;
       } else if ( args.usernameHash ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joinDate", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" = $1';
         arg = args.usernameHash;
       } else if ( args.email ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."signature", u."lastActivity", u."joinDate", u."website", u."blog", u."pmEmailNotification", u."subscriptionEmailNotification", u."activationDate", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "email" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joinDate", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "url" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where "email" = $1';
         arg = args.email;
       }
 
@@ -605,8 +603,8 @@ function insert(args, emitter) {
         },
         insertUser: function (previous, emitter) {
           client.query(
-            'insert into "users" ( "groupID", "username", "usernameHash", "passwordHash", "url", "email", "timezone", "dateFormat", "lastActivity", "joinDate", "pmEmailNotification", "subscriptionEmailNotification", "activationCode", "system", "locked" ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15 ) returning id;',
-            [ args.groupID, args.username, args.usernameHash, args.passwordHash, args.url, args.email, args.timezone, args.dateFormat, args.lastActivity, args.joinDate, args.pmEmailNotification, args.subscriptionEmailNotification, args.activationCode, args.system, args.locked ],
+            'insert into "users" ( "groupID", "username", "usernameHash", "passwordHash", "url", "email", "timezone", "dateFormat", "theme", "lastActivity", "joinDate", "privateTopicEmailNotification", "subscriptionEmailNotification", "activated", "activationCode", "system", "locked" ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17 ) returning id;',
+            [ args.groupID, args.username, args.usernameHash, args.passwordHash, args.url, args.email, args.timezone, args.dateFormat, args.theme, args.lastActivity, args.joinDate, args.privateTopicEmailNotification, args.subscriptionEmailNotification, args.activated, args.activationCode, args.system, args.locked ],
             function (err, result) {
               if ( err ) {
                 client.query('rollback', function (err) {
@@ -653,14 +651,14 @@ function isActivated(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "activationDate" from "users" where "id" = $1',
+        'select "activated" from "users" where "id" = $1',
         [ args.id ],
         function (err, result) {
           done();
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            if ( result.rows[0] && result.rows[0].activationDate ) {
+            if ( result.rows[0] && result.rows[0].activated ) {
               emitter.emit('ready', true);
             } else {
               emitter.emit('ready', false);
@@ -904,8 +902,46 @@ function urlExists(user, emitter) {
 
 
 
-function updatePassword(args, emitter) {
+function updateEmail(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    var sql = '',
+        activationCode = '';
 
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+
+      if ( args.deactivateUser ) {
+        sql = 'update "users" set "email" = $1, "activated" = false, "activationCode" = $3 where "id" = $2;';
+        activationCode = app.toolbox.helpers.activationCode();
+      } else {
+        sql = 'update "users" set "email" = $1 where "id" = $2;';
+      }
+
+      client.query(
+        sql,
+        [ args.email, args.userID, activationCode ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', {
+              success: true,
+              affectedRows: result.rows,
+              activationCode: activationCode
+            });
+          }
+        }
+      );
+
+    }
+  });
+}
+
+
+
+function updatePassword(args, emitter) {
   app.listen('waterfall', {
     passwordHash: function (emitter) {
       app.toolbox.helpers.hash(args.password, emitter);
@@ -942,6 +978,32 @@ function updatePassword(args, emitter) {
       emitter.emit('error', output.listen);
     }
   });
+}
 
 
+
+function updateSettings(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+
+      client.query(
+        'update "users" set "signatureMarkdown" = $1, "signatureHtml" = $2, "timezone" = $3, "theme" = $4, "privateTopicEmailNotification" = $5 where "id" = $6;',
+        [ args.signatureMarkdown, args.signatureHtml, args.timezone, args.theme, args.privateTopicEmailNotification, args.userID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', {
+              success: true,
+              affectedRows: result.rows
+            });
+          }
+        }
+      );
+
+    }
+  });
 }

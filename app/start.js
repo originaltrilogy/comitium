@@ -5,8 +5,8 @@
 global.app = require('citizen');
 
 // require('nodetime').profile({
-//   accountKey: app.config.main.nodeTime.accountKey,
-//   appName: app.config.main.nodeTime.appName
+//   accountKey: app.config.comitium.nodeTime.accountKey,
+//   appName: app.config.comitium.nodeTime.appName
 // });
 
 app.toolbox = {
@@ -17,7 +17,7 @@ app.toolbox = {
 
   // Third party modules
   bcrypt: require('bcrypt'),
-  moment: require('moment'),
+  moment: require('moment-timezone'),
   numeral: require('numeral'),
   pg: require('pg'),
   slug: require('slug')

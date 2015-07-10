@@ -57,7 +57,7 @@ function handler(params, context, emitter) {
 
 function bookmark(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + 'bookmarks');
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'bookmarks');
   params.form.notes = '';
 
   app.listen('waterfall', {
@@ -159,7 +159,7 @@ function edit(params, context, emitter) {
     // If the user has access rights, display the post edit form
     if ( output.listen.success ) {
 
-      params.form.forwardToUrl = params.form.forwardToUrl || params.session.loginReferrer || params.request.headers.referer || app.config.main.baseUrl + '/post/' + params.url.post;
+      params.form.forwardToUrl = params.form.forwardToUrl || params.session.loginReferrer || params.request.headers.referer || app.config.comitium.baseUrl + '/post/' + params.url.post;
       params.form.content = output.post.markdown;
       params.form.reason = '';
 
@@ -241,7 +241,7 @@ function editForm(params, context, emitter) {
                 }, emitter);
               }
             }, function (output) {
-              var forwardToUrl = draft ? app.config.main.baseUrl + '/drafts' : params.form.forwardToUrl;
+              var forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : params.form.forwardToUrl;
 
               if ( output.listen.success ) {
 
@@ -287,7 +287,7 @@ function editForm(params, context, emitter) {
 
 function lock(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/post/' + params.url.post);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + params.url.post);
   params.form.reason = '';
 
   app.listen('waterfall', {
@@ -372,14 +372,14 @@ function lockForm(params, context, emitter) {
                   }, emitter);
                 }
               }, function (output) {
-                var mailText = 'The following post has been locked by a moderator: ' + params.route.parsed.protocol + app.config.main.baseUrl + '/post/' + post.id;
+                var mailText = 'The following post has been locked by a moderator: ' + params.route.parsed.protocol + app.config.comitium.baseUrl + '/post/' + post.id;
 
                 if ( parsedReason.length ) {
                   mailText += '\n\n' + 'Reason: ' + parsedReason;
                 }
 
                 app.mail.sendMail({
-                  from: app.config.main.email,
+                  from: app.config.comitium.email,
                   to: output.user.email,
                   subject: 'Forum post lock notification',
                   text: mailText
@@ -480,7 +480,7 @@ function unlock(params, context, emitter) {
 
 function report(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/post/' + params.url.post);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + params.url.post);
   params.form.reason = '';
 
   app.listen('waterfall', {
@@ -556,10 +556,10 @@ function reportForm(params, context, emitter) {
           if ( output.saveReport.success ) {
 
             app.mail.sendMail({
-              from: app.config.main.email,
-              to: app.config.main.email,
+              from: app.config.comitium.email,
+              to: app.config.comitium.email,
               subject: 'Forum post report',
-              text: 'Submitted by: ' + params.session.username + '\n\n' + 'Post: ' + params.route.parsed.protocol + app.config.main.baseUrl + '/post/' + post.id + '\n\n' + 'Reason: ' + params.form.reason
+              text: 'Submitted by: ' + params.session.username + '\n\n' + 'Post: ' + params.route.parsed.protocol + app.config.comitium.baseUrl + '/post/' + post.id + '\n\n' + 'Reason: ' + params.form.reason
             });
 
             emitter.emit('ready', {
@@ -605,7 +605,7 @@ function reportForm(params, context, emitter) {
 
 function trash(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/post/' + params.url.post);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + params.url.post);
   params.form.reason = '';
 
   app.listen('waterfall', {
@@ -702,7 +702,7 @@ function trashForm(params, context, emitter) {
                 mailText += '\n\n' + post.html;
 
                 app.mail.sendMail({
-                  from: app.config.main.email,
+                  from: app.config.comitium.email,
                   to: output.user.email,
                   subject: 'Your forum post was deleted',
                   text: mailText

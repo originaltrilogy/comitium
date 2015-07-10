@@ -11,7 +11,7 @@ section.post-report-form
         li.report-reason.textarea.required
           label(for="reason")
             | Why are you reporting this post?
-          textarea(id="reason" name="reason" required) #{form.reason}
+          textarea#reason(name="reason" rows="4" required) #{form.reason}
     .actions
       ul
         li.primary.report

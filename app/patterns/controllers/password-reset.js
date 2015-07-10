@@ -67,16 +67,16 @@ function form(params, context, emitter) {
             },
             sendEmail: function (previous, emitter) {
               app.mail.sendMail({
-                from: app.config.main.email,
+                from: app.config.comitium.email,
                 to: output.user.email,
                 subject: 'Password reset instructions',
-                text: params.route.parsed.protocol + app.config.main.baseUrl + 'password-reset/action/reset/id/' + output.user.id + '/code/' + previous.generateVerification.verificationCode
+                text: params.route.parsed.protocol + app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + output.user.id + '/code/' + previous.generateVerification.verificationCode
               });
             }
           });
           
           emitter.emit('ready', {
-            redirect: app.config.main.basePath + 'password-reset/action/confirmation'
+            redirect: app.config.comitium.basePath + 'password-reset/action/confirmation'
           });
         }
       } else {
@@ -177,7 +177,7 @@ function resetForm(params, context, emitter) {
       if ( output.validateForm.success ) {
         if ( output.verify && output.updatePassword ) {
           emitter.emit('ready', {
-            redirect: app.config.main.basePath + 'password-reset/action/resetConfirmation'
+            redirect: app.config.comitium.basePath + 'password-reset/action/resetConfirmation'
           });
         } else {
           emitter.emit('ready', {

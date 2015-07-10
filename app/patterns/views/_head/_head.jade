@@ -1,9 +1,9 @@
 head
   meta(charset="utf-8")
   meta(name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no")
-  base(href="#{route.parsed.protocol + config.main.baseUrl}")
+  base(href="#{route.parsed.protocol + config.comitium.baseUrl}")
   title #{metaData.title}
   meta(name="description" content="#{metaData.description}")
   meta(name="keywords" content="#{metaData.keywords}")
-  script(type="text/javascript" src="#{config.main.staticAssetUrl}themes/default/#{config.citizen.mode}.js")
-  link(rel="stylesheet" type="text/css" href="#{config.main.staticAssetUrl}themes/default/#{config.citizen.mode}.css")
+  script(type="text/javascript" src="#{config.comitium.staticAssetUrl}themes/#{theme}/#{config.citizen.mode}.js")
+  link(rel="stylesheet" type="text/css" href="#{config.comitium.staticAssetUrl}themes/#{theme}/#{config.citizen.mode}.css")

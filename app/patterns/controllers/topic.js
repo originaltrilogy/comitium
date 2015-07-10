@@ -54,7 +54,7 @@ function handler(params, context, emitter) {
                   urlPost = output.firstUnreadPost.post ? '/#' + output.firstUnreadPost.post.id : '';
 
               emitter.emit('ready', {
-                redirect: params.route.parsed.protocol + app.config.main.baseUrl + 'topic/' + urlTopic + '/id/' + params.url.id + urlPage + urlPost
+                redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + urlTopic + '/id/' + params.url.id + urlPage + urlPost
               });
             } else {
               emitter.emit('error', output.listen);
@@ -152,7 +152,7 @@ function start(params, context, emitter) {
 
       params.form.title = '';
       params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
-      params.form.subscribe = false;
+      params.form.subscribe = true;
 
       emitter.emit('ready', {
         content: {
@@ -260,7 +260,7 @@ function startForm(params, context, emitter) {
 
                     if ( output.listen.success ) {
                       emitter.emit('ready', {
-                        redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'topic/' + url + '/id/' + topic.id
+                        redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
                       });
                     } else {
                       emitter.emit('error', output.listen);
@@ -269,7 +269,7 @@ function startForm(params, context, emitter) {
                   });
                 } else {
                   emitter.emit('ready', {
-                    redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'topic/' + url + '/id/' + topic.id
+                    redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
                   });
                 }
               } else {
@@ -345,6 +345,7 @@ function startPrivate(params, context, emitter) {
       params.form.invitees = output.invitees ? output.invitees.join('\n') : '';
       params.form.title = '';
       params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
+      params.form.subscribe = true;
 
       emitter.emit('ready', {
         content: {
@@ -455,12 +456,12 @@ function startPrivateForm(params, context, emitter) {
                     if ( output.listen.success ) {
                       delete output.listen;
                       for ( var invitee in output ) {
-                        if ( invitee.pmEmailNotification ) {
+                        if ( invitee.privateTopicEmailNotification ) {
                           app.mail.sendMail({
-                            from: app.config.main.email,
+                            from: app.config.comitium.email,
                             to: invitee.email,
                             subject: 'New private topic started by ' + params.session.username,
-                            text: app.config.main.baseUrl + '/topic/id/' + topic.id
+                            text: app.config.comitium.baseUrl + '/topic/id/' + topic.id
                           });
                         }
                       }
@@ -483,7 +484,7 @@ function startPrivateForm(params, context, emitter) {
 
                     if ( output.listen.success ) {
                       emitter.emit('ready', {
-                        redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'topic/id/' + topic.id
+                        redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/id/' + topic.id
                       });
                     } else {
                       emitter.emit('error', output.listen);
@@ -492,7 +493,7 @@ function startPrivateForm(params, context, emitter) {
                   });
                 } else {
                   emitter.emit('ready', {
-                    redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'topic/id/' + topic.id
+                    redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/id/' + topic.id
                   });
                 }
               } else {
@@ -644,8 +645,8 @@ function replyForm(params, context, emitter) {
             }, function (output) {
               var page = Math.ceil( ( topic.replies + 2 ) / 25 ),
                   pageParameter = page !== 1 ? '/page/' + page : '',
-                  replyUrl = app.config.main.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
-                  forwardToUrl = draft ? app.config.main.baseUrl + '/drafts' : replyUrl;
+                  replyUrl = app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
+                  forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : replyUrl;
 
               if ( output.listen.success ) {
 
@@ -740,7 +741,7 @@ function notifySubscribers(args, emitter) {
     if ( output.listen.success && output.subscribersToNotify.length ) {
       for ( var i = 0; i < output.subscribersToNotify.length; i++ ) {
         app.mail.sendMail({
-          from: app.config.main.email,
+          from: app.config.comitium.email,
           to: output.subscribersToNotify[i].email,
           subject: 'Forum topic update',
           text: args.url
@@ -778,7 +779,7 @@ function subscribe(params, context, emitter) {
 
     if ( output.listen.success ) {
       emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
+        redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
       });
     } else {
       emitter.emit('error', output.listen);
@@ -808,7 +809,7 @@ function unsubscribe(params, context, emitter) {
 
     if ( output.listen.success ) {
       emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
+        redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
       });
     } else {
       emitter.emit('error', output.listen);
@@ -822,7 +823,7 @@ function unsubscribe(params, context, emitter) {
 
 function lock(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + params.url.id);
   params.form.reason = '';
 
   app.listen('waterfall', {
@@ -984,7 +985,7 @@ function unlock(params, context, emitter) {
 
 function move(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
 
   app.listen('waterfall', {
     access: function (emitter) {
@@ -1097,7 +1098,7 @@ function moveForm(params, context, emitter) {
 
 function trash(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
 
   app.listen('waterfall', {
     access: function (emitter) {

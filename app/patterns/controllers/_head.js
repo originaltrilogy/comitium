@@ -12,14 +12,9 @@ function handler(params, context, emitter) {
 
   emitter.emit('ready', {
     content: {
-      metaData: metaData
-    },
-    cache: {
-      controller: {
-        scope: 'route',
-        resetOnAccess: true
-      }
+      metaData: metaData,
+      theme: app.config.comitium.themes[params.session.theme || 'Default'].path
     }
   });
-  
+
 }

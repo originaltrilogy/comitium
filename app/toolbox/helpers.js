@@ -3,6 +3,7 @@
 'use strict';
 
 module.exports = {
+  activationCode: activationCode,
   hash: hash,
   compareHash: compareHash,
   ip: ip,
@@ -12,8 +13,14 @@ module.exports = {
 
 
 
+function activationCode() {
+  return Math.random().toString().replace('0.', '');
+}
+
+
+
 function hash(str, emitter) {
-  app.toolbox.bcrypt.hash(str, 10, function (err, hash) {
+  app.toolbox.bcrypt.hash(str, 12, function (err, hash) {
     if ( !err ) {
       emitter.emit('ready', hash);
     } else {
@@ -80,7 +87,7 @@ function paginate(url, page, itemCount) {
       pagination.previous.url = url + '/page/' + pagination.previous.number;
     }
   }
-  
+
   if ( pagination.current < pagination.total ) {
     pagination.next = {
       number: pagination.current + 1

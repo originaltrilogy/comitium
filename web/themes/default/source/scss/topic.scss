@@ -16,13 +16,4 @@ body[data-controller="announcement"] {
     }
   }
 
-  &[data-view="start"],
-  &[data-view="reply"] {
-    li.topic-title {
-      textarea {
-        height: 6.4rem;
-      }
-    }
-  }
-
 }

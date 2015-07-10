@@ -5,7 +5,7 @@ section.sign-up-form
     form(action="register/action/form" method="post" novalidate)
       if register && register.message
         p.message
-          = register.message
+          != register.message
       .data
         ul
           li.username.text.required
@@ -13,16 +13,13 @@ section.sign-up-form
             p.label-note What the public sees when you post in the forum
             input#username(name="username" type="text" value="#{form.username}" required)
           li.email.text.required
-            label(for="email") E-mail Address
+            label(for="email") E-mail address
             p.label-note Required for account activation and signing in
             input#email(name="email" type="email" value="#{form.email}" required)
           li.password.text.required
             label(for="password") Password
             p.label-note At least 8 characters, anything but spaces, case-sensitive
             input#password(name="password" type="password" value="#{form.password}" required)
-          li.verify-password.text.required
-            label(for="verify-password") Verify Password
-            input#verify-password(name="verifyPassword" type="password" value="#{form.verifyPassword}" required)
           li.tos.checkbox.required
             input#tos(name="tos" type="checkbox" value="true" checked=form.tos required)
             label(for="tos") I have read and agree to the forum <a href="page/terms-of-service">Terms of Service</a>.

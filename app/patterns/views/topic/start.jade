@@ -20,11 +20,11 @@ section.topic-write-form
         li.topic-title.text.required
           label(for="topic-title")
             | Topic title
-          textarea(id="topic-title" name="title" required) #{form.title}
+          textarea(id="topic-title" name="title" rows="2" required) #{form.title}
         li.post-content.textarea.required
           label(for="post-content")
             | Post content
-          textarea(id="post-content" name="content" required) #{form.content}
+          textarea(id="post-content" name="content" rows="10" required) #{form.content}
         li.subscribe.checkbox
           input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
           label(for="subscribe")

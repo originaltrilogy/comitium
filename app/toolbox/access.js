@@ -36,7 +36,7 @@ function challenge(groupID, emitter) {
 
   if ( groupID === 1 ) {
     emitter.emit('ready', {
-      redirect: app.config.main.baseUrl + 'sign-in'
+      redirect: app.config.comitium.baseUrl + 'sign-in'
     });
   } else {
     emitter.emit('error', {

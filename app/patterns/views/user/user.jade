@@ -19,7 +19,7 @@ if talkPrivately || editProfile || banUser
 
 section.bio
   img(src="users/avatars/#{user.url}-#{user.id}.jpg")
-  .signature !{user.signature}
+  .signature !{user.signatureHtml}
   dl
     dt User Group
     dd #{user.group}

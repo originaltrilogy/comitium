@@ -9,35 +9,31 @@ module.exports = {
 
 
 function handler(params, context, emitter) {
-  params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctzn_referer || params.request.headers.referer || app.config.main.baseUrl;
-  params.form.loginReferrer = params.request.headers.referer || app.config.main.baseUrl;
+  params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctzn_referer || params.request.headers.referer || app.config.comitium.baseUrl;
+  params.form.loginReferrer = params.request.headers.referer || app.config.comitium.baseUrl;
   params.form.email = '';
   params.form.password = '';
   params.form.remember = false;
 
   if (
        // If the referrer isn't local...
-       params.form.forwardToUrl.search(app.config.main.baseUrl) < 0 ||
+       params.form.forwardToUrl.search(app.config.comitium.baseUrl) < 0 ||
        // ...or the referrer is one of these...
-       params.form.forwardToUrl.search(app.config.main.baseUrl + 'sign-in') >= 0 ||
-       params.form.forwardToUrl.search(app.config.main.baseUrl + 'sign-out') >= 0 ||
-       params.form.forwardToUrl.search(app.config.main.baseUrl + 'register') >= 0 ||
-       params.form.forwardToUrl.search(app.config.main.baseUrl + 'user/action/activate') >= 0 ||
-       params.form.forwardToUrl.search(app.config.main.baseUrl + 'password-reset') >= 0
+       params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'sign-in') >= 0 ||
+       params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'sign-out') >= 0 ||
+       params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'register') >= 0 ||
+       params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'user/action/activate') >= 0 ||
+       params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'password-reset') >= 0
      ) {
     // ...forward the user to the forum home page after logging in.
-    params.form.forwardToUrl = app.config.main.baseUrl;
+    params.form.forwardToUrl = app.config.comitium.baseUrl;
   }
 
   // If the referrer only requires password authentication because the user has
   // the comitium_id cookie, render the authenticate view.
-  if ( params.url.authenticate ) {
-    emitter.emit('ready', {
-      view: 'authenticate'
-    });
-  } else {
-    emitter.emit('ready');
-  }
+  emitter.emit('ready', {
+    view: params.url.password ? 'password' : 'sign-in'
+  });
 
 }
 
@@ -85,6 +81,7 @@ function submit(params, context, emitter) {
           });
         } else {
           emitter.emit('ready', {
+            view: params.form.authenticationMethod || 'sign-in',
             content: {
               authenticate: output.authenticate
             }

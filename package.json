@@ -19,14 +19,15 @@
   },
   "dependencies": {
     "bcrypt": "*",
-    "citizen": "~0.6.4",
-    "moment": "2.8.4",
+    "citizen": "~0.6.9",
+    "moment": "*",
+    "moment-timezone": "*",
     "nodemailer": "*",
     "numeral": "*",
-    "pg": "^4.3.0",
-    "remarkable": "~1.6.0",
-    "slug": "^0.8.0",
-    "to-markdown": "0.0.3"
+    "pg": "*",
+    "remarkable": "*",
+    "slug": "*",
+    "to-markdown": "*"
   },
   "devDependencies": {
     "grunt": "*",

@@ -1,6 +1,6 @@
-/*-------------------
-CSS baseline
--------------------*/
+/////////////////////////
+////     baseline    ////
+/////////////////////////
 
 *,
 *:before,
@@ -39,6 +39,7 @@ nav {
 p {
 	margin: 1.4rem 0 1.8rem;
   margin: 4vw 0 6vw;
+  word-wrap: break-word;
 }
 
 table {
@@ -67,7 +68,7 @@ b,
 strong {
   font-weight: normal;
   font-family: $boldFont;
-  
+
   i,
   em {
     font-family: $boldItalicFont;
@@ -78,7 +79,7 @@ i,
 em {
   font-style: normal;
   font-family: $italicFont;
-  
+
   b,
   strong {
     font-family: $boldItalicFont;

@@ -11,7 +11,7 @@ section.post-delete-form
         li.delete-reason.textarea
           label(for="reason") Why are you deleting this post?
           p.label-note Optional
-          textarea(id="reason" name="reason") #{form.reason}
+          textarea#reason(name="reason" rows="4") #{form.reason}
         li.notify.checkbox
           input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
           label(for="notify") Notify the author

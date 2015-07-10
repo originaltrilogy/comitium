@@ -250,7 +250,7 @@ function startForm(params, context, emitter) {
 
                     if ( output.listen.success ) {
                       emitter.emit('ready', {
-                        redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'announcement/' + url + '/id/' + topic.id
+                        redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + topic.id
                       });
                     } else {
                       emitter.emit('error', output.listen);
@@ -259,7 +259,7 @@ function startForm(params, context, emitter) {
                   });
                 } else {
                   emitter.emit('ready', {
-                    redirect: draft ? app.config.main.baseUrl + 'drafts' : app.config.main.baseUrl + 'announcement/' + url + '/id/' + topic.id
+                    redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + topic.id
                   });
                 }
               } else {
@@ -414,8 +414,8 @@ function replyForm(params, context, emitter) {
             }, function (output) {
               var page = Math.ceil( ( topic.replies + 2 ) / 25 ),
                   pageParameter = page !== 1 ? '/page/' + page : '',
-                  replyUrl = app.config.main.baseUrl + 'announcement/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
-                  forwardToUrl = draft ? app.config.main.baseUrl + '/drafts' : replyUrl;
+                  replyUrl = app.config.comitium.baseUrl + 'announcement/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
+                  forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : replyUrl;
 
               if ( output.listen.success ) {
 
@@ -511,7 +511,7 @@ function notifySubscribers(args, emitter) {
     if ( output.listen.success && output.subscribersToNotify.length ) {
       for ( var i = 0; i < output.subscribersToNotify.length; i++ ) {
         app.mail.sendMail({
-          from: app.config.main.email,
+          from: app.config.comitium.email,
           to: output.subscribersToNotify[i].email,
           subject: 'Forum announcement update',
           text: args.url
@@ -550,7 +550,7 @@ function subscribe(params, context, emitter) {
 
     if ( output.listen.success ) {
       emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/announcement/' + output.topic.url + '/id/' + output.topic.id)
+        redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/announcement/' + output.topic.url + '/id/' + output.topic.id)
       });
     } else {
       emitter.emit('error', output.listen);
@@ -580,7 +580,7 @@ function unsubscribe(params, context, emitter) {
 
     if ( output.listen.success ) {
       emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/announcement/' + output.topic.url + '/id/' + output.topic.id)
+        redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/announcement/' + output.topic.url + '/id/' + output.topic.id)
       });
     } else {
       emitter.emit('error', output.listen);
@@ -594,7 +594,7 @@ function unsubscribe(params, context, emitter) {
 
 function lock(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/announcement/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/announcement/' + params.url.id);
   params.form.reason = '';
 
   app.listen('waterfall', {
@@ -756,7 +756,7 @@ function unlock(params, context, emitter) {
 
 function trash(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.main.baseUrl + '/topic/' + params.url.announcement + '/id/' + params.url.id);
+  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/' + params.url.announcement + '/id/' + params.url.id);
 
   app.listen('waterfall', {
     access: function (emitter) {

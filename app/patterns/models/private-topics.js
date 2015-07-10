@@ -153,11 +153,11 @@ function breadcrumbs(discussionTitle) {
   return {
     a: {
       name: 'Forum Home',
-      url: app.config.main.basePath
+      url: app.config.comitium.basePath
     },
     b: {
       name: 'Discussion Categories',
-      url: app.config.main.basePath + 'discussions'
+      url: app.config.comitium.basePath + 'discussions'
     }
   };
 }

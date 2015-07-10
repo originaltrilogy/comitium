@@ -13,7 +13,6 @@ function handler(params, context, emitter) {
   params.form.username = '';
   params.form.email = '';
   params.form.password = '';
-  params.form.verifyPassword = '';
   params.form.tos = false;
 
   emitter.emit('ready');
@@ -36,17 +35,17 @@ function form(params, context, emitter) {
       if ( output.listen.success ) {
 
         if ( output.register.success ) {
-          email.text = '<a href="' + params.route.parsed.protocol + app.config.main.baseUrl + 'user/action/activate/id/' + output.register.id + '/activationCode/' + output.register.activationCode + '">Click here to activate your account</a>';
+          email.text = '<a href="' + params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + output.register.id + '/activationCode/' + output.register.activationCode + '">Click here to activate your account</a>';
 
           app.mail.sendMail({
-            from: app.config.main.email,
+            from: app.config.comitium.email,
             to: output.register.email,
             subject: 'Forum registration confirmation',
             text: email.text
           });
 
           emitter.emit('ready', {
-            redirect: app.config.main.basePath + 'register/action/complete'
+            redirect: app.config.comitium.basePath + 'register/action/complete'
           });
         } else {
           emitter.emit('ready', {

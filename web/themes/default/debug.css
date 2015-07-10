@@ -362,9 +362,6 @@ td,
 th {
   padding: 0; }
 
-/*-------------------
-CSS baseline
--------------------*/
 *,
 *:before,
 *:after {
@@ -399,7 +396,8 @@ nav ul {
 
 p {
   margin: 1.4rem 0 1.8rem;
-  margin: 4vw 0 6vw; }
+  margin: 4vw 0 6vw;
+  word-wrap: break-word; }
 
 table {
   border-collapse: collapse;
@@ -669,6 +667,7 @@ main {
     color: white; }
 
 section {
+  overflow: auto;
   background: #3E4352;
   border-top: 0.1rem solid #343945; }
 
@@ -719,7 +718,9 @@ form {
     color: white; }
   form p.label-note {
     margin: 0;
-    color: #CDCDCD; }
+    color: #CDCDCD;
+    line-height: 1.5;
+    padding-bottom: 2vw; }
   form input {
     width: 100%;
     padding: 1.2rem;
@@ -758,7 +759,6 @@ form {
         border-radius: 50%;
         content: ''; }
   form textarea {
-    height: 4.4rem;
     font-family: Menlo, fixed-width;
     font-size: 90%;
     width: 100%;
@@ -785,8 +785,6 @@ form {
         margin-bottom: 3.4rem; }
       form .data ul > li.radio {
         margin-bottom: 1rem; }
-      form .data ul > li.post-content textarea, form .data ul > li.message textarea {
-        height: 20.4rem; }
   form .actions ul {
     margin: 0; }
     form .actions ul > li {
@@ -873,10 +871,6 @@ body[data-controller="announcement"][data-view="announcement"] nav.actions {
   body[data-controller="announcement"][data-view="announcement"] nav.actions li {
     display: inline-block;
     margin: 0 0.4rem; }
-body[data-controller="topic"][data-view="start"] li.topic-title textarea, body[data-controller="topic"][data-view="reply"] li.topic-title textarea,
-body[data-controller="announcement"][data-view="start"] li.topic-title textarea,
-body[data-controller="announcement"][data-view="reply"] li.topic-title textarea {
-  height: 6.4rem; }
 
 /*-------------------
 post view (shared)

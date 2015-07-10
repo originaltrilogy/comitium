@@ -450,7 +450,7 @@ function breadcrumbs() {
   return {
     a: {
       name: 'Forum Home',
-      url: app.config.main.basePath
+      url: app.config.comitium.basePath
     },
     b: {
       name: 'Discussion Categories',

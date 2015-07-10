@@ -1,19 +1,56 @@
 h1 Your Account
 
-section.options
-  nav
-    ul
-      li
-        a(href="account/action/avatar") Upload or delete your avatar
-        p Your avatar is an image that appears next to your posts to help identify you to other members.
-      li
-        a(href="account/action/email") Change your e-mail address
-        p Use your e-mail address to sign in and receive notifications
-      li
-        a(href="account/action/password") Change your password
-      li
-        a(href="account/action/signature") Edit your signature
-      li
-        a(href="account/action/regional") Set your timezone and formats
-      li
-        a(href="account/action/theme") Select a different theme
+section#general
+  h2 General info and settings
+  form.general(action="account/action/generalForm" method="post" autocomplete="off" novalidate)
+    if general && general.messages
+      .messages
+        ul
+          each message in general.messages
+            li
+              = message
+    .data
+      ul
+        li.email.text.required
+          label(for="email") E-mail address
+          p.label-note Your account will require reactivation if you update your address (we'll send you an activation e-mail)
+          input#email(name="email" type="email" value="#{form.email}" autocomplete="off" required)
+        li.password.text
+          label(for="password") Password
+          p.label-note At least 8 characters, anything but spaces, case-sensitive
+          input#password(name="password" type="password" autocomplete="off" value="#{form.password}")
+        li.signature.textarea
+          label(for="signature") Signature
+          p.label-note Your signature appears beneath your forum posts
+          textarea#signature(name="signature" rows="2") #{form.signature}
+        li.timezone.select
+          label(for="timezone") Timezone
+          select#timezone(name="timezone")
+            each timezone in timezones
+              if timezone !== form.timezone
+                option
+                  = timezone
+              else
+                option(selected)
+                  = timezone
+        li.theme.select
+          label(for="theme") Theme
+          select#theme(name="theme")
+            each theme in themes
+              if theme.name !== form.theme
+                option
+                  = theme.name
+              else
+                option(selected)
+                  = theme.name
+        li.private-topic-notification.checkbox
+          input#private-topic-email-notification(name="privateTopicEmailNotification" type="checkbox" value="true" checked=form.privateTopicEmailNotification)
+          label(for="private-topic-email-notification") Send me an e-mail when I'm invited to participate in a private topic
+    .actions
+      ul
+        li.primary
+          input(name="formAction" type="submit" value="Save changes")
+  
+section#avatar
+  h2 Upload or delete your avatar
+  p Your avatar is an image that appears next to your posts to help identify you to other members.

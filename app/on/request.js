@@ -20,6 +20,9 @@ function start(params, context, emitter) {
   // page, where they'll be redirected to the original route after login.
 
   var authenticationRequired = {
+        account: {
+          handler: true
+        },
         user: {
           ban: true,
           unban: true
@@ -62,7 +65,7 @@ function start(params, context, emitter) {
       redirect = {};
 
   if ( authenticationRequired[params.route.controller] && authenticationRequired[params.route.controller][params.route.action] && !params.session.username ) {
-    redirect = app.config.main.baseUrl + 'sign-in';
+    redirect = app.config.comitium.baseUrl + 'sign-in';
   }
 
   emitter.emit('ready', {

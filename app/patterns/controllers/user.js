@@ -47,7 +47,7 @@ function handler(params, context, emitter) {
           banUser: output.user.id !== params.session.userID && params.session.moderateUsers,
           user: output.user,
           posts: output.posts,
-          pagination: app.toolbox.helpers.paginate(app.config.main.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
+          pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
         }
       });
     } else {

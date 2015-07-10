@@ -529,7 +529,7 @@ function posts(args, emitter) {
                 if ( property !== 'dateCreated' ) {
                   subset[i][property] = output.posts[i][property];
                 } else {
-                  subset[i][property] = app.toolbox.moment(output.posts[i][property]).format('MMMM Do YYYY [at] h:mm [GMT]');
+                  subset[i][property] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('MMMM Do YYYY [at] h:mm A');
                 }
 
               }
@@ -1145,7 +1145,7 @@ function breadcrumbs(discussionTitle, discussionUrl, discussionID) {
   return {
     a: {
       name: 'Forum Home',
-      url: app.config.main.basePath
+      url: app.config.comitium.basePath
     },
     b: {
       name: 'Discussion Categories',

@@ -105,9 +105,9 @@ function announcements(discussionID, emitter) {
       }
     }, function (output) {
       var announcements = {};
-      
+
       if ( output.listen.success ) {
-      
+
         for ( var i = 0; i < output.announcements.length; i += 1 ) {
           if ( output.announcements[i] ) {
             announcements[i] = {};
@@ -117,7 +117,7 @@ function announcements(discussionID, emitter) {
                 if ( property === 'replies' ) {
                   announcements[i][property + 'Formatted'] = app.toolbox.numeral(output.announcements[i][property]).format('0,0');
                 } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                  announcements[i][property + 'Formatted'] = app.toolbox.moment(output.announcements[i][property]).format('MMMM Do YYYY');
+                  announcements[i][property + 'Formatted'] = app.toolbox.moment.tz(output.announcements[i][property], 'America/New_York').format('MMMM Do YYYY');
                 }
               }
             }
@@ -191,7 +191,7 @@ function topics(args, emitter) {
       var topics = {};
 
       if ( output.listen.success ) {
-        
+
         for ( var i = 0; i < end - start; i += 1 ) {
           if ( output.topics[i] ) {
             topics[i] = {};
@@ -201,7 +201,7 @@ function topics(args, emitter) {
                 if ( property === 'replies' ) {
                   topics[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
                 } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                  topics[i][property + 'Formatted'] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');
+                  topics[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('MMMM Do YYYY');
                 }
               }
             }
@@ -231,11 +231,11 @@ function breadcrumbs(discussionTitle) {
   return {
     a: {
       name: 'Forum Home',
-      url: app.config.main.basePath
+      url: app.config.comitium.basePath
     },
     b: {
       name: 'Discussion Categories',
-      url: app.config.main.basePath + 'discussions'
+      url: app.config.comitium.basePath + 'discussions'
     }
   };
 }

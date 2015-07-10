@@ -8,7 +8,7 @@ section.post-bookmark-form
         li.notes.textarea.required
           label(for="notes")
             | Notes
-          textarea(id="notes" name="notes" required) #{form.notes}
+          textarea#notes(name="notes" rows="4" required) #{form.notes}
     .actions
       ul
         li.primary.save
