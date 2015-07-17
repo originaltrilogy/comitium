@@ -11,6 +11,8 @@ linters:
     enabled: false
   Comment:
     enabled: true
+  DeclarationOrder:
+    enabled: false
   DuplicateProperty:
     enabled: false
   EmptyLineBetweenBlocks:

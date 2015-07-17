@@ -4,6 +4,11 @@ discussions pattern
 body[data-controller="discussions"] {
 
   &[data-view="discussions"] {
+    section.announcements {
+      article {
+        padding: 3vw 0 4vw;
+      }
+    }
     p.description {
       margin-top: 0.4rem;
       margin-bottom: 1.2rem;

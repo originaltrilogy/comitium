@@ -25,6 +25,9 @@ function handler(params, context, emitter) {
       _header: {
         controller: '+_header',
         view: params.session.username ? '+_header-authenticated' : '+_header'
+      },
+      _footer: {
+        controller: '_footer'
       }
     }
   });

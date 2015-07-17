@@ -4,12 +4,15 @@ h1
 if url.page === 1
   p
     != discussion.description
-  
-include ../partials/pagination
 
 if announcements
   section.announcements
     h2 Announcements
+    if session.moderateDiscussions
+      nav.actions
+        ul
+          li.new-announcement
+            a(href="announcement/action/start/id/#{discussion.id}") Make an announcement
     each announcement in announcements
       article(class="announcement#{ announcement.updated ? ' updated' : '' }" data-announcement-id="#{announcement.id}")
         h3
@@ -17,15 +20,18 @@ if announcements
           
 section.topics
   h2 Topics
-  nav
+  nav.actions
     ul
       li.new-topic
         a(href="topic/action/start/id/#{discussion.id}") Start a new topic
-      if session.moderateDiscussions
+      if !announcements && session.moderateDiscussions
         li.new-announcement
           a(href="announcement/action/start/id/#{discussion.id}") Make an announcement
-      li.subscribe
-        a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe to this discussion
+      //- li.subscribe
+      //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
+
+  include ../partials/pagination
+  
   if topics
     each topic in topics
       article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")

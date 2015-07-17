@@ -90,6 +90,17 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Open Sans Bold Italic';
+  src: url('fonts/open-sans/opensans-bolditalic-webfont.eot');
+  src: url('fonts/open-sans/opensans-bolditalic-webfont.eot?#iefix') format('embedded-opentype'),
+     url('fonts/open-sans/opensans-bolditalic-webfont.svg#OpenSansBoldItalic') format('svg'),
+     url('fonts/open-sans/opensans-bolditalic-webfont.woff') format('woff'),
+     url('fonts/open-sans/opensans-bolditalic-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 
 /////////////////////////
 ////  global styles  ////
@@ -98,7 +109,7 @@ body {
   position: relative;
   font-family: $defaultFont;
   text-rendering: optimizeLegibility;
-  background: #484D5E;
+  @include background-color(13%, 33%);
   color: white;
 
   &.transitioning {
@@ -175,142 +186,177 @@ html.cssanimations.csstransforms span.loading-indicator {
 }
 
 a {
-  color: #CFDCFF;
+  @include color(100%, 91%);
 }
 
 header {
+  @include color(0%, 94%);
   background: #3E4352;
-  font-family: $titleFont;
-  color: #efefef;
-  box-shadow: 0 0.1rem 0.4rem 0 rgba(0,0,0,0.5);
+  @include background-color(14%, 28%);
+  border-bottom: 1px solid;
+  @include border-color(14%, 24%);
 
   & > a {
     display: block;
-    width: 17rem;
+    width: 40vw;
     margin: 0 auto;
-    padding: 1.8rem 0;
+    padding: 5vw 0;
     text-align: center;
     text-decoration: none;
-  }
-  nav {
-    font-size: 125%;
-  }
-  li {
-    display: block;
-    border-top: 0.1rem solid #4F566B;
-
-    a {
-      display: block;
-      padding: 1rem 2rem;
-      text-decoration: none;
-    }
   }
 }
 
 .js {
   header {
     #menu-icon {
-      @include icon(3, 'M');
+      @include button('tiny');
       position: absolute;
-      top: 2rem;
-      left: 2rem;
+      top: 4vw;
+      left: 4vw;
       z-index: 500;
-      cursor: pointer;
     }
-
     nav {
-      position: absolute;
+      display: none;
+    }
+  }
+
+  .slide-menu {
+    position: fixed;
+    @include background-color(14%, 28%);
+    z-index: 1000;
+
+    &.left {
       top: 0;
-      left: -100%;
+      left: -100vw;
+      width: 75vw;
+      height: 100vh;
+      text-align: left;
       transition: left 0.5s;
-      background: #3E4352;
-      width: 75%;
-      height: 100%;
-      z-index: 1000;
-      box-shadow: 0.3rem 0 0.4rem 0 rgba(0, 0, 0, 0.5);
+
+      &.open {
+        left: 0;
+      }
+    }
+    &.right {
+      top: 0;
+      right: -100vw;
+      width: 75vw;
+      height: 100vh;
+      text-align: right;
+      transition: right 0.5s;
+
+      &.open {
+        right: 0;
+      }
+    }
+    &.bottom {
+      bottom: -50vh;
+      width: 100vw;
+      height: 50vh;
+      text-align: center;
+      transition: bottom 0.5s;
+
+      &.open {
+        bottom: 0;
+      }
     }
 
-    #menu-shadow {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      z-index: 999;
-      background: rgba(0,0,0,0.5);
-      opacity: 0;
-      transition: opacity 0.2s;
+    li {
+      display: block;
+      border-top: 0.5vw solid #4F566B;
+
+      a {
+        display: block;
+        padding: 4vw 5vw;
+        text-decoration: none;
+      }
     }
+  }
+
+  #menu-shadow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    z-index: 999;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity 0.2s;
   }
 
   body.menu-opening,
   body.menu-open {
-    header nav {
-      left: 0;
-    }
     #menu-shadow {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       opacity: 1;
     }
   }
 
   body.menu-closing {
     #menu-shadow {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
     }
   }
 }
 
 nav.breadcrumbs {
-  padding: 1.2rem 1.4rem 0.8rem;
+  padding: 4vw 4vw 1vw;
   font-family: $titleFont, $defaultFont;
-  color: white;
 
   li {
     display: inline-block;
-    margin-bottom: 0.4rem;
+    margin-bottom: 1vw;
 
     &:after {
       content: '/';
-      padding: 0 0.3rem 0 0.8rem;
+      padding: 0 1vw 0 2vw;
     }
   }
 }
 
 nav.pagination {
   position: relative;
-  width: 24rem;
-  margin: 0 auto;
-  padding-bottom: 1.6rem;
-  font-family: $titleFont, $defaultFont;
-  color: white;
+  width: 100vw;
+  padding: 4vw 0;
+  font-size: 130%;
   text-align: center;
+  text-transform: uppercase;
   line-height: 1;
+  @include background-color(14%, 42%);
 
   li {
-    display: inline-block;
+    line-height: 12vw;
 
     &.first,
     &.previous,
     &.next,
     &.last {
       position: absolute;
-      top: 0;
+      top: 4vw;
+
+      a {
+        @include button('small');
+        padding: 0;
+        min-width: 14vw;
+        min-height: 12vw;
+        font-size: 100%;
+      }
     }
 
     &.first {
-      left: 0;
+      left: 4vw;
     }
     &.previous {
-      left: 4rem;
+      left: 22vw;
     }
     &.next {
-      right: 4rem;
+      right: 22vw;
     }
     &.last {
-      right: 0;
+      right: 4vw;
     }
   }
 }
@@ -320,33 +366,31 @@ main {
   overflow: hidden;
 
   & > h1:first-child {
-    margin-top: 2rem;
-    margin-bottom: 1.6rem;
+    margin-top: 5vw;
   }
 
   & > p {
-    margin-left: 1.4rem;
-    margin-right: 1.4rem;
-    color: white;
+    margin-left: 4vw;
+    margin-right: 4vw;
   }
 }
 
 section {
+  @include background-color(14%, 28%);
   overflow: auto;
-  background: #3E4352;
-  border-top: 0.1rem solid #343945;
 }
 
 article {
-  padding: 1.2rem 0 1.4rem;
-  padding: 3.6vw 0 4vw;
-  color: white;
-  background: #484D5E;
-  border-top: 0.1rem solid #586175;
-  border-bottom: 0.1rem solid #3E4352;
+  padding: 5vw 0 6vw;
+  @include background-color(13%, 33%);
+  border-bottom: 1px solid;
+  @include border-color(14%, 28%);
+
+  &:last-child {
+    border: none;
+  }
 
   & > * {
-    margin: 0 1.4rem;
     margin: 0 4vw;
   }
 
@@ -362,17 +406,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin: 0 1.4rem 0.8rem;
+  margin: 4vw 4vw 6vw;
+  font-family: $boldFont;
   line-height: 1.5;
-  color: white;
 }
 
 h2 {
-  padding: 1.6rem 1.4rem;
-  padding: 5vw 4vw;
-  color: white;
+  margin: 8vw 4vw;
   text-align: center;
-  background: #3E4352;
+  @include background-color(14%, 28%);
+}
+
+a.to-the-top {
+  @include button;
+  margin: 10vw 4vw;
 }
 
 footer {
@@ -392,8 +439,8 @@ form {
   padding-bottom: 1.4rem;
 
   & > * {
-    margin-left: 1.4rem;
-    margin-right: 1.4rem;
+    margin-left: 4vw;
+    margin-right: 4vw;
   }
   label {
     font-family: $titleFont;
@@ -408,16 +455,15 @@ form {
   }
   input {
     width: 100%;
-    padding: 1.2rem;
-    font-size: 120%;
-    color: white;
+    padding: 4vw;
+    font-size: 130%;
     background: #5E667A;
-    border: 0.1rem solid #343945;
+    border: 1px solid #343945;
     border-radius: 0.3rem;
 
     &[type="checkbox"] {
-      width: 3rem;
-      height: 3rem;
+      width: 12vw;
+      height: 12vw;
       position: absolute;
 
       &:checked {
@@ -426,29 +472,29 @@ form {
           top: 0;
           left: 0;
           display: block;
-          width: 1.8rem;
-          height: 1.8rem;
+          width: 10vw;
+          height: 10vw;
           content: 'x';
-          line-height: 1;
+          line-height: 10vw;
           text-align: center;
         }
       }
     }
 
     &[type="radio"] {
-      width: 3rem;
-      height: 3rem;
+      width: 12vw;
+      height: 12vw;
       position: absolute;
       border-radius: 50%;
 
       &:checked {
         &:after {
           position: absolute;
-          top: 0.5rem;
-          left: 0.5rem;
+          top: 1.7vw;
+          left: 1.7vw;
           display: block;
-          width: 1.8rem;
-          height: 1.8rem;
+          width: 8vw;
+          height: 8vw;
           background: hsl(224, 12%, 70%);
           border-radius: 50%;
           content: '';
@@ -457,14 +503,14 @@ form {
     }
   }
   textarea {
-    font-family: Menlo, fixed-width;
+    font-family: Menlo, Consolas, fixed-width;
     font-size: 90%;
     width: 100%;
-    padding: 1.2rem;
-    color: white;
-    background: #5E667A;
-    border: 0.1rem solid #343945;
-    border-radius: 0.3rem;
+    padding: 4vw;
+    @include background-color(13%, 42%);
+    border: 1px solid;
+    @include border-color(14%, 24%);
+    border-radius: 0.8vw;
   }
   .data {
     ul {
@@ -485,10 +531,9 @@ form {
         &.radio {
           label {
             display: block;
-            padding-left: 4.4rem;
-            padding-top: 0.4rem;
+            padding-left: 16vw;
+            padding-top: 1.5vw;
             font-family: $defaultFont;
-            font-size: 100%;
           }
         }
         &.checkbox {
@@ -500,69 +545,101 @@ form {
       }
     }
   }
-  .actions {
-    ul {
-      margin: 0;
-
-      & > li {
-        margin: 1.6rem auto;
-        display: block;
-        padding: 0;
-        list-style: none;
-
-        input {
-          width: 100%;
-          font-size: 150%;
-
-          &[type="submit"] {
-            margin-bottom: 1rem;
-            padding: 1.6rem 1.8rem 1.5rem;
-            background: #CFDCFF;
-            border-radius: 0.3rem;
-            border: none;
-            font-family: $titleFont;
-            font-size: 150%;
-            color: #3E4352;
-          }
-        }
-      }
-    }
-  }
   li.textarea {
     label {
       display: block;
     }
   }
 }
+
+// Actions appear both inside and outside forms, but should look consistent
 .actions {
+  padding: 4vw 0;
+
   ul {
-    li {
-      a {
-        display: block;
+    margin: 0;
+    text-align: center;
+
+    & > li {
+      margin: 0 1.5vw 4vw;
+      display: inline-block;
+      padding: 0;
+      list-style: none;
+
+      input {
         width: 100%;
-        margin-bottom: 1rem;
-        padding: 1.6rem 1.8rem 1.5rem;
-        padding: 1.3vw 3vw 1.2vw;
-        background: #CFDCFF;
-        border-radius: 0.3rem;
-        font-family: $titleFont;
-        font-size: 130%;
-        color: #3E4352;
-        text-decoration: none;
-        text-align: center;
+        font-size: 150%;
+      }
+
+      input[type="submit"],
+      a {
+        @include button('small');
       }
     }
   }
 }
 
+form .actions {
+  ul {
+    & > li {
+      display: block;
+      margin-right: 0;
+      margin-left: 0;
+
+      input[type="submit"],
+      a {
+        @include button('large');
+      }
+    }
+  }
+}
+
+nav.actions {
+  position: relative;
+  margin-left: 0;
+  margin-right: 0;
+  overflow-y: hidden;
+  @include background-color(14%, 28%);
+
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 4vw;
+    height: 20vw;
+    z-index: 501;
+  }
+
+  &:before {
+    left: 0;
+    background-image: linear-gradient(to right, hsl(225, 14%, 28%), hsla(225, 14%, 28%, 0));
+  }
+  &:after {
+    right: 0;
+    background-image: linear-gradient(to left, hsl(225, 14%, 28%), hsla(225, 14%, 28%, 0));
+  }
+
+  ul {
+    overflow-x: scroll;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    z-index: 500;
+  }
+
+  li:first-child {
+    margin-left: 4vw;
+  }
+  li:last-child {
+    margin-right: 4vw;
+  }
+}
+
 
 section.preview {
-  h2 {
-    border-bottom: 0.1rem solid #586175;
-  }
   article {
-    padding-top: 1.2rem;
-    border-bottom: none;
+    padding-top: 6vw;
 
     .title {
       font-family: $titleFont;

@@ -5353,61 +5353,61 @@ window.matchMedia=window.matchMedia||function(a){"use strict";var c,d=a.document
 (function(a){"use strict";function x(){u(!0)}var b={};if(a.respond=b,b.update=function(){},b.mediaQueriesSupported=a.matchMedia&&a.matchMedia("only all").matches,!b.mediaQueriesSupported){var q,r,t,c=a.document,d=c.documentElement,e=[],f=[],g=[],h={},i=30,j=c.getElementsByTagName("head")[0]||d,k=c.getElementsByTagName("base")[0],l=j.getElementsByTagName("link"),m=[],n=function(){for(var b=0;l.length>b;b++){var c=l[b],d=c.href,e=c.media,f=c.rel&&"stylesheet"===c.rel.toLowerCase();d&&f&&!h[d]&&(c.styleSheet&&c.styleSheet.rawCssText?(p(c.styleSheet.rawCssText,d,e),h[d]=!0):(!/^([a-zA-Z:]*\/\/)/.test(d)&&!k||d.replace(RegExp.$1,"").split("/")[0]===a.location.host)&&m.push({href:d,media:e}))}o()},o=function(){if(m.length){var b=m.shift();v(b.href,function(c){p(c,b.href,b.media),h[b.href]=!0,a.setTimeout(function(){o()},0)})}},p=function(a,b,c){var d=a.match(/@media[^\{]+\{([^\{\}]*\{[^\}\{]*\})+/gi),g=d&&d.length||0;b=b.substring(0,b.lastIndexOf("/"));var h=function(a){return a.replace(/(url\()['"]?([^\/\)'"][^:\)'"]+)['"]?(\))/g,"$1"+b+"$2$3")},i=!g&&c;b.length&&(b+="/"),i&&(g=1);for(var j=0;g>j;j++){var k,l,m,n;i?(k=c,f.push(h(a))):(k=d[j].match(/@media *([^\{]+)\{([\S\s]+?)$/)&&RegExp.$1,f.push(RegExp.$2&&h(RegExp.$2))),m=k.split(","),n=m.length;for(var o=0;n>o;o++)l=m[o],e.push({media:l.split("(")[0].match(/(only\s+)?([a-zA-Z]+)\s?/)&&RegExp.$2||"all",rules:f.length-1,hasquery:l.indexOf("(")>-1,minw:l.match(/\(\s*min\-width\s*:\s*(\s*[0-9\.]+)(px|em)\s*\)/)&&parseFloat(RegExp.$1)+(RegExp.$2||""),maxw:l.match(/\(\s*max\-width\s*:\s*(\s*[0-9\.]+)(px|em)\s*\)/)&&parseFloat(RegExp.$1)+(RegExp.$2||"")})}u()},s=function(){var a,b=c.createElement("div"),e=c.body,f=!1;return b.style.cssText="position:absolute;font-size:1em;width:1em",e||(e=f=c.createElement("body"),e.style.background="none"),e.appendChild(b),d.insertBefore(e,d.firstChild),a=b.offsetWidth,f?d.removeChild(e):e.removeChild(b),a=t=parseFloat(a)},u=function(b){var h="clientWidth",k=d[h],m="CSS1Compat"===c.compatMode&&k||c.body[h]||k,n={},o=l[l.length-1],p=(new Date).getTime();if(b&&q&&i>p-q)return a.clearTimeout(r),r=a.setTimeout(u,i),void 0;q=p;for(var v in e)if(e.hasOwnProperty(v)){var w=e[v],x=w.minw,y=w.maxw,z=null===x,A=null===y,B="em";x&&(x=parseFloat(x)*(x.indexOf(B)>-1?t||s():1)),y&&(y=parseFloat(y)*(y.indexOf(B)>-1?t||s():1)),w.hasquery&&(z&&A||!(z||m>=x)||!(A||y>=m))||(n[w.media]||(n[w.media]=[]),n[w.media].push(f[w.rules]))}for(var C in g)g.hasOwnProperty(C)&&g[C]&&g[C].parentNode===j&&j.removeChild(g[C]);for(var D in n)if(n.hasOwnProperty(D)){var E=c.createElement("style"),F=n[D].join("\n");E.type="text/css",E.media=D,j.insertBefore(E,o.nextSibling),E.styleSheet?E.styleSheet.cssText=F:E.appendChild(c.createTextNode(F)),g.push(E)}},v=function(a,b){var c=w();c&&(c.open("GET",a,!0),c.onreadystatechange=function(){4!==c.readyState||200!==c.status&&304!==c.status||b(c.responseText)},4!==c.readyState&&c.send(null))},w=function(){var b=!1;try{b=new a.XMLHttpRequest}catch(c){b=new a.ActiveXObject("Microsoft.XMLHTTP")}return function(){return b}}();n(),b.update=n,a.addEventListener?a.addEventListener("resize",x,!1):a.attachEvent&&a.attachEvent("onresize",x)}})(this);
 
 window.OT = {
-	params: {
-		device: {
-			hiRes: true
-		}
-	},
-	boundEvents: {
-		internalLinks: false
-	}
+  params: {
+    device: {
+      hiRes: true
+    }
+  },
+  boundEvents: {
+    internalLinks: false
+  }
 };
 
 OT.immediate = ( function (Modernizr, OT) {
-	'use strict';
+  'use strict';
 
-	var methods = {
+  var methods = {
 
-		init: function () {
-			// methods.responsiveModeSet();
-			// methods.hiResCheck();
-		}//,
+    init: function () {
+      // methods.responsiveModeSet();
+      // methods.hiResCheck();
+    }//,
 
-	// 	responsiveModeSet: function () {
-	// 		var windowWidth = $(window).width();
-	// 		if ( windowWidth >= 960 ) {
-	// 			DEMO.params.device.relativeSize = 'x-large';
-	// 		} else if ( windowWidth >= 768 ) {
-	// 			DEMO.params.device.relativeSize = 'large';
-	// 		} else if ( windowWidth >= 500 ) {
-	// 			DEMO.params.device.relativeSize = 'medium';
-	// 		} else {
-	// 			DEMO.params.device.relativeSize = 'small';
-	// 		}
-	// 		$('html').removeClass('small medium large x-large').addClass(DEMO.params.device.relativeSize);
-	// 		if ( !Modernizr.mq('only all') ) {
-	// 			$.ajax({
-	// 				url: 'app/skins/default/source/js/lib/respond.min.js',
-	// 				data: 'script'
-	// 			});
-	// 		}
-	// 	},
-	//
-	// 	hiResCheck: function () {
-	// 		// Check for high resolution displays and provide CSS/JS hooks for them
-	// 		if ( Modernizr.mq('(min-resolution: 192dpi), (-webkit-min-device-pixel-ratio: 2), (min--moz-device-pixel-ratio: 2), (-o-min-device-pixel-ratio: 2/1), (min-device-pixel-ratio: 2), (min-resolution: 2dppx)') ) {
-	// 			$('html').addClass('hi-res');
-	// 			DEMO.params.device.hiRes = true;
-	// 		}
-	// 	}
-	//
-	};
+  //  responsiveModeSet: function () {
+  //    var windowWidth = $(window).width();
+  //    if ( windowWidth >= 960 ) {
+  //      DEMO.params.device.relativeSize = 'x-large';
+  //    } else if ( windowWidth >= 768 ) {
+  //      DEMO.params.device.relativeSize = 'large';
+  //    } else if ( windowWidth >= 500 ) {
+  //      DEMO.params.device.relativeSize = 'medium';
+  //    } else {
+  //      DEMO.params.device.relativeSize = 'small';
+  //    }
+  //    $('html').removeClass('small medium large x-large').addClass(DEMO.params.device.relativeSize);
+  //    if ( !Modernizr.mq('only all') ) {
+  //      $.ajax({
+  //        url: 'app/skins/default/source/js/lib/respond.min.js',
+  //        data: 'script'
+  //      });
+  //    }
+  //  },
+  //
+  //  hiResCheck: function () {
+  //    // Check for high resolution displays and provide CSS/JS hooks for them
+  //    if ( Modernizr.mq('(min-resolution: 192dpi), (-webkit-min-device-pixel-ratio: 2), (min--moz-device-pixel-ratio: 2), (-o-min-device-pixel-ratio: 2/1), (min-device-pixel-ratio: 2), (min-resolution: 2dppx)') ) {
+  //      $('html').addClass('hi-res');
+  //      DEMO.params.device.hiRes = true;
+  //    }
+  //  }
+  //
+  };
 
-	//	Public methods
-	return {
-		init: methods.init//,
-		// responsiveModeSet: methods.responsiveModeSet
-	};
+  //  Public methods
+  return {
+    init: methods.init//,
+    // responsiveModeSet: methods.responsiveModeSet
+  };
 
 })(Modernizr, OT);
 
@@ -5415,388 +5415,412 @@ OT.immediate.init();
 
 OT.discussion = ( function (Modernizr, OT) {
   'use strict';
-	var methods = {
+  var methods = {
 
-			init: function () {
-        console.log('OT.discussion.init()');
-			}
+      init: function () {
+        
+      }
 
-		};
+    };
 
-	//	Public methods
-	return {
-		init: methods.init
-	};
+  //  Public methods
+  return {
+    init: methods.init
+  };
 
 })(Modernizr, OT);
 
 OT.discussions = ( function (Modernizr, OT) {
   'use strict';
 
-	var methods = {
+  var methods = {
 
-			init: function () {
-        console.log('OT.discussions.init()');
-			}
+      init: function () {
+        
+      }
 
-		};
+    };
 
-	//	Public methods
-	return {
-		init: methods.init
-	};
+  //  Public methods
+  return {
+    init: methods.init
+  };
 
 })(Modernizr, OT);
 
 OT.global = ( function (Modernizr, OT) {
-	'use strict';
-	var methods = {
+  'use strict';
+  var methods = {
 
-		init: function () {
-			methods.menu();
-			// methods.viewportResizeCheck('responsiveModeSet', DEMO.immediate.responsiveModeSet);
-			// methods.bindInternalLinks();
-		},
+    init: function () {
+      var header = document.querySelector('header'),
+          menuIcon = document.createElement('div');
 
-		menu: function () {
-			var body = document.getElementsByTagName('body')[0],
-					header = document.getElementsByTagName('header')[0],
-					menuIcon = document.createElement('div'),
-					menuShadow = document.createElement('div');
+      menuIcon.setAttribute('id', 'menu-icon');
+      menuIcon.appendChild(document.createTextNode('Menu'));
+      header.appendChild(menuIcon);
 
-			menuIcon.setAttribute('id', 'menu-icon');
-			header.appendChild(menuIcon);
-			menuShadow.setAttribute('id', 'menu-shadow');
-			header.appendChild(menuShadow);
+      methods.menu({
+        menu: 'header nav',
+        trigger: '#menu-icon',
+        position: 'left'
+      });
+      // methods.viewportResizeCheck('responsiveModeSet', DEMO.immediate.responsiveModeSet);
+      // methods.bindInternalLinks();
+    },
 
-			menuIcon.addEventListener('click', function () {
-				if ( methods.hasClass(body, 'menu-open') ) {
-					methods.removeClass(body, 'menu-open');
-					body.className += ' menu-closing';
-					setTimeout( function () {
-						methods.removeClass(body, 'menu-closing');
-					}, 200);
-				} else {
-					body.className += ' menu-opening';
-					setTimeout( function () {
-						methods.removeClass(body, 'menu-opening');
-						body.className += ' menu-open';
-					}, 200);
-				}
-			}, false);
+    menu: function (args) {
+      var body = document.querySelector('body'),
+          menuShadow = document.querySelector('#menu-shadow') || document.createElement('div'),
+          trigger = document.querySelector(args.trigger);
 
-			menuShadow.addEventListener('click', function () {
-				methods.removeClass(body, 'menu-open');
-				body.className += ' menu-closing';
-				setTimeout( function () {
-					methods.removeClass(body, 'menu-closing');
-				}, 200);
-			}, false);
-		},
+      menuShadow.setAttribute('id', 'menu-shadow');
+      body.insertBefore(menuShadow, body.children[0]);
 
-		hasClass: function (element, className) {
-			if ( element.classList ) {
-				return element.classList.contains(className);
-			} else {
-				return new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
-			}
-		},
+      trigger.addEventListener('click', function () {
+        var source = document.querySelector(args.menu),
+            menu = source.cloneNode(true);
 
-		removeClass: function (element, className) {
-			if ( element.classList ) {
-				element.classList.remove(className);
-			} else {
-				element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-			}
-		},
+        body.insertBefore(menu, body.children[0]);
 
-		ajaxFormBinding: function(options) {
-			var form = document.querySelector(options.formSelector),
-					format = options.format || 'json',
-					type = options.type || 'direct';
+        if ( args.keepClass === false ) {
+          menu.className = 'slide-menu ' + args.position;
+        } else {
+          menu.className += ' slide-menu ' + args.position;
+        }
 
-			form.addEventListener('submit', function (e) {
-				var request = new XMLHttpRequest(),
-						formData = new FormData(form),
-						data;
+        if ( methods.hasClass(body, 'menu-open') ) {
+          methods.removeClass(body, 'menu-open');
+          methods.removeClass(menu, 'open');
+          body.className += ' menu-closing';
+          setTimeout( function () {
+            methods.removeClass(body, 'menu-closing');
+          }, 200);
+        } else {
+          body.className += ' menu-opening';
+          setTimeout( function () {
+            methods.removeClass(body, 'menu-opening');
+            body.className += ' menu-open';
+            menu.className += ' open';
+          }, 50);
+        }
 
-				e.preventDefault();
+        menuShadow.addEventListener('click', function () {
+          methods.removeClass(body, 'menu-open');
+          methods.removeClass(menu, 'open');
+          body.className += ' menu-closing';
+          setTimeout( function () {
+            methods.removeClass(body, 'menu-closing');
+            body.removeChild(menu);
+          }, 200);
+        }, false);
+      }, false);
+    },
 
-				request.open('POST', form.action + '/format/' + format + '/type/' + type, true);
-				request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-				// request.setRequestHeader('Content-Type', 'application/json');
-				request.send(formData);
+    hasClass: function (element, className) {
+      if ( element.classList ) {
+        return element.classList.contains(className);
+      } else {
+        return new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
+      }
+    },
 
-				request.onreadystatechange = function () {
-					console.log('readyState: ' + request.readyState);
-					console.log('status: ' + request.status);
-				};
+    removeClass: function (element, className) {
+      if ( element.classList ) {
+        element.classList.remove(className);
+      } else {
+        element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+      }
+    },
 
-				request.onload = function () {
-					if ( request.status >= 200 && request.status < 400 ) {
-						data = JSON.parse(request.responseText);
-						console.log(data);
-					} else {
-						// We reached our target server, but it returned an error
-					}
-				};
+    ajaxFormBinding: function(options) {
+      var form = document.querySelector(options.formSelector),
+          format = options.format || 'json',
+          type = options.type || 'direct';
 
-				request.onerror = function () {
-					// There was a connection error of some sort
-				};
-			});
+      form.addEventListener('submit', function (e) {
+        var request = new XMLHttpRequest(),
+            formData = new FormData(form),
+            data;
 
-			// Some browsers don't include the submit button's value when form.submit() is
-			// called. This function creates a click listener that duplicates a form's submit
-			// button as a hidden field so its name/value can be included in AJAX POSTs,
-			// allowing different processing based on different submit buttons.
-			form.addEventListener('click', function (e) {
-				var input = document.createElement('input'),
-						previousActions = form.querySelectorAll('input[type="hidden"].submit-surrogate');
+        e.preventDefault();
 
-				for ( var i = 0; i < previousActions.length; i++ ) {
-					form.removeChild(previousActions[i]);
-				}
+        request.open('POST', form.action + '/format/' + format + '/type/' + type, true);
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        // request.setRequestHeader('Content-Type', 'application/json');
+        request.send(formData);
 
-				if ( e.target.type && e.target.type.toLowerCase() === 'submit' ) {
-					input.name = e.target.name;
-					input.type = 'hidden';
-					input.value = e.target.value;
-					input.className = 'submit-surrogate';
+        request.onreadystatechange = function () {
+          console.log('readyState: ' + request.readyState);
+          console.log('status: ' + request.status);
+        };
 
-					form.appendChild(input);
-				}
-			});
-		}
+        request.onload = function () {
+          if ( request.status >= 200 && request.status < 400 ) {
+            data = JSON.parse(request.responseText);
+            console.log(data);
+          } else {
+            // We reached our target server, but it returned an error
+          }
+        };
 
-		// hrefParser: function (historyUrl) {
-		// 	var newContentUrl = historyUrl + '/type/ajax/',
-		// 		newContentUrl = newContentUrl.replace(/\/\//, '/'),
-		// 		newBodyID = historyUrl.replace(/^[\/]?([A-Za-z0-9-_]+)\/.*/, '$1'),
-		// 		parsedHref = {};
-		// 	if ( historyUrl === '/' ) {
-		// 		newContentUrl = historyUrl;
-		// 		newBodyID = 'index';
-		// 	}
-		// 	parsedHref = {
-		// 		historyUrl: historyUrl,
-		// 		newContentUrl: newContentUrl,
-		// 		newBodyID: newBodyID
-		// 	};
-		// 	return parsedHref;
-		// },
-		//
-		// bindInternalLinks: function () {
-		// 	if ( Modernizr.history && !DEMO.boundEvents.internalLinks ) {
-		// 		window.addEventListener('popstate', function (e) {
-		// 			var parsedHref = methods.hrefParser(location.pathname);
-		// 			// If it's the first request, don't do anything. If an ajax request has been fired previously, run updateContent to handle the back button
-		// 			if ( $('body').hasClass('pushed') ) {
-		// 				methods.updateContent('pop', parsedHref.historyUrl, parsedHref.newContentUrl, parsedHref.newBodyID);
-		// 			}
-		// 		});
-		// 		$('body').on('click.updateContent', 'a:not([href^="http"],[href^="tel"],[href^="app/"],[href^="index/frameworkReinit/true/"])', function (e) {
-		// 			var parsedHref = methods.hrefParser($(this).attr('href'));
-		// 			e.preventDefault();
-		// 			methods.updateContent('push', parsedHref.historyUrl, parsedHref.newContentUrl, parsedHref.newBodyID);
-		// 			//	BONUS: Write destroy methods for all DEMO.namespaces so bound events and changes to the DOM can be cleaned up easily on new page loads
-		// 		});
-		// 		DEMO.boundEvents.internalLinks = true;
-		// 	}
-		// },
-		//
-		// updateContent: function (historyEvent, historyUrl, newContentUrl, newBodyID) {
-		// 	$('body').addClass('transitioning');
-		// 	$('html, body').scrollTop(0);
-		// 	// Append the loading indicator when transitioning to new content, but only if the response isn't received
-		// 	// within a brief delay window
-		// 	setTimeout( function () {
-		// 		if ( $('body').hasClass('transitioning') && !$('body').hasClass('loaded') ) {
-		// 			$('#primary-content-wrap').append('<span class="loading-indicator"></span>');
-		// 		}
-		// 	}, 250);
-		// 	$.ajax({
-		// 		url: newContentUrl,
-		// 		dataType: 'html',
-		// 		success: function (data) {
-		// 			var newContent = $(data),
-		// 				contentObject = newBodyID.replace(/-/, '');
-		// 			// Uncomment the timeout to simulate a 3-second delay in the response
- 	// 				// setTimeout( function () {
-		// 			$('body').attr('id', newBodyID);
-		// 			$('body').attr('class', newBodyID + ' view-' + newBodyID + ' show-default do-default action-default type-default transitioning');
-		// 			$('title').html(newContent.filter('title').html());
-		// 			$('meta[name="description"]').attr('content', newContent.filter('meta[name="description"]').attr('content'));
-		// 			$('meta[name="keywords"]').attr('content', newContent.filter('meta[name="keywords"]').attr('content'));
-		// 			$('#primary-content').html(newContent.find('#primary-content').html());
-		// 			if ( typeof DEMO[contentObject] !== 'undefined' ) {
-		// 				DEMO[contentObject].init();
-		// 			}
-		// 			$('body').addClass('loaded pushed');
-		// 			$('#primary-content-wrap > span.loading-indicator').remove();
-		// 			// 150ms delay matches the CSS transition
-		// 			setTimeout( function () {
-		// 				// Second attempt to remove the loading indicator just in case it appears between the response and the delay set above
-		// 				$('#primary-content-wrap > span.loading-indicator').remove();
-		// 				$('body').removeClass('transitioning');
-		// 				$('body').removeClass('loaded');
-		// 			}, 150);
-		// 			if ( historyEvent === 'push' ) {
-		// 				history.pushState(newBodyID,newBodyID,historyUrl);
-		// 			}
- 	// 				// }, 3000);
-		// 		}
-		// 	});
-		// },
-		//
-		// preload: function (elements) {
-		//
-		// 	var methods = {
-		//
-		// 		init: function () {
-		// 			var $preload = '';
-		// 			$('body').append('<div id="preload" style="position: absolute; left: -1000em; width: 1px; height: 1px;"></div>');
-		// 			$preload = $('#preload');
-		// 			return $preload;
-		// 		},
-		//
-		// 		image: function (elements) {
-		// 			var elementsArray = elements.split(','),
-		// 				$preload = $('#preload');
-		// 			if ( !$preload.length ) {
-		// 				$preload = methods.init();
-		// 			}
-		// 			for ( var i = 0; i < elementsArray.length; i++ ) {
-		// 				$preload.append('<img src="' + elementsArray[i] + '" />');
-		// 			}
-		// 			$preload.remove();
-		// 		}
-		//
-		// 	};
-		//
-		// 	methods.image(elements);
-		//
-		// },
-		//
-		// viewportResizeCheck: function (namespace, callback) {
-		// 	var windowWidth = $(window).width(),
-		// 		delayCheckViewport = 0;
-		// 	//	If the browser is resized, check the viewport size after a slight delay and run the
-		// 	//	provided callback function.
-		// 	$(window).on('resize.' + namespace, function (e) {
-		// 		clearTimeout(delayCheckViewport);
-		// 		delayCheckViewport = setTimeout( function () {
-		// 			if ( $(window).width() !== windowWidth ) {
-		// 				windowWidth = $(window).width();
-		// 				callback();
-		// 			}
-		// 		}, 500);
-		// 	});
-		// },
-		//
-		// responsiveImages: function (selector, cleanup) {
-		// 	var path = '',
-		// 		size = '';
-		// 	if ( typeof selector === 'undefined' ) {
-		// 		selector = 'body';
-		// 	}
-		// 	if ( typeof cleanup === 'undefined' ) {
-		// 		cleanup = true;
-		// 	}
-		// 	if ( DEMO.params.device.hiRes ) {
-		// 		size = '-2x';
-		// 	}
-		// 	if ( cleanup ) {
-		// 		$('a.responsive, img.responsive').remove();
-		// 	}
-		// 	$(selector + ' noscript').each( function () {
-		// 		var sizes = [],
-		// 			respond = false,
-		// 			className = 'responsive';
-		// 		if ( typeof $(this).attr('data-image') !== 'undefined' ) {
-		// 			if ( $(this).attr('data-sizes') ) {
-		// 				sizes = $(this).attr('data-sizes').split(' ');
-		// 				for ( var i = 0; i < sizes.length; i++ ) {
-		// 					if ( sizes[i] === DEMO.params.device.relativeSize ) {
-		// 						respond = true;
-		// 						break;
-		// 					}
-		// 				}
-		// 			} else {
-		// 				respond = true;
-		// 			}
-		// 			if ( respond ) {
-		// 				path = $(this).attr('data-image').replace(/-small.|-medium.|-large.|-x-large./, '-' + DEMO.params.device.relativeSize + size + '.');
-		// 				if ( $(this).attr('class') ) {
-		// 					className = className + ' ' + $(this).attr('class');
-		// 				}
-		// 				if ( typeof $(this).attr('data-anchor') !== 'undefined' ) {
-		// 					$(this).after('<a class="' + className + '" href="' + $(this).attr('data-anchor') + '"><img class="' + className + '" src="' + path + '" /></a>');
-		// 				} else {
-		// 					$(this).after('<img class="' + className + '" src="' + path + '" />');
-		// 				}
-		// 			}
-		// 		}
-		// 	});
-		// }
+        request.onerror = function () {
+          // There was a connection error of some sort
+        };
+      });
 
-	};
+      // Some browsers don't include the submit button's value when form.submit() is
+      // called. This function creates a click listener that duplicates a form's submit
+      // button as a hidden field so its name/value can be included in AJAX POSTs,
+      // allowing different processing based on different submit buttons.
+      form.addEventListener('click', function (e) {
+        var input = document.createElement('input'),
+            previousActions = form.querySelectorAll('input[type="hidden"].submit-surrogate');
 
-	//	Public methods
-	return {
-		init: methods.init,
-		hasClass: methods.hasClass,
-		removeClass: methods.removeClass,
-		ajaxFormBinding: methods.ajaxFormBinding
-		// preload: methods.preload,
-		// viewportResizeCheck: methods.viewportResizeCheck
-	};
+        for ( var i = 0; i < previousActions.length; i++ ) {
+          form.removeChild(previousActions[i]);
+        }
+
+        if ( e.target.type && e.target.type.toLowerCase() === 'submit' ) {
+          input.name = e.target.name;
+          input.type = 'hidden';
+          input.value = e.target.value;
+          input.className = 'submit-surrogate';
+
+          form.appendChild(input);
+        }
+      });
+    }
+
+    // hrefParser: function (historyUrl) {
+    //  var newContentUrl = historyUrl + '/type/ajax/',
+    //    newContentUrl = newContentUrl.replace(/\/\//, '/'),
+    //    newBodyID = historyUrl.replace(/^[\/]?([A-Za-z0-9-_]+)\/.*/, '$1'),
+    //    parsedHref = {};
+    //  if ( historyUrl === '/' ) {
+    //    newContentUrl = historyUrl;
+    //    newBodyID = 'index';
+    //  }
+    //  parsedHref = {
+    //    historyUrl: historyUrl,
+    //    newContentUrl: newContentUrl,
+    //    newBodyID: newBodyID
+    //  };
+    //  return parsedHref;
+    // },
+    //
+    // bindInternalLinks: function () {
+    //  if ( Modernizr.history && !DEMO.boundEvents.internalLinks ) {
+    //    window.addEventListener('popstate', function (e) {
+    //      var parsedHref = methods.hrefParser(location.pathname);
+    //      // If it's the first request, don't do anything. If an ajax request has been fired previously, run updateContent to handle the back button
+    //      if ( $('body').hasClass('pushed') ) {
+    //        methods.updateContent('pop', parsedHref.historyUrl, parsedHref.newContentUrl, parsedHref.newBodyID);
+    //      }
+    //    });
+    //    $('body').on('click.updateContent', 'a:not([href^="http"],[href^="tel"],[href^="app/"],[href^="index/frameworkReinit/true/"])', function (e) {
+    //      var parsedHref = methods.hrefParser($(this).attr('href'));
+    //      e.preventDefault();
+    //      methods.updateContent('push', parsedHref.historyUrl, parsedHref.newContentUrl, parsedHref.newBodyID);
+    //      //  BONUS: Write destroy methods for all DEMO.namespaces so bound events and changes to the DOM can be cleaned up easily on new page loads
+    //    });
+    //    DEMO.boundEvents.internalLinks = true;
+    //  }
+    // },
+    //
+    // updateContent: function (historyEvent, historyUrl, newContentUrl, newBodyID) {
+    //  $('body').addClass('transitioning');
+    //  $('html, body').scrollTop(0);
+    //  // Append the loading indicator when transitioning to new content, but only if the response isn't received
+    //  // within a brief delay window
+    //  setTimeout( function () {
+    //    if ( $('body').hasClass('transitioning') && !$('body').hasClass('loaded') ) {
+    //      $('#primary-content-wrap').append('<span class="loading-indicator"></span>');
+    //    }
+    //  }, 250);
+    //  $.ajax({
+    //    url: newContentUrl,
+    //    dataType: 'html',
+    //    success: function (data) {
+    //      var newContent = $(data),
+    //        contentObject = newBodyID.replace(/-/, '');
+    //      // Uncomment the timeout to simulate a 3-second delay in the response
+  //        // setTimeout( function () {
+    //      $('body').attr('id', newBodyID);
+    //      $('body').attr('class', newBodyID + ' view-' + newBodyID + ' show-default do-default action-default type-default transitioning');
+    //      $('title').html(newContent.filter('title').html());
+    //      $('meta[name="description"]').attr('content', newContent.filter('meta[name="description"]').attr('content'));
+    //      $('meta[name="keywords"]').attr('content', newContent.filter('meta[name="keywords"]').attr('content'));
+    //      $('#primary-content').html(newContent.find('#primary-content').html());
+    //      if ( typeof DEMO[contentObject] !== 'undefined' ) {
+    //        DEMO[contentObject].init();
+    //      }
+    //      $('body').addClass('loaded pushed');
+    //      $('#primary-content-wrap > span.loading-indicator').remove();
+    //      // 150ms delay matches the CSS transition
+    //      setTimeout( function () {
+    //        // Second attempt to remove the loading indicator just in case it appears between the response and the delay set above
+    //        $('#primary-content-wrap > span.loading-indicator').remove();
+    //        $('body').removeClass('transitioning');
+    //        $('body').removeClass('loaded');
+    //      }, 150);
+    //      if ( historyEvent === 'push' ) {
+    //        history.pushState(newBodyID,newBodyID,historyUrl);
+    //      }
+  //        // }, 3000);
+    //    }
+    //  });
+    // },
+    //
+    // preload: function (elements) {
+    //
+    //  var methods = {
+    //
+    //    init: function () {
+    //      var $preload = '';
+    //      $('body').append('<div id="preload" style="position: absolute; left: -1000em; width: 1px; height: 1px;"></div>');
+    //      $preload = $('#preload');
+    //      return $preload;
+    //    },
+    //
+    //    image: function (elements) {
+    //      var elementsArray = elements.split(','),
+    //        $preload = $('#preload');
+    //      if ( !$preload.length ) {
+    //        $preload = methods.init();
+    //      }
+    //      for ( var i = 0; i < elementsArray.length; i++ ) {
+    //        $preload.append('<img src="' + elementsArray[i] + '" />');
+    //      }
+    //      $preload.remove();
+    //    }
+    //
+    //  };
+    //
+    //  methods.image(elements);
+    //
+    // },
+    //
+    // viewportResizeCheck: function (namespace, callback) {
+    //  var windowWidth = $(window).width(),
+    //    delayCheckViewport = 0;
+    //  //  If the browser is resized, check the viewport size after a slight delay and run the
+    //  //  provided callback function.
+    //  $(window).on('resize.' + namespace, function (e) {
+    //    clearTimeout(delayCheckViewport);
+    //    delayCheckViewport = setTimeout( function () {
+    //      if ( $(window).width() !== windowWidth ) {
+    //        windowWidth = $(window).width();
+    //        callback();
+    //      }
+    //    }, 500);
+    //  });
+    // },
+    //
+    // responsiveImages: function (selector, cleanup) {
+    //  var path = '',
+    //    size = '';
+    //  if ( typeof selector === 'undefined' ) {
+    //    selector = 'body';
+    //  }
+    //  if ( typeof cleanup === 'undefined' ) {
+    //    cleanup = true;
+    //  }
+    //  if ( DEMO.params.device.hiRes ) {
+    //    size = '-2x';
+    //  }
+    //  if ( cleanup ) {
+    //    $('a.responsive, img.responsive').remove();
+    //  }
+    //  $(selector + ' noscript').each( function () {
+    //    var sizes = [],
+    //      respond = false,
+    //      className = 'responsive';
+    //    if ( typeof $(this).attr('data-image') !== 'undefined' ) {
+    //      if ( $(this).attr('data-sizes') ) {
+    //        sizes = $(this).attr('data-sizes').split(' ');
+    //        for ( var i = 0; i < sizes.length; i++ ) {
+    //          if ( sizes[i] === DEMO.params.device.relativeSize ) {
+    //            respond = true;
+    //            break;
+    //          }
+    //        }
+    //      } else {
+    //        respond = true;
+    //      }
+    //      if ( respond ) {
+    //        path = $(this).attr('data-image').replace(/-small.|-medium.|-large.|-x-large./, '-' + DEMO.params.device.relativeSize + size + '.');
+    //        if ( $(this).attr('class') ) {
+    //          className = className + ' ' + $(this).attr('class');
+    //        }
+    //        if ( typeof $(this).attr('data-anchor') !== 'undefined' ) {
+    //          $(this).after('<a class="' + className + '" href="' + $(this).attr('data-anchor') + '"><img class="' + className + '" src="' + path + '" /></a>');
+    //        } else {
+    //          $(this).after('<img class="' + className + '" src="' + path + '" />');
+    //        }
+    //      }
+    //    }
+    //  });
+    // }
+
+  };
+
+  //  Public methods
+  return {
+    init: methods.init,
+    menu: methods.menu,
+    hasClass: methods.hasClass,
+    removeClass: methods.removeClass,
+    ajaxFormBinding: methods.ajaxFormBinding
+    // preload: methods.preload,
+    // viewportResizeCheck: methods.viewportResizeCheck
+  };
 
 }(Modernizr, OT));
 
 OT.index = ( function (Modernizr, OT) {
   'use strict';
   
-	var methods = {
+  var methods = {
 
-			init: function () {
+      init: function () {
         console.log('OT.index.init()');
-			}
+      }
 
-		};
+    };
 
-	//	Public methods
-	return {
-		init: methods.init
-	};
+  //  Public methods
+  return {
+    init: methods.init
+  };
 
 })(Modernizr, OT);
 
 OT.init = function () {
-	'use strict';
+  'use strict';
 
-	var body = document.getElementsByTagName('body')[0],
-			controller = body.getAttribute('data-controller'),
-			action = body.getAttribute('data-action'),
-			view = body.getAttribute('data-view');
+  var body = document.getElementsByTagName('body')[0],
+      controller = body.getAttribute('data-controller'),
+      action = body.getAttribute('data-action'),
+      view = body.getAttribute('data-view');
 
-	OT.global.init();
+  OT.global.init();
 
-	if ( OT[controller] ) {
-		OT[controller].init();
+  if ( OT[controller] ) {
+    OT[controller].init();
 
-		if ( OT[controller][action] && typeof OT[controller][action] === 'function' ) {
-			OT[controller][action]();
+    if ( OT[controller][action] && typeof OT[controller][action] === 'function' ) {
+      OT[controller][action]();
 
-			if ( OT[controller][action][view] ) {
-				OT[controller][action][view]();
-			}
-		}
-	}
+      if ( OT[controller][action][view] ) {
+        OT[controller][action][view]();
+      }
+    }
+  }
 };
 
 document.onreadystatechange = function () {
-	'use strict';
+  'use strict';
 
   if ( document.readyState === 'interactive' ) {
     OT.init();
@@ -5809,10 +5833,12 @@ OT.topic = ( function (Modernizr, OT) {
 	var actions = {
 
       handler: function () {
-
+        // if ( document.querySelectorAll('main nav.topic.actions li').length > 2 ) {
+        //   methods.topicMenu();
+        // }
       },
 
-      write: function () {
+      start: function () {
         // OT.global.ajaxFormBinding({
         //   formSelector: '#topic-write-form'
         // });
@@ -5833,6 +5859,26 @@ OT.topic = ( function (Modernizr, OT) {
 			init: function () {
 
 			},
+
+      // topicMenu: function () {
+      //   var menu = document.querySelector('main nav.topic.actions ul'),
+      //       moreButton = document.createElement('li'),
+      //       moreAnchor = document.createElement('a');
+
+      //   moreButton.className = 'more';
+      //   moreButton.appendChild(moreAnchor);
+      //   moreAnchor.appendChild(document.createTextNode('More...'));
+      //   menu.appendChild(moreButton);
+
+      //   OT.global.menu({
+      //     menu: 'main nav.topic.actions',
+      //     trigger: 'main nav.topic.actions li.more a',
+      //     position: 'right',
+      //     clone: true,
+      //     keepClass: false
+      //   });
+
+      // },
 
       postContent: function () {
         var postContent = document.getElementById('post-content'),
@@ -5856,8 +5902,8 @@ OT.topic = ( function (Modernizr, OT) {
 	return {
 		init: methods.init,
     handler: actions.handler,
-    write: actions.write,
-    writeForm: actions.write,
+    start: actions.start,
+    startForm: actions.start,
     reply: actions.reply,
     replyForm: actions.reply
 	};

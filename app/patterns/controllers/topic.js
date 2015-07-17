@@ -65,7 +65,7 @@ function handler(params, context, emitter) {
 
           params.url.page = params.url.page || 1;
 
-          // If the group has read access, get the posts for the requested page
+          // If the user has read access, get the posts for the requested page
           app.listen({
             topic: function (emitter) {
               app.models.topic.info(params.url.id, emitter);
@@ -78,6 +78,11 @@ function handler(params, context, emitter) {
                 topicID: params.url.id,
                 start: start,
                 end: end
+              }, emitter);
+            },
+            invitees: function (emitter) {
+              app.models.topic.invitees({
+                topicID: params.url.id
               }, emitter);
             },
             subscriptionExists: function (emitter) {
@@ -107,6 +112,7 @@ function handler(params, context, emitter) {
                 content: {
                   topic: output.topic,
                   posts: output.posts,
+                  invitees: output.invitees,
                   userIsSubscribed: output.subscriptionExists,
                   pagination: app.toolbox.helpers.paginate('topic/' + output.topic.url + '/id/' + output.topic.id, params.url.page, output.topic.replies + 1),
                   breadcrumbs: app.models.topic.breadcrumbs(output.topic.discussionTitle || 'Private Topics', output.topic.discussionUrl || 'private-topics', output.topic.discussionID)

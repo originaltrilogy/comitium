@@ -13,13 +13,14 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
         a(href="#{route.pathname}/action/reply") Reply
       li.quote
         a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
+      li.bookmark
+        a(href="post/#{post.id}/action/bookmark") Bookmark
+      if post.authorID !== session.userID
+        li.report
+          a(href="post/#{post.id}/action/report") Report
       if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
         li.edit
           a(href="post/#{post.id}/action/edit") Edit
-      li.bookmark
-        a(href="post/#{post.id}/action/bookmark") Bookmark
-      li.report
-        a(href="post/#{post.id}/action/report") Report
       if session.moderateDiscussions
         if post.lockedByID === 0
           li.lock

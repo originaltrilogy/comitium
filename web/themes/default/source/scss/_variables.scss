@@ -1,52 +1,87 @@
-/*-------------------
-Variables
--------------------*/
+/////////////////////////
+//       Variables     //
+/////////////////////////
 $version: '0.1';
 $glyphs: 'EntypoDev';
-$defaultFont: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
-$titleFont: 'Open Sans Regular', $defaultFont;
-$boldFont: 'Open Sans Semibold', $titleFont;
+$defaultFont: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
+$titleFont: 'Open Sans Semibold', $defaultFont;
+$boldFont: 'Open Sans Bold', $titleFont;
 $italicFont: 'Open Sans Italic', $defaultFont;
-$boldItalicFont: 'Open Sans Semibold Italic', $defaultFont;
+$boldItalicFont: 'Open Sans Bold Italic', $defaultFont;
+$hue: 226;
 
-/*-------------------
-Mixins
--------------------*/
+
+
+/////////////////////////
+//        Mixins       //
+/////////////////////////
+
+@mixin color($saturation, $lightness) {
+	color: hsl($hue, $saturation, $lightness);
+}
+
+@mixin border-color($saturation, $lightness) {
+	border-color: hsl($hue, $saturation, $lightness);
+}
+
+@mixin background-color($saturation, $lightness) {
+	background-color: hsl($hue, $saturation, $lightness);
+}
+
+@mixin button($size: 'large') {
+	@include color(14%, 28%);
+  @include background-color(100%, 91%);
+  display: block;
+  border-radius: 0.8vw;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  @if $size == 'large' {
+  	min-height: 16vw;
+  	line-height: 16vw;
+	  padding: 0 5vw;
+	  font-size: 120%;
+  } @else if $size == 'small' {
+  	min-height: 12vw;
+  	line-height: 12vw;
+	  padding: 0 4vw;
+	  font-size: 110%;
+  } @else if $size == 'tiny' {
+  	min-height: 9vw;
+    line-height: 9vw;
+	  padding: 0 3vw;
+	  font-size: 100%;
+  }
+}
 
 // Creates an icon by replacing text with a glyph
 @mixin icon ($iconSize, $content) {
 	position: relative;
 	display: block;
 	margin: 0;
-	padding: 0 0 0 #{$iconSize*10+'px'};
-	padding: 0 0 0 #{$iconSize+'rem'};
-	width: #{$iconSize*10+'px'};
-	width: #{$iconSize+'rem'};
-	height: #{$iconSize*10+'px'};
-	height: #{$iconSize+'rem'};
+	padding: 0 0 0 #{$iconSize+'vw'};
+	width: #{$iconSize+'vw'};
+	height: #{$iconSize+'vw'};
 	text-indent: 110%;
 	overflow: hidden;
 	text-decoration: none;
-	line-height: #{$iconSize*11+'px'};
-	line-height: #{$iconSize*1.1+'rem'};
+	line-height: #{$iconSize*1.1+'vw'};
 
 	&:before {
 		position: absolute;
 		top: 50%;
-		margin-top: -#{$iconSize*10/2+'px'};
-		margin-top: -#{$iconSize/2+'rem'};
+		margin-top: -#{$iconSize/2+'vw'};
 		left: 50%;
-		margin-left: -#{$iconSize*10/2+'px'};
-		margin-left: -#{$iconSize/2+'rem'};
+		margin-left: -#{$iconSize/2+'vw'};
 		display: block;
-		width: #{$iconSize*10+'px'};
-		width: #{$iconSize+'rem'};
-		height: #{$iconSize*10+'px'};
-		height: #{$iconSize+'rem'};
+		width: #{$iconSize+'vw'};
+		height: #{$iconSize+'vw'};
 		content: $content;
 		font-family: $glyphs;
-		font-size: #{$iconSize*10+'px'};
-		font-size: #{$iconSize+'rem'};
+		font-size: #{$iconSize+'vw'};
 		text-indent: 0;
 	}
 }

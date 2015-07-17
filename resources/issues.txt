@@ -1,6 +1,26 @@
 Issues
 
+- models > user.js > posts() - Currently pulls all public posts, even those from discussions the viewer doesn't have read access to
+- Topic edit
+- Announcement edit
+- Clear/update stats (topic, post, and user counts) on activity (activation, reply, delete, etc.)
+- Log In / Sign Up buttons in header on mobile?
+  - Replaced with new private topic indicator when authenticated
+- Moderator and Administrator views
+  - Views currently display all options based on user permissions. Create alternate views/modes for different groups so mods and admins can browse the forum without all the maintenance tools cluttering up the interface, but then switch to maintenance mode when necessary
+- Expiration dates for announcements
+  - Dumped to an archive forum that's still publically accessible, but not visible from the main page
+- Cap the number of announcements visible on the index page with a "view all" link pointing to the Announcements page
+- Discussion breadcrumb link is broken on topic preview
+- "Cancel and go back" button only works on initial page load. Using post preview resets the URL to the current page.
 - Date handling and display (cache raw date, format on display)
+  - Pass app.moment to view and format on the fly?
+  - Format in the controller and update the cache?
+- Emoticons
+- Social icons
+- Footer
+- Quick reply at the bottom of topic pages
+- "New messages" indicator for private topics in top right corner
 - Terms of Service
 - Password show/hide button on register and account pages
 - Select input styles
@@ -8,13 +28,9 @@ Issues
 - Only show "First new post" link if there is a view time (might be better UX)
 - User profile/preferences
 	- Avatar
-	- E-mail
-	- Password
-	- Signature
-	- Regional settings (timezone, date format);
-	- Theme
-	- New private topic notification
+	- Date format
 - Hide topics/posts by ignored users
+- Navigation back to previous discussion page from topic pages
 - Set cache lifespans
 - Require password authentication to post/reply/etc., but add a setting to disable it
 - Subscriptions manager (topics and discussions)
@@ -26,22 +42,25 @@ Issues
 	- Private topic invitation
 	- Topic subscription update
 - Sticky topics
+- Topic/announcement/post "Save as draft"
+- Invite users to an existing private topic
+- "Notify me" / "Disable notifications" link on private topic list (based on existing privateTopicEmailNotification setting)
 - Setting to enable/disable private topics
 - Deleted announcements throw a 403 for administrators, but deleted topics are viewable
 - When posting an announcement, selecting only one forum throws an error because a single forum comes through as a string (controller expects an array)
-- Link Markdown tutorial in textareas to Remarkable tutorial:
-	https://jonschlinkert.github.io/remarkable/demo/
+- Link Markdown tutorial in textareas to Remarkable tutorial: https://jonschlinkert.github.io/remarkable/demo/
 - When adding a new post bookmark from a topic page, if the user is asked to sign in, they should be redirected back to the topic page, not their bookmark list.
 - The private topic list should display a list of topic participants beneath each topic so it's clear who has been invited
-- Private topics should display a list of topic participants at the top of the topic
 - Add edit notes to posts (or just an icon/link to post history if there have been edits)
 - If an unauthenticated user tries to access a page that requires login, then abandons it, then goes to the sign in page and signs in, they're redirected to the initial page they requested. ctzn_referer needs to be cleared somehow.
 - User profile styles
 - Topic move author notification doesn't work
 - Topic lock notification at the top of the topic page needs to be styled
-- "Subscribe to this discussion" links: either make them work or comment them out for now
-- "Notify me" link in private topics: make it work
+- "Subscribe to this discussion"
 - Announcements: if "Show it within the following forums" is selected, verify that at least one discussion is selected in the form validation.
 - Styles for discussion template to show topics that have been updated since last visit
 - Logic for discussions template to show discussions that have been updated since last visit
 - When implementing inline editing and replying, gzip content so it can be passed via URL (https://github.com/dankogai/js-deflate)
+- Visiting the base URL (http://192.168.1.12/) starts a new session because the existing cookies aren't valid for that path, rendering the user unauthenticated even after returning to the /forum path.
+- Replace current page in pagination with select menu that allows direct access to individual pages
+- Alternate action menus: instead of a sliding menu, just overflow the menu items outside the viewport and let users hold and drag the buttons back and forth (like the Worthington timeline)

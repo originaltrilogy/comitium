@@ -1,9 +1,3 @@
-/*-------------------
-Variables
--------------------*/
-/*-------------------
-Mixins
--------------------*/
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 /**
  * 1. Set default font family to sans-serif.
@@ -369,19 +363,16 @@ th {
   padding: 0;
   box-sizing: border-box; }
 
-html {
-  font-size: 62.5%; }
-
 body {
-  font-size: 1.4rem;
   font-size: 4vw;
-  line-height: 1.75; }
+  line-height: 1.75;
+  word-wrap: break-word; }
 
 h1 {
-  font-size: 125%; }
+  font-size: 140%; }
 
 h2 {
-  font-size: 115%; }
+  font-size: 130%; }
 
 h3 {
   font-size: 110%; }
@@ -395,9 +386,7 @@ nav ul {
   list-style: none; }
 
 p {
-  margin: 1.4rem 0 1.8rem;
-  margin: 4vw 0 6vw;
-  word-wrap: break-word; }
+  margin: 4vw 0 6vw; }
 
 table {
   border-collapse: collapse;
@@ -420,22 +409,22 @@ textarea {
 b,
 strong {
   font-weight: normal;
-  font-family: "Open Sans Semibold", "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
+  font-family: "Open Sans Bold", "Open Sans Semibold", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
   b i,
   b em,
   strong i,
   strong em {
-    font-family: "Open Sans Semibold Italic", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
+    font-family: "Open Sans Bold Italic", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
 
 i,
 em {
   font-style: normal;
-  font-family: "Open Sans Italic", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
+  font-family: "Open Sans Italic", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
   i b,
   i strong,
   em b,
   em strong {
-    font-family: "Open Sans Semibold Italic", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
+    font-family: "Open Sans Bold Italic", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
 
 @font-face {
   font-family: 'Open Sans Regular';
@@ -473,11 +462,17 @@ em {
   src: url("fonts/open-sans/opensans-semibolditalic-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans/opensans-semibolditalic-webfont.svg#OpenSansSemiboldItalic") format("svg"), url("fonts/open-sans/opensans-semibolditalic-webfont.woff") format("woff"), url("fonts/open-sans/opensans-semibolditalic-webfont.ttf") format("truetype");
   font-weight: normal;
   font-style: normal; }
+@font-face {
+  font-family: 'Open Sans Bold Italic';
+  src: url("fonts/open-sans/opensans-bolditalic-webfont.eot");
+  src: url("fonts/open-sans/opensans-bolditalic-webfont.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans/opensans-bolditalic-webfont.svg#OpenSansBoldItalic") format("svg"), url("fonts/open-sans/opensans-bolditalic-webfont.woff") format("woff"), url("fonts/open-sans/opensans-bolditalic-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
 body {
   position: relative;
-  font-family: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
   text-rendering: optimizeLegibility;
-  background: #484D5E;
+  background-color: #494e5f;
   color: white; }
   body.transitioning #main {
     position: relative; }
@@ -527,80 +522,81 @@ html.cssanimations.csstransforms span.loading-indicator {
   to {
     transform: rotate(360deg); } }
 a {
-  color: #CFDCFF; }
+  color: #d1dcff; }
 
 header {
+  color: #f0f0f0;
   background: #3E4352;
-  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
-  color: #efefef;
-  box-shadow: 0 0.1rem 0.4rem 0 rgba(0, 0, 0, 0.5); }
+  background-color: #3d4251;
+  border-bottom: 1px solid;
+  border-color: #353946; }
   header > a {
     display: block;
-    width: 17rem;
+    width: 40vw;
     margin: 0 auto;
-    padding: 1.8rem 0;
+    padding: 5vw 0;
     text-align: center;
     text-decoration: none; }
-  header nav {
-    font-size: 125%; }
-  header li {
-    display: block;
-    border-top: 0.1rem solid #4F566B; }
-    header li a {
-      display: block;
-      padding: 1rem 2rem;
-      text-decoration: none; }
 
 .js header #menu-icon {
-  position: relative;
+  color: #3d4251;
+  background-color: #d1dcff;
   display: block;
-  margin: 0;
-  padding: 0 0 0 30px;
-  padding: 0 0 0 3rem;
-  width: 30px;
-  width: 3rem;
-  height: 30px;
-  height: 3rem;
-  text-indent: 110%;
-  overflow: hidden;
+  border-radius: 0.8vw;
+  border: none;
+  text-align: center;
   text-decoration: none;
-  line-height: 33px;
-  line-height: 3.3rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 9vw;
+  line-height: 9vw;
+  padding: 0 3vw;
+  font-size: 100%;
   position: absolute;
-  top: 2rem;
-  left: 2rem;
-  z-index: 500;
-  cursor: pointer; }
-  .js header #menu-icon:before {
-    position: absolute;
-    top: 50%;
-    margin-top: -15px;
-    margin-top: -1.5rem;
-    left: 50%;
-    margin-left: -15px;
-    margin-left: -1.5rem;
-    display: block;
-    width: 30px;
-    width: 3rem;
-    height: 30px;
-    height: 3rem;
-    content: "M";
-    font-family: "EntypoDev";
-    font-size: 30px;
-    font-size: 3rem;
-    text-indent: 0; }
+  top: 4vw;
+  left: 4vw;
+  z-index: 500; }
 .js header nav {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  transition: left 0.5s;
-  background: #3E4352;
-  width: 75%;
-  height: 100%;
-  z-index: 1000;
-  box-shadow: 0.3rem 0 0.4rem 0 rgba(0, 0, 0, 0.5); }
-.js header #menu-shadow {
-  position: absolute;
+  display: none; }
+.js .slide-menu {
+  position: fixed;
+  background-color: #3d4251;
+  z-index: 1000; }
+  .js .slide-menu.left {
+    top: 0;
+    left: -100vw;
+    width: 75vw;
+    height: 100vh;
+    text-align: left;
+    transition: left 0.5s; }
+    .js .slide-menu.left.open {
+      left: 0; }
+  .js .slide-menu.right {
+    top: 0;
+    right: -100vw;
+    width: 75vw;
+    height: 100vh;
+    text-align: right;
+    transition: right 0.5s; }
+    .js .slide-menu.right.open {
+      right: 0; }
+  .js .slide-menu.bottom {
+    bottom: -50vh;
+    width: 100vw;
+    height: 50vh;
+    text-align: center;
+    transition: bottom 0.5s; }
+    .js .slide-menu.bottom.open {
+      bottom: 0; }
+  .js .slide-menu li {
+    display: block;
+    border-top: 0.5vw solid #4F566B; }
+    .js .slide-menu li a {
+      display: block;
+      padding: 4vw 5vw;
+      text-decoration: none; }
+.js #menu-shadow {
+  position: fixed;
   top: 0;
   left: 0;
   width: 0;
@@ -609,97 +605,121 @@ header {
   background: rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 0.2s; }
-.js body.menu-opening header nav,
-.js body.menu-open header nav {
-  left: 0; }
 .js body.menu-opening #menu-shadow,
 .js body.menu-open #menu-shadow {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   opacity: 1; }
 .js body.menu-closing #menu-shadow {
-  width: 100%;
-  height: 100%; }
+  width: 100vw;
+  height: 100vh; }
 
 nav.breadcrumbs {
-  padding: 1.2rem 1.4rem 0.8rem;
-  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif, "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
-  color: white; }
+  padding: 4vw 4vw 1vw;
+  font-family: "Open Sans Semibold", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif, "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
   nav.breadcrumbs li {
     display: inline-block;
-    margin-bottom: 0.4rem; }
+    margin-bottom: 1vw; }
     nav.breadcrumbs li:after {
       content: '/';
-      padding: 0 0.3rem 0 0.8rem; }
+      padding: 0 1vw 0 2vw; }
 
 nav.pagination {
   position: relative;
-  width: 24rem;
-  margin: 0 auto;
-  padding-bottom: 1.6rem;
-  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif, "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
-  color: white;
+  width: 100vw;
+  padding: 4vw 0;
+  font-size: 130%;
   text-align: center;
-  line-height: 1; }
+  text-transform: uppercase;
+  line-height: 1;
+  background-color: #5c637a; }
   nav.pagination li {
-    display: inline-block; }
+    line-height: 12vw; }
     nav.pagination li.first, nav.pagination li.previous, nav.pagination li.next, nav.pagination li.last {
       position: absolute;
-      top: 0; }
+      top: 4vw; }
+      nav.pagination li.first a, nav.pagination li.previous a, nav.pagination li.next a, nav.pagination li.last a {
+        color: #3d4251;
+        background-color: #d1dcff;
+        display: block;
+        border-radius: 0.8vw;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        cursor: pointer;
+        min-height: 12vw;
+        line-height: 12vw;
+        padding: 0 4vw;
+        font-size: 110%;
+        padding: 0;
+        min-width: 14vw;
+        min-height: 12vw;
+        font-size: 100%; }
     nav.pagination li.first {
-      left: 0; }
+      left: 4vw; }
     nav.pagination li.previous {
-      left: 4rem; }
+      left: 22vw; }
     nav.pagination li.next {
-      right: 4rem; }
+      right: 22vw; }
     nav.pagination li.last {
-      right: 0; }
+      right: 4vw; }
 
 main {
   clear: both;
   overflow: hidden; }
   main > h1:first-child {
-    margin-top: 2rem;
-    margin-bottom: 1.6rem; }
+    margin-top: 5vw; }
   main > p {
-    margin-left: 1.4rem;
-    margin-right: 1.4rem;
-    color: white; }
+    margin-left: 4vw;
+    margin-right: 4vw; }
 
 section {
-  overflow: auto;
-  background: #3E4352;
-  border-top: 0.1rem solid #343945; }
+  background-color: #3d4251;
+  overflow: auto; }
 
 article {
-  padding: 1.2rem 0 1.4rem;
-  padding: 3.6vw 0 4vw;
-  color: white;
-  background: #484D5E;
-  border-top: 0.1rem solid #586175;
-  border-bottom: 0.1rem solid #3E4352; }
+  padding: 5vw 0 6vw;
+  background-color: #494e5f;
+  border-bottom: 1px solid;
+  border-color: #3d4251; }
+  article:last-child {
+    border: none; }
   article > * {
-    margin: 0 1.4rem;
     margin: 0 4vw; }
   article img {
     max-width: 100%;
     height: auto; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+  font-family: "Open Sans Semibold", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
   font-weight: normal; }
 
 h1 {
-  margin: 0 1.4rem 0.8rem;
-  line-height: 1.5;
-  color: white; }
+  margin: 4vw 4vw 6vw;
+  font-family: "Open Sans Bold", "Open Sans Semibold", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
+  line-height: 1.5; }
 
 h2 {
-  padding: 1.6rem 1.4rem;
-  padding: 5vw 4vw;
-  color: white;
+  margin: 8vw 4vw;
   text-align: center;
-  background: #3E4352; }
+  background-color: #3d4251; }
+
+a.to-the-top {
+  color: #3d4251;
+  background-color: #d1dcff;
+  display: block;
+  border-radius: 0.8vw;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 16vw;
+  line-height: 16vw;
+  padding: 0 5vw;
+  font-size: 120%;
+  margin: 10vw 4vw; }
 
 footer {
   border-top: 0.1rem solid #586175; }
@@ -710,10 +730,10 @@ form {
   padding-top: 1.4rem;
   padding-bottom: 1.4rem; }
   form > * {
-    margin-left: 1.4rem;
-    margin-right: 1.4rem; }
+    margin-left: 4vw;
+    margin-right: 4vw; }
   form label {
-    font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
+    font-family: "Open Sans Semibold", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
     font-size: 120%;
     color: white; }
   form p.label-note {
@@ -723,50 +743,49 @@ form {
     padding-bottom: 2vw; }
   form input {
     width: 100%;
-    padding: 1.2rem;
-    font-size: 120%;
-    color: white;
+    padding: 4vw;
+    font-size: 130%;
     background: #5E667A;
-    border: 0.1rem solid #343945;
+    border: 1px solid #343945;
     border-radius: 0.3rem; }
     form input[type="checkbox"] {
-      width: 3rem;
-      height: 3rem;
+      width: 12vw;
+      height: 12vw;
       position: absolute; }
       form input[type="checkbox"]:checked:after {
         position: absolute;
         top: 0;
         left: 0;
         display: block;
-        width: 1.8rem;
-        height: 1.8rem;
+        width: 10vw;
+        height: 10vw;
         content: 'x';
-        line-height: 1;
+        line-height: 10vw;
         text-align: center; }
     form input[type="radio"] {
-      width: 3rem;
-      height: 3rem;
+      width: 12vw;
+      height: 12vw;
       position: absolute;
       border-radius: 50%; }
       form input[type="radio"]:checked:after {
         position: absolute;
-        top: 0.5rem;
-        left: 0.5rem;
+        top: 1.7vw;
+        left: 1.7vw;
         display: block;
-        width: 1.8rem;
-        height: 1.8rem;
+        width: 8vw;
+        height: 8vw;
         background: #a9aebc;
         border-radius: 50%;
         content: ''; }
   form textarea {
-    font-family: Menlo, fixed-width;
+    font-family: Menlo, Consolas, fixed-width;
     font-size: 90%;
     width: 100%;
-    padding: 1.2rem;
-    color: white;
-    background: #5E667A;
-    border: 0.1rem solid #343945;
-    border-radius: 0.3rem; }
+    padding: 4vw;
+    background-color: #5d6479;
+    border: 1px solid;
+    border-color: #353946;
+    border-radius: 0.8vw; }
   form .data ul {
     margin: 0; }
     form .data ul > li {
@@ -777,61 +796,105 @@ form {
         display: block; }
       form .data ul > li.checkbox label, form .data ul > li.radio label {
         display: block;
-        padding-left: 4.4rem;
-        padding-top: 0.4rem;
-        font-family: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
-        font-size: 100%; }
+        padding-left: 16vw;
+        padding-top: 1.5vw;
+        font-family: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
       form .data ul > li.checkbox {
         margin-bottom: 3.4rem; }
       form .data ul > li.radio {
         margin-bottom: 1rem; }
-  form .actions ul {
-    margin: 0; }
-    form .actions ul > li {
-      margin: 1.6rem auto;
-      display: block;
-      padding: 0;
-      list-style: none; }
-      form .actions ul > li input {
-        width: 100%;
-        font-size: 150%; }
-        form .actions ul > li input[type="submit"] {
-          margin-bottom: 1rem;
-          padding: 1.6rem 1.8rem 1.5rem;
-          background: #CFDCFF;
-          border-radius: 0.3rem;
-          border: none;
-          font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
-          font-size: 150%;
-          color: #3E4352; }
   form li.textarea label {
     display: block; }
 
-.actions ul li a {
-  display: block;
-  width: 100%;
-  margin-bottom: 1rem;
-  padding: 1.6rem 1.8rem 1.5rem;
-  padding: 1.3vw 3vw 1.2vw;
-  background: #CFDCFF;
-  border-radius: 0.3rem;
-  font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif;
-  font-size: 130%;
-  color: #3E4352;
-  text-decoration: none;
-  text-align: center; }
+.actions {
+  padding: 4vw 0; }
+  .actions ul {
+    margin: 0;
+    text-align: center; }
+    .actions ul > li {
+      margin: 0 1.5vw 4vw;
+      display: inline-block;
+      padding: 0;
+      list-style: none; }
+      .actions ul > li input {
+        width: 100%;
+        font-size: 150%; }
+      .actions ul > li input[type="submit"],
+      .actions ul > li a {
+        color: #3d4251;
+        background-color: #d1dcff;
+        display: block;
+        border-radius: 0.8vw;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        cursor: pointer;
+        min-height: 12vw;
+        line-height: 12vw;
+        padding: 0 4vw;
+        font-size: 110%; }
 
-section.preview h2 {
-  border-bottom: 0.1rem solid #586175; }
+form .actions ul > li {
+  display: block;
+  margin-right: 0;
+  margin-left: 0; }
+  form .actions ul > li input[type="submit"],
+  form .actions ul > li a {
+    color: #3d4251;
+    background-color: #d1dcff;
+    display: block;
+    border-radius: 0.8vw;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    min-height: 16vw;
+    line-height: 16vw;
+    padding: 0 5vw;
+    font-size: 120%; }
+
+nav.actions {
+  position: relative;
+  margin-left: 0;
+  margin-right: 0;
+  overflow-y: hidden;
+  background-color: #3d4251; }
+  nav.actions:before, nav.actions:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 4vw;
+    height: 20vw;
+    z-index: 501; }
+  nav.actions:before {
+    left: 0;
+    background-image: linear-gradient(to right, #3d4251, rgba(61, 66, 81, 0)); }
+  nav.actions:after {
+    right: 0;
+    background-image: linear-gradient(to left, #3d4251, rgba(61, 66, 81, 0)); }
+  nav.actions ul {
+    overflow-x: scroll;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    z-index: 500; }
+  nav.actions li:first-child {
+    margin-left: 4vw; }
+  nav.actions li:last-child {
+    margin-right: 4vw; }
+
 section.preview article {
-  padding-top: 1.2rem;
-  border-bottom: none; }
+  padding-top: 6vw; }
   section.preview article .title {
-    font-family: "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
+    font-family: "Open Sans Semibold", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
 
 /*-------------------
 discussions pattern
 -------------------*/
+body[data-controller="discussions"][data-view="discussions"] section.announcements article {
+  padding: 3vw 0 4vw; }
 body[data-controller="discussions"][data-view="discussions"] p.description {
   margin-top: 0.4rem;
   margin-bottom: 1.2rem; }
@@ -839,53 +902,75 @@ body[data-controller="discussions"][data-view="discussions"] p.stats {
   margin-top: 0.8rem; }
 body[data-controller="discussions"][data-view="discussions"] span.topics,
 body[data-controller="discussions"][data-view="discussions"] span.posts {
-  font-family: "Open Sans Semibold", "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
+  font-family: "Open Sans Bold", "Open Sans Semibold", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
 
-/*-------------------
-discussion pattern
--------------------*/
-body[data-controller="discussion"][data-view="discussion"] main > p {
-  margin: 1.2rem 1.4rem 1.8rem;
+body[data-controller="discussion"] main > p,
+body[data-controller="announcements"] main > p {
+  margin: 4vw 4vw 6vw;
   color: white; }
-body[data-controller="discussion"][data-view="discussion"] article.updated {
-  background: black; }
-body[data-controller="discussion"][data-view="discussion"] article:last-child {
+body[data-controller="discussion"] article.updated,
+body[data-controller="announcements"] article.updated {
+  position: relative; }
+  body[data-controller="discussion"] article.updated::before,
+  body[data-controller="announcements"] article.updated::before {
+    content: '';
+    display: block;
+    width: 1vw;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background-color: #d1dcff; }
+body[data-controller="discussion"] article:last-child,
+body[data-controller="announcements"] article:last-child {
   border-bottom: none; }
-body[data-controller="discussion"][data-view="discussion"] p.details {
+body[data-controller="discussion"] p.details,
+body[data-controller="announcements"] p.details {
   margin-top: 0.4rem;
   margin-bottom: 1.2rem; }
-body[data-controller="discussion"][data-view="discussion"] p.stats {
+body[data-controller="discussion"] p.stats,
+body[data-controller="announcements"] p.stats {
   margin-top: 0.8rem; }
-body[data-controller="discussion"][data-view="discussion"] span.replies {
-  font-family: "Open Sans Semibold", "Open Sans Regular", "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
+body[data-controller="discussion"] span.replies,
+body[data-controller="announcements"] span.replies {
+  font-family: "Open Sans Bold", "Open Sans Semibold", "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif; }
+
+body[data-controller="discussion"] nav.actions {
+  padding: 0; }
+
+body[data-controller="announcements"] nav.actions {
+  padding-bottom: 0; }
 
 /*-------------------
 topic patterns
 -------------------*/
-body[data-controller="topic"][data-view="topic"] nav.actions, body[data-controller="topic"][data-view="announcement"] nav.actions,
-body[data-controller="announcement"][data-view="topic"] nav.actions,
-body[data-controller="announcement"][data-view="announcement"] nav.actions {
-  text-align: center; }
-  body[data-controller="topic"][data-view="topic"] nav.actions li, body[data-controller="topic"][data-view="announcement"] nav.actions li,
-  body[data-controller="announcement"][data-view="topic"] nav.actions li,
-  body[data-controller="announcement"][data-view="announcement"] nav.actions li {
-    display: inline-block;
-    margin: 0 0.4rem; }
+body[data-controller="topic"] h1,
+body[data-controller="announcement"] h1 {
+  margin-bottom: 9vw; }
+body[data-controller="topic"] nav.actions,
+body[data-controller="announcement"] nav.actions {
+  padding-bottom: 0; }
+body[data-controller="topic"] article.post nav.actions,
+body[data-controller="announcement"] article.post nav.actions {
+  background: none; }
+  body[data-controller="topic"] article.post nav.actions:before,
+  body[data-controller="announcement"] article.post nav.actions:before {
+    background-image: linear-gradient(to right, #494e5f, rgba(73, 78, 95, 0)); }
+  body[data-controller="topic"] article.post nav.actions:after,
+  body[data-controller="announcement"] article.post nav.actions:after {
+    background-image: linear-gradient(to left, #494e5f, rgba(73, 78, 95, 0)); }
 
 /*-------------------
 post view (shared)
 -------------------*/
 article.post {
-  padding-top: 0;
-  border: none;
-  border-bottom: 0.1rem solid #343945; }
+  padding: 0;
+  border: none; }
   article.post h2 {
     position: relative;
     margin: 0;
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
-    padding-left: 7.4rem;
-    border-bottom: 0.1rem solid #586175;
+    padding-top: 4vw;
+    padding-bottom: 4vw;
+    padding-left: 28vw;
     text-align: left; }
     article.post h2 img {
       position: absolute;
@@ -893,7 +978,8 @@ article.post {
       left: 0; }
     article.post h2 time {
       display: block;
-      font-family: "Open Sans Light", "Helvetica Neue", Helvetica, Geneva, Verdana, sans-serif; }
+      font-family: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
+      font-size: 4vw; }
 
 /*-------------------
 bookmark view

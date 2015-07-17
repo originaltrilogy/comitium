@@ -3,17 +3,15 @@ post view (shared)
 -------------------*/
 
 article.post {
-  padding-top: 0;
+  padding: 0;
   border: none;
-  border-bottom: 0.1rem solid #343945;
 
   h2 {
     position: relative;
     margin: 0;
-    padding-top: 0.8rem;
-    padding-bottom: 0.8rem;
-    padding-left: 7.4rem;
-    border-bottom: 0.1rem solid #586175;
+    padding-top: 4vw;
+    padding-bottom: 4vw;
+    padding-left: 28vw;
     text-align: left;
 
     img {
@@ -24,6 +22,7 @@ article.post {
     time {
       display: block;
       font-family: $defaultFont;
+      font-size: 4vw;
     }
   }
 }

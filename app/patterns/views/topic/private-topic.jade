@@ -1,7 +1,15 @@
 h1
   != topic.titleHtml
-  
-include ../partials/pagination      
+
+p.private-notice This topic is private and only visible to:
+
+ul.participants
+  each user in invitees
+    li
+      a(href="user/#{user.username}/id/#{user.id}")
+        = user.username
+
+include ../partials/pagination
 
 nav.topic
   ul
@@ -13,7 +21,7 @@ nav.topic
     else
       li.unsubscribe
         a(href="#{route.pathname}/action/unsubscribe" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
-          
+
 section.posts
   if posts
     each post in posts

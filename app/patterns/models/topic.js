@@ -152,7 +152,7 @@ function invitees(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "userID" from "topicInvitations" where "topicID" = $1;',
+        'select ti."topicID", u."id", u."username", u."url" from "topicInvitations" ti join "users" u on ti."userID" = u."id" where "topicID" = $1 order by u."username" asc;',
         [ args.topicID ],
         function (err, result) {
           done();

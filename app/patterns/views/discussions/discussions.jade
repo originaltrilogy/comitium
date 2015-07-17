@@ -1,31 +1,14 @@
 h1 Discussion Categories
 
-article(class="discussion")
-  h3
-    a(href="announcements") Announcements
-  // p.description !{discussion.discussionDescription}
-  // p.stats
-  //   span.topics #{discussion.topics} 
-  //   | topics with 
-  //   span.posts #{discussion.posts} 
-  //   | posts
+//- if session.talkPrivately
+//-   section.category.private-topics
+//-     h2 Private Topics
+//-     p Stuff goes here!
 
-if session.talkPrivately
-  article(class="private-topics")
-    h3
-      a(href="private-topics") Private Topics
-    p.description These topics are visible only to you and the other topic participants.
-    //- p.stats
-    //-   span.topics #{discussion.topics} 
-    //-   | topics with 
-    //-   span.posts #{discussion.posts} 
-    //-   | posts
-    //-   if discussion.lastPostID !== 0
-    //-     dt.last-post Last Post
-    //-     dd.last-post
-    //-       time #{discussion.lastPostDate}
-    //-       |  by 
-    //-       a(href="user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+if include.announcements
+  section.category.announcements
+    h2 Announcements
+    != include.announcements
 
 each category in categories
   section(class="category" data-category-id="#{category.categoryID}")

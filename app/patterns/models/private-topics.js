@@ -119,9 +119,9 @@ function topics(args, emitter) {
             for ( var property in output.topics[i] ) {
               if ( output.topics[i].hasOwnProperty(property) ) {
                 if ( property === 'replies' ) {
-                  subset[i][property] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
+                  subset[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
                 } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                  subset[i][property] = app.toolbox.moment(output.topics[i][property]).format('MMMM Do YYYY');
+                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('MMMM Do YYYY');
                 } else {
                   subset[i][property] = output.topics[i][property];
                 }

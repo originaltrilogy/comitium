@@ -24,7 +24,7 @@ section#general
           p.label-note Your signature appears beneath your forum posts
           textarea#signature(name="signature" rows="2") #{form.signature}
         li.timezone.select
-          label(for="timezone") Timezone
+          label(for="timezone") Time zone
           select#timezone(name="timezone")
             each timezone in timezones
               if timezone !== form.timezone

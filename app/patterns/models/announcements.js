@@ -66,7 +66,9 @@ function info(discussionID, emitter) {
 
 function topics(args, emitter) {
   // See if this discussion page is already cached
-  var cacheKey = 'group-' + args.groupID,
+  var start = args.start || 0,
+      end = args.end || 25,
+      cacheKey = 'group-' + args.groupID,
       scope = 'discussion-2',
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
@@ -82,8 +84,18 @@ function topics(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select distinct t."id", t."titleHtml", t."url", t."sortDate" from "topics" t join "announcements" a on a."topicID" = t."id" join "discussionPermissions" dp on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and dp."read" = true order by t."sortDate" desc;',
-              [ args.groupID ],
+              'select distinct t."id", t."titleHtml", t."url", t."sortDate", t."replies", p."id" as "firstPostID", p2."id" as "lastPostID", t."titleHtml", t."url", p."dateCreated" as "postDate", p2."dateCreated" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'from topics t ' +
+              'join announcements a on t."id" = a."topicID" ' +
+              'join "discussionPermissions" dp on dp."discussionID" = a."discussionID" ' +
+              'join posts p on p."id" = t."firstPostID" ' +
+              'join users u on u."id" = p."userID" ' +
+              'join posts p2 on p2."id" = t."lastPostID" ' +
+              'join users u2 on u2."id" = p2."userID" ' +
+              'where dp."groupID" = $1 and dp."read" = true and t."draft" = false ' +
+              'order by t."sortDate" desc ' +
+              'limit $2 offset $3;',
+              [ args.groupID, end - start, start ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -97,30 +109,36 @@ function topics(args, emitter) {
         });
       }
     }, function (output) {
+      var announcements = {};
 
       if ( output.listen.success ) {
 
-        output.announcements.forEach( function (announcement, index, array) {
-          for ( var property in announcement ) {
-            if ( announcement.hasOwnProperty(property) ) {
-              if ( property === 'replies' || property === 'views' ) {
-                output.announcements[index][property] = app.toolbox.numeral(announcement[property]).format('0,0');
-              } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                output.announcements[index][property] = announcement[property];
-                output.announcements[index][property + 'Formatted'] = app.toolbox.moment(announcement[property]).format('MMMM Do YYYY');
+        for ( var i = 0; i < output.announcements.length; i += 1 ) {
+          if ( output.announcements[i] ) {
+            announcements[i] = {};
+            for ( var property in output.announcements[i] ) {
+              if ( output.announcements[i].hasOwnProperty(property) ) {
+                announcements[i][property] = output.announcements[i][property];
+                if ( property === 'replies' ) {
+                  announcements[i][property + 'Formatted'] = app.toolbox.numeral(output.announcements[i][property]).format('0,0');
+                } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+                  announcements[i][property + 'Formatted'] = app.toolbox.moment.tz(output.announcements[i][property], 'America/New_York').format('MMMM Do YYYY');
+                }
               }
             }
+          } else {
+            break;
           }
-        });
+        }
 
-        // Cache the topics object for future requests
+        // Cache the announcements for future requests
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: output.announcements
+          value: announcements
         });
 
-        emitter.emit('ready', output.announcements);
+        emitter.emit('ready', announcements);
       } else {
         emitter.emit('error', output.listen);
       }

@@ -1,35 +1,33 @@
 h1 Private Topics
 
-if url.page === 1
-  p These topics are visible only to you and the other topic participants.
-  
+p These topics are visible only to you and the other topic participants.
+
 include ../partials/pagination
-          
+
 section.topics
   h2 Topics
   nav.discussion
     ul
       li.new-topic
         a(href="topic/action/startPrivate") Start a new private topic
-      li.subscribe
-        a(href="private-topics/action/subscribe" title="Receive an e-mail notification when you're invited to a new private topic.") Notify me
+      //- li.subscribe
+      //-   a(href="private-topics/action/subscribe" title="Receive an e-mail notification when you're invited to a new private topic.") Notify me
   if topics
     each topic in topics
-      article.topic(data-topic-id="#{topic.id}")
+      article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")
         h3
-          a(href="topic/id/#{topic.id}")
-            != topic.titleHtml
+          a(href="topic/#{topic.url}/id/#{topic.id}") #{topic.titleHtml}
         p.details
-          | Posted by 
           a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
-          |  on 
-          time #{topic.postDate}
+          |  &mdash;
+          time #{topic.postDateFormatted}
         p.stats
-          span.replies #{topic.replies} 
-          | replies with 
-          span.views #{topic.views} 
-          | views
+          span.replies #{topic.repliesFormatted} 
+          | replies 
+          time (last on #{topic.lastPostDateFormatted})
+        if topic.unreadPosts
+          a(href="topic/#{topic.url}/id/#{topic.id}/unread/true") First unread post
   else
-    p You're not participating in any private topics. <a href="topic/action/startPrivate">Why not start one?</a>
+    p You're not participating in any private topics.
 
 include ../partials/pagination

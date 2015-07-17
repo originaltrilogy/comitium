@@ -20,11 +20,11 @@ section.topic-write-form
         li.topic-title.text.required
           label(for="topic-title")
             | Topic title
-          textarea(id="topic-title" name="title" required) #{form.title}
+          textarea(id="topic-title" name="title" rows="2" required) #{form.title}
         li.post-content.textarea.required
           label(for="post-content")
             | Post content
-          textarea(id="post-content" name="content" required) #{form.content}
+          textarea(id="post-content" name="content" rows="10" required) #{form.content}
         li.discussions
           p Where do you want this announcement to appear?
           p.label-note Only people with access rights to the selected forums will see this announcement.
@@ -32,15 +32,15 @@ section.topic-write-form
             li.radio
               input(id="display-discussions-none" name="displayDiscussions" type="radio" value="none" checked=(form.displayDiscussions === 'none'))
               label(for="display-discussions-none")
-                | Only show it within <a href="announcements">Announcements</a>
+                | Only within <a href="announcements">Announcements</a>
             li.radio
               input(id="display-discussions-all" name="displayDiscussions" type="radio" value="all" checked=(form.displayDiscussions === 'all'))
               label(for="display-discussions-all")
-                | Show it at the top of all discussion forums
+                | Within all discussion forums
             li.radio
               input(id="display-discussions-custom" name="displayDiscussions" type="radio" value="custom" checked=(form.displayDiscussions === 'custom'))
               label(for="display-discussions-custom")
-                | Show it within the following forums:
+                | Within the following forums:
               ul
                 each category in categories
                   li
@@ -61,7 +61,7 @@ section.topic-write-form
           input(name="formAction" type="submit" value="Preview")
         li.primary.post
           input(name="formAction" type="submit" value="Post your announcement")
-        li.tertiary.draft
-          input(name="formAction" type="submit" value="Save as draft")
+        //- li.tertiary.draft
+        //-   input(name="formAction" type="submit" value="Save as draft")
         li.quaternary.cancel
           a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back

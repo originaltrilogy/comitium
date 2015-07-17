@@ -23,8 +23,9 @@ function handler(params, context, emitter) {
           app.models.announcements.info(2, emitter);
         },
         topics: function (emitter) {
-          var start = ( params.url.page - 1 ) * 25,
-              end = start + 25;
+          var start = params.url.start || ( params.url.page - 1 ) * 25,
+              end = params.url.end || start + 25;
+
           app.models.announcements.topics({
             groupID: 2,
             start: start,
@@ -32,22 +33,83 @@ function handler(params, context, emitter) {
           }, emitter);
         }
       }, function (output) {
-        var content = {};
+        var discussion = output.discussion,
+            topics = output.topics;
 
         if ( output.listen.success ) {
 
-          content = {
-            discussion: output.discussion,
-            breadcrumbs: app.models.announcements.breadcrumbs(),
-            pagination: app.toolbox.helpers.paginate('announcements/id/2', params.url.page, output.discussion.topics)
-          };
+          app.listen({
+            viewTimes: function (emitter) {
+              var topicID = [];
 
-          if ( output.topics && app.size(output.topics) ) {
-            content.topics = output.topics;
-          }
+              if ( params.session.userID ) {
+                for ( var topic in topics ) {
+                  if ( topics.hasOwnProperty(topic) ) {
+                    topicID.push(topics[topic].id);
+                  }
+                }
 
-          emitter.emit('ready', {
-            content: content
+                app.models.user.topicViewTimes({
+                  userID: params.session.userID,
+                  topicID: topicID.join(', ')
+                }, emitter);
+              } else {
+                emitter.emit('ready');
+              }
+            }
+          }, function (output) {
+            var viewTimes = {},
+                content = {};
+
+            if ( output.listen.success ) {
+
+              if ( output.viewTimes ) {
+                output.viewTimes.forEach( function (item, index, array) {
+                  viewTimes[item.topicID] = item;
+                });
+              }
+
+              content = {
+                discussion: discussion,
+                breadcrumbs: app.models.announcements.breadcrumbs(),
+                pagination: app.toolbox.helpers.paginate('announcements/id/2', params.url.page, discussion.topics)
+              };
+
+              if ( topics && app.size(topics) ) {
+                for ( var topic in topics ) {
+                  if ( params.session.groupID > 1 ) {
+                    if ( !viewTimes[topics[topic].id] ) {
+                      topics[topic].unreadPosts = true;
+                      if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
+                        topics[topic].updated = true;
+                      }
+                    } else {
+                      if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(viewTimes[topics[topic].id].time) ) {
+                        topics[topic].unreadPosts = true;
+                        if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
+                          topics[topic].updated = true;
+                        }
+                      }
+                    }
+                  } else {
+                    if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
+                      topics[topic].updated = true;
+                    }
+                  }
+                }
+                content.topics = topics;
+              }
+
+              emitter.emit('ready', {
+                content: content
+              });
+
+            } else {
+
+              emitter.emit('error', output.listen);
+
+            }
+
           });
 
         } else {

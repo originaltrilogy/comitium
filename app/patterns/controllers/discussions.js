@@ -21,6 +21,12 @@ function handler(params, context, emitter) {
         content: {
           categories: output.categories,
           breadcrumbs: app.models.discussions.breadcrumbs()
+        },
+        include: {
+          announcements: {
+            route: '/announcements/end/4',
+            view: 'compact'
+          }
         }
       });
 

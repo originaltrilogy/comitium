@@ -1,16 +1,16 @@
 OT.discussion = ( function (Modernizr, OT) {
   'use strict';
-	var methods = {
+  var methods = {
 
-			init: function () {
-        console.log('OT.discussion.init()');
-			}
+      init: function () {
+        
+      }
 
-		};
+    };
 
-	//	Public methods
-	return {
-		init: methods.init
-	};
+  //  Public methods
+  return {
+    init: methods.init
+  };
 
 })(Modernizr, OT);

@@ -1,17 +1,17 @@
 OT.index = ( function (Modernizr, OT) {
   'use strict';
   
-	var methods = {
+  var methods = {
 
-			init: function () {
+      init: function () {
         console.log('OT.index.init()');
-			}
+      }
 
-		};
+    };
 
-	//	Public methods
-	return {
-		init: methods.init
-	};
+  //  Public methods
+  return {
+    init: methods.init
+  };
 
 })(Modernizr, OT);

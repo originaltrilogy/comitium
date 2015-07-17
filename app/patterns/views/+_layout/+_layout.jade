@@ -10,4 +10,4 @@ html
         if controller.viewContent
           | <!-- controller: #{controller.controller}, action: #{controller.action}, view: #{controller.view} -->
           != controller.viewContent
-    include ../partials/footer
+    != include._footer

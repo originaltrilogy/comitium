@@ -1,34 +1,35 @@
 h1
   = discussion.title
 
-if url.page === 1
+if url.page === 1 && discussion.description
   p
     != discussion.description
   
 include ../partials/pagination
           
 section.topics
-  nav
+  nav.actions
     ul
       if session.moderateDiscussions
         li.new-announcement
           a(href="announcement/action/start") Make an announcement
-      li.subscribe
-        a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe to this discussion
+      //- li.subscribe
+      //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
   if topics
     each topic in topics
-      article.topic(data-topic-id="#{topic.id}")
+      article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")
         h3
-          a(href="announcement/#{topic.url}/id/#{topic.id}")
-            != topic.titleHtml
+          a(href="announcement/#{topic.url}/id/#{topic.id}") #{topic.titleHtml}
         p.details
-          | Posted by 
           a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
-          |  on 
-          time #{topic.postDate}
+          |  &mdash;
+          time #{topic.postDateFormatted}
         p.stats
           span.replies #{topic.repliesFormatted} 
-          | replies
+          | replies 
+          time (last on #{topic.lastPostDateFormatted})
+        if topic.unreadPosts
+          a(href="announcement/#{topic.url}/id/#{topic.id}/unread/true") First unread post
   else
     p There are no current announcements.
 

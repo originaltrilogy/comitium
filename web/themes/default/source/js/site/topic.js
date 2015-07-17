@@ -4,10 +4,12 @@ OT.topic = ( function (Modernizr, OT) {
 	var actions = {
 
       handler: function () {
-
+        // if ( document.querySelectorAll('main nav.topic.actions li').length > 2 ) {
+        //   methods.topicMenu();
+        // }
       },
 
-      write: function () {
+      start: function () {
         // OT.global.ajaxFormBinding({
         //   formSelector: '#topic-write-form'
         // });
@@ -28,6 +30,26 @@ OT.topic = ( function (Modernizr, OT) {
 			init: function () {
 
 			},
+
+      // topicMenu: function () {
+      //   var menu = document.querySelector('main nav.topic.actions ul'),
+      //       moreButton = document.createElement('li'),
+      //       moreAnchor = document.createElement('a');
+
+      //   moreButton.className = 'more';
+      //   moreButton.appendChild(moreAnchor);
+      //   moreAnchor.appendChild(document.createTextNode('More...'));
+      //   menu.appendChild(moreButton);
+
+      //   OT.global.menu({
+      //     menu: 'main nav.topic.actions',
+      //     trigger: 'main nav.topic.actions li.more a',
+      //     position: 'right',
+      //     clone: true,
+      //     keepClass: false
+      //   });
+
+      // },
 
       postContent: function () {
         var postContent = document.getElementById('post-content'),
@@ -51,8 +73,8 @@ OT.topic = ( function (Modernizr, OT) {
 	return {
 		init: methods.init,
     handler: actions.handler,
-    write: actions.write,
-    writeForm: actions.write,
+    start: actions.start,
+    startForm: actions.start,
     reply: actions.reply,
     replyForm: actions.reply
 	};
