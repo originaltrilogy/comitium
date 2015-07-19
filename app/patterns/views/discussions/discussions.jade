@@ -14,18 +14,18 @@ each category in categories
   section(class="category" data-category-id="#{category.categoryID}")
     h2 #{category.categoryTitle}
     each discussion in category.discussions
-      article(class="discussion" data-discussion-id="#{discussion.discussionID}")
+      article(class="discussion #{ discussion.updated ? 'updated' : ''}" data-discussion-id="#{discussion.discussionID}")
         h3
           a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
         p.description !{discussion.discussionDescription}
         p.stats
-          span.topics #{discussion.topics} 
+          span.topics #{discussion.topicsFormatted} 
           | topics with 
-          span.posts #{discussion.posts} 
+          span.posts #{discussion.postsFormatted} 
           | posts
-        //-   if discussion.lastPostID !== 0
-        //-     dt.last-post Last Post
-        //-     dd.last-post
-        //-       time #{discussion.lastPostDate}
-        //-       |  by 
-        //-       a(href="user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+          if discussion.lastPostID !== 0
+            dt.last-post Last Post
+            dd.last-post
+              time #{discussion.lastPostDateFormatted}
+              |  by 
+              a(href="user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}

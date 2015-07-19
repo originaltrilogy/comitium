@@ -28,9 +28,7 @@ $hue: 226;
 	background-color: hsl($hue, $saturation, $lightness);
 }
 
-@mixin button($size: 'large') {
-	@include color(14%, 28%);
-  @include background-color(100%, 91%);
+@mixin button($size: 'large', $color: 'light') {
   display: block;
   border-radius: 0.8vw;
   border: none;
@@ -44,16 +42,24 @@ $hue: 226;
   	line-height: 16vw;
 	  padding: 0 5vw;
 	  font-size: 120%;
-  } @else if $size == 'small' {
+  } @else if $size == 'medium' {
   	min-height: 12vw;
   	line-height: 12vw;
 	  padding: 0 4vw;
 	  font-size: 110%;
-  } @else if $size == 'tiny' {
+  } @else if $size == 'small' {
   	min-height: 9vw;
     line-height: 9vw;
 	  padding: 0 3vw;
 	  font-size: 100%;
+  }
+
+  @if $color == 'light' {
+    @include color(14%, 28%);
+    @include background-color(100%, 91%);
+  } @else if $color == 'dark' {
+    @include color(100%, 91%);
+    @include background-color(14%, 28%);
   }
 }
 

@@ -24,3 +24,32 @@ body[data-controller="announcement"] {
   }
 
 }
+
+body[data-controller="topic"][data-view="private-topic"] {
+
+  h1 {
+    margin-bottom: 6vw;
+  }
+
+  p.private-notice {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  ul.participants {
+    margin: 0 4vw 8vw;
+
+    li {
+      list-style: none;
+      display: inline;
+
+      &:after {
+        content: ', ';
+      }
+      &:last-child:after {
+        content: '';
+      }
+    }
+  }
+
+}

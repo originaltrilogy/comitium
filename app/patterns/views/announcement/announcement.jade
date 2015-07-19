@@ -1,9 +1,7 @@
 h1 Announcement: #{topic.titleHtml}
-  
-include ../partials/pagination
 
 if topic.lockedByID
-  .notice
+  .notice.locked
     if !session.moderateDiscussions
       p This topic is locked.
     else
@@ -13,9 +11,8 @@ if topic.lockedByID
         dt Why was this topic locked?
         dd
           != topic.lockReason
-      
 
-nav.topic
+nav.topic.actions
   ul
     if topic.discussionID !== 1
       li.reply
@@ -36,6 +33,8 @@ nav.topic
             a(href="#{route.pathname}/action/unlock" title="Unlock this topic.") Unlock
         li.delete
           a(href="#{route.pathname}/action/trash" title="Move this topic to the trash.") Delete
+  
+include ../partials/pagination
           
 section.posts
   if posts

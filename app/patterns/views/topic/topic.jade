@@ -1,6 +1,17 @@
 h1
   != topic.titleHtml
-      
+
+if topic.lockedByID
+  .notice.locked
+    if !session.moderateDiscussions
+      p This topic is locked.
+    else
+      p This topic is locked, but as a moderator, you can still reply and make edits.
+    if topic.lockReason.length
+      dl
+        dt Why was this topic locked?
+        dd
+          != topic.lockReason
 
 nav.topic.actions
   ul
@@ -27,18 +38,6 @@ nav.topic.actions
           a(href="#{route.pathname}/action/trash" title="Move this topic to the trash.") Delete
   
 include ../partials/pagination
-
-if topic.lockedByID
-  .notice
-    if !session.moderateDiscussions
-      p This topic is locked.
-    else
-      p This topic is locked, but as a moderator, you can still reply and make edits.
-    if topic.lockReason.length
-      dl
-        dt Why was this topic locked?
-        dd
-          != topic.lockReason
           
 section.posts
   if posts

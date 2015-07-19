@@ -1,5 +1,6 @@
 Issues
 
+- Quick reply at the bottom of topic pages
 - models > user.js > posts() - Currently pulls all public posts, even those from discussions the viewer doesn't have read access to
 - Topic edit
 - Announcement edit
@@ -13,18 +14,18 @@ Issues
 - Cap the number of announcements visible on the index page with a "view all" link pointing to the Announcements page
 - Discussion breadcrumb link is broken on topic preview
 - "Cancel and go back" button only works on initial page load. Using post preview resets the URL to the current page.
-- Date handling and display (cache raw date, format on display)
+- Date and number display (cache raw, format on display)
   - Pass app.moment to view and format on the fly?
   - Format in the controller and update the cache?
 - Emoticons
 - Social icons
 - Footer
-- Quick reply at the bottom of topic pages
 - "New messages" indicator for private topics in top right corner
 - Terms of Service
 - Password show/hide button on register and account pages
 - Select input styles
 - Error message styles
+- If a user is already subscribed to a topic, replace the "Notify me" checkbox on the reply form with a "You're subscribed to this topic" notice
 - Only show "First new post" link if there is a view time (might be better UX)
 - User profile/preferences
 	- Avatar
@@ -44,6 +45,7 @@ Issues
 - Sticky topics
 - Topic/announcement/post "Save as draft"
 - Invite users to an existing private topic
+- Mark discussion as read
 - "Notify me" / "Disable notifications" link on private topic list (based on existing privateTopicEmailNotification setting)
 - Setting to enable/disable private topics
 - Deleted announcements throw a 403 for administrators, but deleted topics are viewable

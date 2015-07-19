@@ -3,29 +3,12 @@
 ////////////////////////////
 
 body[data-controller="discussion"],
-body[data-controller="announcements"] {
+body[data-controller="announcements"],
+body[data-controller="private-topics"] {
 
   main > p {
     margin: 4vw 4vw 6vw;
     color: white;
-  }
-  article {
-    &.updated {
-      position: relative;
-
-      &::before {
-        content: '';
-        display: block;
-        width: 1vw;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        @include background-color(100%, 91%);
-      }
-    }
-    &:last-child {
-      border-bottom: none;
-    }
   }
   p.details {
     margin-top: 0.4rem;
@@ -48,7 +31,8 @@ body[data-controller="discussion"] {
 
 }
 
-body[data-controller="announcements"] {
+body[data-controller="announcements"],
+body[data-controller="private-topics"] {
 
   nav.actions {
     padding-bottom: 0;

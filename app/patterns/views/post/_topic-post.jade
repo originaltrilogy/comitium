@@ -9,18 +9,18 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
     != post.html
   nav.actions
     ul
-      li.reply
-        a(href="#{route.pathname}/action/reply") Reply
+      //- li.reply
+      //-   a(href="#{route.pathname}/action/reply") Reply
       li.quote
         a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
-      li.bookmark
-        a(href="post/#{post.id}/action/bookmark") Bookmark
-      if post.authorID !== session.userID
-        li.report
-          a(href="post/#{post.id}/action/report") Report
       if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
         li.edit
           a(href="post/#{post.id}/action/edit") Edit
+      li.bookmark
+        a(href="post/#{post.id}/action/bookmark") Bookmark
+      if post.authorID !== session.userID && !session.moderateDiscussions
+        li.report
+          a(href="post/#{post.id}/action/report") Report
       if session.moderateDiscussions
         if post.lockedByID === 0
           li.lock
@@ -29,4 +29,4 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
           li.unlock
             a(href="post/#{post.id}/action/unlock") Unlock
         li.delete
-          a(href="#post/#{post.id}/action/trash") Delete
+          a(href="post/#{post.id}/action/trash") Delete

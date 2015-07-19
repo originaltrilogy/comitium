@@ -14,8 +14,9 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
           a(href="post/#{post.id}/action/edit") Edit
       li.bookmark
         a(href="post/#{post.id}/action/bookmark") Bookmark
-      li.report
-        a(href="post/#{post.id}/action/report") Report
+      if post.authorID !== session.userID && !session.moderateDiscussions
+        li.report
+          a(href="post/#{post.id}/action/report") Report
       if session.moderateDiscussions
         if post.lockedByID === 0
           li.lock
@@ -24,4 +25,4 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
           li.unlock
             a(href="post/#{post.id}/action/unlock") Unlock
         li.delete
-          a(href="#post/#{post.id}/action/trash") Delete
+          a(href="post/#{post.id}/action/trash") Delete

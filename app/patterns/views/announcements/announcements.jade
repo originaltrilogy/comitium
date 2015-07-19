@@ -8,13 +8,15 @@ if url.page === 1 && discussion.description
 include ../partials/pagination
           
 section.topics
-  nav.actions
-    ul
-      if session.moderateDiscussions
+  //- Remove this logic and put it back above li.new-announcement after the subscribe functionality is working
+  if session.moderateDiscussions
+    nav.actions
+      ul
+        //- if session.moderateDiscussions
         li.new-announcement
           a(href="announcement/action/start") Make an announcement
-      //- li.subscribe
-      //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
+        //- li.subscribe
+        //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
   if topics
     each topic in topics
       article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")

@@ -4,15 +4,17 @@ post view (shared)
 
 article.post {
   padding: 0;
-  border: none;
 
   h2 {
     position: relative;
-    margin: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
     padding-top: 4vw;
     padding-bottom: 4vw;
     padding-left: 28vw;
     text-align: left;
+    @include background-color(14%, 30%);
 
     img {
       position: absolute;
@@ -23,6 +25,26 @@ article.post {
       display: block;
       font-family: $defaultFont;
       font-size: 4vw;
+    }
+  }
+
+  .content {
+    margin-bottom: 8vw;
+  }
+
+  .actions {
+    ul {
+      text-align: right;
+    }
+    li {
+      margin-right: 0.6vw;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    a {
+      @include button('small', 'dark');
     }
   }
 }
