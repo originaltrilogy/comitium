@@ -24,7 +24,9 @@ Issues
 - Social / sharing
 - Footer
 - "New messages" indicator for private topics in top right corner
-- Terms of Service
+- Content pages
+  - Terms of Service
+  - Help
 - Password show/hide button on register, account, and password reset pages
   - Remove password verification field from password reset page when this is done
 - Select input styles
@@ -40,7 +42,7 @@ Issues
 - Set cache lifespans
 - Require password authentication to post/reply/etc., but add a setting to disable it
 - Subscriptions manager (topics and discussions)
-- Bookmarks pattern
+- Bookmarks manager
 - Collapse quotes in posts to a few lines with a "view more..." link to reveal the entire quote
 - E-mail content and styles
 	- Registration activation
@@ -67,9 +69,6 @@ Issues
 - Topic lock notification at the top of the topic page needs to be styled
 - "Subscribe to this discussion"
 - Announcements: if "Show it within the following forums" is selected, verify that at least one discussion is selected in the form validation.
-- Styles for discussion template to show topics that have been updated since last visit
-- Logic for discussions template to show discussions that have been updated since last visit
 - When implementing inline editing and replying, gzip content so it can be passed via URL (https://github.com/dankogai/js-deflate)
-- Visiting the base URL (http://192.168.1.12/) starts a new session because the existing cookies aren't valid for that path, rendering the user unauthenticated even after returning to the /forum path.
+- Visiting the base URL starts a new session because the existing cookies aren't valid for that path, rendering the user unauthenticated even after returning to the /forum path.
 - Replace current page in pagination with select menu that allows direct access to individual pages
-- Alternate action menus: instead of a sliding menu, just overflow the menu items outside the viewport and let users hold and drag the buttons back and forth (like the Worthington timeline)
