@@ -1,11 +1,15 @@
 create table "users" (
   "id" serial not null,
   "groupID" integer not null,
-  "username" text unique not null,
+  -- Make username unique for final script
+  -- "username" text unique not null,
+  "username" text not null,
   "usernameHash" text not null,
   "passwordHash" text not null,
   "url" text not null,
-  "email" text unique not null,
+  -- Make email unique for final script
+  -- "email" text unique not null,
+  "email" text not null,
   "timezone" text not null,
   "dateFormat" text not null,
   "theme" text not null,

@@ -2,16 +2,30 @@
 Migration order:
 
 1. Users
-  - Check for duplicate accounts and manually delete them:
-    select "id", "username", "joinDate", "lastActivity" from "users" where "email" in (
-      SELECT "email"
-      FROM "users"
-      GROUP BY "email"
-      HAVING ( COUNT("email") > 1 )
-    )
-    order by "username" asc, "lastActivity" desc;
-
   - users.sql
+  - Check for duplicate usernames and e-mails and manually delete/update them:
+
+--    delete from "users" where "id" = 8398;
+--
+--    select "id", "username", "email", "joinDate", "lastActivity" from "users" where "username" in (
+--          SELECT "username"
+--          FROM "users"
+--          GROUP BY "username"
+--          HAVING ( COUNT("username") > 1 )
+--        )
+--    order by "username", "joinDate" asc;
+
+
+--    update "users" set "email" = 'invalid@invalid5674.com' where "id" = 5674;
+--
+--    select "id", "username", "email", "joinDate", "lastActivity" from "users" where "email" in (
+--          SELECT "email"
+--          FROM "users"
+--          GROUP BY "email"
+--          HAVING ( COUNT("email") > 1 )
+--        )
+--    order by "email", "joinDate" asc;
+
   - user-url-slug-generation.js
   - user-hash-generation.js
 

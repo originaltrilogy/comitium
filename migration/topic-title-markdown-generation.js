@@ -13,7 +13,7 @@ CTZN.config.citizen.requestTimeout = 60000000;
 app.listen('waterfall', {
   methodGroup: function (emitter) {
     var methodGroup = {},
-        toMarkdown = require('to-markdown').toMarkdown;
+        toMarkdown = require('to-markdown');
 
     pg.connect(connectionString, function (err, client, done) {
       if ( err ) {
