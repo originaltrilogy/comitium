@@ -664,6 +664,7 @@ drop function cleanup();
 
 -- Column settings after migration
 
+alter table "users" add unique ("username"), add unique ("email");
 alter table "topics" alter column "discussionID" set not null;
 alter table "topics" alter column "firstPostID" set not null;
 alter table "topics" alter column "lastPostID" set not null;

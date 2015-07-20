@@ -13,7 +13,7 @@ CTZN.config.citizen.requestTimeout = 60000000;
 app.listen('waterfall', {
   methodGroup: function (emitter) {
     var methodGroup = {},
-        toMarkdown = require('to-markdown').toMarkdown;
+        toMarkdown = require('to-markdown');
 
     pg.connect(connectionString, function (err, client, done) {
       if ( err ) {
@@ -30,7 +30,15 @@ app.listen('waterfall', {
               result.rows.forEach( function (item, index, array) {
 
                 methodGroup['row' + item.id] = function (emitter) {
-                  var postMarkdown = toMarkdown(item.html !== null ? item.html.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : ' ');
+                  var postMarkdown;
+
+                  try {
+                    postMarkdown = toMarkdown(item.html !== null ? item.html.replace(/ data-ft="{&quot;tn&quot;:&quot;K&quot;}"/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&') : ' ');
+                  } catch ( err ) {
+                    console.log(item.id + ':');
+                    console.log(item.html);
+                    emitter.emit('error', err);
+                  }
 
                   pg.connect(connectionString, function (err, client, done) {
                     if ( err ) {
@@ -72,75 +80,3 @@ app.listen('waterfall', {
     console.log('not done yet');
   }
 });
-
-
-
-// app.listen('waterfall', {
-//   methodGroup: function (emitter) {
-//     var methodGroup = {},
-//         toMarkdown = require('to-markdown').toMarkdown,
-//         count = 0;
-//
-//     pg.connect(connectionString, function (err, client, done) {
-//       if ( err ) {
-//         emitter.emit('error', err);
-//       } else {
-//         client.query(
-//           'select id, html from posts where markdown is null;',
-//           function (err, result) {
-//             var postCount = result.rows.length;
-//
-//             done();
-//             if ( err ) {
-//               emitter.emit('error', err);
-//             } else {
-//               console.log(postCount + ' posts to process');
-//               result.rows.forEach( function (item, index, array) {
-//                 var postMarkdown = toMarkdown(item.html || '');
-//
-//                 methodGroup['row' + item.id] = function (emitter) {
-//
-//                   pg.connect(connectionString, function (err, client, done) {
-//
-//                     if ( err ) {
-//                       emitter.emit('error', err);
-//                     } else {
-//                       client.query(
-//                         'update posts set markdown = $1 where id = $2;',
-//                         [ postMarkdown, item.id ],
-//                         function (err, result) {
-//                           count += 1;
-//                           if ( count % 1000 === 0 ) {
-//                             console.log((postCount - count ) + ' remaining...');
-//                           }
-//                           done();
-//                           if ( err ) {
-//                             console.log(err);
-//                             emitter.emit('error', {
-//                               message: 'Error: ' + item.id
-//                             });
-//                           } else {
-//                             emitter.emit('ready');
-//                           }
-//                         }
-//                       );
-//                     }
-//                   });
-//                 };
-//               });
-//               emitter.emit('ready', methodGroup);
-//             }
-//           }
-//         );
-//       }
-//     });
-//   },
-//   update: function (previous, emitter) {
-//     console.log('running updates...');
-//     app.listen(previous.methodGroup, function (output) {
-//       emitter.emit('ready');
-//     });
-//   }
-// }, function (output) {
-//   console.log('post content markdown done');
-// });

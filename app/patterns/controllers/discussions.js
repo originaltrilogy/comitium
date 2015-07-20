@@ -21,14 +21,13 @@ function handler(params, context, emitter) {
         if ( output.categories.hasOwnProperty(category) ) {
           for ( var discussion in output.categories[category].discussions ) {
             if ( output.categories[category].discussions.hasOwnProperty(discussion) ) {
-              if ( app.toolbox.moment(output.categories[category].discussions[discussion].lastPostDate).isAfter(params.session.lastActivity) ) {
+              if ( output.categories[category].discussions[discussion].lastPostAuthorID !== params.session.userID && app.toolbox.moment(output.categories[category].discussions[discussion].lastPostDate).isAfter(params.session.lastActivity) ) {
                 output.categories[category].discussions[discussion].updated = true;
               }
             }
           }
         }
       }
-      console.log(output.categories);
 
       emitter.emit('ready', {
         content: {

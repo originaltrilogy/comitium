@@ -28,4 +28,4 @@ each category in categories
             dd.last-post
               time #{discussion.lastPostDateFormatted}
               |  by 
-              a(href="user/#{discussion.lastPostAuthorUrlUsername}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+              a(href="user/#{discussion.lastPostAuthorUrlUsername}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
