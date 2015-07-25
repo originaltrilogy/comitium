@@ -9,61 +9,55 @@ module.exports = {
 
 function handler(params, context, emitter) {
 
-  app.listen({
+  app.listen('waterfall', {
     access: function (emitter) {
       app.toolbox.access.privateTopicsView({
         user: params.session
       }, emitter);
     }
   }, function (output) {
-
-    params.url.page = params.url.page || 1;
-
     if ( output.listen.success ) {
+      if ( output.access === true ) {
+        params.url.page = params.url.page || 1;
 
-      app.listen({
-        stats: function (emitter) {
-          app.models['private-topics'].stats(params.session.userID, emitter);
-        },
-        topics: function (emitter) {
-          var start = ( params.url.page - 1 ) * 25,
-              end = start + 25;
-          app.models['private-topics'].topics({
-            userID: params.session.userID,
-            start: start,
-            end: end
-          }, emitter);
-        }
-      }, function (output) {
-        var content = {};
-
-        if ( output.listen.success ) {
-
-          content = {
-            pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, output.stats.topics)
-          };
-
-          if ( output.topics && app.size(output.topics) ) {
-            content.topics = output.topics;
+        app.listen({
+          stats: function (emitter) {
+            app.models['private-topics'].stats(params.session.userID, emitter);
+          },
+          topics: function (emitter) {
+            var start = ( params.url.page - 1 ) * 25,
+                end = start + 25;
+            app.models['private-topics'].topics({
+              userID: params.session.userID,
+              start: start,
+              end: end
+            }, emitter);
           }
+        }, function (output) {
+          var content = {};
 
-          emitter.emit('ready', {
-            content: content
-          });
+          if ( output.listen.success ) {
+            content = {
+              pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, output.stats.topics)
+            };
 
-        } else {
+            if ( output.topics && app.size(output.topics) ) {
+              content.topics = output.topics;
+            }
 
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
+            emitter.emit('ready', {
+              content: content
+            });
+          } else {
+            emitter.emit('error', output.listen);
+          }
+        });
+      } else {
+        emitter.emit('ready', output.access);
+      }
     } else {
-
       emitter.emit('error', output.listen);
-
     }
-
   });
+
 }
