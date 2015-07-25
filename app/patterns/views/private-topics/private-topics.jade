@@ -12,22 +12,22 @@ section.topics
 
 include ../partials/pagination
 
-  if topics
-    each topic in topics
-      article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")
-        h3
-          a(href="topic/#{topic.url}/id/#{topic.id}") #{topic.titleHtml}
-        p.details
-          a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
-          |  &mdash;
-          time #{topic.postDateFormatted}
-        p.stats
-          span.replies #{topic.repliesFormatted} 
-          | replies 
-          time (last on #{topic.lastPostDateFormatted})
-        if topic.unreadPosts
-          a(href="topic/#{topic.url}/id/#{topic.id}/unread/true") First unread post
-  else
-    p You're not participating in any private topics.
+if topics
+  each topic in topics
+    article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")
+      h3
+        a(href="topic/#{topic.url}/id/#{topic.id}") #{topic.titleHtml}
+      p.details
+        a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+        |  &mdash;
+        time #{topic.postDateFormatted}
+      p.stats
+        span.replies #{topic.repliesFormatted} 
+        | replies 
+        time (last on #{topic.lastPostDateFormatted})
+      if topic.unreadPosts
+        a(href="topic/#{topic.url}/id/#{topic.id}/unread/true") First unread post
+else
+  p You're not participating in any private topics.
 
 include ../partials/pagination
