@@ -3,7 +3,7 @@ post view (shared)
 -------------------*/
 
 article.post {
-  padding: 0;
+  padding: 0 0 10vw;
 
   h2 {
     position: relative;
@@ -11,7 +11,7 @@ article.post {
     margin-right: 0;
     margin-top: 0;
     overflow: auto;
-    font-size: 100%;
+    font-size: 110%;
     text-align: left;
     @include background-color(14%, 24%);
 

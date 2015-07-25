@@ -7,9 +7,6 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
       = post.dateCreated
   .content
     != post.html
-  if post.authorSignature
-    .signature
-      != post.authorSignature
   nav.actions
     ul
       if !topic.lockedByID || session.moderateDiscussions
@@ -34,3 +31,6 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
             a(href="post/action/unlock/id/#{post.id}") Unlock
         li.delete
           a(href="post/action/trash/id/#{post.id}") Delete
+  if post.authorSignature
+    .signature
+      != post.authorSignature

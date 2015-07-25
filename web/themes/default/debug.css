@@ -1005,14 +1005,14 @@ body[data-controller="topic"][data-view="private-topic"] ul.participants {
 post view (shared)
 -------------------*/
 article.post {
-  padding: 0; }
+  padding: 0 0 10vw; }
   article.post h2 {
     position: relative;
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
     overflow: auto;
-    font-size: 100%;
+    font-size: 110%;
     text-align: left;
     background-color: #353946; }
     article.post h2 img {

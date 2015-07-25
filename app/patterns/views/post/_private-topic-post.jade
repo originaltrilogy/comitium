@@ -7,9 +7,6 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
       = post.dateCreated
   .content
     != post.html
-  if post.authorSignature
-    .signature
-      != post.authorSignature
   nav.actions
     ul
       if !topic.lockedByID
@@ -22,3 +19,6 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
           a(href="post/action/edit/id/#{post.id}") Edit
       li.bookmark
         a(href="post/action/bookmark/id/#{post.id}") Bookmark
+  if post.authorSignature
+    .signature
+      != post.authorSignature
