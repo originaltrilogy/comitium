@@ -1,5 +1,6 @@
 app/config/*
 app/logs/*
+migration/
 .DS_Store
 node_modules
 .sass-cache
