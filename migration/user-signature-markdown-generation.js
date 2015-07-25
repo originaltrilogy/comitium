@@ -20,36 +20,36 @@ app.listen('waterfall', {
         emitter.emit('error', err);
       } else {
         client.query(
-          'select "id", "html" from "posts" where "markdown" = \' \' order by "id" desc limit 15000;',
+          'select "id", "signatureHtml" from users where "signatureMarkdown" = \'\' order by id asc;',
           function (err, result) {
             done();
             if ( err ) {
               emitter.emit('error', err);
             } else {
-              console.log(result.rows.length + ' posts to process');
+              console.log(result.rows.length + ' signatures to process');
               result.rows.forEach( function (item, index, array) {
-
                 methodGroup['row' + item.id] = function (emitter) {
-                  var postMarkdown;
-
-                  try {
-                    postMarkdown = toMarkdown(item.html !== null ? item.html.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : ' ');
-                  } catch ( err ) {
-                    postMarkdown = item.html;
-                  }
-
                   pg.connect(connectionString, function (err, client, done) {
+                    var signatureMarkdown;
+
+                    try {
+                      signatureMarkdown = toMarkdown(item.signatureHtml !== null ? item.signatureHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : '');
+                    } catch ( err ) {
+                      signatureMarkdown = item.signatureHtml;
+                    }
+
                     if ( err ) {
-                      console.log('error');
                       emitter.emit('error', err);
                     } else {
                       client.query(
-                        'update "posts" set "markdown" = $1 where "id" = $2;',
-                        [ postMarkdown, item.id ],
+                        'update "users" set "signatureMarkdown" = $1 where "id" = $2;',
+                        [ signatureMarkdown, item.id ],
                         function (err, result) {
                           done();
                           if ( err ) {
-                            emitter.emit('error', err);
+                            emitter.emit('error', {
+                              message: 'Error: ' + item.id
+                            });
                           } else {
                             emitter.emit('ready');
                           }
@@ -67,14 +67,15 @@ app.listen('waterfall', {
     });
   },
   update: function (previous, emitter) {
+    console.log('running updates...');
     app.listen(previous.methodGroup, function (output) {
       emitter.emit('ready');
     });
   }
 }, function (output) {
   if ( output.listen.success ) {
-    console.log('post markdown update done');
+    console.log('user signature markdown done');
   } else {
-    console.log('not done yet');
+    console.log(output.listen);
   }
 });

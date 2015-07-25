@@ -1,5 +1,5 @@
-h1 Post by <a href="user/#{post.authorUrl}/id/#{post.authorID}">#{post.author}</a>
-
-p Parent topic: <a href="#{post.topicLink}">#{post.topicTitle}</a>
+section.summary
+  h1 Post by <a href="user/#{post.authorUrl}/id/#{post.authorID}">#{post.author}</a>
+  p Parent topic: <a href="#{post.topicLink}">#{post.topicTitle}</a>
 
 include _post

@@ -28,6 +28,7 @@ Migration order:
 
   - user-url-slug-generation.js
   - user-hash-generation.js
+  - user-signature-markdown-generation.js
 
 2. Topics
   - topics.sql

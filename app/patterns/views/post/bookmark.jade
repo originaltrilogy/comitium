@@ -1,7 +1,9 @@
-h1 Bookmark a Post
+section.summary
+  h1 Bookmark a post
+  p You can save posts in your forum bookmarks so you can find them quickly later.
     
 section.post-bookmark-form
-  form#post-bookmark-form(action="post/#{url.post}/action/bookmarkForm" method="post" novalidate)
+  form#post-bookmark-form(action="post/id/#{url.id}/action/bookmarkForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul

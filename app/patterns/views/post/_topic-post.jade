@@ -7,26 +7,30 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
       = post.dateCreated
   .content
     != post.html
+  if post.authorSignature
+    .signature
+      != post.authorSignature
   nav.actions
     ul
-      //- li.reply
-      //-   a(href="#{route.pathname}/action/reply") Reply
-      li.quote
-        a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
-      if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
+      if !topic.lockedByID || session.moderateDiscussions
+        //- li.reply
+        //-   a(href="#{route.pathname}action/reply") Reply
+        li.quote
+          a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
+      if ( session.username === post.author && !post.lockedByID && !topic.lockedByID ) || session.moderateDiscussions
         li.edit
-          a(href="post/#{post.id}/action/edit") Edit
+          a(href="post/action/edit/id/#{post.id}") Edit
       li.bookmark
-        a(href="post/#{post.id}/action/bookmark") Bookmark
+        a(href="post/action/bookmark/id/#{post.id}") Bookmark
       if post.authorID !== session.userID && !session.moderateDiscussions
         li.report
-          a(href="post/#{post.id}/action/report") Report
+          a(href="post/action/report/id/#{post.id}") Report
       if session.moderateDiscussions
         if post.lockedByID === 0
           li.lock
-            a(href="post/#{post.id}/action/lock") Lock
+            a(href="post/action/lock/id/#{post.id}") Lock
         else
           li.unlock
-            a(href="post/#{post.id}/action/unlock") Unlock
+            a(href="post/action/unlock/id/#{post.id}") Unlock
         li.delete
-          a(href="post/#{post.id}/action/trash") Delete
+          a(href="post/action/trash/id/#{post.id}") Delete

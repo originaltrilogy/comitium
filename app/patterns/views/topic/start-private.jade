@@ -1,4 +1,7 @@
-h1 Start a new private topic
+section.summary
+  h1 Start a new private topic
+  if !preview
+    p When you start a private topic, only members you invite can see the topic and reply. Invite a single member for a private conversation or several members for a private group discussion.
 
 if preview
   section.preview
@@ -10,7 +13,6 @@ if preview
         != preview.content
           
 section.topic-write-form
-  p When you start a private topic, only those you invite can see the topic and reply. Invite a single member for a private conversation or several members for a private group discussion.
   form#topic-write-form(action="topic/action/startPrivateForm" method="post" novalidate)
     if topic && topic.message
       .messages
@@ -22,7 +24,7 @@ section.topic-write-form
           label(for="invitees")
             | Invitees
           p.label-note
-            | To invite multiple participants, put each member's username on its own line. You can also send invitations after starting the topic.
+            | To invite multiple participants, put each member's username on its own line.<!-- You can also send invitations after starting the topic. -->
           textarea(id="invitees" name="invitees" rows="2" required) #{form.invitees}
         li.topic-title.text.required
           label(for="topic-title")

@@ -1,4 +1,7 @@
-h1 Edit a Post
+section.summary
+  h1 Edit a post
+  if !preview
+    p Your changes will appear immediately. The post's current state will be saved in its history and be recovered later.
 
 if preview
   section.preview
@@ -8,7 +11,7 @@ if preview
         != preview.content
           
 section.post-edit-form
-  form#post-edit-form(action="post/#{url.post}/action/editForm" method="post" novalidate)
+  form#post-edit-form(action="post/id/#{url.id}/action/editForm" method="post" novalidate)
     if edit && edit.message
       .edit-messages
         ul

@@ -204,11 +204,13 @@ function info(topicID, emitter) {
 
       if ( output.listen.success ) {
         // Cache the topic info object for future requests
-        app.cache.set({
-          scope: scope,
-          key: cacheKey,
-          value: output.topic[0]
-        });
+        if ( !app.cache.get({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            scope: scope,
+            key: cacheKey,
+            value: output.topic[0]
+          });
+        }
 
         emitter.emit('ready', output.topic[0]);
       } else {
@@ -497,7 +499,7 @@ function posts(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl" ' +
+              'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
               'from posts p ' +
               'inner join users u on p."userID" = u.id ' +
               'where p."topicID" = $1 and p.draft = false ' +

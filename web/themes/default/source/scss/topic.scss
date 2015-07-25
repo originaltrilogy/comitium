@@ -15,10 +15,10 @@ body[data-controller="announcement"] {
       background: none;
 
       &:before {
-        background-image: linear-gradient(to right, hsl(226, 13%, 33%), hsla(226, 13%, 33%, 0));
+        background-image: linear-gradient(to right, hsl(226, 12%, 30%), hsla(226, 12%, 30%, 0));
       }
       &:after {
-        background-image: linear-gradient(to left, hsl(226, 13%, 33%), hsla(226, 13%, 33%, 0));
+        background-image: linear-gradient(to left, hsl(226, 12%, 30%), hsla(226, 12%, 30%, 0));
       }
     }
   }

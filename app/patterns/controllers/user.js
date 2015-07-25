@@ -6,7 +6,7 @@ module.exports = {
   handler: handler,
   activate: activate,
   ban: ban,
-  unban: unban,
+  liftBan: liftBan,
   edit: edit,
   editForm: editForm
 };
@@ -59,6 +59,7 @@ function handler(params, context, emitter) {
 
 
 function activate(params, context, emitter) {
+
   app.listen({
     activate: function (emitter) {
       app.models.user.activate({
@@ -67,35 +68,25 @@ function activate(params, context, emitter) {
       }, emitter);
     }
   }, function (output) {
-
     if ( output.listen.success ) {
-
       if ( output.activate.success || ( !output.activate.success && output.activate.reason === 'accountAlreadyActivated' ) ) {
-
         emitter.emit('ready', {
-          content: output,
           view: 'activate',
+          content: output,
           handoff: {
             controller: 'sign-in',
             view: 'sign-in-partial'
           }
         });
-
       } else {
-
         emitter.emit('ready', {
-          content: output,
-          view: 'activate'
+          view: 'activate',
+          content: output
         });
-
       }
-
     } else {
-
       emitter.emit('error', output.listen);
-
     }
-
   });
 
 }
@@ -104,98 +95,91 @@ function activate(params, context, emitter) {
 
 function ban(params, context, emitter) {
 
-  if ( params.session.moderateUsers ) {
-
-    app.listen('waterfall', {
-      user: function (emitter) {
-        app.models.user.info({
-          user: params.url.user
-        }, emitter);
-      },
-      banUser: function (previous, emitter) {
-        if ( previous.user.group === 'Administrators' ) {
-          emitter.emit('error', {
-            statusCode: 403,
-            message: 'Administrators can\'t be banned.'
-          });
-        } else if ( previous.user.group === 'Moderators' && params.session.group !== 'Administrators' ) {
-          emitter.emit('error', {
-            statusCode: 403,
-            message: 'Only an administrator can ban a moderator.'
-          });
-        } else {
-          app.models.user.ban({
-            user: params.url.user
-          }, emitter);
-        }
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.userBan({
+        userID: params.url.id,
+        user: params.session
+      }, emitter);
+    },
+    proceed: function (previous, emitter) {
+      if ( previous.access === true ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('end', false);
       }
-    }, function (output) {
-      if ( output.listen.success ) {
-        app.session.end('userID', output.user.id);
+    },
+    user: function (previous, emitter) {
+      app.models.user.info({
+        userID: params.url.id
+      }, emitter);
+    },
+    banUser: function (previous, emitter) {
+      app.models.user.ban({
+        userID: params.url.id
+      }, emitter);
+      // End the user's session immediately
+      app.session.end('userID', previous.user.id);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.access === true ) {
         emitter.emit('ready', {
           redirect: params.request.headers.referer
         });
       } else {
-        emitter.emit('error', output.listen);
+        emitter.emit('ready', output.access);
       }
-    });
-
-  } else {
-
-    emitter.emit('error', {
-      statusCode: 403
-    });
-
-  }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 
 }
 
 
 
-function unban(params, context, emitter) {
+function liftBan(params, context, emitter) {
 
-  if ( params.session.moderateUsers ) {
-
-    app.listen('waterfall', {
-      user: function (emitter) {
-        app.models.user.info({
-          user: params.url.user
-        }, emitter);
-      },
-      unbanUser: function (previous, emitter) {
-        if ( previous.user.group === 'Administrators' && params.session.group !== 'Administrators' ) {
-          emitter.emit('error', {
-            statusCode: 403,
-            message: 'Only an administrator can lift a ban on another administator.'
-          });
-        } else if ( previous.user.group === 'Moderators' && params.session.group !== 'Administrators' ) {
-          emitter.emit('error', {
-            statusCode: 403,
-            message: 'Only an administrator can lift a ban on a moderator.'
-          });
-        } else {
-          app.models.user.unban({
-            user: params.url.user
-          }, emitter);
-        }
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.userBan({
+        userID: params.url.id,
+        user: params.session
+      }, emitter);
+    },
+    proceed: function (previous, emitter) {
+      if ( previous.access === true ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('end', false);
       }
-    }, function (output) {
-      if ( output.listen.success ) {
+    },
+    user: function (previous, emitter) {
+      app.models.user.info({
+        userID: params.url.id
+      }, emitter);
+    },
+    liftBan: function (previous, emitter) {
+      app.models.user.liftBan({
+        userID: params.url.id
+      }, emitter);
+      // End the user's session immediately
+      app.session.end('userID', previous.user.id);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.access === true ) {
         emitter.emit('ready', {
           redirect: params.request.headers.referer
         });
       } else {
-        emitter.emit('error', output.listen);
+        emitter.emit('ready', output.access);
       }
-    });
-
-  } else {
-
-    emitter.emit('error', {
-      statusCode: 403
-    });
-
-  }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 
 }
 
@@ -218,7 +202,7 @@ function edit(params, context, emitter) {
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( !output.access.redirect ) {
+      if ( output.access === true ) {
         emitter.emit('ready', {
           view: 'edit'
         });

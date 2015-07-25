@@ -1,4 +1,5 @@
-h1 Discussion Categories
+section.summary
+  h1 Discussion Categories
 
 //- if session.talkPrivately
 //-   section.category.private-topics
@@ -28,4 +29,4 @@ each category in categories
             dd.last-post
               time #{discussion.lastPostDateFormatted}
               |  by 
-              a(href="user/#{discussion.lastPostAuthorUrlUsername}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+              a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}

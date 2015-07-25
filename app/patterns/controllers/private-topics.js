@@ -11,7 +11,9 @@ function handler(params, context, emitter) {
 
   app.listen({
     access: function (emitter) {
-      app.toolbox.access.privateTopicsView(params.session, emitter);
+      app.toolbox.access.privateTopicsView({
+        user: params.session
+      }, emitter);
     }
   }, function (output) {
 

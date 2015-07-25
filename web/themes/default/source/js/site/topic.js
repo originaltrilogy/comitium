@@ -13,14 +13,12 @@ OT.topic = ( function (Modernizr, OT) {
         // OT.global.ajaxFormBinding({
         //   formSelector: '#topic-write-form'
         // });
-        // methods.postContent();
       },
 
       reply: function () {
         // OT.global.ajaxFormBinding({
         //   formSelector: '#topic-reply-form'
         // });
-        // methods.postContent();
       },
 
 		},
@@ -28,7 +26,7 @@ OT.topic = ( function (Modernizr, OT) {
     methods = {
 
 			init: function () {
-
+        methods.postContent();
 			},
 
       // topicMenu: function () {
@@ -80,3 +78,7 @@ OT.topic = ( function (Modernizr, OT) {
 	};
 
 })(Modernizr, OT);
+
+
+// For now, the announcement library is the same as the topic library
+OT.announcement = OT.topic;

@@ -1,13 +1,12 @@
-h1
-  != topic.titleHtml
+section.summary
+  h1 !{topic.titleHtml}
 
-p.private-notice This topic is private and only visible to:
-
-ul.participants
-  each user in invitees
-    li
-      a(href="user/#{user.username}/id/#{user.id}")
-        = user.username
+section.notice This topic is private and only visible to:
+  ul.participants
+    each user in invitees
+      li
+        a(href="user/#{user.username}/id/#{user.id}")
+          = user.username
 
 include ../partials/pagination
 
@@ -30,3 +29,26 @@ section.posts
     p This topic has no replies. <a href="topic/action/reply/id/#{topic.id}">Why not weigh in?</a>
 
 include ../partials/pagination
+
+if userCanReply
+  section.quick-reply-form
+    h2 Quick reply
+    form#quick-reply-form(action="topic/id/#{url.id}/action/replyForm" method="post" novalidate)
+      .data
+        ul
+          li.post-content.textarea.required
+            label(for="post-content")
+              | Post content
+            textarea(id="post-content" name="content" rows="10" required) #{config.comitium.editorIntro}
+          li.subscribe.checkbox
+            input(id="subscribe" name="subscribe" type="checkbox" value="true")
+            label(for="subscribe")
+              | Notify me when someone replies
+      .actions
+        ul
+          li.secondary.preview
+            input(name="formAction" type="submit" value="Preview")
+          li.primary.reply
+            input(name="formAction" type="submit" value="Post your reply")
+          //- li.tertiary.draft
+          //-   input(name="formAction" type="submit" value="Save as draft")

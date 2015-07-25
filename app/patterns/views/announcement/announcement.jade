@@ -1,7 +1,8 @@
-h1 Announcement: #{topic.titleHtml}
+section.summary
+  h1 Announcement: !{topic.titleHtml}
 
 if topic.lockedByID
-  .notice.locked
+  section.notice.locked
     if !session.moderateDiscussions
       p This topic is locked.
     else
@@ -16,23 +17,23 @@ nav.topic.actions
   ul
     if topic.discussionID !== 1
       li.reply
-        a(href="#{route.pathname}/action/reply") Reply
+        a(href="announcement/action/reply/id/#{url.id}") Reply
       if !userIsSubscribed
         li.subscribe
-          a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when people reply to this topic.") Subscribe
+          a(href="announcement/action/subscribe/id/#{url.id}" title="Receive an e-mail notification when people reply to this topic.") Subscribe
       else
         li.unsubscribe
-          a(href="#{route.pathname}/action/unsubscribe" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
+          a(href="announcement/action/unsubscribe/id/#{url.id}" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
     if session.moderateDiscussions
       if topic.discussionID !== 1
         if !topic.lockedByID
           li.lock
-            a(href="#{route.pathname}/action/lock" title="Lock this topic (no replies or edits).") Lock
+            a(href="announcement/action/lock/id/#{url.id}" title="Lock this topic (no replies or edits).") Lock
         else
           li.unlock
-            a(href="#{route.pathname}/action/unlock" title="Unlock this topic.") Unlock
+            a(href="announcement/action/unlock/id/#{url.id}" title="Unlock this topic.") Unlock
         li.delete
-          a(href="#{route.pathname}/action/trash" title="Move this topic to the trash.") Delete
+          a(href="announcement/action/trash/id/#{url.id}" title="Move this topic to the trash.") Delete
   
 include ../partials/pagination
           
@@ -44,3 +45,26 @@ section.posts
     p This topic has no replies. <a href="announcement/action/reply/id/#{topic.id}">Why not weigh in?</a>
 
 include ../partials/pagination
+
+if userCanReply
+  section.quick-reply-form
+    h2 Quick reply
+    form#quick-reply-form(action="announcement/id/#{url.id}/action/replyForm" method="post" novalidate)
+      .data
+        ul
+          li.post-content.textarea.required
+            label(for="post-content")
+              | Post content
+            textarea(id="post-content" name="content" rows="10" required) #{config.comitium.editorIntro}
+          li.subscribe.checkbox
+            input(id="subscribe" name="subscribe" type="checkbox" value="true")
+            label(for="subscribe")
+              | Notify me when someone replies
+      .actions
+        ul
+          li.secondary.preview
+            input(name="formAction" type="submit" value="Preview")
+          li.primary.reply
+            input(name="formAction" type="submit" value="Post your reply")
+          //- li.tertiary.draft
+          //-   input(name="formAction" type="submit" value="Save as draft")

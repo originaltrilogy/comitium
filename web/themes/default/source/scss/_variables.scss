@@ -55,11 +55,11 @@ $hue: 226;
   }
 
   @if $color == 'light' {
-    @include color(14%, 28%);
-    @include background-color(100%, 91%);
+    @include color(14%, 25%);
+    @include background-color(100%, 90%);
   } @else if $color == 'dark' {
-    @include color(100%, 91%);
-    @include background-color(14%, 28%);
+    @include color(100%, 90%);
+    @include background-color(14%, 25%);
   }
 }
 

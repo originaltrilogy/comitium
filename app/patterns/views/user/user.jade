@@ -1,24 +1,31 @@
-h1 User Profile: #{user.username}
+section.summary
+  h1 #{user.username}
+  if user.signatureHtml
+    p !{user.signatureHtml}
+
+if user.group === "Banned Users"
+  section.notice
+    p This user has been banned.
 
 if talkPrivately || editProfile || banUser
   nav.actions
     ul
       if talkPrivately
         li.private-topic
-          a(href="private-topic/action/start/invitee/#{url.user}") Start a private topic
+          a(href="topic/action/startPrivate/invitee/#{user.id}") Start a private topic
       if editProfile
         li.edit
-          a(href="#{route.pathname}/action/edit") Edit profile
+          a(href="user/action/edit/id/#{user.id}") Edit profile
       if banUser
         if user.group !== "Banned Users"
           li.ban
-            a(href="#{route.pathname}/action/ban") Ban this user
+            a(href="user/action/ban/id/#{user.id}") Ban this user
         else
           li.unban
-            a(href="#{route.pathname}/action/unban") Unban this user
+            a(href="user/action/liftBan/id/#{user.id}") Lift ban
 
 section.bio
-  img(src="users/avatars/#{user.url}-#{user.id}.jpg")
+  img(src="users/avatars/#{user.id}.jpg")
   .signature !{user.signatureHtml}
   dl
     dt User Group

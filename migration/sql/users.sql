@@ -65,7 +65,7 @@ select
   "vchUserDateFormat",
   'Default',
   "vchForumSignature",
-  "vchForumSignature",
+  '',
   "dteLastActivityDate",
   "dteUserJoinDate",
   "vchUserHomePage",

@@ -8,7 +8,7 @@ module.exports = {
   activityUpdate: activityUpdate,
   authenticate: authenticate,
   ban: ban,
-  unban: unban,
+  liftBan: liftBan,
   create: create,
   emailExists: emailExists,
   exists: exists,
@@ -276,8 +276,8 @@ function ban(args, emitter) {
     } else {
 
       client.query(
-        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Users\' ) where "url" = $1;',
-        [ args.user ],
+        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Users\' ) where "id" = $1;',
+        [ args.userID ],
         function (err, result) {
           done();
           if ( err ) {
@@ -297,15 +297,15 @@ function ban(args, emitter) {
 
 
 
-function unban(args, emitter) {
+function liftBan(args, emitter) {
   app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
 
       client.query(
-        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'New Members\' ) where "url" = $1;',
-        [ args.user ],
+        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'New Members\' ) where "id" = $1;',
+        [ args.userID ],
         function (err, result) {
           done();
           if ( err ) {

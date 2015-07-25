@@ -7,7 +7,8 @@ html
   title D'oh!
   body(data-controller="#{route.controller}" data-action="#{route.action}" data-view="#{route.view}" data-renderer="#{route.renderer}" data-rendered-view="#{route.renderedView}" data-show="#{route.show}" data-task="#{route.task}" data-type="#{route.type}" data-mode="#{config.citizen.mode}")
     main
-      h1 :-(
-      pre
-        code
-          = error.raw.stack
+      section.summary
+        h1 :-(
+        pre
+          code
+            = error.raw.stack

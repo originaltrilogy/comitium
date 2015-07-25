@@ -14,84 +14,87 @@ module.exports = {
 
 // default action
 function handler(params, context, emitter) {
-
   params.form.email = '';
 
   emitter.emit('ready');
-
 }
 
 
 
 function form(params, context, emitter) {
   
-  params.form.email = params.form.email.trim() || '';
+  if ( params.request.method === 'POST' ) {
+    params.form.email = params.form.email.trim() || '';
 
-  app.listen('waterfall', {
-    validateForm: function (emitter) {
-      var message = '';
-      
-      if ( !params.form.email.length ) {
-        message = 'Your e-mail address is required.';
-      } else if ( !app.toolbox.validate.email(params.form.email) ) {
-        message = 'That doesn\'t appear to be a properly formatted e-mail address. Please check your entry and try again.';
-      }
-      
-      if ( message.length ) {
-        emitter.emit('end', {
-          success: false,
-          message: message
-        });
-      } else {
-        emitter.emit('ready', {
-          success: true
-        });
-      }
-    },
-    user: function (previous, emitter) {
-      app.models.user.info({ email: params.form.email }, emitter);
-    }
-  }, function (output) {
-    var ip = app.toolbox.helpers.ip(params.request);
-    
-    if ( output.listen.success ) {
-      if ( output.validateForm.success ) {
-        if ( output.user ) {
-          
-          app.listen('waterfall', {
-            generateVerification: function (emitter) {
-              app.models.user.passwordResetInsert({
-                userID: output.user.id,
-                ip: ip
-               }, emitter);
-            },
-            sendEmail: function (previous, emitter) {
-              app.mail.sendMail({
-                from: app.config.comitium.email,
-                to: output.user.email,
-                subject: 'Password reset instructions',
-                text: params.route.parsed.protocol + app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + output.user.id + '/code/' + previous.generateVerification.verificationCode
-              });
-            }
+    app.listen('waterfall', {
+      validateForm: function (emitter) {
+        var message = '';
+        
+        if ( !params.form.email.length ) {
+          message = 'Your e-mail address is required.';
+        } else if ( !app.toolbox.validate.email(params.form.email) ) {
+          message = 'That doesn\'t appear to be a properly formatted e-mail address. Please check your entry and try again.';
+        }
+        
+        if ( message.length ) {
+          emitter.emit('end', {
+            success: false,
+            message: message
           });
-          
+        } else {
           emitter.emit('ready', {
-            redirect: app.config.comitium.basePath + 'password-reset/action/confirmation'
+            success: true
+          });
+        }
+      },
+      user: function (previous, emitter) {
+        app.models.user.info({ email: params.form.email }, emitter);
+      }
+    }, function (output) {
+      var ip = app.toolbox.helpers.ip(params.request);
+      
+      if ( output.listen.success ) {
+        if ( output.validateForm.success ) {
+          if ( output.user ) {
+            
+            app.listen('waterfall', {
+              generateVerification: function (emitter) {
+                app.models.user.passwordResetInsert({
+                  userID: output.user.id,
+                  ip: ip
+                 }, emitter);
+              },
+              sendEmail: function (previous, emitter) {
+                app.mail.sendMail({
+                  from: app.config.comitium.email,
+                  to: output.user.email,
+                  subject: 'Password reset instructions',
+                  text: params.route.parsed.protocol + app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + output.user.id + '/code/' + previous.generateVerification.verificationCode
+                });
+              }
+            });
+            
+            emitter.emit('ready', {
+              redirect: app.config.comitium.basePath + 'password-reset/action/confirmation'
+            });
+          }
+        } else {
+          emitter.emit('ready', {
+            content: {
+              reset: {
+                message: output.validateForm.message
+              }
+            }
           });
         }
       } else {
-        emitter.emit('ready', {
-          content: {
-            reset: {
-              message: output.validateForm.message
-            }
-          }
-        });
+        emitter.emit('error', output.listen);
       }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
+    });
+  } else {
+    handler(params, context, emitter);
+  }
+
 
 }
 

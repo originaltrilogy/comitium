@@ -45,7 +45,8 @@ function generalForm(params, context, emitter) {
       signatureHtml = '',
       markdown = new Remarkable({
         breaks: true,
-        linkify: true
+        linkify: true,
+        typographer: true
       }),
       methods = {},
       update = true,
@@ -203,7 +204,7 @@ function generalForm(params, context, emitter) {
     }
   } else {
     emitter.emit('ready', {
-      redirect: app.config.comitium.basePath + 'sign-in/authenticate/true'
+      redirect: params.session.userID ? app.config.comitium.basePath + 'sign-in/password/true' : app.config.comitium.basePath + 'sign-in'
     });
   }
 

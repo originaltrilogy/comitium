@@ -1,9 +1,7 @@
-h1
-  = discussion.title
-
-if url.page === 1
-  p
-    != discussion.description
+section.summary
+  h1 #{discussion.title}
+  if discussion.description
+    p !{discussion.description}
 
 if announcements
   section.announcements

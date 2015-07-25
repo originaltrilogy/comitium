@@ -68,7 +68,7 @@ function topics(args, emitter) {
   // See if this discussion page is already cached
   var start = args.start || 0,
       end = args.end || 25,
-      cacheKey = 'group-' + args.groupID,
+      cacheKey = 'group-' + args.groupID + '-' + start + '-' + end,
       scope = 'discussion-2',
       cached = app.cache.get({ scope: scope, key: cacheKey });
 

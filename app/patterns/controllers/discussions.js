@@ -14,9 +14,7 @@ function handler(params, context, emitter) {
       app.models.discussions.categories(params.session.groupID, emitter);
     }
   }, function (output) {
-
     if ( output.listen.success ) {
-
       for ( var category in output.categories ) {
         if ( output.categories.hasOwnProperty(category) ) {
           for ( var discussion in output.categories[category].discussions ) {
@@ -41,12 +39,9 @@ function handler(params, context, emitter) {
           }
         }
       });
-
     } else {
-
       emitter.emit('error', output.listen);
-
     }
-
   });
+
 }

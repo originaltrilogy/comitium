@@ -1,8 +1,6 @@
-h1 Private Topics
-
-p These topics are visible only to you and the other topic participants.
-
-include ../partials/pagination
+section.summary
+  h1 Private Topics
+  p These topics are visible only to you and the other topic participants.
 
 section.topics
   nav.discussion.actions
@@ -11,6 +9,9 @@ section.topics
         a(href="topic/action/startPrivate") Start a new private topic
       //- li.subscribe
       //-   a(href="private-topics/action/subscribe" title="Receive an e-mail notification when you're invited to a new private topic.") Notify me
+
+include ../partials/pagination
+
   if topics
     each topic in topics
       article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")
