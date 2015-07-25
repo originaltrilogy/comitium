@@ -875,11 +875,13 @@ function reply(args, emitter) {
               if ( args.private ) {
                 app.listen({
                   invitees: function (emitter) {
-                    invitees(args.topicID, emitter);
+                    invitees({
+                      topicID: args.topicID
+                    }, emitter);
                   }
                 }, function (output) {
                   output.invitees.forEach( function (item, index, array) {
-                    app.cache.clear({ scope: 'private-topics-' + item });
+                    app.cache.clear({ scope: 'private-topics-' + item.id });
                   });
                 });
               } else {
