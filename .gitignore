@@ -1,6 +1,6 @@
 app/config/*
 app/logs/*
-migration/
+web/avatars/*
 .DS_Store
 node_modules
 .sass-cache

@@ -1011,21 +1011,30 @@ article.post {
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
-    padding-top: 4vw;
-    padding-bottom: 4vw;
-    padding-left: 28vw;
+    overflow: auto;
+    font-size: 100%;
     text-align: left;
     background-color: #353946; }
     article.post h2 img {
-      position: absolute;
-      top: 0;
-      left: 0; }
+      float: left;
+      width: 24vw;
+      height: 24vw;
+      margin-right: 6vw; }
+    article.post h2 a {
+      display: inline-block;
+      margin-top: 4vw; }
     article.post h2 time {
       display: block;
       font-family: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
       font-size: 4vw; }
   article.post .content {
     margin-bottom: 8vw; }
+  article.post .signature {
+    margin: 0;
+    padding: 0 4vw;
+    border-top: 2px solid;
+    border-bottom: 2px solid;
+    border-color: #353946; }
   article.post .actions ul {
     text-align: right; }
   article.post .actions li {
