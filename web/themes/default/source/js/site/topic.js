@@ -1,4 +1,4 @@
-OT.topic = ( function (Modernizr, OT) {
+CF.topic = ( function (Modernizr, CF) {
   'use strict';
 
 	var actions = {
@@ -10,13 +10,13 @@ OT.topic = ( function (Modernizr, OT) {
       },
 
       start: function () {
-        // OT.global.ajaxFormBinding({
+        // CF.global.ajaxFormBinding({
         //   formSelector: '#topic-write-form'
         // });
       },
 
       reply: function () {
-        // OT.global.ajaxFormBinding({
+        // CF.global.ajaxFormBinding({
         //   formSelector: '#topic-reply-form'
         // });
       },
@@ -39,7 +39,7 @@ OT.topic = ( function (Modernizr, OT) {
       //   moreAnchor.appendChild(document.createTextNode('More...'));
       //   menu.appendChild(moreButton);
 
-      //   OT.global.menu({
+      //   CF.global.menu({
       //     menu: 'main nav.topic.actions',
       //     trigger: 'main nav.topic.actions li.more a',
       //     position: 'right',
@@ -77,8 +77,8 @@ OT.topic = ( function (Modernizr, OT) {
     replyForm: actions.reply
 	};
 
-})(Modernizr, OT);
+})(Modernizr, CF);
 
 
 // For now, the announcement library is the same as the topic library
-OT.announcement = OT.topic;
+CF.announcement = CF.topic;

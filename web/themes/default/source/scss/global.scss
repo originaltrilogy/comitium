@@ -120,7 +120,7 @@ body {
   color: white;
 
   &.transitioning {
-    #main {
+    main {
       position: relative;
 
       & > * {
@@ -141,7 +141,7 @@ body {
   }
 
   &.loaded {
-    #main {
+    main {
       & > * {
         transition: opacity 0.15s;
         opacity: 1;
@@ -706,7 +706,36 @@ section.preview {
 }
 
 
-// Screens wider than 480px
-@media only screen and (min-width: 480px) {
+// Screens wider than 350px
+@media only screen and (min-width: 350px) {
+
+  body {
+    font-size: 94%;
+  }
+
+}
+
+
+// Screens wider than 400px
+@media only screen and (min-width: 400px) {
+
+  body {
+    font-size: 90%;
+  }
+
+}
+
+
+// Screens wider than 768px
+@media only screen and (min-width: 768px) {
+
+  body {
+    font-size: 120%;
+  }
+
+  h2 {
+    margin-top: 4vw;
+    margin-bottom: 4vw;
+  }
 
 }

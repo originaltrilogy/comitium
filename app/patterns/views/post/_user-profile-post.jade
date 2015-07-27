@@ -1,20 +1,11 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
-  h2
-    img(src="#{config.comitium.staticAssetUrl}avatars/#{post.authorID}.jpg")
-    a(href="user/#{post.authorUrl}/id/#{post.authorID}")
-      = post.author
+  .content
     time
       = post.dateCreated
-  .content
     != post.html
   nav.actions
     ul
-      if !topic.lockedByID || session.moderateDiscussions
-        li.reply
-          a(href="#{route.pathname}action/reply") Reply
-        li.quote
-          a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
-      if ( session.username === post.author && !post.lockedByID && !topic.lockedByID ) || session.moderateDiscussions
+      if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
         li.edit
           a(href="post/action/edit/id/#{post.id}") Edit
       li.bookmark
@@ -31,6 +22,3 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
             a(href="post/action/unlock/id/#{post.id}") Unlock
         li.delete
           a(href="post/action/trash/id/#{post.id}") Delete
-  if post.authorSignature
-    .signature
-      != post.authorSignature

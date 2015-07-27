@@ -1,4 +1,4 @@
-OT.discussions = ( function (Modernizr, OT) {
+CF.discussions = ( function (Modernizr, CF) {
   'use strict';
 
   var methods = {
@@ -14,4 +14,4 @@ OT.discussions = ( function (Modernizr, OT) {
     init: methods.init
   };
 
-})(Modernizr, OT);
+})(Modernizr, CF);

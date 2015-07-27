@@ -1,10 +1,10 @@
-OT.index = ( function (Modernizr, OT) {
+CF.index = ( function (Modernizr, CF) {
   'use strict';
   
   var methods = {
 
       init: function () {
-        console.log('OT.index.init()');
+        console.log('CF.index.init()');
       }
 
     };
@@ -14,4 +14,4 @@ OT.index = ( function (Modernizr, OT) {
     init: methods.init
   };
 
-})(Modernizr, OT);
+})(Modernizr, CF);

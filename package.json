@@ -13,9 +13,7 @@
   },
   "main": "index",
   "scripts": {
-    "start": "node ./app/start.js",
-    "test": "./node_modules/.bin/mocha -u tdd",
-    "coverage": "./node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- -R spec"
+    "start": "node ./app/start.js"
   },
   "dependencies": {
     "bcrypt": "*",
@@ -30,15 +28,16 @@
     "to-markdown": "*"
   },
   "devDependencies": {
+    "autoprefixer-core": "*",
+    "cssnano": "*",
     "grunt": "*",
-    "grunt-autoprefixer": "*",
     "grunt-contrib-concat": "*",
-    "grunt-contrib-cssmin": "*",
     "grunt-contrib-imagemin": "*",
-    "grunt-contrib-sass": "*",
     "grunt-contrib-jshint": "*",
+    "grunt-contrib-sass": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
+    "grunt-postcss": "*",
     "load-grunt-tasks": "*"
   },
   "engines": {

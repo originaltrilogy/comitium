@@ -7,26 +7,26 @@ section.summary
 //-     p Stuff goes here!
 
 if include.announcements
-  section.category.announcements
+  section.announcements
     h2 Announcements
     != include.announcements
 
-each category in categories
-  section(class="category" data-category-id="#{category.categoryID}")
-    h2 #{category.categoryTitle}
-    each discussion in category.discussions
-      article(class="discussion #{ discussion.updated ? 'updated' : ''}" data-discussion-id="#{discussion.discussionID}")
-        h3
-          a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
-        p.description !{discussion.discussionDescription}
-        p.stats
-          span.topics #{discussion.topicsFormatted} 
-          | topics with 
-          span.posts #{discussion.postsFormatted} 
-          | posts
+section.categories
+  each category in categories
+    section(class="category" data-category-id="#{category.categoryID}")
+      h2 #{category.categoryTitle}
+      each discussion in category.discussions
+        article(class="discussion #{ discussion.updated ? 'updated' : ''}" data-discussion-id="#{discussion.discussionID}")
+          h3
+            a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
+          if discussion.discussionDescription
+            p.description !{discussion.discussionDescription}
+          ul.stats
+            li.topics <strong>#{discussion.topicsFormatted}</strong> topics
+            li.posts <strong>#{discussion.postsFormatted}</strong> posts
           if discussion.lastPostID !== 0
-            dt.last-post Last Post
-            dd.last-post
+            .last-post
+              h4 Last post
               time #{discussion.lastPostDateFormatted}
-              |  by 
-              a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+              //- |  by 
+              //- a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}

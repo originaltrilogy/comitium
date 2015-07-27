@@ -10,8 +10,8 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
   nav.actions
     ul
       if !topic.lockedByID
-        //- li.reply
-        //-   a(href="#{route.pathname}action/reply") Reply
+        li.reply
+          a(href="#{route.pathname}action/reply") Reply
         li.quote
           a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
       if ( session.username === post.author && !post.lockedByID && !topic.lockedByID ) || session.moderateDiscussions

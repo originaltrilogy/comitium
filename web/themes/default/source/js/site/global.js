@@ -1,4 +1,4 @@
-OT.global = ( function (Modernizr, OT) {
+CF.global = ( function (Modernizr, CF) {
   'use strict';
   var methods = {
 
@@ -15,7 +15,8 @@ OT.global = ( function (Modernizr, OT) {
         trigger: '#menu-icon',
         position: 'left'
       });
-      // methods.viewportResizeCheck('responsiveModeSet', DEMO.immediate.responsiveModeSet);
+      methods.viewportResizeCheck('responsiveModeSet', CF.immediate.responsiveModeSet);
+      // methods.viewportResizeCheck('frameworkReinit', CF.global.init);
       // methods.bindInternalLinks();
     },
 
@@ -140,7 +141,7 @@ OT.global = ( function (Modernizr, OT) {
           form.appendChild(input);
         }
       });
-    }
+    },
 
     // hrefParser: function (historyUrl) {
     //  var newContentUrl = historyUrl + '/type/ajax/',
@@ -160,7 +161,7 @@ OT.global = ( function (Modernizr, OT) {
     // },
     //
     // bindInternalLinks: function () {
-    //  if ( Modernizr.history && !DEMO.boundEvents.internalLinks ) {
+    //  if ( Modernizr.history && !CF.boundEvents.internalLinks ) {
     //    window.addEventListener('popstate', function (e) {
     //      var parsedHref = methods.hrefParser(location.pathname);
     //      // If it's the first request, don't do anything. If an ajax request has been fired previously, run updateContent to handle the back button
@@ -168,13 +169,13 @@ OT.global = ( function (Modernizr, OT) {
     //        methods.updateContent('pop', parsedHref.historyUrl, parsedHref.newContentUrl, parsedHref.newBodyID);
     //      }
     //    });
-    //    $('body').on('click.updateContent', 'a:not([href^="http"],[href^="tel"],[href^="app/"],[href^="index/frameworkReinit/true/"])', function (e) {
+    //    $('body').on('click.updateContent', 'a:nCF([href^="http"],[href^="tel"],[href^="app/"],[href^="index/frameworkReinit/true/"])', function (e) {
     //      var parsedHref = methods.hrefParser($(this).attr('href'));
     //      e.preventDefault();
     //      methods.updateContent('push', parsedHref.historyUrl, parsedHref.newContentUrl, parsedHref.newBodyID);
-    //      //  BONUS: Write destroy methods for all DEMO.namespaces so bound events and changes to the DOM can be cleaned up easily on new page loads
+    //      //  BONUS: Write destroy methods for all CF.namespaces so bound events and changes to the DOM can be cleaned up easily on new page loads
     //    });
-    //    DEMO.boundEvents.internalLinks = true;
+    //    CF.boundEvents.internalLinks = true;
     //  }
     // },
     //
@@ -202,8 +203,8 @@ OT.global = ( function (Modernizr, OT) {
     //      $('meta[name="description"]').attr('content', newContent.filter('meta[name="description"]').attr('content'));
     //      $('meta[name="keywords"]').attr('content', newContent.filter('meta[name="keywords"]').attr('content'));
     //      $('#primary-content').html(newContent.find('#primary-content').html());
-    //      if ( typeof DEMO[contentObject] !== 'undefined' ) {
-    //        DEMO[contentObject].init();
+    //      if ( typeof CF[contentObject] !== 'undefined' ) {
+    //        CF[contentObject].init();
     //      }
     //      $('body').addClass('loaded pushed');
     //      $('#primary-content-wrap > span.loading-indicator').remove();
@@ -251,21 +252,30 @@ OT.global = ( function (Modernizr, OT) {
     //
     // },
     //
-    // viewportResizeCheck: function (namespace, callback) {
-    //  var windowWidth = $(window).width(),
-    //    delayCheckViewport = 0;
-    //  //  If the browser is resized, check the viewport size after a slight delay and run the
-    //  //  provided callback function.
-    //  $(window).on('resize.' + namespace, function (e) {
-    //    clearTimeout(delayCheckViewport);
-    //    delayCheckViewport = setTimeout( function () {
-    //      if ( $(window).width() !== windowWidth ) {
-    //        windowWidth = $(window).width();
-    //        callback();
-    //      }
-    //    }, 500);
-    //  });
-    // },
+    viewportResizeCheck: function (namespace, callback) {
+      var windowWidth = document.body.clientWidth,
+          delay = 0;
+      //  If the browser is resized, check the viewport size after a slight delay and run the
+      //  provided callback function.
+      window.addEventListener('resize', function (e) {
+        clearTimeout(delay);
+        delay = setTimeout( function () {
+          if ( document.body.clientWidth !== windowWidth ) {
+            windowWidth = document.body.clientWidth;
+            callback();
+          }
+        }, 500);
+      });
+     // $(window).on('resize.' + namespace, function (e) {
+     //   clearTimeout(delayCheckViewport);
+     //   delayCheckViewport = setTimeout( function () {
+     //     if ( $(window).width() !== windowWidth ) {
+     //       windowWidth = $(window).width();
+     //       callback();
+     //     }
+     //   }, 500);
+     // });
+    },
     //
     // responsiveImages: function (selector, cleanup) {
     //  var path = '',
@@ -276,7 +286,7 @@ OT.global = ( function (Modernizr, OT) {
     //  if ( typeof cleanup === 'undefined' ) {
     //    cleanup = true;
     //  }
-    //  if ( DEMO.params.device.hiRes ) {
+    //  if ( CF.params.device.hiRes ) {
     //    size = '-2x';
     //  }
     //  if ( cleanup ) {
@@ -290,7 +300,7 @@ OT.global = ( function (Modernizr, OT) {
     //      if ( $(this).attr('data-sizes') ) {
     //        sizes = $(this).attr('data-sizes').split(' ');
     //        for ( var i = 0; i < sizes.length; i++ ) {
-    //          if ( sizes[i] === DEMO.params.device.relativeSize ) {
+    //          if ( sizes[i] === CF.params.device.relativeSize ) {
     //            respond = true;
     //            break;
     //          }
@@ -299,7 +309,7 @@ OT.global = ( function (Modernizr, OT) {
     //        respond = true;
     //      }
     //      if ( respond ) {
-    //        path = $(this).attr('data-image').replace(/-small.|-medium.|-large.|-x-large./, '-' + DEMO.params.device.relativeSize + size + '.');
+    //        path = $(this).attr('data-image').replace(/-small.|-medium.|-large.|-x-large./, '-' + CF.params.device.relativeSize + size + '.');
     //        if ( $(this).attr('class') ) {
     //          className = className + ' ' + $(this).attr('class');
     //        }
@@ -326,4 +336,4 @@ OT.global = ( function (Modernizr, OT) {
     // viewportResizeCheck: methods.viewportResizeCheck
   };
 
-}(Modernizr, OT));
+}(Modernizr, CF));

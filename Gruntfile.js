@@ -14,15 +14,7 @@ module.exports = function (grunt) {
     concat: {
       dist: {
         src: ['web/themes/default/source/js/lib/*.js', 'web/themes/default/source/js/site/immediate.js', 'web/themes/default/source/js/site/*.js'],
-        dest: 'web/themes/default/production.js'
-      },
-      dist2: {
-        src: ['web/themes/default/source/js/lib/*.js', 'web/themes/default/source/js/site/immediate.js', 'web/themes/default/source/js/site/*.js'],
-        dest: 'web/themes/default/development.js'
-      },
-      dist3: {
-        src: ['web/themes/default/source/js/lib/*.js', 'web/themes/default/source/js/site/immediate.js', 'web/themes/default/source/js/site/*.js'],
-        dest: 'web/themes/default/debug.js'
+        dest: 'web/themes/default/app.js'
       }
     },
     imagemin: {
@@ -39,30 +31,26 @@ module.exports = function (grunt) {
     sass: {
       dist: {
         options: {
-          sourcemap: 'inline'
+          sourcemap: 'auto'
         },
         files: {
-          'web/themes/default/development.css': ['web/themes/default/source/scss/app.scss'],
-          'web/themes/default/debug.css': ['web/themes/default/source/scss/app.scss']
+          'web/themes/default/app.css': ['web/themes/default/source/scss/app.scss']
         }
       }
     },
-    autoprefixer: {
-      dist: {
-        app: {
-          src: 'web/themes/default/app.css',
-          dest: 'web/themes/default/app.css'
+    postcss: {
+      options: {
+        map: {
+          inline: false
         },
-        options: {
-          map: true
-        }
-      }
-    },
-    cssmin: {
+        processors: [
+          require('autoprefixer-core')({ browsers: 'last 2 versions' }), // add vendor prefixes 
+          require('cssnano')() // minify the result 
+        ]
+      },
       dist: {
-        files: {
-          'web/themes/default/production.css': ['web/themes/default/development.css']
-        }
+        src: 'web/themes/default/app.css',
+        dest: 'web/themes/default/app.css'
       }
     },
     uglify: {
@@ -72,7 +60,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'web/themes/default/production.js': ['web/themes/default/production.js']
+          'web/themes/default/app.js': ['web/themes/default/app.js']
         }
       }
     },
@@ -85,7 +73,7 @@ module.exports = function (grunt) {
       },
       css: {
         files: ['web/themes/default/source/scss/**/*.scss'],
-        tasks: ['sass', 'autoprefixer', 'cssmin'],
+        tasks: ['sass', 'postcss'],
         options: {
           livereload: true
         }
@@ -113,5 +101,5 @@ module.exports = function (grunt) {
   });
 
   require('load-grunt-tasks')(grunt);
-  grunt.registerTask('default', ['sass', 'autoprefixer', 'cssmin', 'jshint', 'concat', 'uglify', 'watch']);
+  grunt.registerTask('default', ['sass', 'postcss', 'jshint', 'concat', 'uglify', 'watch']);
 };
