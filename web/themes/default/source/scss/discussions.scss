@@ -9,16 +9,6 @@ body[data-controller="discussions"] {
         padding: 3vw 0 4vw;
       }
     }
-    section.category {
-      article {
-        display: flex;
-        
-        h3,
-        p {
-          width: 60vw;
-        }
-      }
-    }
     p.description {
       margin-top: 2vw;
     }
@@ -31,6 +21,35 @@ body[data-controller="discussions"] {
     .last-post {
       display: inline-block;
       margin-top: 4vw;
+    }
+
+    @media only screen and (min-width: 500px) {
+      ul.stats {
+        width: 46vw;
+        margin-right: 0;
+
+        li {
+          display: inline-block;
+          width: 20vw;
+
+          &:first-child {
+            margin-right: 4vw;
+          }
+        }
+      }
+
+      .last-post {
+        h4 {
+          display: inline;
+
+          &:after {
+            content: ':';
+          }
+        }
+        time {
+          display: inline;
+        }
+      }
     }
   }
 

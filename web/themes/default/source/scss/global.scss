@@ -307,7 +307,7 @@ header {
 }
 
 nav.breadcrumbs {
-  padding: 4vw 4vw 1vw;
+  padding: 4vw 4vw 0;
   font-family: $titleFont, $defaultFont;
 
   li {
@@ -340,14 +340,6 @@ nav.pagination {
     &.last {
       position: absolute;
       top: 4vw;
-
-      a {
-        @include button('medium');
-        padding: 0;
-        min-width: 14vw;
-        min-height: 12vw;
-        font-size: 100%;
-      }
     }
 
     &.first {
@@ -361,6 +353,14 @@ nav.pagination {
     }
     &.last {
       right: 4vw;
+    }
+
+    a {
+      @include button('medium');
+      padding: 0;
+      min-width: 14vw;
+      min-height: 12vw;
+      font-size: 100%;
     }
   }
 }
@@ -384,6 +384,7 @@ section {
   overflow: auto;
 
   &.summary {
+    padding-top: 5vw;
     background: none;
 
     p {
@@ -429,7 +430,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin: 4vw 4vw 6vw;
+  margin: 0 4vw 6vw;
   font-family: $boldFont;
   line-height: 1.5;
 }
@@ -725,6 +726,14 @@ section.preview {
 
 }
 
+@media only screen and (min-width: 500px) {
+
+  article {
+    padding: 4vw 0;
+  }
+
+}
+
 
 // Screens wider than 768px
 @media only screen and (min-width: 768px) {
@@ -733,9 +742,42 @@ section.preview {
     font-size: 120%;
   }
 
-  h2 {
-    margin-top: 4vw;
+  h1 {
     margin-bottom: 4vw;
+  }
+
+  p {
+    margin: 4vw 0;
+  }
+
+  nav.breadcrumbs {
+    padding-top: 2vw;
+  }
+
+  nav.pagination {
+    padding: 2vw 0;
+
+    li {
+      a {
+        min-width: 11vw;
+      }
+    }
+  }
+
+  section {
+    &.summary {
+      padding-top: 3vw;
+    }
+  }
+
+  .actions {
+    padding: 2vw 0;
+
+    ul {
+      & > li {
+        margin: 0 1vw 2vw;
+      }
+    }
   }
 
 }

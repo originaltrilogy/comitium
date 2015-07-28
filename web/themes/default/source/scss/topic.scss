@@ -5,7 +5,7 @@ body[data-controller="topic"],
 body[data-controller="announcement"] {
 
   h1 {
-    margin-bottom: 9vw;
+    margin-bottom: 8vw;
   }
   nav.actions {
     padding-bottom: 0;
@@ -23,13 +23,17 @@ body[data-controller="announcement"] {
     }
   }
 
+  @media only screen and (min-width: 768px) {
+
+    h1 {
+      margin-bottom: 6vw;
+    }
+
+  }
+
 }
 
 body[data-controller="topic"][data-view="private-topic"] {
-
-  h1 {
-    margin-bottom: 6vw;
-  }
 
   p.private-notice {
     margin-top: 0;

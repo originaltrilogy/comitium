@@ -3,7 +3,7 @@ post view (shared)
 -------------------*/
 
 article.post {
-  padding: 0 0 10vw;
+  padding: 0;
 
   h2 {
     position: relative;
@@ -28,7 +28,7 @@ article.post {
     time {
       display: block;
       font-family: $defaultFont;
-      font-size: 4vw;
+      font-size: 85%;
     }
   }
 
@@ -38,10 +38,27 @@ article.post {
 
   .signature {
     margin: 0;
-    padding: 0 4vw;
-    border-top: 2px solid;
-    border-bottom: 2px solid;
-    @include border-color(14%, 24%);
+    padding: 4vw 4vw 4.5vw;
+    text-align: right;
+    font-size: 85%;
+    overflow: auto;
+    @include background-color(12%, 34%);
+
+    & > * {
+      float: right;
+      clear: right;
+      margin-top: 0;
+      margin-bottom: 4vw;
+      max-width: 92vw;
+    }
+
+    & > *:first-child {
+      padding-top: 0;
+    }
+    & > *:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
   }
 
   .actions {
@@ -59,43 +76,34 @@ article.post {
       @include button('small', 'dark');
     }
   }
-}
 
+  @media only screen and (min-width: 768px) {
 
-/*-------------------
-bookmark view
--------------------*/
+    h2 {
+      img {
+        width: 18vw;
+        height: 18vw;
+        margin-right: 5vw;
+      }
+      time {
+        font-size: 75%;
+      }
+    }
 
-body[data-controller="post"][data-view="bookmark"] {
+    .actions {
+      li {
+        margin-right: 0;
+        margin-bottom: 4vw;
+      }
+    }
 
-  textarea {
-    height: 10.2rem;
+    .signature {
+      padding: 3vw 4vw 3.5vw;
+
+      & > * {
+        margin-bottom: 3vw;
+      }
+    }
+
   }
-
-}
-
-
-/*-------------------
-lock view
--------------------*/
-
-body[data-controller="post"][data-view="lock"] {
-
-  textarea {
-    height: 10.2rem;
-  }
-
-}
-
-
-/*-------------------
-report view
--------------------*/
-
-body[data-controller="post"][data-view="report"] {
-
-  textarea {
-    height: 10.2rem;
-  }
-
 }
