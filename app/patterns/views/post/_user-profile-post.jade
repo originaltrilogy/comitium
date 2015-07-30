@@ -1,7 +1,8 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
-  .content
+  h2
     time
       = post.dateCreated
+  .content
     != post.html
   nav.actions
     ul

@@ -835,7 +835,7 @@ function posts(args, emitter) {
           scope: scope,
           key: cacheKey,
           value: subset,
-          lifespan: 0.5,
+          lifespan: 10,
           resetOnAccess: true
         });
 

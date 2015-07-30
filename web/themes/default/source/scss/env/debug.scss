@@ -1,6 +1,6 @@
-@import '_variables';
-@import 'lib/normalize';
-@import 'baseline';
+@import '../_variables';
+@import '../lib/normalize';
+@import '../baseline';
 
 @font-face {
   font-family: 'glyphs';
@@ -15,10 +15,10 @@
   font-feature-settings: 'liga';
 }
 
-@import 'global';
-@import 'discussions';
-@import 'discussion';
-@import 'topic';
-@import 'post';
-@import 'conversation';
-@import 'account';
+@import '../global';
+@import '../discussions';
+@import '../discussion';
+@import '../topic';
+@import '../post';
+@import '../conversation';
+@import '../account';

@@ -34,9 +34,9 @@ module.exports = function (grunt) {
           sourcemap: 'auto'
         },
         files: {
-          'web/themes/default/production.css': ['web/themes/default/source/scss/_production.scss'],
-          'web/themes/default/debug.css': ['web/themes/default/source/scss/_debug.scss'],
-          'web/themes/default/development.css': ['web/themes/default/source/scss/_development.scss']
+          'web/themes/default/production.css': ['web/themes/default/source/scss/env/production.scss'],
+          'web/themes/default/debug.css': ['web/themes/default/source/scss/env/debug.scss'],
+          'web/themes/default/development.css': ['web/themes/default/source/scss/env/development.scss']
         }
       }
     },

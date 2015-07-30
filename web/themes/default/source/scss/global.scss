@@ -215,8 +215,9 @@ header {
 
   .slide-menu {
     position: fixed;
-    @include background-color(14%, 25%);
     z-index: 1000;
+    font-size: 125%;
+    @include background-color(14%, 25%);
 
     &.left {
       top: 0;

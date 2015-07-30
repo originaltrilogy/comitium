@@ -10,18 +10,6 @@ body[data-controller="announcement"] {
   nav.actions {
     padding-bottom: 0;
   }
-  article.post {
-    nav.actions {
-      background: none;
-
-      &:before {
-        background-image: linear-gradient(to right, hsl(226, 12%, 30%), hsla(226, 12%, 30%, 0));
-      }
-      &:after {
-        background-image: linear-gradient(to left, hsl(226, 12%, 30%), hsla(226, 12%, 30%, 0));
-      }
-    }
-  }
 
   @media only screen and (min-width: 768px) {
 

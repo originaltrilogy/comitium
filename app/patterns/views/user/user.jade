@@ -49,10 +49,10 @@ section.bio
 
 section.posts
   if posts
-    h2 Recent posts:
+    h2 Posts by #{user.username}:
+    include ../partials/pagination
     each post in posts
       include ../post/_user-profile-post
+    include ../partials/pagination
   else
     p This user hasn't made any posts yet.
-
-include ../partials/pagination
