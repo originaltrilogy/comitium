@@ -2,7 +2,6 @@
 //       Variables     //
 /////////////////////////
 $version: '0.1';
-$glyphs: 'EntypoDev';
 $defaultFont: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
 $titleFont: 'Open Sans Semibold', $defaultFont;
 $boldFont: 'Open Sans Bold', $titleFont;
@@ -42,35 +41,29 @@ $hue: 226;
   }
 
   @if $size == 'large' {
-  	min-height: 16vw;
   	line-height: 16vw;
 	  padding: 0 5vw;
 	  font-size: 120%;
 
     @media only screen and (min-width: 768px) {
-      min-height: 12vw;
       line-height: 12vw;
     }
 
   } @else if $size == 'medium' {
-  	min-height: 12vw;
   	line-height: 12vw;
 	  padding: 0 4vw;
 	  font-size: 110%;
 
     @media only screen and (min-width: 768px) {
-      min-height: 8vw;
       line-height: 8vw;
     }
 
   } @else if $size == 'small' {
-  	min-height: 9vw;
-    line-height: 9vw;
+    line-height: 8vw;
 	  padding: 0 3vw;
-	  font-size: 100%;
+    font-size: 100%;
 
     @media only screen and (min-width: 768px) {
-      min-height: 6vw;
       line-height: 6vw;
       padding: 0 2vw;
     }
@@ -86,7 +79,7 @@ $hue: 226;
 }
 
 // Creates an icon by replacing text with a glyph
-@mixin icon ($iconSize, $content) {
+@mixin textToIcon ($iconSize, $content) {
 	position: relative;
 	display: block;
 	margin: 0;

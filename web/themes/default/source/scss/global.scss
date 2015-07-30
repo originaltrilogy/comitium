@@ -2,28 +2,6 @@
 ////      fonts      ////
 /////////////////////////
 
-// @font-face {
-//   font-family: 'Entypo';
-//   src: url('fonts/Entypo/Entypo.eot');
-//   src: url('fonts/Entypo/Entypo.eot?#iefix') format('embedded-opentype'),
-//      url('fonts/Entypo/Entypo.woff') format('woff'),
-//      url('fonts/Entypo/Entypo.ttf') format('truetype'),
-//      url('fonts/Entypo/Entypo.svg#Entypo') format('svg');
-//   font-weight: normal;
-//   font-style: normal;
-// }
-//
-// @font-face {
-//   font-family: 'EntypoDev';
-//   src: url('fonts/Entypo/Entypo-Dev.eot');
-//   src: url('fonts/Entypo/Entypo-Dev.eot?#iefix') format('embedded-opentype'),
-//      url('fonts/Entypo/Entypo-Dev.svg#EntypoDev') format('svg'),
-//      url('fonts/Entypo/Entypo-Dev.woff') format('woff'),
-//      url('fonts/Entypo/Entypo-Dev.ttf') format('truetype');
-//   font-weight: normal;
-//   font-style: normal;
-// }
-
 @font-face {
   font-family: 'Open Sans Regular';
   src: url('fonts/open-sans/opensans-regular-webfont.eot');
@@ -212,15 +190,26 @@ header {
 
 .js {
   header {
-    #menu-icon {
-      @include button('small');
-      position: absolute;
-      top: 4vw;
-      left: 4vw;
-      z-index: 500;
-    }
     nav {
       display: none;
+    }
+  }
+  #menu-icon {
+    @include button('small');
+    position: absolute;
+    top: 4vw;
+    left: 4vw;
+    z-index: 500;
+    padding-right: 2vw;
+    padding-left: 7.5vw;
+    font-size: 110%;
+
+    &:before {
+      content: '\e6bd';
+      font-family: 'glyphs';
+      position: absolute;
+      top: 0;
+      left: 2vw;
     }
   }
 
@@ -359,7 +348,6 @@ nav.pagination {
       @include button('medium');
       padding: 0;
       min-width: 14vw;
-      min-height: 12vw;
       font-size: 100%;
     }
   }
@@ -384,7 +372,7 @@ section {
   overflow: auto;
 
   &.summary {
-    padding-top: 5vw;
+    padding-top: 4vw;
     background: none;
 
     p {
@@ -430,7 +418,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin: 0 4vw 6vw;
+  margin: 0 4vw 5vw;
   font-family: $boldFont;
   line-height: 1.5;
 }
@@ -711,7 +699,7 @@ section.preview {
 @media only screen and (min-width: 350px) {
 
   body {
-    font-size: 94%;
+    font-size: 3.76vw;
   }
 
 }
@@ -721,7 +709,7 @@ section.preview {
 @media only screen and (min-width: 400px) {
 
   body {
-    font-size: 90%;
+    font-size: 3.6vw;
   }
 
 }
@@ -739,7 +727,7 @@ section.preview {
 @media only screen and (min-width: 768px) {
 
   body {
-    font-size: 120%;
+    font-size: 2.5vw;
   }
 
   h1 {
@@ -747,7 +735,8 @@ section.preview {
   }
 
   p {
-    margin: 4vw 0;
+    margin-top: 4vw;
+    margin-bottom: 4vw;
   }
 
   nav.breadcrumbs {
@@ -777,6 +766,12 @@ section.preview {
       & > li {
         margin: 0 1vw 2vw;
       }
+    }
+  }
+
+  .js {
+    #menu-icon {
+      padding-left: 6vw;
     }
   }
 

@@ -34,7 +34,9 @@ module.exports = function (grunt) {
           sourcemap: 'auto'
         },
         files: {
-          'web/themes/default/app.css': ['web/themes/default/source/scss/app.scss']
+          'web/themes/default/production.css': ['web/themes/default/source/scss/_production.scss'],
+          'web/themes/default/debug.css': ['web/themes/default/source/scss/_debug.scss'],
+          'web/themes/default/development.css': ['web/themes/default/source/scss/_development.scss']
         }
       }
     },
@@ -49,8 +51,16 @@ module.exports = function (grunt) {
         ]
       },
       dist: {
-        src: 'web/themes/default/app.css',
-        dest: 'web/themes/default/app.css'
+        src: 'web/themes/default/production.css',
+        dest: 'web/themes/default/production.css'
+      },
+      dist2: {
+        src: 'web/themes/default/debug.css',
+        dest: 'web/themes/default/debug.css'
+      },
+      dist3: {
+        src: 'web/themes/default/development.css',
+        dest: 'web/themes/default/development.css'
       }
     },
     uglify: {
@@ -66,7 +76,7 @@ module.exports = function (grunt) {
     },
     watch: {
       views: {
-        files: ['app/patterns/views/**/*.jade', 'app/patterns/views/**/*.hbs'],
+        files: ['app/patterns/views/**/*.jade', 'app/patterns/views/**/*.hbs', 'app/patterns/views/**/*.html'],
         options: {
           livereload: true
         }

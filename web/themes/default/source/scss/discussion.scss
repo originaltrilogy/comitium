@@ -16,6 +16,7 @@ body[data-controller="private-topics"][data-view="private-topics"] {
   }
   p.stats {
     margin-top: 0.8rem;
+    margin-bottom: 0;
   }
   span.replies {
     font-family: $boldFont;
