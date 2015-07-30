@@ -28,7 +28,8 @@ function handler(params, context, emitter) {
         var start = ( params.url.page - 1 ) * 25,
             end = start + 25;
         app.models.user.posts({
-          userID: params.url.id,
+          userID: previous.user.id,
+          visitorGroupID: params.session.groupID,
           start: start,
           end: end
         }, emitter);

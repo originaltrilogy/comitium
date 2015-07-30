@@ -775,7 +775,7 @@ function posts(args, emitter) {
   // See if this post subset is already cached
   var start = args.start || 0,
       end = args.end || 25,
-      cacheKey = 'models-user-posts-subset-' + start + '-' + end,
+      cacheKey = 'models-user-posts-subset-' + start + '-' + end + '-visitorGroupID-' + args.visitorGroupID,
       scope = 'user-' + args.userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
@@ -796,10 +796,10 @@ function posts(args, emitter) {
               'join topics t on p."topicID" = t."id" ' +
               'join users u on p."userID" = u.id ' +
               // Only grab public posts, not posts from private topics!
-              'where u."id" = $1 and t."discussionID" <> 0 and p.draft = false ' +
+              'where u."id" = $1 and p."draft" = false and t."discussionID" in ( select "discussionID" from "discussionPermissions" where "groupID" = $2 and "read" = true ) ' +
               'order by p."dateCreated" desc ' +
-              'limit $2 offset $3;',
-              [ args.userID, end - start, start ],
+              'limit $3 offset $4;',
+              [ args.userID, args.visitorGroupID, end - start, start ],
               function (err, result) {
                 done();
                 if ( err ) {
@@ -834,7 +834,9 @@ function posts(args, emitter) {
         app.cache.set({
           scope: scope,
           key: cacheKey,
-          value: subset
+          value: subset,
+          lifespan: 0.5,
+          resetOnAccess: true
         });
 
         emitter.emit('ready', subset);
