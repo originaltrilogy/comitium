@@ -44,7 +44,7 @@ section.topics
           | replies 
           time (last on #{topic.lastPostDateFormatted})
         if topic.unreadPosts
-          a(href="topic/#{topic.url}/id/#{topic.id}/unread/true") First unread post
+          a.first-unread(href="topic/#{topic.url}/id/#{topic.id}/unread/true") Go to first unread post
   else
     p This discussion has no topics. <a href="topic/action/start/id/#{discussion.id}">Why not start one?</a>
 

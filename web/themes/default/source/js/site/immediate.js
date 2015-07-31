@@ -31,6 +31,7 @@ CF.immediate = ( function (Modernizr, CF) {
       } else {
         CF.params.device.relativeSize = 'small';
       }
+      html.setAttribute('data-relative-size', CF.params.device.relativeSize);
       if ( html.classList ) {
         html.classList.remove('small');
         html.classList.remove('medium');

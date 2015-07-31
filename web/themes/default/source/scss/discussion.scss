@@ -10,6 +10,18 @@ body[data-controller="private-topics"][data-view="private-topics"] {
     margin: 4vw 4vw 6vw;
     color: white;
   }
+  nav.actions {
+    @include background-color(14%, 22%);
+
+    &:before {
+      left: 0;
+      background-image: linear-gradient(to right, hsl(225, 14%, 22%), hsla(225, 14%, 22%, 0));
+    }
+    &:after {
+      right: 0;
+      background-image: linear-gradient(to left, hsl(225, 14%, 22%), hsla(225, 14%, 22%, 0));
+    }
+  }
   p.details {
     margin-top: 0.4rem;
     margin-bottom: 1.2rem;
@@ -20,6 +32,10 @@ body[data-controller="private-topics"][data-view="private-topics"] {
   }
   span.replies {
     font-family: $boldFont;
+  }
+  a.first-unread {
+    display: inline-block;
+    margin-top: 2vw;
   }
 
 }
@@ -33,6 +49,37 @@ body[data-controller="discussion"][data-view="discussion"] {
   }
   nav.actions {
     padding: 0;
+  }
+
+  @media only screen and (min-width: 768px) {
+
+    section.announcements {
+      article {
+        padding: 2vw 0;
+      }
+    }
+
+    section.announcements,
+    section.topics {
+      display: flex;
+      flex-wrap: wrap;
+
+      h2 {
+        flex: 1 0 50%;
+      }
+      nav.actions {
+        flex: 1 0 50%;
+        align-self: center;
+
+        li {
+          margin-bottom: 0;
+        }
+      }
+      article {
+        width: 100%;
+      }
+    }
+
   }
 
 }

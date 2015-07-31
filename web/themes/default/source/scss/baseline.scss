@@ -12,8 +12,12 @@
 
 body {
   font-size: 4vw;
-	line-height: 1.75;
+	line-height: 1;
   word-wrap: break-word;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
 }
 
 h1 { font-size: 140%; }
@@ -23,6 +27,7 @@ h3 { font-size: 110%; }
 ul,
 ol {
   margin: 4vw 0 6vw 8vw;
+  line-height: 1.6;
 }
 
 nav {
@@ -34,6 +39,7 @@ nav {
 
 p {
   margin: 4vw 0 6vw;
+  line-height: 1.6;
 }
 
 table {

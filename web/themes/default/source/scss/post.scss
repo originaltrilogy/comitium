@@ -8,13 +8,13 @@ article.post {
 
   h2 {
     position: relative;
+    min-height: 22vw;
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
-    overflow: auto;
+    padding: 0;
     font-size: 110%;
     text-align: left;
-    @include background-color(14%, 24%);
 
     img {
       float: left;
@@ -24,7 +24,7 @@ article.post {
     }
     a {
       display: inline-block;
-      margin-top: 4vw;
+      margin-top: 4.5vw;
     }
     time {
       display: block;
@@ -34,7 +34,13 @@ article.post {
   }
 
   .content {
-    margin-bottom: 8vw;
+    margin: 6vw 4vw 8vw;
+    line-height: 1.6;
+
+    img {
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 
   .signature {
@@ -74,6 +80,7 @@ article.post {
   }
 
   nav.actions {
+    padding-bottom: 0;
     background: none;
 
     &:before {
@@ -114,10 +121,15 @@ body[data-controller="user"][data-view="user"] {
 
   article.post {
     h2 {
+      min-height: 14vw;
+
       img {
-        width: 18vw;
-        height: 18vw;
-        margin-right: 5vw;
+        width: 14vw;
+        height: 14vw;
+        margin-right: 4vw;
+      }
+      a {
+        margin-top: 3.5vw;
       }
       time {
         font-size: 75%;

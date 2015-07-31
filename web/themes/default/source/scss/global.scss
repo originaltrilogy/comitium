@@ -176,7 +176,7 @@ a {
 
 header {
   @include color(0%, 94%);
-  @include background-color(14%, 25%);
+  @include background-color(14%, 22%);
 
   & > a {
     display: block;
@@ -190,6 +190,9 @@ header {
 
 .js {
   header {
+    position: relative;
+    height: 14vw;
+
     nav {
       display: none;
     }
@@ -197,7 +200,7 @@ header {
   #menu-icon {
     @include button('small');
     position: absolute;
-    top: 4vw;
+    top: 3vw;
     left: 4vw;
     z-index: 500;
     padding-right: 2vw;
@@ -257,11 +260,12 @@ header {
 
     li {
       display: block;
+      line-height: 1;
       border-top: 1px solid #4F566B;
 
       a {
         display: block;
-        padding: 4vw 5vw;
+        padding: 5vw 5vw 6vw;
         text-decoration: none;
       }
     }
@@ -299,6 +303,7 @@ header {
 nav.breadcrumbs {
   padding: 4vw 4vw 0;
   font-family: $titleFont, $defaultFont;
+  @include background-color(14%, 27%);
 
   li {
     display: inline-block;
@@ -322,7 +327,7 @@ nav.pagination {
   @include background-color(14%, 40%);
 
   li {
-    line-height: 12vw;
+    line-height: 10vw;
 
     &.first,
     &.previous,
@@ -369,23 +374,29 @@ main {
 }
 
 section {
-  @include background-color(14%, 25%);
-  overflow: auto;
+  @include background-color(14%, 22%);
 
   &.summary {
-    padding-top: 4vw;
-    background: none;
+    padding: 5vw 0 2vw;
+    @include background-color(14%, 27%);
 
     p {
       margin-right: 4vw;
       margin-left: 4vw;
+
+      &:nth-child(2) {
+        margin-top: 0;
+      }
+      &:last-child {
+        margin-bottom: 4vw;
+      }
     }
   }
 }
 
 article {
   padding: 5vw 0 6vw;
-  @include background-color(13%, 30%);
+  @include background-color(14%, 30%);
   border-bottom: 1px solid;
   @include border-color(14%, 25%);
 
@@ -416,18 +427,18 @@ article {
 h1, h2, h3, h4, h5, h6 {
   font-family: $titleFont;
   font-weight: normal;
-}
-
-h1 {
-  margin: 0 4vw 5vw;
-  font-family: $boldFont;
   line-height: 1.5;
 }
 
+h1 {
+  padding: 0 4vw 5vw;
+  font-family: $boldFont;
+}
+
 h2 {
-  margin: 8vw 4vw;
+  padding: 8vw 4vw;
   text-align: center;
-  @include background-color(14%, 25%);
+  @include background-color(14%, 22%);
 }
 
 blockquote {
@@ -504,9 +515,11 @@ form {
     border-radius: 0.3rem;
 
     &[type="checkbox"] {
-      width: 12vw;
-      height: 12vw;
-      position: absolute;
+      display: inline-block;
+      width: 10vw;
+      height: 10vw;
+      vertical-align: middle;
+      position: relative;
 
       &:checked {
         &:after {
@@ -524,20 +537,22 @@ form {
     }
 
     &[type="radio"] {
-      width: 12vw;
-      height: 12vw;
-      position: absolute;
+      display: inline-block;
+      width: 10vw;
+      height: 10vw;
+      vertical-align: middle;
+      position: relative;
       border-radius: 50%;
 
       &:checked {
         &:after {
           position: absolute;
-          top: 1.7vw;
-          left: 1.7vw;
+          top: 1.2vw;
+          left: 1.2vw;
           display: block;
-          width: 8vw;
-          height: 8vw;
-          @include background-color(13%, 40%);
+          width: 7vw;
+          height: 7vw;
+          @include background-color(14%, 75%);
           border-radius: 50%;
           content: '';
         }
@@ -571,18 +586,27 @@ form {
         }
         &.checkbox,
         &.radio {
+          position: relative;
+          min-height: 10vw;
+
           label {
-            display: block;
-            padding-left: 16vw;
-            padding-top: 1.5vw;
+            display: inline-block;
+            max-width: 79vw;
+            margin-left: 2vw;
+            vertical-align: middle;
             font-family: $defaultFont;
+            font-size: 100%;
           }
         }
         &.checkbox {
-          margin-bottom: 3.4rem;
+          margin-bottom: 2vw;
         }
         &.radio {
-          margin-bottom: 1rem;
+          margin-bottom: 2vw;
+        }
+
+        ul ul {
+          margin-top: 12vw;
         }
       }
     }
@@ -641,7 +665,7 @@ nav.actions {
   margin-left: 0;
   margin-right: 0;
   overflow: hidden;
-  @include background-color(14%, 25%);
+  @include background-color(14%, 32%);
 
   &:before,
   &:after {
@@ -656,11 +680,11 @@ nav.actions {
 
   &:before {
     left: 0;
-    background-image: linear-gradient(to right, hsl(225, 14%, 25%), hsla(225, 14%, 25%, 0));
+    background-image: linear-gradient(to right, hsl(225, 14%, 32%), hsla(225, 14%, 32%, 0));
   }
   &:after {
     right: 0;
-    background-image: linear-gradient(to left, hsl(225, 14%, 25%), hsla(225, 14%, 25%, 0));
+    background-image: linear-gradient(to left, hsl(225, 14%, 32%), hsla(225, 14%, 32%, 0));
   }
 
   ul {
@@ -687,10 +711,14 @@ nav.actions {
 
 section.preview {
   article {
-    padding-top: 6vw;
+    padding: 4vw 0;
+    margin-bottom: 6vw;
 
     .title {
       font-family: $titleFont;
+    }
+    .content {
+      margin-bottom: 0;
     }
   }
 }
@@ -700,7 +728,7 @@ section.preview {
 @media only screen and (min-width: 350px) {
 
   body {
-    font-size: 3.76vw;
+    font-size: 3.8vw;
   }
 
 }
@@ -728,11 +756,15 @@ section.preview {
 @media only screen and (min-width: 768px) {
 
   body {
-    font-size: 2.5vw;
+    font-size: 2vw;
   }
 
   h1 {
-    margin-bottom: 4vw;
+    padding-bottom: 3vw;
+  }
+
+  h2 {
+    padding: 5vw 4vw;
   }
 
   p {
@@ -748,6 +780,26 @@ section.preview {
     padding: 2vw 0;
 
     li {
+      line-height: 6vw;
+
+      &.first,
+      &.previous,
+      &.next,
+      &.last {
+        top: 2vw;
+      }
+      &.first {
+        left: 15vw;
+      }
+      &.previous {
+        left: 29vw;
+      }
+      &.next {
+        right: 29vw;
+      }
+      &.last {
+        right: 15vw;
+      }
       a {
         min-width: 11vw;
       }
@@ -756,7 +808,13 @@ section.preview {
 
   section {
     &.summary {
-      padding-top: 3vw;
+      padding-top: 2vw;
+
+      p {
+        &:last-child {
+          margin-bottom: 3vw;
+        }
+      }
     }
   }
 
@@ -771,8 +829,31 @@ section.preview {
   }
 
   .js {
+    header {
+      height: 10vw;
+    }
     #menu-icon {
-      padding-left: 6vw;
+      top: 2vw;
+      left: 2vw;
+      padding-left: 5.5vw;
+      font-size: 125%;
+      line-height: 6vw;
+    }
+  }
+
+}
+
+
+// Screens wider than 960px
+@media only screen and (min-width: 960px) {
+
+  body {
+    font-size: 1rem;
+
+    main {
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 

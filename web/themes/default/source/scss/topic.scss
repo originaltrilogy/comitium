@@ -5,7 +5,7 @@ body[data-controller="topic"],
 body[data-controller="announcement"] {
 
   h1 {
-    margin-bottom: 8vw;
+    padding-bottom: 6vw;
   }
   nav.actions {
     padding-bottom: 0;
@@ -14,7 +14,7 @@ body[data-controller="announcement"] {
   @media only screen and (min-width: 768px) {
 
     h1 {
-      margin-bottom: 6vw;
+      padding-bottom: 3vw;
     }
 
   }

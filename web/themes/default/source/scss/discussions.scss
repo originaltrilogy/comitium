@@ -22,6 +22,10 @@ body[data-controller="discussions"] {
     .last-post {
       display: inline-block;
       margin-top: 4vw;
+
+      h4 {
+        margin-bottom: 1.5vw;
+      }
     }
 
     @media only screen and (min-width: 500px) {
@@ -50,6 +54,20 @@ body[data-controller="discussions"] {
         time {
           display: inline;
         }
+      }
+    }
+
+    @media only screen and (min-width: 768px) {
+      section.announcements {
+        article {
+          padding: 2vw 0;
+        }
+      }
+      ul.stats {
+        margin-top: 2vw;
+      }
+      .last-post {
+        margin-top: 2vw;
       }
     }
   }
