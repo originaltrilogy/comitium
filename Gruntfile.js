@@ -12,9 +12,23 @@ module.exports = function (grunt) {
       }
     },
     concat: {
-      dist: {
-        src: ['web/themes/default/source/js/lib/*.js', 'web/themes/default/source/js/site/immediate.js', 'web/themes/default/source/js/site/*.js'],
-        dest: 'web/themes/default/app.js'
+      debug: {
+        src: ['web/themes/default/source/js/lib/*.js',
+              'web/themes/default/source/js/site/immediate.js',
+              'web/themes/default/source/js/site/*.js'],
+        dest: 'web/themes/default/debug.js'
+      },
+      development: {
+        src: ['web/themes/default/source/js/lib/*.js',
+              'web/themes/default/source/js/site/immediate.js',
+              'web/themes/default/source/js/site/*.js'],
+        dest: 'web/themes/default/development.js'
+      },
+      production: {
+        src: ['web/themes/default/source/js/lib/*.js',
+              'web/themes/default/source/js/site/immediate.js',
+              'web/themes/default/source/js/site/*.js'],
+        dest: 'web/themes/default/production.js'
       }
     },
     imagemin: {
@@ -50,17 +64,17 @@ module.exports = function (grunt) {
           require('cssnano')() // minify the result 
         ]
       },
-      dist: {
-        src: 'web/themes/default/production.css',
-        dest: 'web/themes/default/production.css'
-      },
-      dist2: {
+      debug: {
         src: 'web/themes/default/debug.css',
         dest: 'web/themes/default/debug.css'
       },
-      dist3: {
+      development: {
         src: 'web/themes/default/development.css',
         dest: 'web/themes/default/development.css'
+      },
+      production: {
+        src: 'web/themes/default/production.css',
+        dest: 'web/themes/default/production.css'
       }
     },
     uglify: {
@@ -70,7 +84,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'web/themes/default/app.js': ['web/themes/default/app.js']
+          'web/themes/default/production.js': ['web/themes/default/production.js']
         }
       }
     },
