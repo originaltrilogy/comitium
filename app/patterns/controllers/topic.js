@@ -585,13 +585,20 @@ function reply(params, context, emitter) {
       }
     }
   }, function (output) {
-    var message = '';
+    var breadcrumbs,
+        message = '';
 
     // If the group has reply access, display the topic reply form
     if ( output.listen.success ) {
       if ( output.access === true ) {
         params.form.content = app.config.comitium.editorIntro;
         params.form.subscribe = false;
+
+        if ( output.topic.private ) {
+          breadcrumbs = app.models.topic.breadcrumbs('Private Topics', 'private-topics');
+        } else {
+          breadcrumbs = app.models.topic.breadcrumbs(output.topic.discussionTitle, output.topic.discussionUrl, output.topic.discussionID);
+        }
 
         // If the quoted post exists and its topic ID matches this topic ID, add the
         // quote to the post content (this is a security measure, don't remove it).
@@ -605,7 +612,7 @@ function reply(params, context, emitter) {
           view: 'reply',
           content: {
             topic: output.topic,
-            breadcrumbs: app.models.topic.breadcrumbs(output.topic.discussionTitle, output.topic.discussionUrl, output.topic.discussionID),
+            breadcrumbs: breadcrumbs,
             reply: {
               message: message
             }
