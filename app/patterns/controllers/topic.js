@@ -254,7 +254,7 @@ function startForm(params, context, emitter) {
                     content: parsedContent
                   },
                   discussion: discussion,
-                  breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url)
+                  breadcrumbs: app.models.topic.breadcrumbs(output.discussion.title, output.discussion.url, output.discussion.id)
                 }
               });
               break;
