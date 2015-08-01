@@ -1,11 +1,12 @@
 section.summary
   h1 Delete a topic
   p Deleting a topic moves it to the trash, where it can be recovered later if necessary. Once removed from the trash by an administrator, a topic is permanently deleted.
-    
+
+if trash && trash.message
+  section.notice.error
+    p #{trash.message}
+
 section.topic-trash-form
-  if trash && trash.message
-    p.message
-      = trash.message
   form#topic-trash-form(action="topic/id/#{url.id}/action/trashForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

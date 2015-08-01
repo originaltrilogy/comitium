@@ -9,13 +9,13 @@ if preview
     article.post
       .content
         != preview.content
-          
+
+if edit && edit.message
+  section.notice.error
+    p #{edit.message}
+
 section.post-edit-form
   form#post-edit-form(action="post/id/#{url.id}/action/editForm" method="post" novalidate)
-    if edit && edit.message
-      .edit-messages
-        ul
-          li #{edit.message}
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
       ul

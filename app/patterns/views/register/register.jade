@@ -2,12 +2,13 @@ section.summary
   h1 Register with OT.com
   p Create an account and we'll send your activation e-mail right away.
 
+if register && register.message
+  section.notice.error
+    p #{register.message}
+
 section.sign-up-form
   if !session.username
     form(action="register/action/form" method="post" novalidate)
-      if register && register.message
-        p.message
-          != register.message
       .data
         ul
           li.username.text.required

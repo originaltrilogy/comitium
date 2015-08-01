@@ -23,13 +23,13 @@ body[data-controller="announcement"] {
 
 body[data-controller="topic"][data-view="private-topic"] {
 
-  p.private-notice {
-    margin-top: 0;
-    margin-bottom: 0;
+  section.notice.private {
+    p {
+      margin-bottom: 2vw;
+    }
   }
-
   ul.participants {
-    margin: 0 4vw 8vw;
+    margin: 0;
 
     li {
       list-style: none;

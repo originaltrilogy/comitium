@@ -2,11 +2,12 @@ section.summary
   h1 Lock a Topic
   p Locking a topic prevents users from replying and editing their posts. Moderators can still reply and make edits to locked topics, however.
   p You can unlock the topic later if you change your mind; it's not permanent.
-    
+
+if lock && lock.message
+  section.notice.error
+    p #{lock.message}
+
 section.topic-lock-form
-  if lock && lock.message
-    p.message
-      = lock.message
   form#topic-lock-form(action="topic/id/#{url.id}/action/lockForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

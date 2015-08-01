@@ -1,11 +1,12 @@
 section.summary
   h1 Delete an Announcement
   p Deleting an announcement places it in the <a href="discussion/Trash/id/1">Trash</a> and removes it from any discussions in which it was posted. It can be recovered from the trash if necessary.
-    
+
+if trash && trash.message
+  section.notice.error
+    p #{trash.message}
+
 section.topic-trash-form
-  if trash && trash.message
-    p.message
-      = trash.message
   form#topic-trash-form(action="announcement/id/#{url.id}/action/trashForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

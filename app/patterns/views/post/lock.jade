@@ -1,11 +1,12 @@
 section.summary
   h1 Lock a post
   p Locking a post prevents its author from making edits. You can unlock the post at any time.
-    
+
+if lock && lock.message
+  section.notice.error
+    p #{lock.message}
+
 section.post-lock-form
-  if lock && lock.message
-    p.message
-      = lock.message
   form#post-lock-form(action="post/id/#{url.id}/action/lockForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

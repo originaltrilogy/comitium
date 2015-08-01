@@ -704,8 +704,19 @@ nav.actions {
   }
 }
 
-.notice {
-  margin: 0 4vw;
+section.notice {
+  padding: 4vw;
+
+  &.error {
+    background: hsl(0,40%,50%);
+  }
+
+  & > *:first-child {
+    margin-top: 0;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
 }
 
 

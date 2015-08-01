@@ -1,9 +1,9 @@
+if user && user.message
+  section.notice.error
+    p #{user.message}
+
 .user-form
   form(action="#{route.pathname}" method="post" novalidate)
-    if user && user.message
-      .user-messages
-        ul
-          li #{user.message}
     .data
       ul
         li(class="username text required")

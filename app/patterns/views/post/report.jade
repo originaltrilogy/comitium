@@ -1,11 +1,12 @@
 section.summary
   h1 Report a post
   p Use this form to report a post that's in violation of the forum rules. Only moderators will know you've submitted this report.
-    
+
+if report && report.message
+  section.notice.error
+    p #{report.message}
+
 section.post-report-form
-  if report && report.message
-    p.message
-      = report.message
   form#post-report-form(action="post/id/#{url.id}/action/reportForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

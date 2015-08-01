@@ -11,13 +11,13 @@ if preview
         != preview.title
       .content
         != preview.content
+
+if topic && topic.message
+  section.notice.error
+    p #{topic.message}
           
 section.topic-write-form
   form#topic-write-form(action="topic/action/startPrivateForm" method="post" novalidate)
-    if topic && topic.message
-      .messages
-        ul
-          li #{topic.message}
     .data
       ul
         li.invitees.text.required

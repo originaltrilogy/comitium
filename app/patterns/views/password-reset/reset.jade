@@ -1,12 +1,13 @@
 section.summary
   h1 Reset your password
   p Thanks for confirming your e-mail address. Please enter your new password below.
+
+if reset && reset.message
+  section.notice.error
+    p #{reset.message}
   
 section.password-reset-form
   form(action="password-reset/action/resetForm/id/#{url.id}/code/#{url.code}" method="post" novalidate)
-    if reset && reset.message
-      p.message
-        = reset.message
     .data
       ul
         li.password.text.required
