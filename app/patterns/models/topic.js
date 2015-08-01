@@ -319,7 +319,7 @@ function insert(args, emitter) {
           insertInvitation: function (previous, emitter) {
             var userMethods = {};
 
-            args.invitees.forEach( function (item, indext, array) {
+            args.invitees.forEach( function (item, index, array) {
               userMethods[item] = function (emitter) {
                 client.query(
                   'select id from users where username = $1;',

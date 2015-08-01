@@ -488,10 +488,10 @@ function startPrivateForm(params, context, emitter) {
                       if ( output.listen.success ) {
                         delete output.listen;
                         for ( var invitee in output ) {
-                          if ( invitee.privateTopicEmailNotification ) {
+                          if ( output[invitee].privateTopicEmailNotification ) {
                             app.mail.sendMail({
                               from: app.config.comitium.email,
-                              to: invitee.email,
+                              to: output[invitee].email,
                               subject: 'New private topic started by ' + params.session.username,
                               text: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/id/' + topic.id
                             });
