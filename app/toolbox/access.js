@@ -746,6 +746,13 @@ function topicReply(args, emitter) {
       if ( output.topic ) {
         if ( !output.topic.private ) {
           app.listen({
+            topicLocked: function (emitter) {
+              if ( !output.topic.lockedByID || args.user.moderateDiscussions ) {
+                emitter.emit('ready', false);
+              } else {
+                challenge(app.extend(args, { emit: 'end' }), emitter);
+              }
+            },
             discussionReply: function (emitter) {
               discussionReply({
                 discussionID: output.topic.discussionID,

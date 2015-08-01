@@ -304,7 +304,7 @@ function liftBan(args, emitter) {
     } else {
 
       client.query(
-        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'New Members\' ) where "id" = $1;',
+        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Trusted Members\' ) where "id" = $1;',
         [ args.userID ],
         function (err, result) {
           done();
