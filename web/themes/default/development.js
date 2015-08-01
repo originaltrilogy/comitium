@@ -5077,18 +5077,20 @@ CF.topic = ( function (Modernizr, CF) {
 
       postContent: function () {
         var postContent = document.getElementById('post-content'),
-            postContentText = postContent.value;
+            postContentText = postContent ? postContent.value : '';
 
-        postContent.addEventListener('focus', function (e) {
-          if ( postContent.value === postContentText ) {
-            postContent.value = '';
-          }
-        });
-        postContent.addEventListener('blur', function (e) {
-          if ( postContent.value === '' ) {
-            postContent.value = postContentText;
-          }
-        });
+        if ( postContent ) {
+          postContent.addEventListener('focus', function (e) {
+            if ( postContent.value === postContentText ) {
+              postContent.value = '';
+            }
+          });
+          postContent.addEventListener('blur', function (e) {
+            if ( postContent.value === '' ) {
+              postContent.value = postContentText;
+            }
+          });
+        }
       }
 
     };

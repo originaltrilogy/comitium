@@ -707,8 +707,9 @@ nav.actions {
 section.notice {
   padding: 4vw;
 
-  &.error {
-    font-size: 120%;
+  &.error,
+  &.locked,
+  &.banned {
     background: hsl(0,40%,50%);
   }
 
