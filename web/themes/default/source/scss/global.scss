@@ -579,12 +579,7 @@ form {
   }
 
   select {
-    padding: 2vw 4vw;
-
-    &:after {
-      content: 'X';
-      display: block;
-    }
+    padding: 3vw 4vw;
   }
 
   input[type="checkbox"] {
@@ -633,7 +628,7 @@ form {
   }
 
   textarea {
-    font-family: Menlo, Consolas, fixed-width;
+    font-family: Menlo, Consolas, monospace;
     font-size: 90%;
     width: 100%;
     padding: 4vw;
