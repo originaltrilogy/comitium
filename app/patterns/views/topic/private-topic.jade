@@ -26,8 +26,6 @@ section.posts
   if posts
     each post in posts
       include ../post/_private-topic-post
-  if !topic.replies
-    p This topic has no replies. <a href="topic/action/reply/id/#{topic.id}">Why not weigh in?</a>
 
 include ../partials/pagination
 

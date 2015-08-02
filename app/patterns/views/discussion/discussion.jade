@@ -12,7 +12,7 @@ if announcements
           li.new-announcement
             a(href="announcement/action/start/id/#{discussion.id}") Make an announcement
     each announcement in announcements
-      article(class="announcement#{ announcement.updated ? ' updated' : '' }" data-announcement-id="#{announcement.id}")
+      article(class="announcement#{ announcement.updated ? ' updated' : '' }#{ announcement.lockedByID ? ' locked' : '' }" data-announcement-id="#{announcement.id}")
         h3
           a(href="announcement/#{announcement.url}/id/#{announcement.id}") #{announcement.titleHtml}
           
