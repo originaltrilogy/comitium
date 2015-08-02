@@ -22,8 +22,8 @@ function handler(params, context, emitter) {
     emitter.emit('ready', {
       content: {
         metaData: metaData,
-        cssUrl: cssUrl + staticFileStats[cssKey].ctime.toString().replace(/[ :\-\(\)]/g, ''),
-        jsUrl: jsUrl + staticFileStats[jsKey].ctime.toString().replace(/[ :\-\(\)]/g, '')
+        cssUrl: cssUrl + staticFileStats[cssKey].mtime.toString().replace(/[ :\-\(\)]/g, ''),
+        jsUrl: jsUrl + staticFileStats[jsKey].mtime.toString().replace(/[ :\-\(\)]/g, '')
       }
     });
   } else {
@@ -62,8 +62,8 @@ function handler(params, context, emitter) {
       emitter.emit('ready', {
         content: {
           metaData: metaData,
-          cssUrl: cssUrl + output.css.ctime.toString().replace(/[ :\-\(\)]/g, ''),
-          jsUrl: jsUrl + output.js.ctime.toString().replace(/[ :\-\(\)]/g, '')
+          cssUrl: cssUrl + output.css.mtime.toString().replace(/[ :\-\(\)]/g, ''),
+          jsUrl: jsUrl + output.js.mtime.toString().replace(/[ :\-\(\)]/g, '')
         }
       });
     });
