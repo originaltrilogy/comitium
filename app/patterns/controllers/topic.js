@@ -660,7 +660,8 @@ function replyForm(params, context, emitter) {
           }),
           parsedContent,
           draft = false,
-          time = app.toolbox.helpers.isoDate();
+          time = app.toolbox.helpers.isoDate(),
+          breadcrumbs;
 
       // If the group has reply access, process the form
       if ( output.listen.success ) {
@@ -668,6 +669,12 @@ function replyForm(params, context, emitter) {
           params.form.subscribe = params.form.subscribe || false;
 
           parsedContent = contentMarkdown.render(params.form.content);
+
+          if ( output.topic.private ) {
+            breadcrumbs = app.models.topic.breadcrumbs('Private Topics', 'private-topics');
+          } else {
+            breadcrumbs = app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID);
+          }
 
           switch ( params.form.formAction ) {
             case 'Preview':
@@ -678,7 +685,7 @@ function replyForm(params, context, emitter) {
                     content: parsedContent
                   },
                   topic: topic,
-                  breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID)
+                  breadcrumbs: breadcrumbs
                 }
               });
               break;
@@ -748,7 +755,7 @@ function replyForm(params, context, emitter) {
                       content: {
                         reply: output.reply,
                         topic: topic,
-                        breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID)
+                        breadcrumbs: breadcrumbs
                       }
                     });
                   }
