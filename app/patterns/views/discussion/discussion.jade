@@ -32,7 +32,7 @@ section.topics
   
   if topics
     each topic in topics
-      article(class="topic#{ topic.updated ? ' updated' : '' }" data-topic-id="#{topic.id}")
+      article(class="topic#{ topic.updated ? ' updated' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
         h3
           a(href="topic/#{topic.url}/id/#{topic.id}") #{topic.titleHtml}
         p.details

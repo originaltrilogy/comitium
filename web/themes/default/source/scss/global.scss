@@ -392,6 +392,68 @@ section {
       }
     }
   }
+
+  &.notice {
+    padding: 4vw 4vw 4vw 14vw;
+    position: relative;
+
+    &:before {
+      content: $gNotice;
+      font-family: glyphs;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      @include color(100%, 90%);
+      speak: none;
+      position: absolute;
+      top: 4vw;
+      left: 4vw;
+      font-size: 6vw;
+    }
+
+    &.error,
+    &.locked,
+    &.banned {
+      background: hsl(0,40%,50%);
+
+      &:before,
+      a {
+        color: white;
+      }
+    }
+
+    &.error:before {
+      content: $gError;
+    }
+
+    &.locked:before {
+      content: $gLock;
+    }
+
+    &.banned:before {
+      content: $gBanned;
+    }
+
+    & > *:first-child {
+      margin-top: 0;
+    }
+    & > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &.preview {
+    article {
+      padding: 4vw 0;
+      margin-bottom: 6vw;
+
+      .title {
+        font-family: $titleFont;
+      }
+      .content {
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 
 article {
@@ -506,59 +568,70 @@ form {
     line-height: 1.5;
     padding-bottom: 2vw;
   }
-  input {
+  input,
+  select {
     width: 100%;
     padding: 4vw;
     font-size: 130%;
     background: #5E667A;
     border: 1px solid #343945;
     border-radius: 0.3rem;
+  }
 
-    &[type="checkbox"] {
-      display: inline-block;
-      width: 10vw;
-      height: 10vw;
-      vertical-align: middle;
-      position: relative;
+  select {
+    padding: 2vw 4vw;
 
-      &:checked {
-        &:after {
-          position: absolute;
-          top: 0;
-          left: 0;
-          display: block;
-          width: 10vw;
-          height: 10vw;
-          content: 'x';
-          line-height: 10vw;
-          text-align: center;
-        }
-      }
+    &:after {
+      content: 'X';
+      display: block;
     }
+  }
 
-    &[type="radio"] {
-      display: inline-block;
-      width: 10vw;
-      height: 10vw;
-      vertical-align: middle;
-      position: relative;
-      border-radius: 50%;
+  input[type="checkbox"] {
+    display: inline-block;
+    width: 10vw;
+    height: 10vw;
+    vertical-align: middle;
+    position: relative;
 
-      &:checked {
-        &:after {
-          position: absolute;
-          top: 1.2vw;
-          left: 1.2vw;
-          display: block;
-          width: 7vw;
-          height: 7vw;
-          @include background-color(14%, 75%);
-          border-radius: 50%;
-          content: '';
-        }
+    &:checked {
+      &:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 10vw;
+        height: 10vw;
+        content: 'x';
+        line-height: 10vw;
+        text-align: center;
       }
     }
   }
+
+  input[type="radio"] {
+    display: inline-block;
+    width: 10vw;
+    height: 10vw;
+    vertical-align: middle;
+    position: relative;
+    border-radius: 50%;
+
+    &:checked {
+      &:after {
+        position: absolute;
+        top: 1.2vw;
+        left: 1.2vw;
+        display: block;
+        width: 7vw;
+        height: 7vw;
+        @include background-color(14%, 75%);
+        border-radius: 50%;
+        content: '';
+      }
+    }
+  }
+
   textarea {
     font-family: Menlo, Consolas, fixed-width;
     font-size: 90%;
@@ -704,38 +777,6 @@ nav.actions {
   }
 }
 
-section.notice {
-  padding: 4vw;
-
-  &.error,
-  &.locked,
-  &.banned {
-    background: hsl(0,40%,50%);
-  }
-
-  & > *:first-child {
-    margin-top: 0;
-  }
-  & > *:last-child {
-    margin-bottom: 0;
-  }
-}
-
-
-section.preview {
-  article {
-    padding: 4vw 0;
-    margin-bottom: 6vw;
-
-    .title {
-      font-family: $titleFont;
-    }
-    .content {
-      margin-bottom: 0;
-    }
-  }
-}
-
 
 // Screens wider than 350px
 @media only screen and (min-width: 350px) {
@@ -769,7 +810,7 @@ section.preview {
 @media only screen and (min-width: 768px) {
 
   body {
-    font-size: 2vw;
+    font-size: 2.2vw;
   }
 
   h1 {
@@ -827,6 +868,13 @@ section.preview {
         &:last-child {
           margin-bottom: 3vw;
         }
+      }
+    }
+    &.notice {
+      padding-left: 13vw;
+
+      &:before {
+        top: 3vw;
       }
     }
   }

@@ -81,7 +81,7 @@ function announcements(discussionID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t.id, t."sortDate", t."replies", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."dateCreated" as "postDate", p2."dateCreated" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select t.id, t."sortDate", t."replies", t."lockedByID", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."dateCreated" as "postDate", p2."dateCreated" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join announcements a on t.id = a."topicID" and a."discussionID" = $1 ' +
               'join posts p on p.id = t."firstPostID" ' +
@@ -164,7 +164,7 @@ function topics(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t.id, t."sortDate", t."replies", t."titleHtml", t."url", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select t."id", t."sortDate", t."replies", t."titleHtml", t."url", t."lockedByID", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join posts p on p."id" = t."firstPostID" ' +
               'join users u on u.id = p."userID" ' +

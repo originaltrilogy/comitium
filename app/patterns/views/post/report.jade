@@ -4,7 +4,7 @@ section.summary
 
 if report && report.message
   section.notice.error
-    p #{report.message}
+    p !{report.message}
 
 section.post-report-form
   form#post-report-form(action="post/id/#{url.id}/action/reportForm" method="post" novalidate)

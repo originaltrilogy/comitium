@@ -15,6 +15,16 @@
   font-feature-settings: 'liga';
 }
 
+$gBanned:   '\e600';
+$gChecked:  '\e601';
+$gError:    '\e602';
+$gLock:     '\e603';
+$gMenu:     '\e604';
+$gNotice:   '\e605';
+$gPrivate:  '\e606';
+$gSelect:   '\e607';
+$gUpdates:  '\e608';
+
 @import '../global';
 @import '../discussions';
 @import '../discussion';

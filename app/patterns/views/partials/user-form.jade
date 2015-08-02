@@ -1,6 +1,6 @@
 if user && user.message
   section.notice.error
-    p #{user.message}
+    p !{user.message}
 
 .user-form
   form(action="#{route.pathname}" method="post" novalidate)

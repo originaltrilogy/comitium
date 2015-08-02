@@ -4,7 +4,7 @@ section.summary
 
 if move && move.message
   section.notice.error
-    p #{move.message}
+    p !{move.message}
 
 section.topic-move-form
   form#topic-move-form(action="topic/id/#{url.id}/action/moveForm" method="post" novalidate)

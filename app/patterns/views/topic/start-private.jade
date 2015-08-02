@@ -14,7 +14,7 @@ if preview
 
 if topic && topic.message
   section.notice.error
-    p #{topic.message}
+    p !{topic.message}
           
 section.topic-write-form
   form#topic-write-form(action="topic/action/startPrivateForm" method="post" novalidate)

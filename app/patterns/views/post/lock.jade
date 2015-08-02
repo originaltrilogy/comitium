@@ -4,7 +4,7 @@ section.summary
 
 if lock && lock.message
   section.notice.error
-    p #{lock.message}
+    p !{lock.message}
 
 section.post-lock-form
   form#post-lock-form(action="post/id/#{url.id}/action/lockForm" method="post" novalidate)

@@ -49,13 +49,25 @@ function form(params, context, emitter) {
       },
       user: function (previous, emitter) {
         app.models.user.info({ email: params.form.email }, emitter);
+      },
+      proceed: function (previous, emitter) {
+        if ( previous.user ) {
+          emitter.emit('ready', {
+            success: true
+          });
+        } else {
+          emitter.emit('end', {
+            success: false,
+            message: 'The e-mail address you provided doesn\'t exist in our system. Please check it and try again.'
+          });
+        }
       }
     }, function (output) {
       var ip = app.toolbox.helpers.ip(params.request);
-      
+
       if ( output.listen.success ) {
         if ( output.validateForm.success ) {
-          if ( output.user ) {
+          if ( output.proceed.success ) {
             
             app.listen('waterfall', {
               generateVerification: function (emitter) {
@@ -76,6 +88,14 @@ function form(params, context, emitter) {
             
             emitter.emit('ready', {
               redirect: app.config.comitium.basePath + 'password-reset/action/confirmation'
+            });
+          } else {
+            emitter.emit('ready', {
+              content: {
+                reset: {
+                  message: output.proceed.message
+                }
+              }
             });
           }
         } else {

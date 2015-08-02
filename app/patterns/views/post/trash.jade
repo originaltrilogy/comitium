@@ -4,7 +4,7 @@ section.summary
 
 if trash && trash.message
   section.notice.error
-    p #{trash.message}
+    p !{trash.message}
 
 section.post-delete-form
   form#post-delete-form(action="post/id/#{url.id}/action/trashForm" method="post" novalidate)

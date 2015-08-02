@@ -1,6 +1,6 @@
 if authenticate && authenticate.message
   section.notice.error
-    p #{authenticate.message}
+    p !{authenticate.message}
 
 section.sign-in-form
   form(action="sign-in/action/submit" method="post" novalidate)

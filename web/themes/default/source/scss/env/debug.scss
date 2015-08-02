@@ -4,16 +4,26 @@
 
 @font-face {
   font-family: 'glyphs';
-  src: url('fonts/glyphs/icomoon-full.eot');
-  src: url('fonts/glyphs/icomoon-full.eot?#iefix') format('embedded-opentype'),
-     // url('fonts/glyphs/icomoon-full.woff2') format('woff2'),
-     url('fonts/glyphs/icomoon-full.woff') format('woff'),
-     url('fonts/glyphs/icomoon-full.ttf') format('truetype'),
-     url('fonts/glyphs/icomoon-full.svg#glyphs') format('svg');
+  src: url('fonts/glyphs/icomoon.eot');
+  src: url('fonts/glyphs/icomoon.eot?#iefix') format('embedded-opentype'),
+     // url('fonts/glyphs/icomoon.woff2') format('woff2'),
+     url('fonts/glyphs/icomoon.woff') format('woff'),
+     url('fonts/glyphs/icomoon.ttf') format('truetype'),
+     url('fonts/glyphs/icomoon.svg#glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-feature-settings: 'liga';
 }
+
+$gBanned:   '\e70e';
+$gChecked:  '\e710';
+$gError:    '\e707';
+$gLock:     '\e68f';
+$gMenu:     '\e6bd';
+$gNotice:   '\e708';
+$gPrivate:  '\e6ce';
+$gSelect:   '\e743';
+$gUpdates:  '\e66c';
 
 @import '../global';
 @import '../discussions';

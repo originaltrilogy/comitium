@@ -10,7 +10,7 @@ if preview
 
 if reply && reply.message
   section.notice.error
-    p #{reply.message}
+    p !{reply.message}
           
 section.topic-reply-form
   form#topic-reply-form(action="topic/id/#{url.id}/action/replyForm" method="post" novalidate)

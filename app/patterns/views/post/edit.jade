@@ -12,7 +12,7 @@ if preview
 
 if edit && edit.message
   section.notice.error
-    p #{edit.message}
+    p !{edit.message}
 
 section.post-edit-form
   form#post-edit-form(action="post/id/#{url.id}/action/editForm" method="post" novalidate)

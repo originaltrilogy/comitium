@@ -4,7 +4,7 @@ section.summary
 
 if reset && reset.message
   section.notice.error
-    p #{reset.message}
+    p !{reset.message}
   
 section.password-reset-form
   form(action="password-reset/action/resetForm/id/#{url.id}/code/#{url.code}" method="post" novalidate)
