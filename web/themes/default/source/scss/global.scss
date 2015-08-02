@@ -398,12 +398,8 @@ section {
     position: relative;
 
     &:before {
-      content: $gNotice;
-      font-family: glyphs;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      @include icon($gNotice);
       @include color(100%, 90%);
-      speak: none;
       position: absolute;
       top: 4vw;
       left: 4vw;
@@ -591,14 +587,15 @@ form {
 
     &:checked {
       &:after {
+        @include icon($gChecked);
         position: absolute;
         top: 0;
         left: 0;
         display: block;
         width: 10vw;
         height: 10vw;
-        content: 'x';
         line-height: 10vw;
+        font-size: 150%;
         text-align: center;
       }
     }
@@ -620,7 +617,7 @@ form {
         display: block;
         width: 7vw;
         height: 7vw;
-        @include background-color(14%, 75%);
+        background-color: white;
         border-radius: 50%;
         content: '';
       }
