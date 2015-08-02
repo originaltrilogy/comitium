@@ -7,26 +7,29 @@ CF.topic = ( function (Modernizr, CF) {
         // if ( document.querySelectorAll('main nav.topic.actions li').length > 2 ) {
         //   methods.topicMenu();
         // }
+        methods.postContent();
       },
 
       start: function () {
         // CF.global.ajaxFormBinding({
         //   formSelector: '#topic-write-form'
         // });
+        methods.postContent();
       },
 
       reply: function () {
         // CF.global.ajaxFormBinding({
         //   formSelector: '#topic-reply-form'
         // });
-      },
+        methods.postContent();
+      }
 
 		},
 
     methods = {
 
 			init: function () {
-        methods.postContent();
+        // methods.postContent();
 			},
 
       // topicMenu: function () {
@@ -74,9 +77,7 @@ CF.topic = ( function (Modernizr, CF) {
 		init: methods.init,
     handler: actions.handler,
     start: actions.start,
-    startForm: actions.start,
-    reply: actions.reply,
-    replyForm: actions.reply
+    reply: actions.reply
 	};
 
 })(Modernizr, CF);
