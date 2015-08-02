@@ -4699,7 +4699,9 @@ CF.global = ( function (Modernizr, CF) {
           body.className += ' menu-closing';
           setTimeout( function () {
             methods.removeClass(body, 'menu-closing');
-            body.removeChild(menu);
+            if ( menu.parentNode !== null ) {
+              body.removeChild(menu);
+            }
           }, 200);
         }, false);
       }, false);
