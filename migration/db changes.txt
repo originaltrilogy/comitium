@@ -33,7 +33,6 @@ Migration order:
 2. Topics
   - topics.sql
   - topic-title-markdown-generation.js
-  - topic-url-slug-generation.js
 
 3. Posts
   - posts.sql
@@ -41,6 +40,7 @@ Migration order:
 
 4. Private topics (old PM migration)
   - private-messages.sql
+  - topic-url-slug-generation.js
 
 5. Remaining items
   - batch.sql

@@ -28,7 +28,7 @@ function stats(userID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select count("topicID") as "privateTopicCount" from "topicInvitations" where "userID" = $1;',
+              'select count("topicID") as "topics" from "topicInvitations" where "userID" = $1;',
               [ userID ],
               function (err, result) {
                 done();
@@ -83,13 +83,13 @@ function topics(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select distinct t.id, t."sortDate", t."replies", t."titleHtml", t."url", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select t.id, t."sortDate", t."replies", t."titleHtml", t."url", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join "topicInvitations" ti on ti."userID" = $1 ' +
-              'join posts p on p."topicID" = t.id ' +
+              'join posts p on p."topicID" = ti."topicID" ' +
               'and p."id" = t."firstPostID" ' +
               'join users u on u.id = p."userID" ' +
-              'join posts p2 on p2."topicID" = t.id ' +
+              'join posts p2 on p2."topicID" = ti."topicID" ' +
               'and p2."id" = t."lastPostID" ' +
               'join users u2 on u2.id = p2."userID" ' +
               'and t.draft = false and t.private = true ' +
