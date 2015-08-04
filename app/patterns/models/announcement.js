@@ -1,10 +1,6 @@
 // announcement model
 
-// Since announcements are a variation of topics, some models point to the topic model
-
 'use strict';
-
-var topic = require('./topic');
 
 module.exports = {
   groupView: groupView,
