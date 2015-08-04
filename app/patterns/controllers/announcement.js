@@ -520,6 +520,7 @@ function replyForm(params, context, emitter) {
                     if ( !draft ) {
                       app.controllers.topic.notifySubscribers({
                         topicID: topic.id,
+                        scope: 'updates',
                         skip: [ params.session.userID ],
                         time: time,
                         subject: 'Forum announcement update',

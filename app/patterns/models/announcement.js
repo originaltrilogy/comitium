@@ -307,17 +307,17 @@ function insert(args, emitter) {
 
           if ( output.listen.success ) {
 
-            emitter.emit('ready', {
-              success: true,
-              id: output.insertTopic.id
-            });
-
             if ( !args.draft ) {
               app.cache.clear({ scope: 'discussion-2' });
               args.discussions.forEach( function (item, index, array) {
                 app.cache.clear({ scope: 'announcements', key: 'discussion-' + item });
               });
             }
+
+            emitter.emit('ready', {
+              success: true,
+              id: output.insertTopic.id
+            });
 
           } else {
 
@@ -424,13 +424,13 @@ function trash(args, emitter) {
 
         if ( output.listen.success ) {
 
-          emitter.emit('ready', {
-            success: true
-          });
-
           app.cache.clear({ scope: 'discussion-1' });
           app.cache.clear({ scope: 'discussion-2' });
           app.cache.clear({ scope: 'announcements' });
+
+          emitter.emit('ready', {
+            success: true
+          });
 
         } else {
 

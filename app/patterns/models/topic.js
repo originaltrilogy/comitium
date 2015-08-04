@@ -449,11 +449,6 @@ function insert(args, emitter) {
 
           if ( output.listen.success ) {
 
-            emitter.emit('ready', {
-              success: true,
-              id: output.insertTopic.id
-            });
-
             if ( !args.draft ) {
               if ( args.private ) {
                 output.insertInvitation.userIDs.forEach( function (item, index, array) {
@@ -464,6 +459,11 @@ function insert(args, emitter) {
                 app.cache.clear({ scope: 'discussions-categories' });
               }
             }
+
+            emitter.emit('ready', {
+              success: true,
+              id: output.insertTopic.id
+            });
 
           } else {
 
@@ -864,11 +864,6 @@ function reply(args, emitter) {
 
           if ( output.listen.success ) {
 
-            emitter.emit('ready', {
-              success: true,
-              id: output.insertPost.id
-            });
-
             if ( !args.draft ) {
               // Clear the cache for this topic and discussion
               app.cache.clear({ scope: 'topic-' + args.topicID });
@@ -890,6 +885,11 @@ function reply(args, emitter) {
                 app.cache.clear({ scope: 'discussions-categories' });
               }
             }
+
+            emitter.emit('ready', {
+              success: true,
+              id: output.insertPost.id
+            });
 
           } else {
             emitter.emit('error', output.listen);

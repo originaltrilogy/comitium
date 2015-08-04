@@ -6,6 +6,7 @@ var Remarkable = require('remarkable');
 
 module.exports = {
   handler: handler,
+  notifySubscribers: notifySubscribers,
   start: start,
   startForm: startForm,
   startPrivate: startPrivate,
