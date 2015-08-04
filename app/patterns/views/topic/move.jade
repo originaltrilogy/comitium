@@ -17,11 +17,15 @@ section.topic-move-form
             each category in categories
               optgroup(label=category.categoryTitle)
               each discussion in category.discussions
-                option(value=discussion.discussionID)
-                  = discussion.discussionTitle
+                if discussion.discussionID !== topic.discussionID
+                  option(value=discussion.discussionID)
+                    = discussion.discussionTitle
+                else
+                  option(value=discussion.discussionID selected)
+                    = discussion.discussionTitle
         li.notify.checkbox
           input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
-          label(for="notify") Notify the author
+          label(for="notify") Notify followers
     .actions
       ul
         li.primary.report

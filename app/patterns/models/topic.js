@@ -15,7 +15,8 @@ module.exports = {
   move: move,
   reply: reply,
   subscriptionExists: subscriptionExists,
-  subscribersToNotify: subscribersToNotify,
+  subscribers: subscribers,
+  subscribersToUpdate: subscribersToUpdate,
   subscriptionNotificationSentUpdate: subscriptionNotificationSentUpdate,
   subscribe: subscribe,
   unsubscribe: unsubscribe,
@@ -942,16 +943,16 @@ function subscriptionExists(args, emitter) {
 
 
 
-function subscribersToNotify(args, emitter) {
+function subscribers(args, emitter) {
   app.listen({
-    subscribersToNotify: function (emitter) {
+    subscribers: function (emitter) {
       app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select u.email from users u join subscriptions s on u.id = s."userID" and u.id <> $1 where s."topicID" = $2 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
-            [ args.replyAuthorID, args.topicID ],
+            'select u.email from users u join subscriptions s on u.id = s."userID" where s."topicID" = $1;',
+            [ args.topicID ],
             function (err, result) {
               done();
               if ( err ) {
@@ -967,7 +968,44 @@ function subscribersToNotify(args, emitter) {
   }, function (output) {
 
     if ( output.listen.success ) {
-      emitter.emit('ready', output.subscribersToNotify);
+      emitter.emit('ready', output.subscribers);
+    } else {
+      emitter.emit('error', output.listen);
+    }
+
+  });
+}
+
+
+
+function subscribersToUpdate(args, emitter) {
+  var skip = args.skip ? args.skip.join(',') : 0;
+
+  app.listen({
+    subscribersToUpdate: function (emitter) {
+      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        if ( err ) {
+          emitter.emit('error', err);
+        } else {
+          client.query(
+            'select u.email from users u join subscriptions s on u.id = s."userID" and u.id not in ( ' + skip + ' ) where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
+            [ args.topicID ],
+            function (err, result) {
+              done();
+              if ( err ) {
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', result.rows);
+              }
+            }
+          );
+        }
+      });
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+      emitter.emit('ready', output.subscribersToUpdate);
     } else {
       emitter.emit('error', output.listen);
     }

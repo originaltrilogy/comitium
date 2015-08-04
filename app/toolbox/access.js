@@ -325,10 +325,9 @@ function postEdit(args, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        discussionView({
-          discussionID: previous.topic.discussionID,
-          user: args.user
-        }, emitter);
+        discussionView(app.extend(args, {
+          discussionID: previous.topic.discussionID
+        }), emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -372,10 +371,9 @@ function postLock(args, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        discussionView({
-          discussionID: previous.topic.discussionID,
-          user: args.user
-        }, emitter);
+        discussionView(app.extend(args, {
+          discussionID: previous.topic.discussionID
+        }), emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -419,10 +417,9 @@ function postTrash(args, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        discussionView({
-          discussionID: previous.topic.discussionID,
-          user: args.user
-        }, emitter);
+        discussionView(app.extend(args, {
+          discussionID: previous.topic.discussionID
+        }), emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -454,15 +451,13 @@ function postView(args, emitter) {
     view: function (previous, emitter) {
       if ( previous.post ) {
         if ( previous.post.discussionID !== 2 ) {
-          topicView({
-            topicID: previous.post.topicID,
-            user: args.user
-          }, emitter);
+          topicView(app.extend(args, {
+            topicID: previous.post.topicID
+          }), emitter);
         } else {
-          announcementView({
-            topicID: previous.post.topicID,
-            user: args.user
-          }, emitter);
+          announcementView(app.extend(args, {
+            topicID: previous.post.topicID
+          }), emitter);
         }
       } else {
         emitter.emit('error', {
@@ -579,10 +574,9 @@ function topicLock(args, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        discussionView({
-          discussionID: previous.topic.discussionID,
-          user: args.user
-        }, emitter);
+        discussionView(app.extend(args, {
+          discussionID: previous.topic.discussionID
+        }), emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -617,10 +611,9 @@ function topicMerge(args, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        discussionView({
-          discussionID: previous.topic.discussionID,
-          user: args.user
-        }, emitter);
+        discussionView(app.extend(args, {
+          discussionID: previous.topic.discussionID
+        }), emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -656,10 +649,9 @@ function topicMove(args, emitter) {
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
         if ( args.user.moderateDiscussions ) {
-          discussionView({
-            discussionID: previous.topic.discussionID,
-            user: args.user
-          }, emitter);
+          discussionView(app.extend(args, {
+            discussionID: previous.topic.discussionID
+          }), emitter);
         } else {
           challenge(app.extend(args, { emit: 'end' }), emitter);
         }
@@ -698,10 +690,9 @@ function topicMoveForm(args, emitter) {
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
         if ( args.user.moderateDiscussions ) {
-          discussionView({
-            discussionID: previous.topic.discussionID,
-            user: args.user
-          }, emitter);
+          discussionView(app.extend(args, {
+            discussionID: previous.topic.discussionID
+          }), emitter);
         } else {
           challenge(app.extend(args, { emit: 'end' }), emitter);
         }
@@ -712,10 +703,9 @@ function topicMoveForm(args, emitter) {
       }
     },
     newDiscussionView: function (previous, emitter) {
-      discussionView({
-        discussionID: args.newDiscussionID,
-        user: args.user
-      }, emitter);
+      discussionView(app.extend(args, {
+        discussionID: args.newDiscussionID
+      }), emitter);
     }
   }, function (output) {
     if ( output.listen.success ) {
@@ -754,10 +744,9 @@ function topicReply(args, emitter) {
               }
             },
             discussionReply: function (emitter) {
-              discussionReply({
-                discussionID: output.topic.discussionID,
-                user: args.user
-              }, emitter);
+              discussionReply(app.extend(args, {
+                discussionID: output.topic.discussionID
+              }), emitter);
             }
           }, function (output) {
             if ( output.listen.success ) {
@@ -817,10 +806,9 @@ function topicTrash(args, emitter) {
     },
     discussionView: function (previous, emitter) {
       if ( previous.topic ) {
-        discussionView({
-          discussionID: previous.topic.discussionID,
-          user: args.user
-        }, emitter);
+        discussionView(app.extend(args, {
+          discussionID: previous.topic.discussionID
+        }), emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -858,10 +846,9 @@ function topicView(args, emitter) {
           if ( output.topic.discussionID !== 2 ) {
             app.listen({
               discussionView: function (emitter) {
-                discussionView({
-                  discussionID: output.topic.discussionID,
-                  user: args.user
-                }, emitter);
+                discussionView(app.extend(args, {
+                  discussionID: output.topic.discussionID
+                }), emitter);
               }
             }, function (output) {
               if ( output.listen.success ) {

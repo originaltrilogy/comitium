@@ -379,7 +379,7 @@ function reply(params, context, emitter) {
         // If the quoted post exists and its announcement ID matches this announcement ID, add the
         // quote to the post content (this is a security measure, don't remove it).
         if ( output.quote && output.quote.topicID === output.topic.id ) {
-          params.form.content = '[' + output.quote.author + ' said](post/' + output.quote.id + '):\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
+          params.form.content = '> [**' + output.quote.author + '** said:](post/id/' + output.quote.id + ')\n>\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
         } else if ( params.url.quote && !output.quote ) {
           message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.';
         }
@@ -518,11 +518,12 @@ function replyForm(params, context, emitter) {
 
                     // If it's not a draft post, notify the topic subscribers
                     if ( !draft ) {
-                      notifySubscribers({
-                        replyAuthorID: params.session.userID,
+                      app.controllers.topic.notifySubscribers({
                         topicID: topic.id,
+                        skip: [ params.session.userID ],
                         time: time,
-                        url: replyUrl
+                        subject: 'Forum announcement update',
+                        text: replyUrl
                       });
                     }
                   } else {
@@ -552,38 +553,6 @@ function replyForm(params, context, emitter) {
   } else {
     reply(params, context, emitter);
   }
-
-}
-
-
-
-function notifySubscribers(args, emitter) {
-
-  app.listen({
-    subscribersToNotify: function (emitter) {
-      app.models.topic.subscribersToNotify({
-        topicID: args.topicID,
-        replyAuthorID: args.replyAuthorID
-      }, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success && output.subscribersToNotify.length ) {
-      for ( var i = 0; i < output.subscribersToNotify.length; i++ ) {
-        app.mail.sendMail({
-          from: app.config.comitium.email,
-          to: output.subscribersToNotify[i].email,
-          subject: 'Forum announcement update',
-          text: args.url
-        });
-      }
-      app.models.topic.subscriptionNotificationSentUpdate({
-        topicID: args.topicID,
-        time: args.time
-      });
-    } else if ( !output.listen.success && emitter ) {
-      emitter.emit('error', output.listen);
-    }
-  });
 
 }
 

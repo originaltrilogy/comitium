@@ -743,10 +743,12 @@ function replyForm(params, context, emitter) {
                     // If it's not a draft post, notify the topic subscribers
                     if ( !draft ) {
                       notifySubscribers({
-                        replyAuthorID: params.session.userID,
                         topicID: topic.id,
+                        scope: 'updates',
+                        skip: [ params.session.userID ],
                         time: time,
-                        url: replyUrl
+                        subject: 'Forum topic update',
+                        text: replyUrl
                       });
                     }
                   } else {
@@ -785,10 +787,18 @@ function notifySubscribers(args, emitter) {
 
   app.listen({
     subscribersToNotify: function (emitter) {
-      app.models.topic.subscribersToNotify({
-        topicID: args.topicID,
-        replyAuthorID: args.replyAuthorID
-      }, emitter);
+      switch ( args.scope ) {
+        case 'updates':
+          app.models.topic.subscribersToUpdate({
+            topicID: args.topicID,
+            skip: args.skip
+          }, emitter);
+          break;
+        default:
+          app.models.topic.subscribers({
+            topicID: args.topicID
+          }, emitter);
+      }
     }
   }, function (output) {
     if ( output.listen.success && output.subscribersToNotify.length ) {
@@ -796,14 +806,16 @@ function notifySubscribers(args, emitter) {
         app.mail.sendMail({
           from: app.config.comitium.email,
           to: output.subscribersToNotify[i].email,
-          subject: 'Forum topic update',
-          text: args.url
+          subject: args.subject,
+          text: args.text
         });
       }
-      app.models.topic.subscriptionNotificationSentUpdate({
-        topicID: args.topicID,
-        time: args.time
-      });
+      if ( args.scope === 'updates' ) {
+        app.models.topic.subscriptionNotificationSentUpdate({
+          topicID: args.topicID,
+          time: args.time
+        });
+      }
     } else if ( !output.listen.success && emitter ) {
       emitter.emit('error', output.listen);
     }
@@ -1161,9 +1173,11 @@ function moveForm(params, context, emitter) {
             if ( output.listen.success ) {
               if ( output.move.success ) {
                 if ( params.form.notify ) {
-
-                  // notify subscribers (if the author isn't subscribed, they probably don't care)
-
+                  notifySubscribers({
+                    topicID: topic.id,
+                    subject: 'A topic you\'re following was moved',
+                    text: 'The following topic was moved from ' + topic.discussionTitle + ' to ' + output.newDiscussion.title + '.\n\nhttp:' + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id
+                  });
                 }
                 emitter.emit('ready', {
                   redirect: params.form.forwardToUrl
