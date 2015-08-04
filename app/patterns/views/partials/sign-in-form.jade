@@ -2,7 +2,7 @@ if authenticate && authenticate.message
   section.notice.error
     p !{authenticate.message}
 
-section.sign-in-form
+section.form.sign-in
   form(action="sign-in/action/submit" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

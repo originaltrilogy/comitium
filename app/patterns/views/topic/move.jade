@@ -6,7 +6,7 @@ if move && move.message
   section.notice.error
     p !{move.message}
 
-section.topic-move-form
+section.form.topic-move
   form#topic-move-form(action="topic/id/#{url.id}/action/moveForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

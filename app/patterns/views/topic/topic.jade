@@ -48,7 +48,7 @@ section.posts
 include ../partials/pagination
 
 if userCanReply
-  section.quick-reply-form
+  section.form.quick-reply
     h2 Quick reply
     form#quick-reply-form(action="topic/id/#{url.id}/action/replyForm" method="post" novalidate)
       .data

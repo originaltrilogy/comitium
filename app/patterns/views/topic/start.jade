@@ -14,7 +14,7 @@ if topic && topic.message
   section.notice.error
     p !{topic.message}
 
-section.topic-write-form
+section.form.topic-write
   form#topic-write-form(action="topic/action/startForm/id/#{discussion.id}" method="post" novalidate)
     .data
       ul

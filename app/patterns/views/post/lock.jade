@@ -6,7 +6,7 @@ if lock && lock.message
   section.notice.error
     p !{lock.message}
 
-section.post-lock-form
+section.form.post-lock
   form#post-lock-form(action="post/id/#{url.id}/action/lockForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

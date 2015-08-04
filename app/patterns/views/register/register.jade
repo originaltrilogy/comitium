@@ -6,7 +6,7 @@ if register && register.message
   section.notice.error
     p !{register.message}
 
-section.sign-up-form
+section.form.sign-up
   if !session.username
     form(action="register/action/form" method="post" novalidate)
       .data

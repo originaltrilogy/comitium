@@ -6,7 +6,7 @@ if trash && trash.message
   section.notice.error
     p !{trash.message}
 
-section.topic-trash-form
+section.form.topic-trash
   form#topic-trash-form(action="topic/id/#{url.id}/action/trashForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

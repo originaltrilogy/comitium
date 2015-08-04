@@ -2,7 +2,7 @@ if user && user.message
   section.notice.error
     p !{user.message}
 
-.user-form
+section.form.user
   form(action="#{route.pathname}" method="post" novalidate)
     .data
       ul

@@ -14,7 +14,7 @@ if edit && edit.message
   section.notice.error
     p !{edit.message}
 
-section.post-edit-form
+section.form.post-edit
   form#post-edit-form(action="post/id/#{url.id}/action/editForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
