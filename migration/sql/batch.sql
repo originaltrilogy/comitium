@@ -592,13 +592,6 @@ where "id" in (
   from "announcements"
 );
 
-create table "arcthreadscopy" as
-table "arcthreads";
-
-update "arcthreadscopy"
-set "icategoryid" = 22
-where "icategoryid" = 2;
-
 update "discussions"
 set "id" = 22
 where "id" = 2;

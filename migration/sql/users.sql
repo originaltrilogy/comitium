@@ -64,8 +64,8 @@ select
   'GMT',
   "vchUserDateFormat",
   'Default',
-  "vchForumSignature",
   '',
+  "vchForumSignature",
   "dteLastActivityDate",
   "dteUserJoinDate",
   "vchUserHomePage",
@@ -81,6 +81,7 @@ from "tblForumUsers";
 
 SELECT SETVAL('users_id_seq', ( select max("id") + 1 from users ) );
 
+delete from "users" where "id" in ( 1, 2 );
 
 create table "userLogs" (
   "id" serial not null,
