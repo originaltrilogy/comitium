@@ -16,6 +16,7 @@ Migration order:
 --    order by "username", "joinDate" asc;
 
 
+--    update "users" set "email" = 'invalid@invalid7044.com' where "id" = 7044;
 --    update "users" set "email" = 'invalid@invalid5674.com' where "id" = 5674;
 --
 --    select "id", "username", "email", "joinDate", "lastActivity" from "users" where "email" in (
@@ -39,16 +40,16 @@ Migration order:
   - posts.sql
   - post-content-markdown-generation.js
 
-7. Batch items
+4. Batch items
   - batch.sql
 
-4. PM migration
+5. PM migration
   - private-messages.sql
 
-5. Archive restoration
+6. Archive restoration
   - archives.sql
 
-x. Run the following again:
+7. Run the following again:
   - topic-title-markdown-generation.js
   - topic-url-slug-generation.js
   - post-content-markdown-generation.js

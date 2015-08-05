@@ -16,6 +16,17 @@ insert into "posts" ( "id", "topicID", "userID", "html", "markdown", "dateCreate
 
 SELECT SETVAL('topics_id_seq', ( select max("id") + 1 from topics ) );
 
+-- Move old announcements to the Announcements forum
+insert into announcements ( "discussionID", "topicID" )
+  select 2 as "discussionID", id
+  from topics t
+  where t."discussionID" = 7;
+
+update topics set "discussionID" = 2 where "discussionID" = 7;
+
+delete from discussions where id = 7;
+delete from "discussionPermissions" where "discussionID" = 7;
+
 -- Update discussion and topic stats
 update "topics" t set "replies" = ( select count("id") - 1 from "posts" where "topicID" = t."id" and "draft" = false ) where "id" = t."id";
 

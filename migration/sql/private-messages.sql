@@ -28,7 +28,7 @@ insert into "topicInvitations"
   order by "topicID" asc;
 
 insert into "posts" ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified", "lockedByID" )
-  select distinct "intConversationID" + 20000 as "topicID", "intSenderUserID" as "userID", concat('<p>', "vchMessageTitle", '</p>', "vchMessageText") as "html", ' ' as "markdown", "dteTimeSent" as "dateCreated", false as "draft", "intSenderUserID" as "editorID", "dteTimeSent" as "lastModified", 0 as "lockedByID" from "tblForumPrivateMessages"
+  select distinct "intConversationID" + 20000 as "topicID", "intSenderUserID" as "userID", "vchMessageText" as "html", ' ' as "markdown", "dteTimeSent" as "dateCreated", false as "draft", "intSenderUserID" as "editorID", "dteTimeSent" as "lastModified", 0 as "lockedByID" from "tblForumPrivateMessages"
   order by "dteTimeSent" asc, "topicID" asc;
 
 insert into "topics" ( "id", "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" )
