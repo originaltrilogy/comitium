@@ -14,7 +14,7 @@ if announcements
     each announcement in announcements
       article(class="announcement#{ announcement.updated ? ' updated' : '' }#{ announcement.lockedByID ? ' locked' : '' }" data-announcement-id="#{announcement.id}")
         h3
-          a(href="announcement/#{announcement.url}/id/#{announcement.id}") #{announcement.titleHtml}
+          a(href="announcement/#{announcement.url}/id/#{announcement.id}") !{announcement.titleHtml}
           
 section.topics
   h2 Topics
@@ -35,7 +35,7 @@ section.topics
     each topic in topics
       article(class="topic#{ topic.updated ? ' updated' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
         h3
-          a(href="topic/#{topic.url}/id/#{topic.id}") #{topic.titleHtml}
+          a(href="topic/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
         p.details
           a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
           |  &mdash;

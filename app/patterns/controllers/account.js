@@ -222,72 +222,98 @@ function avatarForm(params, context, emitter) {
 
   // var extension, newExtension;
 
-  if ( params.request.method === 'POST' ) {
-    if ( params.form.avatar && params.form.avatar.size ) {
-      // extension = path.extname(params.form.avatar.path).toLowerCase();
-      // newExtension = extension === '.jpg' || extension === '.jpeg' || extension === '.png' || extension === '.gif' ? extension : '.jpg';
+  if ( params.session.authenticated ) {
+    if ( params.request.method === 'POST' ) {
+      params.form.email = params.session.email;
+      params.form.password = '';
+      params.form.signature = params.session.signatureMarkdown;
+      params.form.timezone = params.session.timezone;
+      params.form.dateFormat = params.session.dateFormat;
+      params.form.theme = params.session.theme;
+      params.form.privateTopicEmailNotification = params.session.privateTopicEmailNotification;
 
-      gm(params.form.avatar.path).identify( function (err, stats) {
-        var width = stats.size.width,
-            height = stats.size.height;
+      if ( params.form.avatar && params.form.avatar.size ) {
+        // extension = path.extname(params.form.avatar.path).toLowerCase();
+        // newExtension = extension === '.jpg' || extension === '.jpeg' || extension === '.png' || extension === '.gif' ? extension : '.jpg';
 
-        if ( stats.format === 'GIF' && stats.Scene ) {
-          emitter.emit('ready', {
-            content: {
-              avatarForm: {
-                message: 'Animated GIFs aren\'t allowed.'
-              },
-              timezones: app.toolbox.moment.tz.names(),
-              themes: app.config.comitium.themes
-            }
-          });
-        } else {
-          if ( stats.size.width !== stats.size.height ) {
-            if ( stats.size.width > stats.size.height ) {
-              width = stats.size.height;
-            } else {
-              height = stats.size.width;
-            }
-          }
+        gm(params.form.avatar.path).identify( function (err, stats) {
+          var width, height;
 
-          gm(params.form.avatar.path)
-            .gravity('Center')
-            .crop(width, height)
-            .resize(200, 200)
-            .sharpen(10)
-            .autoOrient()
-            .noProfile()
-            // .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + newExtension, function (err) {
-            .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + '.jpg', function (err) {
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready', {
-                  content: {
-                    avatarForm: {
-                      success: true,
-                      message: 'Your avatar was saved successfully!'
-                    },
-                    timezones: app.toolbox.moment.tz.names(),
-                    themes: app.config.comitium.themes
-                  }
-                });
+          if ( !stats ) {
+            emitter.emit('ready', {
+              content: {
+                avatarForm: {
+                  message: 'There was a problem with your upload, possibly because the file is corrupt.'
+                }
               }
             });
-        }
-      });
+          } else {
+            width = stats.size.width;
+            height = stats.size.height;
+
+            if ( stats.format === 'GIF' && stats.Scene ) {
+              emitter.emit('ready', {
+                content: {
+                  avatarForm: {
+                    message: 'Animated GIFs aren\'t allowed.'
+                  },
+                  timezones: app.toolbox.moment.tz.names(),
+                  themes: app.config.comitium.themes
+                }
+              });
+            } else {
+              if ( stats.size.width !== stats.size.height ) {
+                if ( stats.size.width > stats.size.height ) {
+                  width = stats.size.height;
+                } else {
+                  height = stats.size.width;
+                }
+              }
+
+              gm(params.form.avatar.path)
+                .gravity('Center')
+                .crop(width, height)
+                .resize(200, 200)
+                .sharpen(10)
+                .autoOrient()
+                .noProfile()
+                // .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + newExtension, function (err) {
+                .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + '.jpg', function (err) {
+                  if ( err ) {
+                    emitter.emit('error', err);
+                  } else {
+                    emitter.emit('ready', {
+                      content: {
+                        avatarForm: {
+                          success: true,
+                          message: 'Your avatar was saved successfully!'
+                        },
+                        timezones: app.toolbox.moment.tz.names(),
+                        themes: app.config.comitium.themes
+                      }
+                    });
+                  }
+                });
+            }
+          }
+        });
+      } else {
+        emitter.emit('ready', {
+          content: {
+            avatarForm: {
+              message: 'You need to specify a file to upload.'
+            },
+            timezones: app.toolbox.moment.tz.names(),
+            themes: app.config.comitium.themes
+          }
+        });
+      }
     } else {
-      emitter.emit('ready', {
-        content: {
-          avatarForm: {
-            message: 'You need to specify a file to upload.'
-          },
-          timezones: app.toolbox.moment.tz.names(),
-          themes: app.config.comitium.themes
-        }
-      });
+      handler(params, context, emitter);
     }
   } else {
-    handler(params, context, emitter);
+    emitter.emit('ready', {
+      redirect: params.session.userID ? app.config.comitium.basePath + 'sign-in/password/true' : app.config.comitium.basePath + 'sign-in'
+    });
   }
 }

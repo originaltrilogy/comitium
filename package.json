@@ -1,6 +1,6 @@
 {
   "name": "comitium",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Forum software for Node.js",
   "author": {
     "name": "Jay Sylvester",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "bcrypt": "*",
-    "citizen": "~0.6.9",
+    "citizen": "~0.7.0",
     "gm": "^1.18.1",
     "moment": "*",
     "moment-timezone": "*",
@@ -42,6 +42,6 @@
     "load-grunt-tasks": "*"
   },
   "engines": {
-    "node": ">= 0.10.x"
+    "node": ">= 0.12.x"
   }
 }
