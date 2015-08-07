@@ -2,11 +2,14 @@
 
 'use strict';
 
-var Remarkable = require('remarkable');
+var // path = require('path'),
+    gm = require('gm'),
+    Remarkable = require('remarkable');
 
 module.exports = {
   handler: handler,
-  generalForm: generalForm
+  generalForm: generalForm,
+  avatarForm: avatarForm
 };
 
 
@@ -162,6 +165,7 @@ function generalForm(params, context, emitter) {
                         session: user,
                         content: {
                           general: {
+                            success: true,
                             messages: {
                               success: 'Your changes were saved.'
                             }
@@ -208,4 +212,82 @@ function generalForm(params, context, emitter) {
     });
   }
 
+}
+
+
+
+function avatarForm(params, context, emitter) {
+  // For now, all avatars are converted to JPEG. Storing custom avatars has many complications
+  // (topic caches, static file caches, etc.).
+
+  // var extension, newExtension;
+
+  if ( params.request.method === 'POST' ) {
+    if ( params.form.avatar && params.form.avatar.size ) {
+      // extension = path.extname(params.form.avatar.path).toLowerCase();
+      // newExtension = extension === '.jpg' || extension === '.jpeg' || extension === '.png' || extension === '.gif' ? extension : '.jpg';
+
+      gm(params.form.avatar.path).identify( function (err, stats) {
+        var width = stats.size.width,
+            height = stats.size.height;
+
+        if ( stats.format === 'GIF' && stats.Scene ) {
+          emitter.emit('ready', {
+            content: {
+              avatarForm: {
+                message: 'Animated GIFs aren\'t allowed.'
+              },
+              timezones: app.toolbox.moment.tz.names(),
+              themes: app.config.comitium.themes
+            }
+          });
+        } else {
+          if ( stats.size.width !== stats.size.height ) {
+            if ( stats.size.width > stats.size.height ) {
+              width = stats.size.height;
+            } else {
+              height = stats.size.width;
+            }
+          }
+
+          gm(params.form.avatar.path)
+            .gravity('Center')
+            .crop(width, height)
+            .resize(200, 200)
+            .sharpen(10)
+            .autoOrient()
+            .noProfile()
+            // .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + newExtension, function (err) {
+            .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + '.jpg', function (err) {
+              if ( err ) {
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  content: {
+                    avatarForm: {
+                      success: true,
+                      message: 'Your avatar was saved successfully!'
+                    },
+                    timezones: app.toolbox.moment.tz.names(),
+                    themes: app.config.comitium.themes
+                  }
+                });
+              }
+            });
+        }
+      });
+    } else {
+      emitter.emit('ready', {
+        content: {
+          avatarForm: {
+            message: 'You need to specify a file to upload.'
+          },
+          timezones: app.toolbox.moment.tz.names(),
+          themes: app.config.comitium.themes
+        }
+      });
+    }
+  } else {
+    handler(params, context, emitter);
+  }
 }

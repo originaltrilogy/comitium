@@ -376,14 +376,15 @@ main {
 section {
   @include background-color(14%, 22%);
 
+  &.form {
+    @include background-color(13%, 30%);
+  }
+
   &.summary {
     padding: 5vw 0 2vw;
     @include background-color(14%, 27%);
 
     p {
-      margin-right: 4vw;
-      margin-left: 4vw;
-
       &:nth-child(2) {
         margin-top: 0;
       }
@@ -396,6 +397,8 @@ section {
   &.notice {
     padding: 4vw 4vw 4vw 14vw;
     position: relative;
+    clear: both;
+    @include background-color(14%, 19%);
 
     &:before {
       @include icon($gNotice);
@@ -404,6 +407,11 @@ section {
       top: 4vw;
       left: 4vw;
       font-size: 6vw;
+    }
+
+    & > p {
+      margin-left: 0;
+      margin-right: 0;
     }
 
     &.error,
@@ -415,6 +423,10 @@ section {
       a {
         color: white;
       }
+    }
+
+    &.success:before {
+      content: $gSuccess;
     }
 
     &.error:before {
@@ -449,6 +461,11 @@ section {
         margin-bottom: 0;
       }
     }
+  }
+
+  & > p {
+    margin-right: 4vw;
+    margin-left: 4vw;
   }
 }
 
@@ -543,7 +560,6 @@ footer {
 /////////////////////////
 
 form {
-  width: 100%;
   margin: 0 auto;
   padding-top: 1.4rem;
   padding-bottom: 1.4rem;

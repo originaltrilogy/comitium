@@ -3,29 +3,33 @@ section.summary
   p Update your account information and adjust your settings.
 
 
-if general && general.messages
-  section.notice.error
-    ul
-      each message in general.messages
-        li
-          = message
 
-section#general
+section.form.general#general
   h2 General info and settings
-  form.general(action="account/action/generalForm" method="post" autocomplete="off" novalidate)
+  if general && general.messages
+    section(class="notice #{ general.success ? 'success' : 'error' }")
+      each message in general.messages
+        p #{message}
+  form.general(action="account/action/generalForm#general" method="post" autocomplete="off" novalidate)
     .data
       ul
         li.email.text.required
-          label(for="email") E-mail address
+          label(for="email") Change your e-mail address
           p.label-note Your account will require reactivation if you update your address (we'll send you an activation e-mail)
+          //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
+          //- DO NOT REMOVE
+          input(type="email" name="chromeIsStupidEmail" style="display: none;")
           input#email(name="email" type="email" value="#{form.email}" autocomplete="off" required)
         li.password.text
-          label(for="password") Password
+          label(for="password") Update your password
           p.label-note At least 8 characters, anything but spaces, case-sensitive
+          //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
+          //- DO NOT REMOVE
+          input(type="password" name="chromeIsStupidPassword" style="display: none;")
           input#password(name="password" type="password" autocomplete="off" value="#{form.password}")
         li.signature.textarea
-          label(for="signature") Signature
-          p.label-note Your signature appears beneath your forum posts
+          label(for="signature") Edit your signature
+          p.label-note This content appears beneath your forum posts
           textarea#signature(name="signature" rows="2") #{form.signature}
         li.timezone.select
           label(for="timezone") Time zone
@@ -54,7 +58,22 @@ section#general
       ul
         li.primary
           input(name="formAction" type="submit" value="Save changes")
-  
-section#avatar
-  h2 Upload or delete your avatar
+
+section.form.avatar#avatar
+  h2 Your avatar
+  if avatarForm && avatarForm.message
+    section(class="notice #{ avatarForm.success ? 'success' : 'error' }")
+      p #{avatarForm.message}
+  img(src="avatars/#{session.userID}.jpg")
   p Your avatar is an image that appears next to your posts to help identify you to other members.
+  form(action="account/action/avatarForm/#avatar" enctype="multipart/form-data" method="post")
+    .data
+      ul
+        li.avatar.file.required
+          label(for="avatar-file") Choose a file to upload
+          p.label-note Most image formats are supported, up to 5mb
+          input#avatar-file(name="avatar" type="file")
+    .actions
+      ul
+        li.primary
+          input(name="formAction" type="submit" value="Upload image")

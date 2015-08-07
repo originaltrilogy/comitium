@@ -18,6 +18,7 @@
   "dependencies": {
     "bcrypt": "*",
     "citizen": "~0.6.9",
+    "gm": "^1.18.1",
     "moment": "*",
     "moment-timezone": "*",
     "nodemailer": "*",
