@@ -5035,7 +5035,11 @@ CF.topic = ( function (Modernizr, CF) {
         // if ( document.querySelectorAll('main nav.topic.actions li').length > 2 ) {
         //   methods.topicMenu();
         // }
-        methods.postContent();
+        var form = document.querySelector('#quick-reply-form');
+
+        if ( !CF.global.hasClass(form.parentNode, 'quote') ) {
+          methods.postContent();
+        }
       },
 
       start: function () {
@@ -5049,7 +5053,11 @@ CF.topic = ( function (Modernizr, CF) {
         // CF.global.ajaxFormBinding({
         //   formSelector: '#topic-reply-form'
         // });
-        methods.postContent();
+        var form = document.querySelector('#topic-reply-form');
+
+        if ( !CF.global.hasClass(form.parentNode, 'quote') ) {
+          methods.postContent();
+        }
       }
 
 		},

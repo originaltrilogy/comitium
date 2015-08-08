@@ -12,7 +12,7 @@ if reply && reply.message
   section.notice.error
     p !{reply.message}
           
-section.form.topic-reply
+section(class="form topic-reply #{ url.quote ? 'quote' : ''}")
   form#topic-reply-form(action="topic/id/#{url.id}/action/replyForm" method="post" novalidate)
     .data
       ul
