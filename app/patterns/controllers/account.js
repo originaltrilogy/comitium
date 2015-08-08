@@ -237,7 +237,8 @@ function avatarForm(params, context, emitter) {
         // newExtension = extension === '.jpg' || extension === '.jpeg' || extension === '.png' || extension === '.gif' ? extension : '.jpg';
 
         gm(params.form.avatar.path).identify( function (err, stats) {
-          var width, height;
+          var width, height,
+              writeFile = app.config.citizen.directories.web + '/avatars/' + params.session.userID + '.jpg';
 
           if ( !stats ) {
             emitter.emit('ready', {
@@ -278,10 +279,12 @@ function avatarForm(params, context, emitter) {
                 .autoOrient()
                 .noProfile()
                 // .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + newExtension, function (err) {
-                .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + '.jpg', function (err) {
+                .write(writeFile, function (err) {
                   if ( err ) {
                     emitter.emit('error', err);
                   } else {
+                    app.cache.clear({ file: writeFile });
+
                     emitter.emit('ready', {
                       content: {
                         avatarForm: {
