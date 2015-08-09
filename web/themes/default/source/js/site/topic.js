@@ -9,7 +9,7 @@ CF.topic = ( function (Modernizr, CF) {
         // }
         var form = document.querySelector('#quick-reply-form');
 
-        if ( !CF.global.hasClass(form.parentNode, 'quote') ) {
+        if ( form && !CF.global.hasClass(form.parentNode, 'quote') ) {
           methods.postContent();
         }
       },
@@ -27,7 +27,7 @@ CF.topic = ( function (Modernizr, CF) {
         // });
         var form = document.querySelector('#topic-reply-form');
 
-        if ( !CF.global.hasClass(form.parentNode, 'quote') ) {
+        if ( form && !CF.global.hasClass(form.parentNode, 'quote') ) {
           methods.postContent();
         }
       }

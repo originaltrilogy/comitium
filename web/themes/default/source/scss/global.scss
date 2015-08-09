@@ -645,7 +645,7 @@ form {
     font-family: Menlo, Consolas, monospace;
     font-size: 90%;
     width: 100%;
-    padding: 4vw;
+    padding: 4vw 4vw 0;
     @include background-color(13%, 40%);
     border: 1px solid;
     @include border-color(14%, 20%);
