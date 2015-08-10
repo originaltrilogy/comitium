@@ -41,7 +41,7 @@ $gUpdates:  '\e66c';
 
 @mixin button($size: 'large', $color: 'light') {
   display: block;
-  border-radius: 0.8vw;
+  border-radius: 0.6vw;
   border: none;
   text-align: center;
   text-decoration: none;
@@ -49,13 +49,13 @@ $gUpdates:  '\e66c';
   cursor: pointer;
 
   @media only screen and (min-width: 768px) {
-    border-radius: 0.5vw;
+    border-radius: 0.4vw;
   }
 
   @if $size == 'large' {
   	line-height: 16vw;
 	  padding: 0 5vw;
-	  font-size: 120%;
+	  font-size: 110%;
 
     @media only screen and (min-width: 768px) {
       line-height: 12vw;
@@ -64,7 +64,7 @@ $gUpdates:  '\e66c';
   } @else if $size == 'medium' {
   	line-height: 10vw;
 	  padding: 0 4vw;
-	  font-size: 110%;
+	  font-size: 100%;
 
     @media only screen and (min-width: 768px) {
       line-height: 6vw;
@@ -74,7 +74,7 @@ $gUpdates:  '\e66c';
   } @else if $size == 'small' {
     line-height: 8vw;
 	  padding: 0 3vw;
-    font-size: 100%;
+    font-size: 90%;
 
     @media only screen and (min-width: 768px) {
       line-height: 5vw;

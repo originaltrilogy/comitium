@@ -587,8 +587,10 @@ form {
     font-size: 130%;
     word-wrap: normal;
     background: #5E667A;
-    border: 1px solid #343945;
+    border: 1px solid;
+    @include border-color(14%, 24%);
     border-radius: 0.3rem;
+    @include background-color(13%, 40%);
   }
 
   select {
@@ -648,7 +650,7 @@ form {
     padding: 4vw 4vw 0;
     @include background-color(13%, 40%);
     border: 1px solid;
-    @include border-color(14%, 20%);
+    @include border-color(14%, 24%);
     border-radius: 0.8vw;
   }
   .data {
@@ -791,7 +793,7 @@ nav.actions {
 @media only screen and (min-width: 350px) {
 
   body {
-    font-size: 3.8vw;
+    font-size: 4vw;
   }
 
 }
@@ -801,7 +803,7 @@ nav.actions {
 @media only screen and (min-width: 400px) {
 
   body {
-    font-size: 3.6vw;
+    font-size: 3.8vw;
   }
 
 }

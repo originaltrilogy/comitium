@@ -85,6 +85,8 @@ CF.topic = ( function (Modernizr, CF) {
 		init: methods.init,
     handler: actions.handler,
     start: actions.start,
+    startPrivate: actions.start,
+    startAnnouncement: actions.start,
     reply: actions.reply
 	};
 
