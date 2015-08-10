@@ -602,7 +602,7 @@ function posts(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
+              'select p."id", p."html", p."dateCreated", p."editorID", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
               'from posts p ' +
               'inner join users u on p."userID" = u.id ' +
               'where p."topicID" = $1 and p.draft = false ' +

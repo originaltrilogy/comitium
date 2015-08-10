@@ -59,7 +59,7 @@ function edit(args, emitter) {
 
             client.query(
               'insert into "postHistory" ( "postID", "editorID", "editReason", "markdown", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
-              [ args.id, args.currentPost.editorID, args.currentPost.editReason, args.currentPost.markdown, args.currentPost.html, args.currentPost.lastModified ],
+              [ args.id, args.currentPost.editorID === 0 ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.markdown, args.currentPost.html, args.currentPost.lastModified ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -112,7 +112,7 @@ function info(postID, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select p.id, p."topicID", p.html, p.markdown, p."dateCreated", p.draft, p."editReason", p."editorID", p."lastModified", p."lockedByID", p."lockReason", t."discussionID", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl" from posts p join users u on p."userID" = u.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
+        'select p.id, p."topicID", p.html, p.markdown, p."dateCreated", p.draft, p."editorID", p."editReason", p."lastModified", p."lockedByID", p."lockReason", t."discussionID", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", u2.username as editor, u2.url as "editorUrl" from posts p join users u on p."userID" = u.id left join users u2 on p."editorID" = u2.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
         [ postID ],
         function (err, result) {
           done();

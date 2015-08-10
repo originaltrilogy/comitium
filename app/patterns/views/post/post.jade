@@ -1,5 +1,21 @@
 section.summary
-  h1 Post by <a href="user/#{post.authorUrl}/id/#{post.authorID}">#{post.author}</a>
-  p Parent topic: <a href="#{post.topicLink}">#{post.topicTitle}</a>
+  h1 Post ##{post.id}
+  dl
+    dt Author
+    dd <a href="user/#{post.authorUrl}/id/#{post.authorID}">#{post.author}</a>
+    dt Parent topic
+    dd <a href="#{topic.link}">!{topic.titleHtml}</a>
+    dt Date created
+    dd #{post.dateCreated}
+    if post.editorID
+      dt Last modified
+      dd #{post.lastModified}
+      dt Edited by
+      dd <a href="user/#{post.editorUrl}/id/#{post.editorID}">#{post.editor}</a>
+      dt Reason for edit
+      if post.editReason
+        dd #{post.editReason}
+      else
+        dd None provided
 
 include _post

@@ -7,6 +7,9 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
       = post.dateCreated
   .content
     != post.html
+  if post.editorID
+    p.edited
+      a(href="post/id/#{post.id}") This post has been edited.
   nav.actions
     ul
       if !topic.lockedByID

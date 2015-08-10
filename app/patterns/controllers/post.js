@@ -39,16 +39,23 @@ function handler(params, context, emitter) {
     },
     post: function (previous, emitter) {
       app.models.post.info(params.url.id, emitter);
+    },
+    topic: function (previous, emitter) {
+      app.models.topic.info(previous.post.topicID, emitter);
     }
   }, function (output) {
+    var topicController, topicUrlTitle;
+
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        output.post.topicLink = output.post.discussionID !== 2 ? 'topic' : 'announcement';
-        output.post.topicLink += '/' + output.post.topicUrl + '/id/' + output.post.topicID;
+        topicController = output.topic.discussionID !== 2 ? 'topic' : 'announcement';
+        topicUrlTitle = output.topic.private ? '' : '/' + output.topic.url;
+        output.topic.link = topicController + topicUrlTitle + '/id/' + output.post.topicID;
 
         emitter.emit('ready', {
           content: {
-            post: output.post
+            post: output.post,
+            topic: output.topic
           }
         });
       } else {

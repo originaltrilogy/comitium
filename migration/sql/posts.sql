@@ -7,7 +7,7 @@ create table "posts" (
   "markdown" text not null,
   "dateCreated" timestamp not null,
   "draft" boolean not null,
-  "editorID" integer not null,
+  "editorID" integer default 0,
   "editReason" text,
   "lastModified" timestamp not null,
   "lockedByID" integer default 0,
@@ -24,7 +24,6 @@ insert into "posts" (
   "markdown",
   "dateCreated",
   "draft",
-  "editorID",
   "lastModified"
 )
 select
@@ -35,15 +34,26 @@ select
   ' ',
   "dtePostDateCreated",
   "bitDraft",
-  "intUserID",
   "dtePostDateCreated"
 from "tblForumPosts";
 
 
 SELECT SETVAL('posts_id_seq', ( select max("id") + 1 from posts ) );
 
-
 create index on posts ( "id" );
+
+
+-- Update posts with existing edit notes
+create index on "tblForumPostEditNotes" ( "intPostID" );
+create index on "tblForumPostEditNotes" ( "dtePostEditDate" );
+
+update posts p
+set "editorID" = coalesce(( select "intUserID" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), 0),
+    "editReason" = ( select "vchPostEditReason" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ),
+    "lastModified" = coalesce(( select "dtePostEditDate" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), p."lastModified")
+where id = p.id;
+
+
 
 
 create table "postHistory" (
