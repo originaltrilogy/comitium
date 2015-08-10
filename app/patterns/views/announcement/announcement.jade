@@ -17,23 +17,23 @@ nav.topic.actions
   ul
     if topic.discussionID !== 1
       li.reply
-        a(href="announcement/action/reply/id/#{url.id}") Reply
+        a(href="topic/action/reply/id/#{url.id}") Reply
       if !userIsSubscribed
         li.subscribe
-          a(href="announcement/action/subscribe/id/#{url.id}" title="Receive an e-mail notification when people reply to this topic.") Subscribe
+          a(href="topic/action/subscribe/id/#{url.id}" title="Receive an e-mail notification when people reply to this topic.") Subscribe
       else
         li.unsubscribe
-          a(href="announcement/action/unsubscribe/id/#{url.id}" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
+          a(href="topic/action/unsubscribe/id/#{url.id}" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
     if session.moderateDiscussions
       if topic.discussionID !== 1
         if !topic.lockedByID
           li.lock
-            a(href="announcement/action/lock/id/#{url.id}" title="Lock this topic (no replies or edits).") Lock
+            a(href="topic/action/lock/id/#{url.id}" title="Lock this topic (no replies or edits).") Lock
         else
           li.unlock
-            a(href="announcement/action/unlock/id/#{url.id}" title="Unlock this topic.") Unlock
+            a(href="topic/action/unlock/id/#{url.id}" title="Unlock this topic.") Unlock
         li.delete
-          a(href="announcement/action/trash/id/#{url.id}" title="Move this topic to the trash.") Delete
+          a(href="topic/action/trash/id/#{url.id}" title="Move this topic to the trash.") Delete
   
 include ../partials/pagination
           
@@ -47,7 +47,7 @@ include ../partials/pagination
 if userCanReply
   section.form.quick-reply
     h2 Quick reply
-    form#quick-reply-form(action="announcement/id/#{url.id}/action/replyForm" method="post" novalidate)
+    form#quick-reply-form(action="topic/id/#{url.id}/action/replyForm" method="post" novalidate)
       .data
         ul
           li.post-content.textarea.required

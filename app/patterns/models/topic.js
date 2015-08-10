@@ -3,6 +3,8 @@
 'use strict';
 
 module.exports = {
+  announcementView: announcementView,
+  announcementReply: announcementReply,
   exists: exists,
   firstUnreadPost: firstUnreadPost,
   hasInvitee: hasInvitee,
@@ -24,6 +26,61 @@ module.exports = {
   breadcrumbs: breadcrumbs,
   metaData: metaData
 };
+
+
+
+function announcementView(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select dp."discussionID" from "discussionPermissions" dp join "announcements" a on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and a."topicID" = $2 and dp."read" = true;',
+        [ args.groupID, args.topicID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', true);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+        }
+      );
+    }
+  });
+}
+
+
+
+function announcementReply(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select dp."discussionID" from "discussionPermissions" dp join "announcements" a on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and a."topicID" = $2 and dp."reply" = true;',
+        [ args.groupID, args.topicID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', true);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+        }
+      );
+    }
+  });
+}
+
 
 
 function exists(topicID, emitter) {
@@ -307,11 +364,7 @@ function insert(args, emitter) {
                   });
                   emitter.emit('error', err);
                 } else {
-                  if ( args.private ) {
-                    emitter.emit('ready');
-                  } else {
-                    emitter.emit('skip');
-                  }
+                  emitter.emit('ready');
                 }
               }
             );
@@ -320,81 +373,125 @@ function insert(args, emitter) {
           insertInvitation: function (previous, emitter) {
             var userMethods = {};
 
-            args.invitees.forEach( function (item, index, array) {
-              userMethods[item] = function (emitter) {
-                client.query(
-                  'select id from users where username = $1;',
-                  [ item ],
-                  function (err, result) {
-                    if ( err ) {
-                      client.query('rollback', function (err) {
-                        done();
-                      });
-                      emitter.emit('error', err);
+            if ( args.private ) {
+              args.invitees.forEach( function (item, index, array) {
+                userMethods[item] = function (emitter) {
+                  client.query(
+                    'select id from users where username = $1;',
+                    [ item ],
+                    function (err, result) {
+                      if ( err ) {
+                        client.query('rollback', function (err) {
+                          done();
+                        });
+                        emitter.emit('error', err);
+                      } else {
+                        emitter.emit('ready', result.rows[0]);
+                      }
+                    }
+                  );
+                };
+              });
+
+              app.listen(userMethods, function (output) {
+                var userIDs = [ args.userID ],
+                    insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
+                    insert = true;
+
+                if ( output.listen.success ) {
+                  delete output.listen;
+                  for ( var property in output ) {
+                    if ( output[property] ) {
+                      userIDs.push(output[property].id);
+                      insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
                     } else {
-                      emitter.emit('ready', result.rows[0]);
+                      insert = false;
+                      break;
                     }
                   }
-                );
-              };
-            });
 
-            app.listen(userMethods, function (output) {
-              var userIDs = [ args.userID ],
-                  insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
-                  insert = true;
-
-              if ( output.listen.success ) {
-                delete output.listen;
-                for ( var property in output ) {
-                  if ( output[property] ) {
-                    userIDs.push(output[property].id);
-                    insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
-                  } else {
-                    insert = false;
-                    break;
-                  }
-                }
-
-                if ( insert ) {
-                  app.listen({
-                    insert: function (emitter) {
-                      client.query(
-                        'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
-                        function (err, result) {
-                          if ( err ) {
-                            client.query('rollback', function (err) {
-                              done();
-                            });
-                            emitter.emit('error', err);
-                          } else {
-                            emitter.emit('ready');
+                  if ( insert ) {
+                    app.listen({
+                      insert: function (emitter) {
+                        client.query(
+                          'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
+                          function (err, result) {
+                            if ( err ) {
+                              client.query('rollback', function (err) {
+                                done();
+                              });
+                              emitter.emit('error', err);
+                            } else {
+                              emitter.emit('ready');
+                            }
                           }
-                        }
-                      );
-                    }
-                  }, function (output) {
-                    if ( output.listen.success ) {
-                      emitter.emit('skip', {
-                        userIDs: userIDs
-                      });
-                    } else {
-                      emitter.emit('error', output.listen);
-                    }
-                  });
-                } else {
-                  client.query('rollback', function (err) {
-                    done();
-                    emitter.emit('error', {
-                      message: 'The user you specified (' + property + ') doesn\'t exist.'
+                        );
+                      }
+                    }, function (output) {
+                      if ( output.listen.success ) {
+                        emitter.emit('skip', {
+                          userIDs: userIDs
+                        });
+                      } else {
+                        emitter.emit('error', output.listen);
+                      }
                     });
-                  });
-                }
+                  } else {
+                    client.query('rollback', function (err) {
+                      done();
+                      emitter.emit('error', {
+                        message: 'The user you specified (' + property + ') doesn\'t exist.'
+                      });
+                    });
+                  }
 
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
+                } else {
+                  emitter.emit('error', output.listen);
+                }
+              });
+            } else {
+              emitter.emit('ready');
+            }
+
+          },
+          insertAnnouncement: function (previous, emitter) {
+            var insertIDs = '';
+
+            if ( args.announcement ) {
+              args.discussions.forEach( function (item, index, array) {
+                insertIDs += '( ' + item + ', ' + previous.insertTopic.id + ' )';
+                
+                if ( index + 1 !== array.length ) {
+                  insertIDs += ', ';
+                }
+              });
+
+              app.listen({
+                insert: function (emitter) {
+                  client.query(
+                    'insert into "announcements" ( "discussionID", "topicID" ) values ' + insertIDs + ';',
+                    function (err, result) {
+                      if ( err ) {
+                        client.query('rollback', function (err) {
+                          done();
+                        });
+                        emitter.emit('error', err);
+                      } else {
+                        emitter.emit('ready');
+                      }
+                    }
+                  );
+                }
+              }, function (output) {
+                if ( output.listen.success ) {
+                  emitter.emit('ready');
+                } else {
+                  emitter.emit('error', output.listen);
+                }
+              });
+            } else {
+              emitter.emit('ready');
+            }
 
           },
           updateDiscussionStats: function (previous, emitter) {
@@ -453,6 +550,11 @@ function insert(args, emitter) {
               if ( args.private ) {
                 output.insertInvitation.userIDs.forEach( function (item, index, array) {
                   app.cache.clear({ scope: 'private-topics-' + item });
+                });
+              } else if ( args.announcement ) {
+                app.cache.clear({ scope: 'discussion-2' });
+                args.discussions.forEach( function (item, index, array) {
+                  app.cache.clear({ scope: 'announcements', key: 'discussion-' + item });
                 });
               } else {
                 app.cache.clear({ scope: 'discussion-' + args.discussionID });
@@ -653,9 +755,30 @@ function move(args, emitter) {
                     });
                     emitter.emit('error', err);
                   } else {
-                    emitter.emit('ready', {
+                    // If it's not an announcement, skip the next method
+                    emitter.emit( args.discussionID === 2 ? 'ready' : 'skip', {
                       success: true,
                       affectedRows: result.rows
+                    });
+                  }
+                }
+              );
+
+            },
+            deleteAnnouncement: function (previous, emitter) {
+
+              client.query(
+                'delete from "announcements" where "topicID" = $1;',
+                [ args.topicID ],
+                function (err, result) {
+                  if ( err ) {
+                    client.query('rollback', function (err) {
+                      done();
+                    });
+                    emitter.emit('error', err);
+                  } else {
+                    emitter.emit('ready', {
+                      affectedRows: result.rowCount
                     });
                   }
                 }
@@ -665,7 +788,7 @@ function move(args, emitter) {
             updateOldDiscussionStats: function (previous, emitter) {
 
               client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ) where "id" = $1',
                 [ args.discussionID ],
                 function (err, result) {
                   if ( err ) {
@@ -685,7 +808,7 @@ function move(args, emitter) {
             updateNewDiscussionStats: function (previous, emitter) {
 
               client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ) where "id" = $1',
                 [ args.newDiscussionID ],
                 function (err, result) {
                   if ( err ) {
@@ -719,6 +842,9 @@ function move(args, emitter) {
               app.cache.clear({ scope: 'discussion-' + args.discussionID });
               app.cache.clear({ scope: 'discussion-' + args.newDiscussionID });
               app.cache.clear({ scope: 'discussions-categories' });
+              if ( args.discussionID === 2 ) {
+                app.cache.clear({ scope: 'announcements' });
+              }
 
               emitter.emit('ready', {
                 success: true

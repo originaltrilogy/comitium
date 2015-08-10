@@ -10,7 +10,7 @@ if announcements
       nav.actions
         ul
           li.new-announcement
-            a(href="announcement/action/start/id/#{discussion.id}") Make an announcement
+            a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
     each announcement in announcements
       article(class="announcement#{ announcement.updated ? ' updated' : '' }#{ announcement.lockedByID ? ' locked' : '' }" data-announcement-id="#{announcement.id}")
         h3
@@ -25,7 +25,7 @@ section.topics
           a(href="topic/action/start/id/#{discussion.id}") Start a new topic
         if !announcements && session.moderateDiscussions
           li.new-announcement
-            a(href="announcement/action/start/id/#{discussion.id}") Make an announcement
+            a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
         //- li.subscribe
         //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
 

@@ -9,6 +9,8 @@ module.exports = {
   notifySubscribers: notifySubscribers,
   start: start,
   startForm: startForm,
+  startAnnouncement: startAnnouncement,
+  startAnnouncementForm: startAnnouncementForm,
   startPrivate: startPrivate,
   startPrivateForm: startPrivateForm,
   reply: reply,
@@ -339,6 +341,223 @@ function startForm(params, context, emitter) {
 
 
 
+function startAnnouncement(params, context, emitter) {
+
+  // Verify the user's group has post access to the discussion
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.discussionPost({
+        discussionID: 2,
+        user: params.session
+      }, emitter);
+    },
+    proceed: function (previous, emitter) {
+      if ( previous.access === true ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('end', false);
+      }
+    },
+    categoriesPost: function (previous, emitter) {
+      app.models.discussions.categoriesPost(params.session.groupID, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.access === true ) {
+        params.form.title = '';
+        params.form.content = app.config.comitium.editorIntro;
+        params.form.displayDiscussions = 'none';
+        params.form.discussions = [];
+        params.form.subscribe = true;
+
+        emitter.emit('ready', {
+          view: 'start-announcement',
+          content: {
+            categories: output.categoriesPost,
+            breadcrumbs: app.models.topic.breadcrumbs('Announcements', 'Announcements')
+          }
+        });
+      } else {
+        emitter.emit('ready', output.access);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+
+}
+
+
+
+function startAnnouncementForm(params, context, emitter) {
+  var discussions = [];
+  
+  if ( params.request.method === 'POST' ) {
+    params.form.subscribe = params.form.subscribe || false;
+    params.form.displayDiscussions = params.form.displayDiscussions || 'none';
+    params.form.discussions = params.form.discussions || [];
+    
+    params.form.discussions.forEach( function (item, index, array) {
+      discussions[item] = item;
+    });
+    
+    params.form.discussions = discussions;
+
+    // Verify the user's group has post access to the discussion
+    app.listen('waterfall', {
+      access: function (emitter) {
+        app.toolbox.access.discussionPost({
+          discussionID: 2,
+          user: params.session
+        }, emitter);
+      },
+      proceed: function (previous, emitter) {
+        if ( previous.access === true ) {
+          emitter.emit('ready', true);
+        } else {
+          emitter.emit('end', false);
+        }
+      },
+      categoriesPost: function (previous, emitter) {
+        app.models.discussions.categoriesPost(params.session.groupID, emitter);
+      }
+    }, function (output) {
+      var categories = output.categoriesPost,
+          titleMarkdown = new Remarkable(),
+          contentMarkdown = new Remarkable({
+            breaks: true,
+            linkify: true,
+            typographer: true
+          }),
+          parsedTitle,
+          parsedContent,
+          url,
+          draft = false,
+          time = app.toolbox.helpers.isoDate();
+
+      // If the group has post access, process the announcement form
+      if ( output.listen.success ) {
+        if ( output.access === true ) {
+          parsedTitle = titleMarkdown.render(params.form.title);
+          // Get rid of the paragraph tags and line break added by Remarkable
+          parsedTitle = parsedTitle.replace(/<p>(.*)<\/p>\n$/, '$1');
+
+          parsedContent = contentMarkdown.render(params.form.content);
+
+          url = app.toolbox.slug(params.form.title);
+
+          switch ( params.form.formAction ) {
+            case 'Preview':
+              emitter.emit('ready', {
+                view: 'start-announcement',
+                content: {
+                  preview: {
+                    title: parsedTitle,
+                    content: parsedContent
+                  },
+                  categories: categories,
+                  breadcrumbs: app.models.topic.breadcrumbs('Announcements', 'announcements')
+                }
+              });
+              break;
+            case 'Save as draft':
+            case 'Post your announcement':
+              if ( params.form.formAction === 'Save as draft' ) {
+                draft = true;
+              }
+          
+              switch ( params.form.displayDiscussions ) {
+                case 'none':
+                  params.form.discussions = [ 2 ];
+                  break;
+                case 'all':
+                  for ( var category in categories ) {
+                    for ( var discussion in categories[category].discussions ) {
+                      params.form.discussions.push(categories[category].discussions[discussion].discussionID);
+                    }
+                  }
+                  break;
+              }
+
+              app.listen({
+                saveTopic: function (emitter) {
+                  app.models.announcement.insert({
+                    announcement: true,
+                    discussions: params.form.discussions,
+                    userID: params.session.userID,
+                    titleMarkdown: params.form.title,
+                    titleHtml: parsedTitle,
+                    url: url,
+                    markdown: params.form.content,
+                    html: parsedContent,
+                    draft: draft,
+                    time: time
+                  }, emitter);
+                }
+              }, function (output) {
+                var topic = output.saveTopic;
+
+                if ( output.listen.success && output.saveTopic.success ) {
+                  if ( params.form.subscribe ) {
+                    app.listen({
+                      subscribe: function (emitter) {
+                        app.models.topic.subscribe({
+                          userID: params.session.userID,
+                          topicID: topic.id,
+                          time: time
+                        }, emitter);
+                      }
+                    }, function (output) {
+
+                      if ( output.listen.success ) {
+                        emitter.emit('ready', {
+                          redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + topic.id
+                        });
+                      } else {
+                        emitter.emit('error', output.listen);
+                      }
+
+                    });
+                  } else {
+                    emitter.emit('ready', {
+                      redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + topic.id
+                    });
+                  }
+                } else {
+
+                  if ( !output.listen.success ) {
+                    emitter.emit('error', output.listen);
+                  } else {
+                    emitter.emit('ready', {
+                      view: 'start-announcement',
+                      content: {
+                        topic: topic,
+                        categories: categories,
+                        breadcrumbs: app.models.topic.breadcrumbs('Announcements', 'announcements')
+                      }
+                    });
+                  }
+
+                }
+              });
+              break;
+          }
+        } else {
+          emitter.emit('ready', output.access);
+        }
+      } else {
+        emitter.emit('error', output.listen);
+      }
+    });
+  // If it's a GET, fall back to the default announcement start action
+  } else {
+    start(params, context, emitter);
+  }
+
+}
+
+
+
 function startPrivate(params, context, emitter) {
 
   // Verify the user can start a private topic with the invitee(s)
@@ -457,9 +676,10 @@ function startPrivateForm(params, context, emitter) {
               app.listen({
                 saveTopic: function (emitter) {
                   app.models.topic.insert({
+                    private: true,
+                    invitees: inviteesArray,
                     userID: params.session.userID,
                     username: params.session.username,
-                    invitees: inviteesArray,
                     discussionID: 0,
                     titleMarkdown: params.form.title,
                     titleHtml: parsedTitle,
@@ -467,7 +687,6 @@ function startPrivateForm(params, context, emitter) {
                     markdown: params.form.content,
                     html: parsedContent,
                     draft: draft,
-                    private: true,
                     time: time
                   }, emitter);
                 }
@@ -493,8 +712,8 @@ function startPrivateForm(params, context, emitter) {
                             app.mail.sendMail({
                               from: app.config.comitium.email,
                               to: output[invitee].email,
-                              subject: 'New private topic started by ' + params.session.username,
-                              text: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/id/' + topic.id
+                              subject: 'Private topic: ' + topic.titleMarkdown,
+                              text: params.session.username + ' invited you to a private topic:\n\n' + params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/id/' + topic.id
                             });
                           }
                         }
@@ -711,7 +930,9 @@ function replyForm(params, context, emitter) {
               }, function (output) {
                 var page = Math.ceil( ( topic.replies + 2 ) / 25 ),
                     pageParameter = page !== 1 ? '/page/' + page : '',
-                    replyUrl = params.route.parsed.protocol + app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
+                    controller = topic.discussionID === 2 ? 'announcement' : 'topic',
+                    urlTitle = topic.private ? '' : '/' + topic.url,
+                    replyUrl = params.route.parsed.protocol + app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
                     forwardToUrl = draft ? params.route.parsed.protocol + app.config.comitium.baseUrl + '/drafts' : replyUrl;
 
                 if ( output.listen.success ) {
@@ -830,7 +1051,7 @@ function subscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicView({
+      app.toolbox.access.topicSubscribe({
         topicID: params.url.id,
         user: params.session
       }, emitter);
@@ -874,7 +1095,7 @@ function unsubscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicView({
+      app.toolbox.access.topicSubscribe({
         topicID: params.url.id,
         user: params.session
       }, emitter);
@@ -935,7 +1156,7 @@ function lock(params, context, emitter) {
   }, function (output) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'topic/' + output.topic.url + '/id/' + output.topic.id);
+        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id);
         params.form.reason = '';
 
         emitter.emit('ready', {
@@ -1282,19 +1503,19 @@ function trashForm(params, context, emitter) {
             trash: function (emitter) {
               app.models.topic.move({
                 topicID: topic.id,
-                topicUrl: topic.url,
                 discussionID: topic.discussionID,
-                newDiscussionID: 1,
-                newDiscussionUrl: 'Trash'
+                newDiscussionID: 1
               }, emitter);
             }
           }, function (output) {
             if ( output.listen.success ) {
               if ( output.trash.success ) {
                 if ( params.form.notify ) {
-
-                  // notify subscribers (if the author isn't subscribed, they probably don't care)
-
+                  notifySubscribers({
+                    topicID: topic.id,
+                    subject: 'A topic you\'re following was deleted',
+                    text: 'The following topic was deleted from ' + topic.discussionTitle + '.\n\n' + topic.titleHtml
+                  });
                 }
                 emitter.emit('ready', {
                   redirect: params.form.forwardToUrl

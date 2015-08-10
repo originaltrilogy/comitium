@@ -11,9 +11,9 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
     ul
       if !topic.lockedByID || session.moderateDiscussions
         li.reply
-          a(href="#{route.pathname}/action/reply") Reply
+          a(href="topic/action/reply/id/#{url.id}") Reply
         li.quote
-          a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
+          a(href="topic/action/reply/id/#{url.id}/quote/#{post.id}") Quote
       if ( session.username === post.author && !post.lockedByID && !topic.lockedByID ) || session.moderateDiscussions
         li.edit
           a(href="post/action/edit/id/#{post.id}") Edit

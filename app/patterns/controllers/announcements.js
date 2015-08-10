@@ -30,7 +30,7 @@ function handler(params, context, emitter) {
                 end = params.url.end || start + 25;
 
             app.models.announcements.topics({
-              groupID: 2,
+              groupID: 1,
               start: start,
               end: end
             }, emitter);

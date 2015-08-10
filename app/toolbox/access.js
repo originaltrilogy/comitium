@@ -3,10 +3,6 @@
 'use strict';
 
 module.exports = {
-  announcementLock: announcementLock,
-  announcementReply: announcementReply,
-  announcementTrash: announcementTrash,
-  announcementView: announcementView,
   challenge: challenge,
   discussionPost: discussionPost,
   discussionReply: discussionReply,
@@ -18,157 +14,16 @@ module.exports = {
   privateTopicStart: privateTopicStart,
   privateTopicsView: privateTopicsView,
   topicLock: topicLock,
-  topicMerge: topicMerge,
   topicMove: topicMove,
   topicMoveForm: topicMoveForm,
   topicReply: topicReply,
+  topicSubscribe: topicSubscribe,
   topicTrash: topicTrash,
   topicView: topicView,
   signInRedirect: signInRedirect,
   userBan: userBan,
   userEdit: userEdit
 };
-
-
-
-function announcementLock(args, emitter) {
-
-  app.listen('waterfall', {
-    topic: function (emitter) {
-      if ( args.user.moderateDiscussions ) {
-        app.models.topic.info(args.topicID, emitter);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    announcementView: function (previous, emitter) {
-      if ( previous.topic ) {
-        announcementView(args, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.announcementView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
-
-function announcementReply(args, emitter) {
-
-  app.listen('waterfall', {
-    announcement: function (emitter) {
-      app.models.announcement.info(args.topicID, emitter);
-    },
-    announcementReply: function (previous, emitter) {
-      if ( previous.announcement ) {
-        app.models.announcement.groupReply({
-          topicID: args.topicID,
-          groupID: args.user.groupID
-        }, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.announcementReply === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
-
-function announcementTrash(args, emitter) {
-
-  app.listen('waterfall', {
-    announcement: function (emitter) {
-      if ( args.user.moderateDiscussions ) {
-        app.models.announcement.info(args.topicID, emitter);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    announcementView: function (previous, emitter) {
-      if ( previous.announcement ) {
-        app.models.announcement.groupView({
-          topicID: args.topicID,
-          groupID: args.user.groupID
-        }, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.announcementView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
-
-function announcementView(args, emitter) {
-
-  app.listen('waterfall', {
-    announcement: function (emitter) {
-      app.models.announcement.info(args.topicID, emitter);
-    },
-    announcementView: function (previous, emitter) {
-      if ( previous.announcement ) {
-        app.models.announcement.groupView({
-          topicID: args.topicID,
-          groupID: args.user.groupID
-        }, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.announcementView ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
 
 
 
@@ -323,20 +178,14 @@ function postEdit(args, emitter) {
         });
       }
     },
-    discussionView: function (previous, emitter) {
-      if ( previous.topic ) {
-        discussionView(app.extend(args, {
-          discussionID: previous.topic.discussionID
-        }), emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
+    topicView: function (previous, emitter) {
+      topicView(app.extend(args, {
+        topicID: previous.topic.id
+      }), emitter);
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.discussionView === true ) {
+      if ( output.topicView === true ) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);
@@ -356,10 +205,12 @@ function postLock(args, emitter) {
     post: function (emitter) {
       app.models.post.info(args.postID, emitter);
     },
-    topic: function (previous, emitter) {
+    topicView: function (previous, emitter) {
       if ( previous.post ) {
         if ( args.user.moderateDiscussions ) {
-          app.models.topic.info(previous.post.topicID, emitter);
+          topicView(app.extend(args, {
+            topicID: previous.post.topicID
+          }), emitter);
         } else {
           challenge(app.extend(args, { emit: 'end' }), emitter);
         }
@@ -368,21 +219,10 @@ function postLock(args, emitter) {
           statusCode: 404
         });
       }
-    },
-    discussionView: function (previous, emitter) {
-      if ( previous.topic ) {
-        discussionView(app.extend(args, {
-          discussionID: previous.topic.discussionID
-        }), emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.discussionView === true ) {
+      if ( output.topicView === true ) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);
@@ -402,10 +242,12 @@ function postTrash(args, emitter) {
     post: function (emitter) {
       app.models.post.info(args.postID, emitter);
     },
-    topic: function (previous, emitter) {
+    topicView: function (previous, emitter) {
       if ( previous.post ) {
         if ( args.user.moderateDiscussions ) {
-          app.models.topic.info(previous.post.topicID, emitter);
+          topicView(app.extend(args, {
+            topicID: previous.post.topicID
+          }), emitter);
         } else {
           challenge(app.extend(args, { emit: 'end' }), emitter);
         }
@@ -414,21 +256,10 @@ function postTrash(args, emitter) {
           statusCode: 404
         });
       }
-    },
-    discussionView: function (previous, emitter) {
-      if ( previous.topic ) {
-        discussionView(app.extend(args, {
-          discussionID: previous.topic.discussionID
-        }), emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.discussionView === true ) {
+      if ( output.topicView === true ) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);
@@ -448,17 +279,11 @@ function postView(args, emitter) {
     post: function (emitter) {
       app.models.post.info(args.postID, emitter);
     },
-    view: function (previous, emitter) {
+    topicView: function (previous, emitter) {
       if ( previous.post ) {
-        if ( previous.post.discussionID !== 2 ) {
-          topicView(app.extend(args, {
-            topicID: previous.post.topicID
-          }), emitter);
-        } else {
-          announcementView(app.extend(args, {
-            topicID: previous.post.topicID
-          }), emitter);
-        }
+        topicView(app.extend(args, {
+          topicID: previous.post.topicID
+        }), emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -467,7 +292,7 @@ function postView(args, emitter) {
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.view === true ) {
+      if ( output.topicView === true ) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);
@@ -565,64 +390,19 @@ function privateTopicsView(args, emitter) {
 function topicLock(args, emitter) {
 
 	app.listen('waterfall', {
-    topic: function (emitter) {
+    topicModerate: function (emitter) {
       if ( args.user.moderateDiscussions ) {
-        app.models.topic.info(args.topicID, emitter);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    discussionView: function (previous, emitter) {
-      if ( previous.topic ) {
-        discussionView(app.extend(args, {
-          discussionID: previous.topic.discussionID
-        }), emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.discussionView === true ) {
         emitter.emit('ready', true);
       } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
-
-function topicMerge(args, emitter) {
-
-	app.listen('waterfall', {
-    topic: function (emitter) {
-      if ( args.user.moderateDiscussions ) {
-        app.models.topic.info(args.topicID, emitter);
-      } else {
         challenge(app.extend(args, { emit: 'end' }), emitter);
       }
     },
-    discussionView: function (previous, emitter) {
-      if ( previous.topic ) {
-        discussionView(app.extend(args, {
-          discussionID: previous.topic.discussionID
-        }), emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
+    topicView: function (previous, emitter) {
+      topicView(args, emitter);
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.discussionView === true ) {
+      if ( output.topicView === true ) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);
@@ -638,32 +418,17 @@ function topicMerge(args, emitter) {
 
 function topicMove(args, emitter) {
 
-	app.listen('waterfall', {
-    topic: function (emitter) {
+	app.listen({
+    topicModerate: function (emitter) {
       if ( args.user.moderateDiscussions ) {
-        app.models.topic.info(args.topicID, emitter);
+        topicView(args, emitter);
       } else {
         challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    discussionView: function (previous, emitter) {
-      if ( previous.topic ) {
-        if ( args.user.moderateDiscussions ) {
-          discussionView(app.extend(args, {
-            discussionID: previous.topic.discussionID
-          }), emitter);
-        } else {
-          challenge(app.extend(args, { emit: 'end' }), emitter);
-        }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
       }
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.discussionView === true) {
+      if ( output.topicModerate === true) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);
@@ -680,26 +445,11 @@ function topicMove(args, emitter) {
 function topicMoveForm(args, emitter) {
 
 	app.listen('waterfall', {
-    topic: function (emitter) {
+    topicModerate: function (emitter) {
       if ( args.user.moderateDiscussions ) {
-        app.models.topic.info(args.topicID, emitter);
+        topicView(args, emitter);
       } else {
         challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    discussionView: function (previous, emitter) {
-      if ( previous.topic ) {
-        if ( args.user.moderateDiscussions ) {
-          discussionView(app.extend(args, {
-            discussionID: previous.topic.discussionID
-          }), emitter);
-        } else {
-          challenge(app.extend(args, { emit: 'end' }), emitter);
-        }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
       }
     },
     newDiscussionView: function (previous, emitter) {
@@ -709,7 +459,7 @@ function topicMoveForm(args, emitter) {
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.discussionView && output.newDiscussionView ) {
+      if ( output.topicModerate === true && output.newDiscussionView === true ) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);
@@ -735,22 +485,112 @@ function topicReply(args, emitter) {
 
       if ( output.topic ) {
         if ( !output.topic.private ) {
+          if ( output.topic.discussionID !== 2 ) {
+            app.listen({
+              topicLocked: function (emitter) {
+                if ( !output.topic.lockedByID || args.user.moderateDiscussions ) {
+                  emitter.emit('ready', false);
+                } else {
+                  challenge(app.extend(args, { emit: 'end' }), emitter);
+                }
+              },
+              discussionReply: function (emitter) {
+                discussionReply(app.extend(args, {
+                  discussionID: output.topic.discussionID
+                }), emitter);
+              }
+            }, function (output) {
+              if ( output.listen.success ) {
+                if ( output.discussionReply === true ) {
+                  emitter.emit('ready', true);
+                } else {
+                  challenge(args, emitter);
+                }
+              } else {
+                emitter.emit('error', output.listen);
+              }
+            });
+          } else {
+            app.listen({
+              announcementReply: function (emitter) {
+                app.models.topic.announcementReply({
+                  topicID: args.topicID,
+                  groupID: args.user.groupID
+                }, emitter);
+              }
+            }, function (output) {
+              if ( output.listen.success ) {
+                if ( output.announcementReply === true ) {
+                  emitter.emit('ready', true);
+                } else {
+                  challenge(args, emitter);
+                }
+              } else {
+                emitter.emit('error', output.listen);
+              }
+            });
+          }
+        } else {
           app.listen({
-            topicLocked: function (emitter) {
-              if ( !output.topic.lockedByID || args.user.moderateDiscussions ) {
-                emitter.emit('ready', false);
+            userIsInvited: function (emitter) {
+              app.models.topic.hasInvitee({
+                topicID: args.topicID,
+                userID: args.user.userID
+              }, emitter);
+            }
+          }, function (output) {
+            if ( output.listen.success ) {
+              if ( args.user.talkPrivately && output.userIsInvited ) {
+                emitter.emit('ready', true);
+              } else {
+                challenge(args, emitter);
+              }
+            } else {
+              emitter.emit('error', output.listen);
+            }
+          });
+        }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+
+  });
+
+}
+
+
+
+function topicSubscribe(args, emitter) {
+
+  app.listen('waterfall', {
+    topic: function (emitter) {
+      app.models.topic.info(args.topicID, emitter);
+    }
+  }, function (output) {
+
+    if ( output.listen.success ) {
+
+      if ( output.topic ) {
+        if ( !output.topic.private ) {
+          app.listen('waterfall', {
+            userIsLoggedIn: function (emitter) {
+              if ( args.user.userID ) {
+                emitter.emit('ready', true);
               } else {
                 challenge(app.extend(args, { emit: 'end' }), emitter);
               }
             },
-            discussionReply: function (emitter) {
-              discussionReply(app.extend(args, {
-                discussionID: output.topic.discussionID
-              }), emitter);
+            topicView: function (previous, emitter) {
+              topicView(args, emitter);
             }
           }, function (output) {
             if ( output.listen.success ) {
-              if ( output.discussionReply === true ) {
+              if ( output.topicView === true ) {
                 emitter.emit('ready', true);
               } else {
                 challenge(args, emitter);
@@ -796,28 +636,17 @@ function topicReply(args, emitter) {
 
 function topicTrash(args, emitter) {
 
-	app.listen('waterfall', {
-    topic: function (emitter) {
+	app.listen({
+    topicModerate: function (emitter) {
       if ( args.user.moderateDiscussions ) {
-        app.models.topic.info(args.topicID, emitter);
+        topicView(args, emitter);
       } else {
         challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    discussionView: function (previous, emitter) {
-      if ( previous.topic ) {
-        discussionView(app.extend(args, {
-          discussionID: previous.topic.discussionID
-        }), emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
       }
     }
   }, function (output) {
     if ( output.listen.success ) {
-      if ( output.discussionView ) {
+      if ( output.topicModerate === true ) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);
@@ -862,7 +691,24 @@ function topicView(args, emitter) {
               }
             });
           } else {
-            challenge(args, emitter);
+            app.listen({
+              announcementView: function (emitter) {
+                app.models.topic.announcementView({
+                  topicID: args.topicID,
+                  groupID: args.user.groupID
+                }, emitter);
+              }
+            }, function (output) {
+              if ( output.listen.success ) {
+                if ( output.announcementView === true ) {
+                  emitter.emit('ready', true);
+                } else {
+                  challenge(args, emitter);
+                }
+              } else {
+                emitter.emit('error', output.listen);
+              }
+            });
           }
         } else {
           app.listen({

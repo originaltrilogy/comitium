@@ -1,6 +1,7 @@
 section.summary
   h1 Delete a topic
-  p Deleting a topic moves it to the trash, where it can be recovered later if necessary. Once removed from the trash by an administrator, a topic is permanently deleted.
+  p Deleting a topic moves it to the <a href="discussion/Trash/id/1">trash</a>, where it can be recovered later if necessary. Once removed from the trash by an administrator, a topic is permanently deleted.
+  p Announcements moved to the trash are removed from all discussions in which they appear.
 
 if trash && trash.message
   section.notice.error
@@ -10,10 +11,10 @@ section.form.topic-trash
   form#topic-trash-form(action="topic/id/#{url.id}/action/trashForm" method="post" novalidate)
     .data
       input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
-      //- ul
-      //-   li.notify.checkbox
-      //-     input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
-      //-     label(for="notify") Notify the author
+      ul
+        li.notify.checkbox
+          input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
+          label(for="notify") Notify members following this topic
     .actions
       ul
         li.primary.report
