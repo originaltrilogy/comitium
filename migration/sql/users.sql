@@ -87,7 +87,7 @@ create table "userLogs" (
   "id" serial not null,
   "userID" integer not null,
   "action" text not null,
-  "IP" cidr not null,
+  "ip" cidr not null,
   "time" timestamp not null,
   primary key ("id")
 );
