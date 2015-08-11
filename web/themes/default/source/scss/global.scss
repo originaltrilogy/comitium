@@ -647,7 +647,7 @@ form {
     font-family: Menlo, Consolas, monospace;
     font-size: 90%;
     width: 100%;
-    padding: 4vw 4vw 0;
+    padding: 2vw 4vw;
     @include background-color(13%, 40%);
     border: 1px solid;
     @include border-color(14%, 24%);
@@ -675,11 +675,12 @@ form {
 
           label {
             display: inline-block;
-            max-width: 79vw;
+            max-width: 78vw;
             margin-left: 2vw;
             vertical-align: middle;
             font-family: $defaultFont;
             font-size: 100%;
+            line-height: 1.4;
           }
         }
         &.checkbox {
