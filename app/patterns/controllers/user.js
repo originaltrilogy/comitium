@@ -74,9 +74,11 @@ function activate(params, context, emitter) {
         emitter.emit('ready', {
           view: 'activate',
           content: output,
-          handoff: {
-            controller: 'sign-in',
-            view: 'sign-in-partial'
+          include: {
+            'sign-in': {
+              controller: 'sign-in',
+              view: 'sign-in-partial'
+            }
           }
         });
       } else {

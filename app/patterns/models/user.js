@@ -74,7 +74,7 @@ function activate(args, emitter) {
             emitter.emit('ready', {
               success: false,
               reason: 'accountAlreadyActivated',
-              message: 'This account has already been activated, so you\'re free to log in below. If you\'re having trouble logging in, try resetting your password. If that doesn\'t work, please let us know.'
+              message: 'This account has already been activated, so you\'re free to sign in below. If you\'re having trouble signing in, try resetting your password. If that doesn\'t work, please let us know.'
             });
           } else if ( previous.userActivationStatus.activationCode !== args.activationCode ) {
             emitter.emit('ready', {
@@ -737,7 +737,7 @@ function passwordResetVerify(args, emitter) {
             emitter.emit('error', err);
           } else {
             if ( result.rows.length ) {
-              emitter.emit('ready', true);
+              emitter.emit('ready', result.rows[0]);
             } else {
               emitter.emit('ready', false);
             }

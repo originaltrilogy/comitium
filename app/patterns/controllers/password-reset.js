@@ -140,15 +140,19 @@ function reset(params, context, emitter) {
       }, emitter);
     }
   }, function (output) {
+    var view = 'reset';
+
     if ( output.verify ) {
-      emitter.emit('ready', {
-        view: 'reset'
-      });
+      if ( app.toolbox.moment(Date.now()).diff(output.verify.timeRequested, 'hours') >= 24 ) {
+        view = 'expired';
+      }
     } else {
-      emitter.emit('ready', {
-        view: 'invalid'
-      });
+      view = 'invalid';
     }
+
+    emitter.emit('ready', {
+      view: view
+    });
   });
 }
 
@@ -172,7 +176,7 @@ function resetForm(params, context, emitter) {
         emitter.emit('end', {
           success: false,
           message: message
-        })
+        });
       } else {
         emitter.emit('ready', {
           success: true
@@ -232,7 +236,8 @@ function resetConfirmation(params, context, emitter) {
     view: 'reset-confirmation',
     include: {
       'sign-in': {
-        controller: 'sign-in'
+        controller: 'sign-in',
+        view: 'sign-in-partial'
       }
     }
   });
