@@ -32,11 +32,13 @@ function topics(emitter) {
               emitter.emit('error', err);
             } else {
               // Cache the topic count for future requests
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows[0].topicCount
-              });
+              if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+                app.cache.set({
+                  scope: scope,
+                  key: cacheKey,
+                  value: result.rows[0].topicCount
+                });
+              }
               emitter.emit('ready', result.rows[0].topicCount);
             }
           }
@@ -70,11 +72,13 @@ function posts(emitter) {
               emitter.emit('error', err);
             } else {
               // Cache the post count for future requests
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows[0].postCount
-              });
+              if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+                app.cache.set({
+                  scope: scope,
+                  key: cacheKey,
+                  value: result.rows[0].postCount
+                });
+              }
               emitter.emit('ready', result.rows[0].postCount);
             }
           }
@@ -108,11 +112,13 @@ function users(emitter) {
               emitter.emit('error', err);
             } else {
               // Cache the user count for future requests
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows[0].userCount
-              });
+              if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+                app.cache.set({
+                  scope: scope,
+                  key: cacheKey,
+                  value: result.rows[0].userCount
+                });
+              }
               emitter.emit('ready', result.rows[0].userCount);
             }
           }

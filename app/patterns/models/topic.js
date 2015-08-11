@@ -262,7 +262,7 @@ function info(topicID, emitter) {
 
       if ( output.listen.success ) {
         // Cache the topic info object for future requests
-        if ( !app.cache.get({ scope: scope, key: cacheKey }) ) {
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
             scope: scope,
             key: cacheKey,
@@ -645,11 +645,13 @@ function posts(args, emitter) {
         }
 
         // Cache the subset for future requests
-        app.cache.set({
-          scope: scope,
-          key: cacheKey,
-          value: subset
-        });
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            scope: scope,
+            key: cacheKey,
+            value: subset
+          });
+        }
 
         emitter.emit('ready', subset);
       } else {

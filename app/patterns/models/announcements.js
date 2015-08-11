@@ -47,11 +47,13 @@ function info(discussionID, emitter) {
 
       if ( output.listen.success ) {
         // Cache the discussion info object for future requests
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: output.discussion[0]
-        });
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            key: cacheKey,
+            scope: scope,
+            value: output.discussion[0]
+          });
+        }
 
         emitter.emit('ready', output.discussion[0]);
       } else {
@@ -132,11 +134,13 @@ function topics(args, emitter) {
         }
 
         // Cache the announcements for future requests
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: announcements
-        });
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            key: cacheKey,
+            scope: scope,
+            value: announcements
+          });
+        }
 
         emitter.emit('ready', announcements);
       } else {

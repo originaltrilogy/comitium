@@ -47,7 +47,7 @@ function handler(params, context, emitter) {
         });
       }
     }, function (output) {
-      if ( !app.cache.get({ scope: 'staticFileStats' }) ) {
+      if ( !app.cache.exists({ scope: 'staticFileStats' }) ) {
         app.cache.set({
           scope: 'staticFileStats',
           key: cssKey,

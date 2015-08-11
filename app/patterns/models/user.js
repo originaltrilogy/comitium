@@ -831,13 +831,15 @@ function posts(args, emitter) {
         }
 
         // Cache the subset for future requests
-        app.cache.set({
-          scope: scope,
-          key: cacheKey,
-          value: subset,
-          lifespan: 10,
-          resetOnAccess: true
-        });
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            scope: scope,
+            key: cacheKey,
+            value: subset,
+            lifespan: 10,
+            resetOnAccess: true
+          });
+        }
 
         emitter.emit('ready', subset);
       } else {

@@ -41,11 +41,14 @@ function discussionPermissions(discussionID, groupID, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
-        app.cache.set({
-          scope: scope,
-          key: cacheKey,
-          value: output.discussionPermissions[0]
-        });
+
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            scope: scope,
+            key: cacheKey,
+            value: output.discussionPermissions[0]
+          });
+        }
 
         emitter.emit('ready', output.discussionPermissions[0]);
       } else {

@@ -46,11 +46,13 @@ function stats(userID, emitter) {
 
       if ( output.listen.success ) {
         // Cache the discussion info object for future requests
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: output.stats[0]
-        });
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            key: cacheKey,
+            scope: scope,
+            value: output.stats[0]
+          });
+        }
 
         emitter.emit('ready', output.stats[0]);
       } else {
@@ -133,11 +135,13 @@ function topics(args, emitter) {
         }
 
         // Cache the subset for future requests
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: subset
-        });
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            key: cacheKey,
+            scope: scope,
+            value: subset
+          });
+        }
 
         emitter.emit('ready', subset);
       } else {

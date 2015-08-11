@@ -74,11 +74,13 @@ function categories(groupID, emitter) {
         });
 
         // Cache the categories object for future requests
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: categories
-        });
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            key: cacheKey,
+            scope: scope,
+            value: categories
+          });
+        }
 
         emitter.emit('ready', categories);
       } else {
@@ -155,11 +157,13 @@ function categoriesPost(groupID, emitter) {
         });
 
         // Cache the categories object for future requests
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: categories
-        });
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            key: cacheKey,
+            scope: scope,
+            value: categories
+          });
+        }
 
         emitter.emit('ready', categories);
       } else {
