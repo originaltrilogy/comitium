@@ -16,6 +16,7 @@ module.exports = {
   insert: insert,
   isActivated: isActivated,
   isIgnored: isIgnored,
+  log: log,
   passwordResetInsert: passwordResetInsert,
   passwordResetVerify: passwordResetVerify,
   passwordResetDelete: passwordResetDelete,
@@ -688,6 +689,37 @@ function isIgnored(args, emitter) {
               emitter.emit('ready', true);
             } else {
               emitter.emit('ready', false);
+            }
+          }
+      });
+    }
+  });
+}
+
+
+
+function log(args, emitter) {
+
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'insert into "userLogs" ( "userID", "action", "ip", "time" ) values ( $1, $2, $3, $4 ) returning id;',
+        [ args.userID, args.action, args.ip, app.toolbox.helpers.isoDate() ],
+        function (err, result) {
+          done();
+          if ( emitter ) {
+            if ( err ) {
+              emitter.emit('error', err);
+            } else {
+              emitter.emit('ready', {
+                success: true
+              });
+            }
+          } else {
+            if ( err ) {
+              throw err;
             }
           }
       });

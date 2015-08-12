@@ -64,6 +64,12 @@ function submit(params, context, emitter) {
             cookieExpires = 'never';
           }
 
+          app.models.user.log({
+            userID: user.userID,
+            action: 'Sign in',
+            ip: app.toolbox.helpers.ip(params.request)
+          });
+
           emitter.emit('ready', {
             cookie: {
               comitium_id: {

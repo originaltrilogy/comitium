@@ -36,6 +36,12 @@ function start(params, context, emitter) {
         if ( output.authenticate.success ) {
           user.userID = output.authenticate.user.id;
           delete user.id;
+
+          app.models.user.log({
+            userID: user.userID,
+            action: 'Session start (cookied)',
+            ip: app.toolbox.helpers.ip(params.request)
+          });
           
           emitter.emit('ready', {
             session: user
