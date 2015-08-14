@@ -10,7 +10,9 @@ module.exports = {
 function handler(params, context, emitter) {
   emitter.emit('ready', {
     cache: {
-      controller: true
+      controller: {
+        lifespan: 'application'
+      }
     }
   });
 }
