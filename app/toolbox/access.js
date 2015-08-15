@@ -308,8 +308,15 @@ function postView(args, emitter) {
 
 function privateTopicStart(args, emitter) {
 
-  app.listen({
-    userIsIgnored: function (emitter) {
+  app.listen('waterfall', {
+    userCanTalkPrivately: function (emitter) {
+      if ( args.user.talkPrivately ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(app.extend(args, { emit: 'end' }), emitter);
+      }
+    },
+    userIsIgnored: function (previous, emitter) {
       var methods = {};
 
       if ( args.invitees && args.invitees.length ) {
@@ -351,20 +358,25 @@ function privateTopicStart(args, emitter) {
     var message = '';
 
     if ( output.listen.success ) {
-      if ( args.user.talkPrivately && !output.userIsIgnored ) {
+      if ( output.userCanTalkPrivately === true && output.userIsIgnored === false ) {
         emitter.emit('ready', true);
       } else {
-        if ( !args.user.talkPrivately ) {
-          if ( args.user.group === 'New Members' ) {
-            message = 'New members require a minimum of 5 posts before they can start private topics.';
-          } else {
-            message = 'Your private topic privileges have been revoked. Please contact an administrator for details.';
+        if ( output.userCanTalkPrivately.redirect ) {
+          emitter.emit('ready', output.userCanTalkPrivately);
+        } else {
+          switch ( args.user.group ) {
+            case 'New Members':
+              message = 'New members require a minimum of 5 posts before they can start private topics.';
+              break;
+            default:
+              message = 'Your private topic privileges have been revoked. Please contact an administrator for details.';
+              break;
           }
+          emitter.emit('error', {
+            statusCode: 403,
+            message: message
+          });
         }
-        emitter.emit('error', {
-          statusCode: 403,
-          message: message
-        });
       }
     } else {
       emitter.emit('error', output.listen);
