@@ -374,7 +374,7 @@ function startAnnouncement(params, context, emitter) {
           view: 'start-announcement',
           content: {
             categories: output.categoriesPost,
-            breadcrumbs: app.models.topic.breadcrumbs('Announcements', 'Announcements')
+            breadcrumbs: app.models.topic.breadcrumbs('Announcements', 'announcements')
           }
         });
       } else {
