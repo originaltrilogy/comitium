@@ -1,7 +1,15 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
-  h2
-    time
-      = post.dateCreated
+  header
+    dl
+      dt.post Post
+      dd.post
+        a(href="post/id/#{post.id}") ##{post.id}
+      dt.topic Topic
+      dd.topic <a href="topic/#{post.topicUrl}/id/#{post.topicID}">#{post.topicTitle}</a>
+      dt.time Time
+      dd.time
+        time
+          = post.dateCreated
   .content
     != post.html
   if post.editorID

@@ -48,7 +48,9 @@ body[data-controller="discussion"][data-view="discussion"] {
     }
   }
   nav.actions {
-    padding: 0;
+    ul {
+      padding-top: 0;
+    }
   }
 
   @media only screen and (min-width: 768px) {
@@ -71,6 +73,9 @@ body[data-controller="discussion"][data-view="discussion"] {
         flex: 1 0 50%;
         align-self: center;
 
+        ul {
+          padding: 0 4vw;
+        }
         li {
           margin-bottom: 0;
         }
@@ -82,13 +87,4 @@ body[data-controller="discussion"][data-view="discussion"] {
 
   }
 
-}
-
-body[data-controller="announcements"][data-view="announcements"],
-body[data-controller="private-topics"][data-view="private-topics"] {
-
-  nav.actions {
-    padding-bottom: 0;
-  }
-  
 }

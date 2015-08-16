@@ -128,10 +128,10 @@ body {
   }
 
   // Navigation highlighting
-  &[data-controller="index"] header li.forum-home a,
-  &[data-controller="discussions"] header li.discussion-categories a,
-  &[data-controller="sign-in"] header li.sign-in a,
-  &[data-controller="register"] header li.register a {
+  &[data-controller="index"] > header li.forum-home a,
+  &[data-controller="discussions"] > header li.discussion-categories a,
+  &[data-controller="sign-in"] > header li.sign-in a,
+  &[data-controller="register"] > header li.register a {
     background: #4F566B;
   }
 }
@@ -174,7 +174,7 @@ a {
   @include color(100%, 90%);
 }
 
-header {
+body > header {
   @include color(0%, 94%);
   @include background-color(14%, 22%);
 
@@ -189,7 +189,7 @@ header {
 }
 
 .js {
-  header {
+  body > header {
     position: relative;
     height: 14vw;
 
@@ -201,11 +201,11 @@ header {
     @include button('small');
     position: absolute;
     top: 3vw;
-    left: 4vw;
+    left: 3vw;
     z-index: 500;
     padding-right: 2vw;
-    padding-left: 7.5vw;
-    font-size: 110%;
+    padding-left: 8vw;
+    font-size: 100%;
 
     &:before {
       content: '\e6bd';
@@ -213,6 +213,7 @@ header {
       position: absolute;
       top: 0;
       left: 2vw;
+      font-size: 120%;
     }
   }
 
@@ -384,7 +385,7 @@ section {
     padding: 5vw 0 2vw;
     @include background-color(14%, 27%);
 
-    p {
+    & > p {
       &:nth-child(2) {
         margin-top: 0;
       }
@@ -704,37 +705,16 @@ form {
 }
 
 // Actions appear both inside and outside forms, but should look consistent
-.actions {
+form .actions {
   padding: 4vw 0;
 
   ul {
-    margin: 0;
-    text-align: center;
+    margin-left: 0;
 
-    & > li {
-      margin: 0 1.5vw 4vw;
-      display: inline-block;
-      padding: 0;
-      list-style: none;
-
-      input {
-        width: 100%;
-        font-size: 150%;
-      }
-
-      input[type="submit"],
-      a {
-        @include button('medium');
-      }
-    }
-  }
-}
-
-form .actions {
-  ul {
     & > li {
       display: block;
       margin-right: 0;
+      margin-bottom: 4vw;
       margin-left: 0;
 
       input[type="submit"],
@@ -773,19 +753,31 @@ nav.actions {
   }
 
   ul {
-    padding: 0 4vw;
+    // Padding added here instead of parent <nav> because it puts the scrollbar
+    // under the buttons instead of on top of them
+    padding: 4vw;
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
     z-index: 500;
+    text-align: center;
   }
 
-  li:first-child {
-    margin-left: 0;
+  li {
+    display: inline-block;
+    margin: 0 1.5vw;
+
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
   }
-  li:last-child {
-    margin-right: 0;
+
+  a {
+    @include button('medium');
   }
 }
 
@@ -891,18 +883,18 @@ nav.actions {
     }
   }
 
-  .actions {
-    padding: 2vw 0;
-
+  nav.actions {
     ul {
+      padding: 2vw 4vw;
+
       & > li {
-        margin: 0 1vw 2vw;
+        margin: 0 1vw;
       }
     }
   }
 
   .js {
-    header {
+    body > header {
       height: 10vw;
     }
     #menu-icon {

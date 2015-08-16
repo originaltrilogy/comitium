@@ -1,10 +1,15 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
-  h2
+  header
     img(src="#{config.comitium.staticAssetUrl}avatars/#{post.authorID}.jpg")
-    a(href="user/#{post.authorUrl}/id/#{post.authorID}")
-      = post.author
-    time
-      = post.dateCreated
+    dl
+      dt.author Author
+      dd.author
+        a.author(href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
+          = post.author
+      dt.time Time
+      dd.time
+        time
+          = post.dateCreated
   .content
     != post.html
   nav.actions

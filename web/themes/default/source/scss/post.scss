@@ -1,57 +1,46 @@
-/*-------------------
-post view (shared)
--------------------*/
-
-body[data-controller="post"] {
-
-  dl {
-    margin-top: 0;
-    margin-right: 4vw;
-    margin-left: 4vw;
-  }
-  dt {
-    float: left;
-    clear: left;
-    min-width: 34vw;
-
-    &:after {
-      content: ':';
-    }
-  }
-  dd {
-    margin-left: 34vw;
-  }
-
-}
+//////////////////////////////
+//     post view (shared)   //
+//////////////////////////////
 
 article.post {
   padding: 0;
   border-bottom: none;
 
-  h2 {
+  header {
     position: relative;
     min-height: 22vw;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    padding: 0;
+    margin: 0;
     font-size: 110%;
     text-align: left;
+    @include background-color(14%, 22%);
 
     img {
-      float: left;
+      position: absolute;
       width: 22vw;
       height: 22vw;
-      margin-right: 6vw;
     }
-    a {
-      display: inline-block;
-      margin-top: 4.5vw;
+    dl {
+      margin-bottom: 0;
+      padding: 4vw 0;
     }
-    time {
-      display: block;
-      font-family: $defaultFont;
-      font-size: 85%;
+    dt {
+      min-width: 24vw;
+      text-indent: -100vw;
+
+      &.time {
+        font-size: 75%;
+      }
+    }
+    dd {
+      margin-left: 24vw;
+
+      &.topic,
+      &.author {
+        font-family: $titleFont;
+      }
+      &.time {
+        font-size: 75%;
+      }
     }
   }
 
@@ -109,7 +98,6 @@ article.post {
   }
 
   nav.actions {
-    padding-bottom: 0;
     background: none;
 
     &:before {
@@ -149,26 +137,22 @@ body[data-controller="user"][data-view="user"] {
 @media only screen and (min-width: 768px) {
 
   article.post {
-    h2 {
+    header {
       min-height: 14vw;
 
       img {
         width: 14vw;
         height: 14vw;
-        margin-right: 4vw;
+        left: 4vw;
       }
-      a {
-        margin-top: 3.5vw;
+      dl {
+        padding: 3vw 0;
       }
-      time {
-        font-size: 75%;
+      dt {
+        min-width: 18vw;
       }
-    }
-
-    .actions {
-      li {
-        margin-right: 0;
-        margin-bottom: 4vw;
+      dd {
+        margin-left: 18vw;
       }
     }
 
@@ -177,6 +161,12 @@ body[data-controller="user"][data-view="user"] {
 
       & > * {
         margin-bottom: 3vw;
+      }
+    }
+
+    nav.actions {
+      ul {
+        padding: 4vw;
       }
     }
   }

@@ -31,6 +31,26 @@ dl {
   line-height: 1.6;
 }
 
+dl {
+  margin-top: 0;
+  margin-right: 4vw;
+  margin-left: 4vw;
+  overflow: hidden;
+}
+dt {
+  float: left;
+  clear: left;
+  min-width: 34vw;
+  font-family: $boldFont;
+
+  &:after {
+    content: ':';
+  }
+}
+dd {
+  margin-left: 34vw;
+}
+
 nav {
 	ul {
 		margin: 0;

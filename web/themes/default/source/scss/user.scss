@@ -1,0 +1,83 @@
+///////////////////
+//   user view   //
+///////////////////
+
+body[data-view="user"] {
+
+  section.summary {
+    img {
+      margin: 4vw auto;
+      width: 40vw;
+      height: 40vw;
+      border-radius: 15%;
+      border: 1vw solid;
+      @include border-color(14%, 22%);
+    }
+
+    h1 {
+      padding: 2vw 4vw 6vw;
+      text-align: center;
+    }
+
+    section.notice {
+      margin-bottom: 6vw;
+    }
+  }
+
+  article.post {
+    header {
+      min-height: 0;
+      font-size: 100%;
+
+      dt {
+        min-width: 16vw;
+        text-indent: 0;
+
+        &.time {
+          font-size: 100%;
+        }
+      }
+      dd {
+        margin-left: 16vw;
+
+        &.time {
+          font-size: 100%;
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+
+    section.summary {
+      img {
+        float: left;
+        margin: 4vw;
+        width: 30vw;
+        height: 30vw;
+      }
+
+      img {
+        border-width: 0.6vw;
+      }
+
+      h1 {
+        padding-top: 7vw;
+        text-align: left;
+      }
+
+      dt {
+        min-width: 24vw;
+      }
+      dd {
+        margin-left: 24vw;
+      }
+    }
+
+    nav.actions {
+      clear: both;
+    }
+
+  }
+
+}
