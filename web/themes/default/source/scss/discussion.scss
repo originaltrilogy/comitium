@@ -22,20 +22,54 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       background-image: linear-gradient(to left, hsl(225, 14%, 22%), hsla(225, 14%, 22%, 0));
     }
   }
-  p.details {
-    margin-top: 0.4rem;
-    margin-bottom: 1.2rem;
-  }
-  p.stats {
-    margin-top: 0.8rem;
-    margin-bottom: 0;
-  }
-  span.replies {
-    font-family: $boldFont;
-  }
-  a.first-unread {
-    display: inline-block;
-    margin-top: 2vw;
+  article.topic {
+    position: relative;
+    padding: 4vw 0 6vw;
+
+    h3 {
+      margin-bottom: 8vw;
+    }
+    p.details {
+      margin: 4vw 24vw 2vw 4vw;
+      text-align: right;
+    }
+    p.stats {
+      margin: 2vw 24vw 0 0;
+      text-align: right;
+    }
+    span.replies {
+      font-family: $boldFont;
+    }
+    a.avatar {
+      display: block;
+      position: absolute;
+      right: -4vw;
+      bottom: 4vw;
+      width: 20vw;
+      height: 20vw;
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10% 0 0 10%;
+      }
+    }
+
+    &.unread {
+      h3 {
+        margin-right: 20vw;
+      }
+      a.unread {
+        position: absolute;
+        right: 2vw;
+        top: 7vw;
+        display: block;
+        margin: 0;
+        width: 18vw;
+        font-size: 85%;
+        text-align: center;
+      }
+    }
   }
 
 }

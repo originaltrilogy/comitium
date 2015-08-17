@@ -205,7 +205,7 @@ function topics(args, emitter) {
                 if ( property === 'replies' ) {
                   topics[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
                 } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                  topics[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('MMMM Do YYYY');
+                  topics[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('DD-MMM-YYYY');
                 }
               }
             }

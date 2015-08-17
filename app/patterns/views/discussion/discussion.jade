@@ -33,19 +33,19 @@ section.topics
   
   if topics
     each topic in topics
-      article(class="topic#{ topic.updated ? ' updated' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
+      article(class="topic#{ topic.updated ? ' updated' : '' }#{ topic.unreadPosts ? ' unread' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
         h3
           a(href="topic/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
+        if topic.unreadPosts
+          a.unread(href="topic/#{topic.url}/id/#{topic.id}/unread/true") View unread
         p.details
           a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
-          |  &mdash;
-          time #{topic.postDateFormatted}
         p.stats
           span.replies #{topic.repliesFormatted} 
           | replies 
           time (last on #{topic.lastPostDateFormatted})
-        if topic.unreadPosts
-          a.first-unread(href="topic/#{topic.url}/id/#{topic.id}/unread/true") Go to first unread post
+        a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
+          img(src="avatars/#{topic.topicStarterID}.jpg")
   else
     p This discussion has no topics. <a href="topic/action/start/id/#{discussion.id}">Why not start one?</a>
 

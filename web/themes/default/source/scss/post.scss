@@ -8,7 +8,7 @@ article.post {
 
   header {
     position: relative;
-    min-height: 22vw;
+    min-height: 20vw;
     margin: 0;
     font-size: 110%;
     text-align: left;
@@ -16,30 +16,31 @@ article.post {
 
     img {
       position: absolute;
-      width: 22vw;
-      height: 22vw;
+      width: 20vw;
+      height: 20vw;
+      border-radius: 0 10% 10% 0;
     }
     dl {
       margin-bottom: 0;
-      padding: 4vw 0;
+      padding: 3vw 0;
     }
     dt {
-      min-width: 24vw;
+      min-width: 21vw;
       text-indent: -100vw;
 
       &.time {
-        font-size: 75%;
+        font-size: 85%;
       }
     }
     dd {
-      margin-left: 24vw;
+      margin-left: 21vw;
 
       &.topic,
       &.author {
         font-family: $titleFont;
       }
       &.time {
-        font-size: 75%;
+        font-size: 85%;
       }
     }
   }

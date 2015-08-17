@@ -201,7 +201,7 @@ body > header {
     @include button('small');
     position: absolute;
     top: 3vw;
-    left: 3vw;
+    left: 2.5vw;
     z-index: 500;
     padding-right: 2vw;
     padding-left: 8vw;
@@ -492,6 +492,43 @@ article {
 
   & > * {
     margin: 0 4vw;
+  }
+
+  header {
+    position: relative;
+    min-height: 22vw;
+    margin: 0;
+    text-align: left;
+    @include background-color(14%, 22%);
+
+    img {
+      position: absolute;
+      width: 22vw;
+      height: 22vw;
+    }
+    dl {
+      margin-bottom: 0;
+      padding: 5vw 0;
+    }
+    dt {
+      min-width: 24vw;
+      text-indent: -100vw;
+
+      &.time {
+        font-size: 85%;
+      }
+    }
+    dd {
+      margin-left: 24vw;
+
+      &.topic,
+      &.author {
+        font-family: $titleFont;
+      }
+      &.time {
+        font-size: 85%;
+      }
+    }
   }
 
   img {
