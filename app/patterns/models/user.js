@@ -440,13 +440,13 @@ function create(args, emitter) {
         output.message = 'The e-mail address you provided is already in use. Are you sure you don\'t have an account? You can <a href="password-reset">reset your password</a> if so.';
         break;
       case 'invalidUsername':
-        output.message = 'The username you requested contains characters that aren\'t allowed.';
+        output.message = 'Your username can\'t be longer than 30 characters and may not contain commas or the at-sign (@).';
         break;
       case 'invalidEmail':
         output.message = 'The e-mail address you provided isn\'t valid.';
         break;
       case 'invalidPassword':
-        output.message = 'Your password doesn\'t meet the minimum requirements (at least 8 characters, anything but spaces).';
+        output.message = 'Your password doesn\'t meet the minimum requirements (between 8 and 50 characters, anything but spaces).';
         break;
       default:
         output.message = 'An unspecified error occurred. Please try again later.';

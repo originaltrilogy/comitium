@@ -16,13 +16,13 @@ function email(e) {
 
 
 function password(p) {
-  var passwordRegex = new RegExp(/[^\s\n\t\r\v]{8,}$/);
+  var passwordRegex = new RegExp(/^[^\s\n\t\r\v]{8,50}$/);
   return passwordRegex.test(p);
 }
 
 
 function username(u) {
-  var usernameRegex = new RegExp(/[^\n\t\r\v]{1,}$/);
+  var usernameRegex = new RegExp(/^[^\n\t\r\v,@]{1,30}$/);
   if ( !u.trim().length ) {
     return false;
   } else {

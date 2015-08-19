@@ -561,6 +561,8 @@ function startPrivate(params, context, emitter) {
   // Verify the user can start a private topic with the invitee(s)
   app.listen('waterfall', {
     invitees: function (emitter) {
+      var inviteesArray = [];
+
       if ( params.url.invitee ) {
         app.listen({
           invitees: function (emitter) {
@@ -576,7 +578,12 @@ function startPrivate(params, context, emitter) {
           }
         });
       } else if ( params.form.invitees ) {
-        emitter.emit('ready', params.form.invitees.split('\n'));
+        inviteesArray = params.form.invitees.split(',');
+
+        for ( var i = 0; i < inviteesArray.length; i += 1 ) {
+          inviteesArray[i] = inviteesArray[i].trim();
+        }
+        emitter.emit('ready', inviteesArray);
       } else {
         emitter.emit('ready');
       }
@@ -590,7 +597,7 @@ function startPrivate(params, context, emitter) {
   }, function (output) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        params.form.invitees = output.invitees ? output.invitees.join('\n') : '';
+        params.form.invitees = output.invitees ? output.invitees.join(', ') : '';
         params.form.title = '';
         params.form.content = app.config.comitium.editorIntro;
         params.form.subscribe = true;
@@ -618,7 +625,11 @@ function startPrivateForm(params, context, emitter) {
 
   if ( params.request.method === 'POST' ) {
     if ( params.form.invitees.length ) {
-      inviteesArray = params.form.invitees.split('\r\n');
+      inviteesArray = params.form.invitees.split(',');
+
+      for ( var i = 0; i < inviteesArray.length; i += 1 ) {
+        inviteesArray[i] = inviteesArray[i].trim();
+      }
     }
 
     // Verify the user can start a private topic with the invitees

@@ -27,6 +27,11 @@ Migration order:
 --        )
 --    order by "email", "joinDate" asc;
 
+  - Manually update usernames that use newly forbidden characters:
+
+--    select * from users where username like '%,%';
+--    select * from users where username like '%@%';
+
   - user-url-slug-generation.js
   - user-hash-generation.js
   - user-signature-markdown-generation.js

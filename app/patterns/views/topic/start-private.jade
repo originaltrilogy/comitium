@@ -23,8 +23,8 @@ section.form.topic-write
         label(for="invitees")
           | Invitees
         p.label-note
-          | To invite multiple participants, put each member's username on its own line.<!-- You can also send invitations after starting the topic. -->
-        textarea(id="invitees" name="invitees" rows="2" required) #{form.invitees}
+          | To invite multiple participants, separate their usernames with commas.<!-- You can also send invitations after starting the topic. -->
+        textarea(id="invitees" name="invitees" rows="2" placeholder="Han, Luke, Leia" required) #{form.invitees}
       li.topic-title.textarea.required
         label(for="topic-title")
           | Topic title

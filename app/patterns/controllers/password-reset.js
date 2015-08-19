@@ -169,7 +169,7 @@ function resetForm(params, context, emitter) {
       } else if ( params.form.password !== params.form.verifyPassword ) {
         message = 'The passwords you entered don\'t match.';
       } else if ( !app.toolbox.validate.password(params.form.password) ) {
-        message = 'The password you entered is invalid. It must be at least 8 characters, and can contain anything but spaces. Keep in mind that passwords are case-sensitive.';
+        message = 'Your password doesn\'t meet the minimum requirements (between 8 and 50 characters, anything but spaces).';
       }
       
       if ( message.length ) {

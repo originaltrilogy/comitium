@@ -699,6 +699,10 @@ form {
     & > li {
       margin: 1vw 4vw 9vw;
       list-style: none;
+
+      &:last-child {
+        margin-bottom: 2vw;
+      }
       &.text,
       &.select {
         label {
@@ -724,7 +728,7 @@ form {
         min-height: 10vw;
 
         &:last-child {
-          margin-bottom: 2vw;
+          margin-bottom: 0;
         }
         label {
           display: inline-block;
@@ -936,11 +940,9 @@ a.avatar {
       margin-right: 20vw;
     }
 
-    p.label-note {
-      margin-bottom: 1vw;
-    }
     input,
     select {
+      margin-top: 1vw;
       padding: 2vw;
     }
     input[type="checkbox"] {
@@ -964,6 +966,9 @@ a.avatar {
       & > li {
         margin: 1vw 20vw 6vw;
 
+        &:last-child {
+          margin-bottom: 4vw;
+        }
         &.checkbox,
         &.radio {
           label {
@@ -973,7 +978,7 @@ a.avatar {
       }
     }
     ul.actions {
-      padding: 0;
+      padding: 2vw 0;
 
       & > li {
         margin-left: 20vw;

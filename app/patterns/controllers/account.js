@@ -110,7 +110,7 @@ function generalForm(params, context, emitter) {
               };
             } else {
               update = false;
-              messages.password = 'The password you entered doesn\'t meet the minimum requirements. It must be at least 8 characters long and may contain any characters except for spaces.';
+              messages.password = 'Your password doesn\'t meet the minimum requirements (between 8 and 50 characters, anything but spaces).';
             }
           }
 
