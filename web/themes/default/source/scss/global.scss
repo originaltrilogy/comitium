@@ -598,29 +598,24 @@ footer {
 /////////////////////////
 
 form {
-  margin: 0 auto;
-  padding-top: 1.4rem;
-  padding-bottom: 1.4rem;
+  margin: 6vw auto;
   @include background-color(13%, 30%);
 
-  & > * {
-    margin-left: 4vw;
-    margin-right: 4vw;
-  }
   label {
     font-family: $titleFont;
     font-size: 120%;
+    line-height: 1;
     color: white;
   }
   p.label-note {
-    margin: 0;
+    margin: 1vw 0 0;
     color: #CDCDCD;
     line-height: 1.5;
-    padding-bottom: 2vw;
   }
   input,
   select {
     width: 100%;
+    margin-top: 2vw;
     padding: 4vw;
     font-size: 130%;
     word-wrap: normal;
@@ -637,6 +632,7 @@ form {
 
   input[type="checkbox"] {
     display: inline-block;
+    margin-top: 0;
     width: 10vw;
     height: 10vw;
     vertical-align: middle;
@@ -660,6 +656,7 @@ form {
 
   input[type="radio"] {
     display: inline-block;
+    margin-top: 0;
     width: 10vw;
     height: 10vw;
     vertical-align: middle;
@@ -685,74 +682,73 @@ form {
     font-family: Menlo, Consolas, monospace;
     font-size: 90%;
     width: 100%;
+    margin-top: 2vw;
     padding: 3vw 4vw;
     @include background-color(13%, 40%);
-    border: 1px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
     @include border-color(14%, 24%);
-    border-radius: 0.8vw;
+
+    &[name="content"] {
+      height: 50vh;
+    }
   }
-  .data {
-    ul {
-      margin: 0;
+  ul.data {
+    margin: 0;
 
-      & > li {
-        margin: 1rem auto 2rem;
-        margin: 1vw auto 9vw;
-        list-style: none;
-
-        &.text,
-        &.select {
-          label {
-            display: block;
-          }
+    & > li {
+      margin: 1vw 4vw 9vw;
+      list-style: none;
+      &.text,
+      &.select {
+        label {
+          display: block;
         }
-        &.checkbox,
-        &.radio {
-          position: relative;
-          min-height: 10vw;
+      }
+      &.textarea {
+        margin-right: 0;
+        margin-left: 0;
 
-          label {
-            display: inline-block;
-            max-width: 78vw;
-            margin-left: 2vw;
-            vertical-align: middle;
-            font-family: $defaultFont;
-            font-size: 100%;
-            line-height: 1.4;
-          }
+        label {
+          display: block;
+          margin: 0 4vw;
         }
-        &.checkbox {
+        p.label-note {
+          margin-right: 4vw;
+          margin-left: 4vw;
+        }
+      }
+      &.checkbox,
+      &.radio {
+        position: relative;
+        min-height: 10vw;
+
+        &:last-child {
           margin-bottom: 2vw;
         }
-        &.radio {
-          margin-bottom: 2vw;
+        label {
+          display: inline-block;
+          max-width: 78vw;
+          margin: 0 0 0 2vw;
+          vertical-align: middle;
+          font-family: $defaultFont;
+          font-size: 100%;
+          line-height: 1.4;
         }
+      }
 
-        ul ul {
-          margin-top: 12vw;
-        }
+      ul ul {
+        margin-top: 12vw;
       }
     }
   }
-  li.textarea {
-    label {
-      display: block;
-    }
-  }
-}
-
-// Actions appear both inside and outside forms, but should look consistent
-form .actions {
-  padding: 4vw 0;
-
-  ul {
-    margin-left: 0;
+  ul.actions {
+    margin: 0;
+    padding: 8vw 0;
 
     & > li {
       display: block;
-      margin-right: 0;
-      margin-bottom: 4vw;
-      margin-left: 0;
+      margin: 0 4vw 4vw;
 
       input[type="submit"],
       a {
@@ -815,6 +811,20 @@ nav.actions {
 
   a {
     @include button('medium');
+  }
+}
+
+// Avatars
+a.avatar {
+  display: block;
+  margin: 0;
+  width: 18vw;
+  height: 18vw;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 12%;
   }
 }
 
@@ -920,6 +930,63 @@ nav.actions {
     }
   }
 
+  form {
+    & > * {
+      margin-left: 20vw;
+      margin-right: 20vw;
+    }
+
+    p.label-note {
+      margin-bottom: 1vw;
+    }
+    input,
+    select {
+      padding: 2vw;
+    }
+    input[type="checkbox"] {
+      width: 6vw;
+      height: 6vw;
+
+      &:checked:after {
+        width: 6vw;
+        height: 6vw;
+        line-height: 6vw;
+      }
+    }
+    input[type="checkbox"] {
+      width: 6vw;
+      height: 6vw;
+    }
+    textarea {
+      padding: 4vw;
+    }
+    ul.data {
+      & > li {
+        margin: 1vw 20vw 6vw;
+
+        &.checkbox,
+        &.radio {
+          label {
+            max-width: 42vw;
+          }
+        }
+      }
+    }
+    ul.actions {
+      padding: 0;
+
+      & > li {
+        margin-left: 20vw;
+        margin-right: 20vw;
+
+        input[type="submit"],
+        a {
+          line-height: 10vw;
+        }
+      }
+    }
+  }
+
   nav.actions {
     ul {
       padding: 2vw 4vw;
@@ -930,6 +997,11 @@ nav.actions {
     }
   }
 
+  a.avatar {
+    width: 14vw;
+    height: 14vw;
+  }
+
   .js {
     body > header {
       height: 10vw;
@@ -937,7 +1009,7 @@ nav.actions {
     #menu-icon {
       top: 2vw;
       left: 2vw;
-      padding-left: 5.5vw;
+      padding-left: 6.5vw;
       font-size: 125%;
       line-height: 6vw;
     }

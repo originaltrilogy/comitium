@@ -48,39 +48,37 @@ function handler(params, context, emitter) {
     },
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
+    },
+    firstUnreadPost: function (previous, emitter) {
+      if ( params.session.userID ) {
+        app.models.topic.firstUnreadPost({
+          topicID: previous.topic.id,
+          userID: params.session.userID
+        }, emitter);
+      } else {
+        emitter.emit('ready', false);
+      }
     }
   }, function (output) {
-    var topic = output.topic;
+    var topic = output.topic,
+        page;
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        if ( params.url.unread && params.session.userID ) {
-          app.listen({
-            firstUnreadPost: function (emitter) {
-              app.models.topic.firstUnreadPost({
-                topicID: topic.id,
-                userID: params.session.userID
-              }, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              var urlPage = output.firstUnreadPost.page !== 1 ? '/page/' + output.firstUnreadPost.page : '',
-                  urlPost = output.firstUnreadPost.post ? '/#' + output.firstUnreadPost.post.id : '';
+        page = params.url.page || 1;
 
-              emitter.emit('ready', {
-                redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id + urlPage + urlPost
-              });
-            } else {
-              emitter.emit('error', output.listen);
-            }
+        if ( !params.url.page && output.firstUnreadPost && output.firstUnreadPost.page != page ) {
+          var urlPage = output.firstUnreadPost.page !== 1 ? '/page/' + output.firstUnreadPost.page : '',
+              urlPost = output.firstUnreadPost.post ? '/#' + output.firstUnreadPost.post.id : '';
+
+          emitter.emit('ready', {
+            redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id + urlPage + urlPost
           });
         } else {
-          params.url.page = params.url.page || 1;
-
           // If the user has read access, get the posts for the requested page
           app.listen({
             posts: function (emitter) {
-              var start = ( params.url.page - 1 ) * 25,
+              var start = ( page - 1 ) * 25,
                   end = start + 25;
 
               app.models.topic.posts({
@@ -117,7 +115,7 @@ function handler(params, context, emitter) {
             }
           }, function (output) {
             if ( output.listen.success ) {
-              if ( params.session.username ) {
+              if ( params.session.userID ) {
                 app.models.topic.viewTimeUpdate({
                   userID: params.session.userID,
                   topicID: topic.id,
@@ -133,7 +131,7 @@ function handler(params, context, emitter) {
                   invitees: output.invitees,
                   userIsSubscribed: output.subscriptionExists,
                   userCanReply: output.userCanReply,
-                  pagination: app.toolbox.helpers.paginate('topic/' + topic.url + '/id/' + topic.id, params.url.page, topic.replies + 1),
+                  pagination: app.toolbox.helpers.paginate('topic/' + topic.url + '/id/' + topic.id, page, topic.replies + 1),
                   breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle || 'Private Topics', topic.discussionUrl || 'private-topics', topic.discussionID)
                 }
               });

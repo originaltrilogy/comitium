@@ -123,7 +123,7 @@ function topics(args, emitter) {
                 if ( property === 'replies' ) {
                   subset[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
                 } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('MMMM Do YYYY');
+                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('D-MMM-YYYY');
                 } else {
                   subset[i][property] = output.topics[i][property];
                 }

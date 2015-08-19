@@ -11,69 +11,68 @@ section.form.general#general
       each message in general.messages
         p #{message}
   form.general(action="account/action/generalForm#general" method="post" autocomplete="off" novalidate)
-    .data
-      ul
-        li.email.text.required
-          label(for="email") Change your e-mail address
-          p.label-note Your account will require reactivation if you update your address (we'll send you an activation e-mail)
-          //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
-          //- DO NOT REMOVE
-          input(type="email" name="chromeIsStupidEmail" style="display: none;")
-          input#email(name="email" type="email" value="#{form.email}" autocomplete="off" required)
-        li.password.text
-          label(for="password") Update your password
-          p.label-note At least 8 characters, anything but spaces, case-sensitive
-          //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
-          //- DO NOT REMOVE
-          input(type="password" name="chromeIsStupidPassword" style="display: none;")
-          input#password(name="password" type="password" autocomplete="off" value="#{form.password}")
-        li.signature.textarea
-          label(for="signature") Edit your signature
-          p.label-note This content appears beneath your forum posts
-          textarea#signature(name="signature" rows="2") #{form.signature}
-        li.timezone.select
-          label(for="timezone") Time zone
-          select#timezone(name="timezone")
-            each timezone in timezones
-              if timezone !== form.timezone
-                option
-                  = timezone
-              else
-                option(selected)
-                  = timezone
-        li.theme.select
-          label(for="theme") Theme
-          select#theme(name="theme")
-            each theme in themes
-              if theme.name !== form.theme
-                option
-                  = theme.name
-              else
-                option(selected)
-                  = theme.name
-        li.private-topic-notification.checkbox
-          input#private-topic-email-notification(name="privateTopicEmailNotification" type="checkbox" value="true" checked=form.privateTopicEmailNotification)
-          label(for="private-topic-email-notification") Send me an e-mail when I'm invited to participate in a private topic
-    .actions
-      ul
-        li.primary
-          input(name="formAction" type="submit" value="Save changes")
+    ul.data
+      li.email.text.required
+        label(for="email") E-mail address
+        p.label-note Your account will require reactivation if you update your address (we'll send you an activation e-mail)
+        //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
+        //- DO NOT REMOVE
+        input(type="email" name="chromeIsStupidEmail" style="display: none;")
+        input#email(name="email" type="email" value="#{form.email}" autocomplete="off" required)
+      li.password.text
+        label(for="password") Password
+        p.label-note At least 8 characters, anything but spaces, case-sensitive
+        //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
+        //- DO NOT REMOVE
+        input(type="password" name="chromeIsStupidPassword" style="display: none;")
+        input#password(name="password" type="password" autocomplete="off" value="#{form.password}")
+      li.timezone.select
+        label(for="timezone") Time zone
+        select#timezone(name="timezone")
+          each timezone in timezones
+            if timezone !== form.timezone
+              option
+                = timezone
+            else
+              option(selected)
+                = timezone
+      li.theme.select
+        label(for="theme") Theme
+        select#theme(name="theme")
+          each theme in themes
+            if theme.name !== form.theme
+              option
+                = theme.name
+            else
+              option(selected)
+                = theme.name
+      li.private-topic-notification.checkbox
+        input#private-topic-email-notification(name="privateTopicEmailNotification" type="checkbox" value="true" checked=form.privateTopicEmailNotification)
+        label(for="private-topic-email-notification") Send me an e-mail when I'm invited to participate in a private topic
+      li.signature.textarea
+        label(for="signature") Post signature
+        p.label-note This content appears beneath your forum posts
+        textarea#signature(name="signature" rows="4") #{form.signature}
+  
+    ul.actions
+      li.primary
+        input(name="formAction" type="submit" value="Save changes")
 
 section.form.avatar#avatar
   h2 Your avatar
   if avatarForm && avatarForm.message
     section(class="notice #{ avatarForm.success ? 'success' : 'error' }")
       p #{avatarForm.message}
-  img(src="avatars/#{session.userID}.jpg")
+  a.avatar(href="user/#{session.url}/id/#{session.userID}" rel="author")
+    img(src="avatars/#{session.userID}.jpg")
   p Your avatar is an image that appears next to your posts to help identify you to other members.
   form(action="account/action/avatarForm/#avatar" enctype="multipart/form-data" method="post")
-    .data
-      ul
-        li.avatar.file.required
-          label(for="avatar-file") Choose an image to upload
-          p.label-note Most file formats are supported except for animated GIFs. File sizes up to 5MB accepted.
-          input#avatar-file(name="avatar" type="file")
-    .actions
-      ul
-        li.primary
-          input(name="formAction" type="submit" value="Upload image")
+    ul.data
+      li.avatar.file.required
+        label(for="avatar-file") Choose an image to upload
+        p.label-note Most file formats are supported except for animated GIFs. File sizes up to 5MB accepted.
+        input#avatar-file(name="avatar" type="file")
+  
+    ul.actions
+      li.primary
+        input(name="formAction" type="submit" value="Upload image")

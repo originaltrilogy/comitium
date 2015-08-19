@@ -4,18 +4,17 @@ section.summary
     
 section.form.post-bookmark
   form#post-bookmark-form(action="post/id/#{url.id}/action/bookmarkForm" method="post" novalidate)
-    .data
-      input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
-      ul
-        li.notes.textarea.required
-          label(for="notes")
-            | Notes
-          textarea#notes(name="notes" rows="4" required) #{form.notes}
-    .actions
-      ul
-        li.primary.save
-          input(name="formAction" type="submit" value="Save bookmark")
-        li.secondary.cancel
-          a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
+    input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
+    ul.data
+      li.notes.textarea.required
+        label(for="notes")
+          | Notes
+        textarea#notes(name="notes" rows="4" required) #{form.notes}
+  
+    ul.actions
+      li.primary.save
+        input(name="formAction" type="submit" value="Save bookmark")
+      li.secondary.cancel
+        a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
 
 != include.post

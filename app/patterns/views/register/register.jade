@@ -9,27 +9,26 @@ if register && register.message
 section.form.sign-up
   if !session.username
     form(action="register/action/form" method="post" novalidate)
-      .data
-        ul
-          li.username.text.required
-            label(for="username") Username
-            p.label-note What the public sees when you post in the forum
-            input#username(name="username" type="text" value="#{form.username}" required)
-          li.email.text.required
-            label(for="email") E-mail address
-            p.label-note Required for account activation and signing in
-            input#email(name="email" type="email" value="#{form.email}" required)
-          li.password.text.required
-            label(for="password") Password
-            p.label-note At least 8 characters, anything but spaces, case-sensitive
-            input#password(name="password" type="password" value="#{form.password}" required)
-          li.tos.checkbox.required
-            input#tos(name="tos" type="checkbox" value="true" checked=form.tos required)
-            label(for="tos") I have read and agree to the forum <a href="page/terms-of-service">Terms of Service</a>.
-      .actions
-        ul
-          li.primary
-            input(name="formAction" type="submit" value="Register")
+      ul.data
+        li.username.text.required
+          label(for="username") Username
+          p.label-note What the public sees when you post in the forum
+          input#username(name="username" type="text" value="#{form.username}" required)
+        li.email.text.required
+          label(for="email") E-mail address
+          p.label-note Required for account activation and signing in
+          input#email(name="email" type="email" value="#{form.email}" required)
+        li.password.text.required
+          label(for="password") Password
+          p.label-note At least 8 characters, anything but spaces, case-sensitive
+          input#password(name="password" type="password" value="#{form.password}" required)
+        li.tos.checkbox.required
+          input#tos(name="tos" type="checkbox" value="true" checked=form.tos required)
+          label(for="tos") I have read and agree to the forum <a href="page/terms-of-service">Terms of Service</a>.
+    
+      ul.actions
+        li.primary
+          input(name="formAction" type="submit" value="Register")
   else
     p You're already signed in as <strong>#{session.username}</strong>.
     p Not you? <a href="sign-out" title="Sign out of the forum.">Sign out of the forum</a> and sign in as a different user.

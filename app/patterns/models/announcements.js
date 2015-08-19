@@ -124,7 +124,7 @@ function topics(args, emitter) {
                 if ( property === 'replies' ) {
                   announcements[i][property + 'Formatted'] = app.toolbox.numeral(output.announcements[i][property]).format('0,0');
                 } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                  announcements[i][property + 'Formatted'] = app.toolbox.moment.tz(output.announcements[i][property], 'America/New_York').format('MMMM Do YYYY');
+                  announcements[i][property + 'Formatted'] = app.toolbox.moment.tz(output.announcements[i][property], 'America/New_York').format('D-MMM-YYYY');
                 }
               }
             }

@@ -25,6 +25,10 @@ body[data-controller="discussions"] {
 
       h4 {
         margin-bottom: 1.5vw;
+
+        &:after {
+          content: ':';
+        }
       }
     }
 
@@ -46,10 +50,6 @@ body[data-controller="discussions"] {
       .last-post {
         h4 {
           display: inline;
-
-          &:after {
-            content: ':';
-          }
         }
         time {
           display: inline;

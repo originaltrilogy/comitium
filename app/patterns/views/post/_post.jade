@@ -1,6 +1,7 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}")
   header
-    img(src="#{config.comitium.staticAssetUrl}avatars/#{post.authorID}.jpg")
+    a.avatar(href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
+      img(src="#{config.comitium.staticAssetUrl}avatars/#{post.authorID}.jpg")
     dl
       dt.author Author
       dd.author

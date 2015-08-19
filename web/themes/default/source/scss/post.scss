@@ -8,21 +8,19 @@ article.post {
 
   header {
     position: relative;
-    min-height: 20vw;
+    min-height: 18vw;
     margin: 0;
     font-size: 110%;
     text-align: left;
     @include background-color(14%, 22%);
 
-    img {
+    a.avatar {
       position: absolute;
-      width: 20vw;
-      height: 20vw;
-      border-radius: 0 10% 10% 0;
+      left: 4vw;
     }
     dl {
       margin-bottom: 0;
-      padding: 3vw 0;
+      padding: 2.4vw 0;
     }
     dt {
       min-width: 21vw;
@@ -33,7 +31,7 @@ article.post {
       }
     }
     dd {
-      margin-left: 21vw;
+      margin-left: 22vw;
 
       &.topic,
       &.author {
@@ -50,6 +48,7 @@ article.post {
     line-height: 1.6;
 
     img {
+      width: 100%;
       margin-left: auto;
       margin-right: auto;
     }
@@ -141,11 +140,6 @@ body[data-controller="user"][data-view="user"] {
     header {
       min-height: 14vw;
 
-      img {
-        width: 14vw;
-        height: 14vw;
-        left: 4vw;
-      }
       dl {
         padding: 3vw 0;
       }

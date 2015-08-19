@@ -133,9 +133,7 @@ function firstUnreadPost(args, emitter) {
       if ( previous.viewTime ) {
         info(args.topicID, emitter);
       } else {
-        emitter.emit('end', {
-          page: 1
-        });
+        emitter.emit('end', false);
       }
     },
     posts: function (previous, emitter) {
@@ -144,7 +142,7 @@ function firstUnreadPost(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select * from "posts" where "topicID" = $2 and "dateCreated" > ( select "time" from "topicViews" where "userID" = $1 and "topicID" = $2 ) order by "dateCreated" asc;',
+            'select "id" from "posts" where "topicID" = $2 and "dateCreated" > ( select "time" from "topicViews" where "userID" = $1 and "topicID" = $2 ) order by "dateCreated" asc;',
             [ args.userID, args.topicID ],
             function (err, result) {
               done();
@@ -157,9 +155,7 @@ function firstUnreadPost(args, emitter) {
                     page: Math.ceil(( previous.topic.replies + 1 - result.rows.length ) / 25)
                   });
                 } else {
-                  emitter.emit('ready', {
-                    page: Math.ceil(( previous.topic.replies + 1 ) / 25)
-                  });
+                  emitter.emit('ready', false);
                 }
               }
             }
@@ -169,7 +165,7 @@ function firstUnreadPost(args, emitter) {
     }
   }, function (output) {
     if ( output.listen.success ) {
-      emitter.emit('ready', output.posts || output.topic );
+      emitter.emit('ready', output.posts || false );
     } else {
       emitter.emit('error', output.listen);
     }

@@ -8,18 +8,17 @@ if report && report.message
 
 section.form.post-report
   form#post-report-form(action="post/id/#{url.id}/action/reportForm" method="post" novalidate)
-    .data
-      input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
-      ul
-        li.report-reason.textarea.required
-          label(for="reason")
-            | Why are you reporting this post?
-          textarea#reason(name="reason" rows="4" required) #{form.reason}
-    .actions
-      ul
-        li.primary.report
-          input(name="formAction" type="submit" value="Send report")
-        li.secondary.cancel
-          a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
+    input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
+    ul.data
+      li.report-reason.textarea.required
+        label(for="reason")
+          | Why are you reporting this post?
+        textarea#reason(name="reason" rows="4" required) #{form.reason}
+  
+    ul.actions
+      li.primary.report
+        input(name="formAction" type="submit" value="Send report")
+      li.secondary.cancel
+        a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
 
 != include.post

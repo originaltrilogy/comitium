@@ -24,52 +24,85 @@ body[data-controller="private-topics"][data-view="private-topics"] {
   }
   article.topic {
     position: relative;
-    padding: 4vw 0 6vw;
+    padding: 4vw 0;
 
     h3 {
-      margin-bottom: 8vw;
+      margin-bottom: 5vw;
     }
-    p.details {
-      margin: 4vw 24vw 2vw 4vw;
-      text-align: right;
+    dl.details {
+      margin: 0;
     }
-    p.stats {
-      margin: 2vw 24vw 0 0;
-      text-align: right;
+    dt.author,
+    dt.date,
+    dt.replies {
+      position: absolute;
+      left: -100vw;
     }
-    span.replies {
+    dd.author,
+    dd.date,
+    dd.replies {
+      margin-left: 26vw;
+    }
+    dd.replies {
       font-family: $boldFont;
+
+      &:after {
+        content: ' replies';
+        font-family: $defaultFont;
+      }
+    }
+    dt.last-post {
+      position: absolute;
+      right: 4vw;
+      bottom: 10vw;
+      text-align: right;
+    }
+    dd.last-post {
+      position: absolute;
+      right: 4vw;
+      bottom: 4vw;
+      margin: 0;
+      text-align: right;
     }
     a.avatar {
-      display: block;
       position: absolute;
-      right: -4vw;
-      bottom: 4vw;
-      width: 20vw;
-      height: 20vw;
-
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 10% 0 0 10%;
-      }
+      bottom: 4.4vw;
+      left: 4vw;
     }
+  }
 
-    &.unread {
+  @media only screen and (min-width: 768px) {
+
+    article.topic {
+      min-height: 22vw;
+
       h3 {
-        margin-right: 20vw;
+        margin: 0 4vw 0 21vw;
       }
-      a.unread {
-        position: absolute;
-        right: 2vw;
-        top: 7vw;
-        display: block;
-        margin: 0;
-        width: 18vw;
-        font-size: 85%;
-        text-align: center;
+      dt.last-post {
+        right: 20vw;
+        bottom: 4vw;
+      }
+      dd.author {
+        float: left;
+        margin-top: 2vw;
+        margin-left: 21vw;
+      }
+      dd.date {
+        float: left;
+        margin-top: 2vw;
+        margin-left: 4vw;
+      }
+      dd.replies {
+        clear: left;
+        padding-top: 2vw;
+        margin-left: 21vw;
+      }
+      a.avatar {
+        top: 4.4vw;
       }
     }
+
   }
 
 }
