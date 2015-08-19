@@ -721,7 +721,7 @@ function startPrivateForm(params, context, emitter) {
                             app.mail.sendMail({
                               from: app.config.comitium.email,
                               to: output[invitee].email,
-                              subject: 'Private topic: ' + topic.titleMarkdown,
+                              subject: 'Private topic invitation',
                               text: params.session.username + ' invited you to a private topic:\n\n' + params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/id/' + topic.id
                             });
                           }
