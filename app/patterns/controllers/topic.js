@@ -61,7 +61,21 @@ function handler(params, context, emitter) {
     }
   }, function (output) {
     var topic = output.topic,
-        page;
+        page,
+        type,
+        url = topic.private ? '/' : '/' + topic.url;
+
+    switch ( topic.discussionID ) {
+      case 0:
+        type = 'private-topic';
+        break;
+      case 2:
+        type = 'announcement';
+        break;
+      default:
+        type = 'topic';
+        break;
+    }
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
@@ -72,7 +86,7 @@ function handler(params, context, emitter) {
               urlPost = output.firstUnreadPost.post ? '/#' + output.firstUnreadPost.post.id : '';
 
           emitter.emit('ready', {
-            redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id + urlPage + urlPost
+            redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + type + url + '/id/' + topic.id + urlPage + urlPost
           });
         } else {
           // If the user has read access, get the posts for the requested page
@@ -124,15 +138,15 @@ function handler(params, context, emitter) {
               }
 
               emitter.emit('ready', {
-                view: topic.private ? 'private-topic' : 'topic',
+                view: type,
                 content: {
                   topic: topic,
                   posts: output.posts,
                   invitees: output.invitees,
                   userIsSubscribed: output.subscriptionExists,
                   userCanReply: output.userCanReply,
-                  pagination: app.toolbox.helpers.paginate('topic/' + topic.url + '/id/' + topic.id, page, topic.replies + 1),
-                  breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle || 'Private Topics', topic.discussionUrl || 'private-topics', topic.discussionID)
+                  pagination: app.toolbox.helpers.paginate(type + url + '/id/' + topic.id, page, topic.replies + 1),
+                  breadcrumbs: app.models.topic.breadcrumbs(topic)
                 }
               });
             } else {

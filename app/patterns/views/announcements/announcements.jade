@@ -19,7 +19,7 @@ section.topics
     each topic in topics
       article(class="topic#{ topic.updated ? ' updated' : '' }#{ topic.unreadPosts ? ' unread' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
         h3
-          a(href="topic/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
+          a(href="announcement/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
         dl.details
           dt.author Author
           dd.author

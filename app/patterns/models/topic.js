@@ -240,7 +240,7 @@ function info(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select d."id" as "discussionID", d."title" as "discussionTitle", d."url" as "discussionUrl", t."sortDate" as "time", t."id", t."url", t."replies", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."id" = $1;',
+              'select t."id", t."discussionID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
@@ -1307,21 +1307,54 @@ function viewTimeUpdate(args, emitter) {
 }
 
 
-function breadcrumbs(discussionTitle, discussionUrl, discussionID) {
-  return {
-    a: {
-      name: 'Forum Home',
-      url: app.config.comitium.basePath
-    },
-    b: {
-      name: 'Discussion Categories',
-      url: 'discussions'
-    },
-    c: {
-      name: discussionTitle,
-      url: discussionID ? 'discussion/' + discussionUrl + '/id/' + discussionID : discussionUrl
-    }
-  };
+function breadcrumbs(topic) {
+  var title, url;
+
+  switch ( topic.discussionID ) {
+    case 0:
+      return {
+        a: {
+          name: 'Forum Home',
+          url: app.config.comitium.basePath
+        },
+        c: {
+          name: 'Private Topics',
+          url: 'private-topics'
+        }
+      };
+    case 2:
+      title = 'Announcements';
+      url = 'announcements';
+      return {
+        a: {
+          name: 'Forum Home',
+          url: app.config.comitium.basePath
+        },
+        b: {
+          name: 'Discussion Categories',
+          url: 'discussions'
+        },
+        c: {
+          name: 'Announcements',
+          url: 'announcements'
+        }
+      };
+    default:
+      return {
+        a: {
+          name: 'Forum Home',
+          url: app.config.comitium.basePath
+        },
+        b: {
+          name: 'Discussion Categories',
+          url: 'discussions'
+        },
+        c: {
+          name: topic.discussionTitle,
+          url: 'discussion/' + topic.discussionUrl + '/id/' + topic.discussionID
+        }
+      };
+  }
 }
 
 
