@@ -43,9 +43,10 @@ article.post {
     }
   }
 
-  .content {
-    margin: 6vw 4vw 8vw;
+  section.content {
+    margin: 6vw 0 8vw;
     line-height: 1.6;
+    background: none;
 
     img {
       width: 100%;
@@ -189,8 +190,8 @@ body[data-controller="user"][data-view="user"] {
         margin-left: 17rem;
       }
     }
-    .content {
-      margin: 5rem 4rem;
+    section.content {
+      margin: 5rem 0;
     }
     nav.actions {
       ul {
