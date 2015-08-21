@@ -330,9 +330,9 @@ function insert(args, emitter) {
           insertPost: function (previous, emitter) {
 
             client.query(
-              'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified" ) ' +
-              'values ( $1, $2, $3, $4, $5, $6, $7, $8 ) returning id;',
-              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft, args.userID, args.time ],
+              'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "lastModified" ) ' +
+              'values ( $1, $2, $3, $4, $5, $6, $5 ) returning id;',
+              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
