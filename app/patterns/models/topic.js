@@ -136,13 +136,13 @@ function firstUnreadPost(args, emitter) {
         emitter.emit('end', false);
       }
     },
-    posts: function (previous, emitter) {
+    newPosts: function (previous, emitter) {
       app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select "id" from "posts" where "topicID" = $2 and "dateCreated" > ( select "time" from "topicViews" where "userID" = $1 and "topicID" = $2 ) order by "dateCreated" asc;',
+            'select "id" from "posts" where "topicID" = $2 and "draft" = false and "dateCreated" > ( select "time" from "topicViews" where "userID" = $1 and "topicID" = $2 ) order by "dateCreated" asc;',
             [ args.userID, args.topicID ],
             function (err, result) {
               done();
@@ -165,7 +165,7 @@ function firstUnreadPost(args, emitter) {
     }
   }, function (output) {
     if ( output.listen.success ) {
-      emitter.emit('ready', output.posts || false );
+      emitter.emit('ready', output.newPosts || false );
     } else {
       emitter.emit('error', output.listen);
     }
