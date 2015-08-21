@@ -2,6 +2,8 @@
 create index on "tblForumPrivateMessages" ( "intConversationID" );
 create index on "tblForumPrivateMessages" ( "intPrivateMessageID" );
 create index on "tblForumPrivateMessages" ( "dteTimeSent" );
+create index on "tblForumPrivateMessages" ( "intSenderUserID" );
+create index on "tblForumPrivateMessages" ( "dteTimeSent" );
 create index on "topics" ( "discussionID" );
 create index on "topics" ( "id" );
 create index on "topics" ( "draft" );
