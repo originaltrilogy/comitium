@@ -132,6 +132,7 @@ body {
   &[data-controller="discussions"] > header li.discussions a,
   &[data-controller="discussion"] > header li.discussions a,
   &[data-controller="announcements"] > header li.discussions a,
+  &[data-controller="announcement"] > header li.discussions a,
   &[data-controller="topic"][data-view="topic"] > header li.discussions a,
   &[data-controller="topic"][data-view="private-topic"] > header li.private-topics a,
   &[data-controller="topic"][data-view="start-private"] > header li.private-topics a,

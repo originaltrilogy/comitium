@@ -61,25 +61,23 @@ function handler(params, context, emitter) {
     }
   }, function (output) {
     var topic = output.topic,
-        page,
-        type,
-        url = topic.private ? '/' : '/' + topic.url;
-
-    switch ( topic.discussionID ) {
-      case 0:
-        type = 'private-topic';
-        break;
-      case 2:
-        type = 'announcement';
-        break;
-      default:
-        type = 'topic';
-        break;
-    }
+        page, type, url;
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
+        switch ( topic.discussionID ) {
+          case 0:
+            type = 'private-topic';
+            break;
+          case 2:
+            type = 'announcement';
+            break;
+          default:
+            type = 'topic';
+            break;
+        }
         page = params.url.page || 1;
+        url = topic.private ? '/' : '/' + topic.url;
 
         if ( !params.url.page && output.firstUnreadPost && output.firstUnreadPost.page != page ) {
           var urlPage = output.firstUnreadPost.page !== 1 ? '/page/' + output.firstUnreadPost.page : '',
@@ -198,7 +196,11 @@ function start(params, context, emitter) {
           view: 'start',
           content: {
             discussion: output.discussion,
-            breadcrumbs: app.models.topic.breadcrumbs(output.discussion.title, output.discussion.url, output.discussion.id)
+            breadcrumbs: app.models.topic.breadcrumbs({
+              discussionTitle: output.discussion.title,
+              discussionUrl: output.discussion.url,
+              discussionID: output.discussion.id
+            })
           }
         });
       } else {
@@ -269,7 +271,11 @@ function startForm(params, context, emitter) {
                     content: parsedContent
                   },
                   discussion: discussion,
-                  breadcrumbs: app.models.topic.breadcrumbs(output.discussion.title, output.discussion.url, output.discussion.id)
+                  breadcrumbs: app.models.topic.breadcrumbs({
+                    discussionTitle: output.discussion.title,
+                    discussionUrl: output.discussion.url,
+                    discussionID: output.discussion.id
+                  })
                 }
               });
               break;
@@ -386,7 +392,11 @@ function startAnnouncement(params, context, emitter) {
           view: 'start-announcement',
           content: {
             categories: output.categoriesPost,
-            breadcrumbs: app.models.topic.breadcrumbs('Announcements', 'announcements')
+            breadcrumbs: app.models.topic.breadcrumbs({
+              discussionTitle: 'Announcements',
+              discussionUrl: 'announcements',
+              discussionID: 2
+            })
           }
         });
       } else {
@@ -468,7 +478,11 @@ function startAnnouncementForm(params, context, emitter) {
                     content: parsedContent
                   },
                   categories: categories,
-                  breadcrumbs: app.models.topic.breadcrumbs('Announcements', 'announcements')
+                  breadcrumbs: app.models.topic.breadcrumbs({
+                    discussionTitle: 'Announcements',
+                    discussionUrl: 'announcements',
+                    discussionID: 2
+                  })
                 }
               });
               break;
@@ -545,7 +559,11 @@ function startAnnouncementForm(params, context, emitter) {
                       content: {
                         topic: topic,
                         categories: categories,
-                        breadcrumbs: app.models.topic.breadcrumbs('Announcements', 'announcements')
+                        breadcrumbs: app.models.topic.breadcrumbs({
+                          discussionTitle: 'Announcements',
+                          discussionUrl: 'announcements',
+                          discussionID: 2
+                        })
                       }
                     });
                   }
@@ -837,12 +855,6 @@ function reply(params, context, emitter) {
         params.form.content = app.config.comitium.editorIntro;
         params.form.subscribe = false;
 
-        if ( output.topic.private ) {
-          breadcrumbs = app.models.topic.breadcrumbs('Private Topics', 'private-topics');
-        } else {
-          breadcrumbs = app.models.topic.breadcrumbs(output.topic.discussionTitle, output.topic.discussionUrl, output.topic.discussionID);
-        }
-
         // If the quoted post exists and its topic ID matches this topic ID, add the
         // quote to the post content (this is a security measure, don't remove it).
         if ( output.quote && output.quote.topicID === output.topic.id && output.quote.markdown ) {
@@ -855,7 +867,7 @@ function reply(params, context, emitter) {
           view: 'reply',
           content: {
             topic: output.topic,
-            breadcrumbs: breadcrumbs,
+            breadcrumbs: app.models.topic.breadcrumbs(output.topic),
             reply: {
               message: message
             }
@@ -913,12 +925,6 @@ function replyForm(params, context, emitter) {
 
           parsedContent = contentMarkdown.render(params.form.content);
 
-          if ( output.topic.private ) {
-            breadcrumbs = app.models.topic.breadcrumbs('Private Topics', 'private-topics');
-          } else {
-            breadcrumbs = app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID);
-          }
-
           switch ( params.form.formAction ) {
             case 'Preview':
               emitter.emit('ready', {
@@ -928,7 +934,7 @@ function replyForm(params, context, emitter) {
                     content: parsedContent
                   },
                   topic: topic,
-                  breadcrumbs: breadcrumbs
+                  breadcrumbs: app.models.topic.breadcrumbs(topic)
                 }
               });
               break;
@@ -1002,7 +1008,7 @@ function replyForm(params, context, emitter) {
                       content: {
                         reply: output.reply,
                         topic: topic,
-                        breadcrumbs: breadcrumbs
+                        breadcrumbs: app.models.topic.breadcrumbs(topic)
                       }
                     });
                   }
