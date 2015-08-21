@@ -51,6 +51,9 @@ $gUpdates:  '\e66c';
   @media only screen and (min-width: 768px) {
     border-radius: 0.4vw;
   }
+  @media only screen and (min-width: 960px) {
+    border-radius: 0.4rem;
+  }
 
   @if $size == 'large' {
   	line-height: 16vw;
@@ -59,6 +62,10 @@ $gUpdates:  '\e66c';
 
     @media only screen and (min-width: 768px) {
       line-height: 12vw;
+    }
+    @media only screen and (min-width: 960px) {
+      line-height: 12rem;
+      padding: 0 5rem;
     }
 
   } @else if $size == 'medium' {
@@ -70,6 +77,10 @@ $gUpdates:  '\e66c';
       line-height: 6vw;
       padding: 0 3vw;
     }
+    @media only screen and (min-width: 960px) {
+      line-height: 6rem;
+      padding: 0 3rem;
+    }
 
   } @else if $size == 'small' {
     line-height: 8vw;
@@ -79,6 +90,10 @@ $gUpdates:  '\e66c';
     @media only screen and (min-width: 768px) {
       line-height: 5vw;
       padding: 0 2vw;
+    }
+    @media only screen and (min-width: 960px) {
+      line-height: 4rem;
+      padding: 0 2rem;
     }
   }
 

@@ -167,3 +167,43 @@ body[data-controller="user"][data-view="user"] {
   }
 
 }
+
+
+@media only screen and (min-width: 960px) {
+
+  article.post {
+    header {
+      min-height: 10rem;
+
+      a.avatar {
+        left: 4rem;
+      }
+      dl {
+        margin: 0;
+        padding: 2.4rem 0;
+      }
+      dt {
+        min-width: 17rem;
+      }
+      dd {
+        margin-left: 17rem;
+      }
+    }
+    .content {
+      margin: 5rem 4rem;
+    }
+    nav.actions {
+      ul {
+        padding: 2rem 4rem;
+      }
+    }
+    .signature {
+      padding: 2rem 4rem 2.5rem;
+
+      & > * {
+        margin-bottom: 2.5rem;
+      }
+    }
+  }
+
+}

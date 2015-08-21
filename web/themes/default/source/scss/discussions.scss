@@ -70,6 +70,32 @@ body[data-controller="discussions"] {
         margin-top: 2vw;
       }
     }
+
+    @media only screen and (min-width: 960px) {
+      section.announcements {
+        article {
+          padding: 2rem 0;
+        }
+      }
+      p.description {
+        margin-top: 2rem;
+      }
+      ul.stats {
+        margin-top: 2rem;
+        width: 46rem;
+
+        li {
+          width: 20rem;
+
+          &:first-child {
+            margin-right: 4rem;
+          }
+        }
+      }
+      .last-post {
+        margin-top: 2rem;
+      }
+    }
   }
 
 }

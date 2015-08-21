@@ -41,7 +41,6 @@ CF.immediate = ( function (Modernizr, CF) {
       } else {
         html.className = html.className.replace(new RegExp('(^|\\b)' + html.split(' ').join('|') + '(\\b|$)', 'gi'), ' ') + ' ' + CF.params.device.relativeSize;
       }
-      // $('html').removeClass('small medium large x-large').addClass(CF.params.device.relativeSize);
       // if ( !Modernizr.mq('only all') ) {
       //   $.ajax({
       //     url: 'app/skins/default/source/js/lib/respond.min.js',

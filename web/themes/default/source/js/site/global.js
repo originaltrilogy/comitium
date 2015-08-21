@@ -3,18 +3,21 @@ CF.global = ( function (Modernizr, CF) {
   var methods = {
 
     init: function () {
-      var header = document.querySelector('header'),
-          menuIcon = document.createElement('div');
+      if ( CF.params.device.relativeSize !== 'x-large' ) {
+        var header = document.querySelector('header'),
+            menuIcon = document.createElement('div');
 
-      menuIcon.setAttribute('id', 'menu-icon');
-      menuIcon.appendChild(document.createTextNode('Menu'));
-      header.appendChild(menuIcon);
+        menuIcon.setAttribute('id', 'menu-icon');
+        menuIcon.appendChild(document.createTextNode('Menu'));
+        header.appendChild(menuIcon);
 
-      methods.menu({
-        menu: 'header nav',
-        trigger: '#menu-icon',
-        position: 'left'
-      });
+        methods.menu({
+          menu: 'header nav',
+          trigger: '#menu-icon',
+          position: 'left'
+        });
+      }
+
       methods.viewportResizeCheck('responsiveModeSet', CF.immediate.responsiveModeSet);
       // methods.viewportResizeCheck('frameworkReinit', CF.global.init);
       // methods.bindInternalLinks();
@@ -22,6 +25,7 @@ CF.global = ( function (Modernizr, CF) {
 
     menu: function (args) {
       var body = document.querySelector('body'),
+          menu,
           menuShadow = document.querySelector('#menu-shadow') || document.createElement('div'),
           trigger = document.querySelector(args.trigger);
 
@@ -29,8 +33,9 @@ CF.global = ( function (Modernizr, CF) {
       body.insertBefore(menuShadow, body.children[0]);
 
       trigger.addEventListener('click', function () {
-        var source = document.querySelector(args.menu),
-            menu = source.cloneNode(true);
+        var source = document.querySelector(args.menu);
+        
+        menu = source.cloneNode(true);
 
         body.insertBefore(menu, body.children[0]);
 
@@ -55,18 +60,18 @@ CF.global = ( function (Modernizr, CF) {
             menu.className += ' open';
           }, 50);
         }
+      }, false);
 
-        menuShadow.addEventListener('click', function () {
-          methods.removeClass(body, 'menu-open');
-          methods.removeClass(menu, 'open');
-          body.className += ' menu-closing';
-          setTimeout( function () {
-            methods.removeClass(body, 'menu-closing');
-            if ( menu.parentNode !== null ) {
-              body.removeChild(menu);
-            }
-          }, 200);
-        }, false);
+      menuShadow.addEventListener('click', function () {
+        methods.removeClass(body, 'menu-open');
+        methods.removeClass(menu, 'open');
+        body.className += ' menu-closing';
+        setTimeout( function () {
+          methods.removeClass(body, 'menu-closing');
+          if ( menu.parentNode !== null ) {
+            body.removeChild(menu);
+          }
+        }, 200);
       }, false);
     },
 

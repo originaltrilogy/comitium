@@ -79,10 +79,6 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       h3 {
         margin: 0 4vw 0 21vw;
       }
-      dt.last-post {
-        right: 20vw;
-        bottom: 4vw;
-      }
       dd.author {
         float: left;
         margin-top: 2vw;
@@ -98,6 +94,10 @@ body[data-controller="private-topics"][data-view="private-topics"] {
         padding-top: 2vw;
         margin-left: 21vw;
       }
+      dt.last-post {
+        right: 20vw;
+        bottom: 4vw;
+      }
       a.avatar {
         top: 4.4vw;
       }
@@ -105,7 +105,60 @@ body[data-controller="private-topics"][data-view="private-topics"] {
 
   }
 
+  @media only screen and (min-width: 960px) {
+
+    section.announcements {
+      article {
+        padding: 2rem 0;
+      }
+    }
+
+    section.announcements,
+    section.topics {
+      nav.actions {
+        ul {
+          padding: 2rem 4rem;
+        }
+      }
+    }
+
+    article.topic {
+      padding: 3rem 0;
+      min-height: 18rem;
+
+      h3 {
+        margin: 0 4rem 0 18rem;
+      }
+      dd.author {
+        margin-top: 1.5rem;
+        margin-left: 18rem;
+      }
+      dd.date {
+        margin-top: 1.5rem;
+        margin-left: 4rem;
+      }
+      dd.replies {
+        padding-top: 1.5rem;
+        margin-left: 18rem;
+      }
+      dt.last-post {
+        right: 15rem;
+        bottom: 4rem;
+      }
+      dd.last-post {
+        right: 4rem;
+        bottom: 4rem;
+      }
+      a.avatar {
+        top: 3.4rem;
+      }
+    }
+
+  }
+
 }
+
+
 
 body[data-controller="discussion"][data-view="discussion"] {
 
@@ -141,7 +194,8 @@ body[data-controller="discussion"][data-view="discussion"] {
         align-self: center;
 
         ul {
-          padding: 0 4vw;
+          padding-top: 2vw;
+          text-align: right;
         }
         li {
           margin-bottom: 0;
@@ -149,6 +203,25 @@ body[data-controller="discussion"][data-view="discussion"] {
       }
       article {
         width: 100%;
+      }
+    }
+
+  }
+
+  @media only screen and (min-width: 960px) {
+
+    section.announcements {
+      article {
+        padding: 2rem 0;
+      }
+    }
+
+    section.announcements,
+    section.topics {
+      nav.actions {
+        ul {
+          padding: 2rem 4rem;
+        }
       }
     }
 
