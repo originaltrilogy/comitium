@@ -185,12 +185,12 @@ body[data-controller="discussion"][data-view="discussion"] {
     section.topics {
       display: flex;
       flex-wrap: wrap;
+      justify-content: space-around;
 
       h2 {
-        flex: 1 0 50%;
+        flex: 1 1 auto;
       }
       nav.actions {
-        flex: 1 0 50%;
         align-self: center;
 
         ul {

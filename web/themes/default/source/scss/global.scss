@@ -1023,6 +1023,7 @@ a.avatar {
   nav.actions {
     ul {
       padding: 2vw 4vw;
+      overflow-x: auto;
 
       & > li {
         margin: 0 1vw;
@@ -1104,7 +1105,7 @@ a.avatar {
       }
       nav {
         display: inline-block;
-        width: 78vw;
+        width: 77vw;
         text-align: right;
 
         li {

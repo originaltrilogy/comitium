@@ -7,6 +7,22 @@ body[data-controller="announcement"] {
   h1 {
     padding-bottom: 6vw;
   }
+  section.form.quick-reply {
+    form {
+      padding-top: 0;
+    }
+    li.post-content {
+      margin-top: 0;
+      
+      label {
+        position: absolute;
+        left: -100vw;
+      }
+    }
+    textarea {
+      margin-top: 0;
+    }
+  }
 
   @media only screen and (min-width: 768px) {
 
