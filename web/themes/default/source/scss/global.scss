@@ -1132,9 +1132,7 @@ a.avatar {
   body {
     font-size: 1.6rem;
   }
-  ul,
-  ol,
-  dl {
+  dl, ol, ul {
     margin: 3rem 0 3rem 8rem;
   }
   dl {
@@ -1286,6 +1284,9 @@ a.avatar {
       h3 {
         margin-top: 5rem;
         margin-bottom: 0;
+      }
+      dl, ol, ul {
+        margin: 3rem 4rem 3rem 8rem;
       }
       blockquote {
         margin: 0 4rem;
