@@ -498,22 +498,22 @@ function topicReply(args, emitter) {
       if ( output.topic ) {
         if ( !output.topic.private ) {
           if ( output.topic.discussionID !== 2 ) {
-            app.listen({
-              topicLocked: function (emitter) {
+            app.listen('waterfall', {
+              topicNotLocked: function (emitter) {
                 if ( !output.topic.lockedByID || args.user.moderateDiscussions ) {
-                  emitter.emit('ready', false);
+                  emitter.emit('ready', true);
                 } else {
                   challenge(app.extend(args, { emit: 'end' }), emitter);
                 }
               },
-              discussionReply: function (emitter) {
+              discussionReply: function (previous, emitter) {
                 discussionReply(app.extend(args, {
                   discussionID: output.topic.discussionID
                 }), emitter);
               }
             }, function (output) {
               if ( output.listen.success ) {
-                if ( output.discussionReply === true ) {
+                if ( output.topicNotLocked === true && output.discussionReply === true ) {
                   emitter.emit('ready', true);
                 } else {
                   challenge(args, emitter);
@@ -523,8 +523,15 @@ function topicReply(args, emitter) {
               }
             });
           } else {
-            app.listen({
-              announcementReply: function (emitter) {
+            app.listen('waterfall', {
+              topicNotLocked: function (emitter) {
+                if ( !output.topic.lockedByID || args.user.moderateDiscussions ) {
+                  emitter.emit('ready', true);
+                } else {
+                  challenge(app.extend(args, { emit: 'end' }), emitter);
+                }
+              },
+              announcementReply: function (previous, emitter) {
                 app.models.topic.announcementReply({
                   topicID: args.topicID,
                   groupID: args.user.groupID
@@ -532,7 +539,7 @@ function topicReply(args, emitter) {
               }
             }, function (output) {
               if ( output.listen.success ) {
-                if ( output.announcementReply === true ) {
+                if ( output.topicNotLocked === true && output.announcementReply === true ) {
                   emitter.emit('ready', true);
                 } else {
                   challenge(args, emitter);

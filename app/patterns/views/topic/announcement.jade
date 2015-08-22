@@ -16,8 +16,9 @@ if topic.lockedByID
 nav.topic.actions
   ul
     if topic.discussionID !== 1
-      li.reply
-        a(href="topic/action/reply/id/#{url.id}") Reply
+      if userCanReply
+        li.reply
+          a(href="topic/action/reply/id/#{url.id}") Reply
       if !userIsSubscribed
         li.subscribe
           a(href="topic/action/subscribe/id/#{url.id}" title="Receive an e-mail notification when people reply to this topic.") Subscribe
