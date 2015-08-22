@@ -373,7 +373,7 @@ function insert(args, emitter) {
               args.invitees.forEach( function (item, index, array) {
                 userMethods[item] = function (emitter) {
                   client.query(
-                    'select id from users where username = $1;',
+                    'select id from users where username ilike $1;',
                     [ item ],
                     function (err, result) {
                       if ( err ) {

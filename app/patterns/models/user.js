@@ -495,6 +495,7 @@ function exists(args, emitter) {
         client.query(
           'select id ' +
           'from users ' +
+          // Use ilike so username checks are case-insensitive.
           'where username ilike $1',
           [ args.username ],
           function (err, result) {
@@ -678,7 +679,7 @@ function isIgnored(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "id" from "ignoredUsers" where "userID" = ( select "id" from "users" where "username" = $1 ) and "ignoredUserID" = ( select "id" from "users" where "username" = $2 )',
+        'select "id" from "ignoredUsers" where "userID" = ( select "id" from "users" where "username" ilike $1 ) and "ignoredUserID" = ( select "id" from "users" where "username" ilike $2 )',
         [ args.ignoredBy, args.username ],
         function (err, result) {
           done();
