@@ -846,8 +846,7 @@ function reply(params, context, emitter) {
       }
     }
   }, function (output) {
-    var breadcrumbs,
-        message = '';
+    var message = '';
 
     // If the group has reply access, display the topic reply form
     if ( output.listen.success ) {
@@ -915,8 +914,7 @@ function replyForm(params, context, emitter) {
           }),
           parsedContent,
           draft = false,
-          time = app.toolbox.helpers.isoDate(),
-          breadcrumbs;
+          time = app.toolbox.helpers.isoDate();
 
       // If the group has reply access, process the form
       if ( output.listen.success ) {

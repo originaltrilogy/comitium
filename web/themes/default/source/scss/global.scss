@@ -955,8 +955,6 @@ a.avatar {
       }
     }
     &.notice {
-      padding-left: 13vw;
-
       &:before {
         top: 3vw;
       }
@@ -1078,7 +1076,7 @@ a.avatar {
   ul,
   ol,
   dl {
-    margin: 4rem 0 6rem 8rem;
+    margin: 3rem 0 3rem 8rem;
   }
   dl {
     margin-right: 4rem;
@@ -1137,7 +1135,18 @@ a.avatar {
   }
 
   blockquote {
+    margin: 0 4rem;
     padding: 4rem;
+    width: 88rem;
+
+    p > a:first-child[href^="post/"] {
+      padding: 2rem 4rem;
+      margin-left: -4rem;
+      margin-top: -4rem;
+    }
+    dl, ol, ul {
+      margin-left: 4rem;
+    }
   }
 
   main {
@@ -1152,7 +1161,7 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding: 2rem 4rem 0;
+    padding: 2rem 4rem;
 
     li {
       margin-bottom: 1rem;
@@ -1171,6 +1180,8 @@ a.avatar {
     }
 
     ul {
+      padding: 1.5rem 4rem;
+
       & > li {
         margin: 0 0.6rem;
       }
@@ -1220,6 +1231,18 @@ a.avatar {
         margin-bottom: 3rem;
       }
     }
+    &.notice {
+      padding: 3rem 4rem 3rem 11rem;
+
+      &:before {
+        top: 2rem;
+        left: 4rem;
+        font-size: 4rem;
+      }
+      &.locked:before {
+        left: 8rem;
+      }
+    }
     & > p {
       margin-right: 4rem;
       margin-left: 4rem;
@@ -1243,6 +1266,25 @@ a.avatar {
     }
     main {
       padding-top: 8rem;
+    }
+  }
+
+  form {
+    ul.actions {
+      padding: 2rem 0;
+      text-align: center;
+
+      & > li {
+        display: inline-block;
+        margin-left: 2rem;
+        margin-right: 2rem;
+
+        a,
+        input[type="submit"] {
+          line-height: 6rem;
+          padding: 0 4rem;
+        }
+      }
     }
   }
 

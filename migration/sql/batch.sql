@@ -671,6 +671,18 @@ select cleanup();
 drop function cleanup();
 
 
+-- Update topics with existing locks
+
+create index on topics ( "id" );
+create index on "tblForumTopicLock" ( "intTopicID" );
+create index on "tblForumTopicLock" ( "dteTopicLockDate" );
+
+update topics t
+set "lockedByID" = coalesce(( select "intTopicLockedBy" from "tblForumTopicLock" where "intTopicID" = t.id order by "dteTopicLockDate" desc limit 1 ), 0),
+    "lockReason" = ( select "vchTopicLockReason" from "tblForumTopicLock" where "intTopicID" = t.id order by "dteTopicLockDate" desc limit 1 )
+where id = t.id;
+
+
 
 -- Update posts with existing edit notes
 

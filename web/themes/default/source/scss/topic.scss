@@ -13,7 +13,7 @@ body[data-controller="announcement"] {
     }
     li.post-content {
       margin-top: 0;
-      
+
       label {
         position: absolute;
         left: -100vw;
@@ -32,17 +32,44 @@ body[data-controller="announcement"] {
 
   }
 
+  @media only screen and (min-width: 960px) {
+
+    h1 {
+      padding-bottom: 4rem;
+    }
+    section {
+      &.form.quick-reply {
+        ul.data {
+          li.subscribe {
+            float: left;
+            margin: 1rem 0 0 4rem;
+          }
+        }
+        ul.actions {
+          padding: 0;
+        }
+      }
+    }
+
+  }
+
 }
 
 body[data-controller="topic"][data-view="private-topic"] {
 
   section.notice.private {
     p {
-      margin-bottom: 2vw;
+      display: inline;
+      margin-bottom: 0;
+
+      &:after {
+        content: ' ';
+      }
     }
   }
   ul.participants {
-    margin: 0;
+    display: inline;
+    margin-left: 0;
 
     li {
       list-style: none;
@@ -51,8 +78,13 @@ body[data-controller="topic"][data-view="private-topic"] {
       &:after {
         content: ', ';
       }
-      &:last-child:after {
-        content: '';
+      &:last-child {
+        &:before {
+          content: ' and ';
+        }
+        &:after {
+          content: '.';
+        }
       }
     }
   }
