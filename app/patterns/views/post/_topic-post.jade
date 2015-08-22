@@ -41,5 +41,5 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
         li.delete
           a(href="post/action/trash/id/#{post.id}") Delete
   if post.authorSignature
-    .signature
+    section.content.signature
       != post.authorSignature

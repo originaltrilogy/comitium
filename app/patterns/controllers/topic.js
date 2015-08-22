@@ -76,15 +76,14 @@ function handler(params, context, emitter) {
             type = 'topic';
             break;
         }
-        page = params.url.page || 1;
-        url = topic.private ? '/' : '/' + topic.url;
+        page = parseInt(params.url.page, 10) || 1;
+        url = topic.private ? 'topic' : type + '/' + topic.url;
 
-        if ( !params.url.page && output.firstUnreadPost && output.firstUnreadPost.page != page ) {
-          var urlPage = output.firstUnreadPost.page !== 1 ? '/page/' + output.firstUnreadPost.page : '',
-              urlPost = output.firstUnreadPost.post ? '/#' + output.firstUnreadPost.post.id : '';
-
+        // If there are unread posts, the first unread post isn't the first post in the topic,
+        // and a specific page hasn't been requested, redirect the user to the first unread post.
+        if ( !params.url.page && output.firstUnreadPost && output.firstUnreadPost.post.id !== topic.firstPostID ) {
           emitter.emit('ready', {
-            redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + type + url + '/id/' + topic.id + urlPage + urlPost
+            redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + output.firstUnreadPost.page + '/#' + output.firstUnreadPost.post.id
           });
         } else {
           // If the user has read access, get the posts for the requested page

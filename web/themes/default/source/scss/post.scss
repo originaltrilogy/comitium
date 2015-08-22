@@ -43,38 +43,6 @@ article.post {
     }
   }
 
-  section.content {
-    margin: 6vw 0 8vw;
-    line-height: 1.6;
-    background: none;
-
-    h1 {
-      padding: 0;
-      margin: 6vw 4vw;
-    }
-    h2 {
-      margin: 8vw 4vw 2vw;
-      padding: 0;
-      background: none;
-      text-align: left;
-      text-decoration: underline;
-    }
-    h3 {
-      margin: 8vw 4vw 0;
-      padding: 0;
-      font-family: $italicFont;
-    }
-    dl, ol, ul {
-      margin-right: 4vw;
-    }
-
-    & > img {
-      width: 100%;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
   p.edited {
     font-size: 80%;
     font-family: $italicFont;
@@ -83,7 +51,7 @@ article.post {
 
   .signature {
     margin: 0;
-    padding: 4vw 4vw 4.5vw;
+    padding: 4vw 0 4.5vw;
     text-align: right;
     font-size: 85%;
     line-height: 1.6;
@@ -173,7 +141,7 @@ body[data-controller="user"][data-view="user"] {
     }
 
     .signature {
-      padding: 3vw 4vw 3.5vw;
+      padding: 3vw 0 3.5vw;
 
       & > * {
         margin-bottom: 3vw;
@@ -210,29 +178,13 @@ body[data-controller="user"][data-view="user"] {
         margin-left: 17rem;
       }
     }
-    section.content {
-      margin: 5rem 0;
-
-      h1 {
-        margin: 6rem 4rem;
-      }
-      h2 {
-        margin: 8rem 4rem 2rem;
-      }
-      h3 {
-        margin: 5rem 4rem 0;
-      }
-      dl, ol, ul {
-        margin-right: 4rem;
-      }
-    }
     nav.actions {
       ul {
         padding: 2rem 4rem;
       }
     }
     .signature {
-      padding: 2rem 4rem 2.5rem;
+      padding: 2rem 0;
 
       & > * {
         margin-bottom: 2.5rem;

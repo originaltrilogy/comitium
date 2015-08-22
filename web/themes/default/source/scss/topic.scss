@@ -1,6 +1,7 @@
-/*-------------------
-topic patterns
--------------------*/
+//////////////////////
+//  topic patterns  //
+//////////////////////
+
 body[data-controller="topic"],
 body[data-controller="announcement"] {
 
@@ -75,16 +76,27 @@ body[data-controller="topic"][data-view="private-topic"] {
       list-style: none;
       display: inline;
 
-      &:after {
-        content: ', ';
+      &:nth-child(n+2) {
+        margin-left: -4px;
+
+        &:before {
+          content: ', ';
+        }
       }
       &:last-child {
+        margin-left: 0;
+
         &:before {
           content: ' and ';
         }
         &:after {
           content: '.';
         }
+      }
+
+      a {
+        // Prevents line breaks in usernames
+        display: inline-block;
       }
     }
   }

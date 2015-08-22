@@ -34,19 +34,74 @@ function handler(params, context, emitter) {
             }, emitter);
           }
         }, function (output) {
-          var content = {};
+          var stats = output.stats,
+              topics = output.topics;
 
           if ( output.listen.success ) {
-            content = {
-              pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, output.stats.topics)
-            };
 
-            if ( output.topics && app.size(output.topics) ) {
-              content.topics = output.topics;
-            }
+            app.listen({
+              viewTimes: function (emitter) {
+                var topicID = [];
 
-            emitter.emit('ready', {
-              content: content
+                for ( var topic in topics ) {
+                  if ( topics.hasOwnProperty(topic) ) {
+                    topicID.push(topics[topic].id);
+                  }
+                }
+
+                app.models.user.topicViewTimes({
+                  userID: params.session.userID,
+                  topicID: topicID.join(', ')
+                }, emitter);
+              }
+            }, function (output) {
+              var viewTimes = {},
+                  content = {};
+
+              if ( output.listen.success ) {
+
+                if ( output.viewTimes.length ) {
+                  output.viewTimes.forEach( function (item, index, array) {
+                    viewTimes[item.topicID] = item;
+                  });
+                }
+
+                content = {
+                  breadcrumbs: {
+                    a: {
+                      name: 'Forum Home',
+                      url: app.config.comitium.basePath
+                    }
+                  },
+                  pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, topics)
+                };
+
+                if ( topics && app.size(topics) ) {
+                  for ( var topic in topics ) {
+                    if ( !viewTimes[topics[topic].id] ) {
+                      topics[topic].unreadPosts = true;
+                      if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
+                        topics[topic].updated = true;
+                      }
+                    } else {
+                      if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(viewTimes[topics[topic].id].time) ) {
+                        topics[topic].unreadPosts = true;
+                        if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
+                          topics[topic].updated = true;
+                        }
+                      }
+                    }
+                  }
+                  content.topics = topics;
+                }
+
+                emitter.emit('ready', {
+                  content: content
+                });
+
+              } else {
+                emitter.emit('error', output.listen);
+              }
             });
           } else {
             emitter.emit('error', output.listen);

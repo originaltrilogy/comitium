@@ -399,6 +399,75 @@ main {
 section {
   @include background-color(14%, 22%);
 
+  &.content {
+    margin: 6vw 0 8vw;
+    line-height: 1.6;
+    background: none;
+
+    & > * {
+      margin-left: 4vw;
+      margin-right: 4vw;
+    }
+    h1 {
+      padding: 0;
+      margin-top: 6vw;
+      margin-bottom: 6vw;
+    }
+    h2 {
+      margin-top: 8vw;
+      margin-bottom: 2vw;
+      padding: 0;
+      background: none;
+      text-align: left;
+      text-decoration: underline;
+    }
+    h3 {
+      margin-top: 8vw;
+      margin-bottom: 0;
+      padding: 0;
+      font-family: $italicFont;
+    }
+
+    & > img {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    dl, ol, ul {
+      margin-left: 14vw;
+    }
+
+    blockquote {
+      padding: 4vw;
+      overflow: hidden;
+      @include background-color(14%, 25%);
+
+      & > blockquote {
+        border: 1px solid;
+        @include border-color(14%, 22%);
+      }
+
+      *:first-child {
+        margin-top: 0;
+      }
+      *:last-child {
+        margin-bottom: 0;
+      }
+      p > a:first-child[href^="post/"] {
+        display: block;
+        width: 120%;
+        padding: 2vw 4vw 3vw;
+        margin-left: -4vw;
+        margin-top: -4vw;
+        @include background-color(14%, 22%);
+      }
+      dl, ol, ul {
+        margin-left: 10vw;
+      }
+    }
+  }
+
   &.form {
     @include background-color(13%, 30%);
   }
@@ -574,33 +643,6 @@ h2 {
   padding: 8vw 4vw;
   text-align: center;
   @include background-color(14%, 22%);
-}
-
-blockquote {
-  width: 100%;
-  padding: 4vw;
-  overflow: hidden;
-  @include background-color(14%, 25%);
-
-  & > blockquote {
-    border: 1px solid;
-    @include border-color(14%, 22%);
-  }
-
-  *:first-child {
-    margin-top: 0;
-  }
-  *:last-child {
-    margin-bottom: 0;
-  }
-  p > a:first-child[href^="post/"] {
-    display: block;
-    width: 120%;
-    padding: 2vw 4vw 3vw;
-    margin-left: -4vw;
-    margin-top: -4vw;
-    @include background-color(14%, 22%);
-  }
 }
 
 a.to-the-top {
@@ -945,6 +987,17 @@ a.avatar {
   }
 
   section {
+    &.content {
+      dl, ol, ul {
+        margin-bottom: 4vw;
+        margin-left: 10vw;
+      }
+      blockquote {
+        dl, ol, ul {
+          margin-left: 6vw;
+        }
+      }
+    }
     &.summary {
       padding-top: 2vw;
 
@@ -1134,21 +1187,6 @@ a.avatar {
     padding: 5rem 4rem;
   }
 
-  blockquote {
-    margin: 0 4rem;
-    padding: 4rem;
-    width: 88rem;
-
-    p > a:first-child[href^="post/"] {
-      padding: 2rem 4rem;
-      margin-left: -4rem;
-      margin-top: -4rem;
-    }
-    dl, ol, ul {
-      margin-left: 4rem;
-    }
-  }
-
   main {
     max-width: 960px;
     margin-left: auto;
@@ -1224,6 +1262,42 @@ a.avatar {
   }
 
   section {
+    &.content {
+      margin: 5rem 0;
+
+      & > * {
+        margin-left: 4rem;
+        margin-right: 4rem;
+      }
+      h1 {
+        margin-top: 6rem;
+        margin-bottom: 6rem;
+      }
+      h2 {
+        margin-top: 8rem;
+        margin-bottom: 2rem;
+      }
+      h3 {
+        margin-top: 5rem;
+        margin-bottom: 0;
+      }
+      blockquote {
+        margin: 0 4rem;
+        padding: 4rem;
+
+        & > blockquote {
+          margin: 0;
+        }
+        p > a:first-child[href^="post/"] {
+          padding: 2rem 4rem;
+          margin-left: -4rem;
+          margin-top: -4rem;
+        }
+        dl, ol, ul {
+          margin-left: 4rem;
+        }
+      }
+    }
     &.summary {
       padding: 2rem 0;
 

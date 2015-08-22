@@ -120,12 +120,11 @@ function topics(args, emitter) {
             subset[i] = {};
             for ( var property in output.topics[i] ) {
               if ( output.topics[i].hasOwnProperty(property) ) {
+                subset[i][property] = output.topics[i][property];
                 if ( property === 'replies' ) {
                   subset[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
                 } else if ( property === 'postDate' || property === 'lastPostDate' ) {
                   subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('D-MMM-YYYY');
-                } else {
-                  subset[i][property] = output.topics[i][property];
                 }
               }
             }

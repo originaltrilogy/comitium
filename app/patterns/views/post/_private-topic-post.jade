@@ -29,5 +29,5 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
       li.bookmark
         a(href="post/action/bookmark/id/#{post.id}") Bookmark
   if post.authorSignature
-    .signature
+    section.content.signature
       != post.authorSignature
