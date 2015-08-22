@@ -71,7 +71,7 @@ function isoDate(date) {
 
 function paginate(url, page, itemCount) {
   var pagination = {
-        current: +page,
+        current: parseInt(page, 10),
         total: Math.ceil( itemCount / 25 )
       };
 

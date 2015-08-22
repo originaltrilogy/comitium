@@ -142,7 +142,7 @@ function handler(params, context, emitter) {
                   invitees: output.invitees,
                   userIsSubscribed: output.subscriptionExists,
                   userCanReply: output.userCanReply,
-                  pagination: app.toolbox.helpers.paginate(type + url + '/id/' + topic.id, page, topic.replies + 1),
+                  pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
                   breadcrumbs: app.models.topic.breadcrumbs(topic)
                 }
               });
