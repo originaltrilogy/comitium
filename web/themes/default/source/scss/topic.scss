@@ -5,7 +5,7 @@
 body[data-controller="topic"],
 body[data-controller="announcement"] {
 
-  h1 {
+  section.summary h1 {
     padding-bottom: 6vw;
   }
   section.form.quick-reply {
@@ -27,7 +27,7 @@ body[data-controller="announcement"] {
 
   @media only screen and (min-width: 768px) {
 
-    h1 {
+    section.summary h1 {
       padding-bottom: 3vw;
     }
 
@@ -35,7 +35,7 @@ body[data-controller="announcement"] {
 
   @media only screen and (min-width: 960px) {
 
-    h1 {
+    section.summary h1 {
       padding-bottom: 4rem;
     }
     section {

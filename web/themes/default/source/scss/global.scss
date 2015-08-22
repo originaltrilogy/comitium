@@ -544,7 +544,8 @@ section {
   &.preview {
     article {
       padding: 4vw 0;
-      margin-bottom: 6vw;
+      border-bottom: 1px solid;
+      @include border-color(14%, 25%);
 
       h3.title {
         font-family: $titleFont;
@@ -636,11 +637,16 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   padding: 0 4vw 5vw;
-  font-family: $boldFont;
+  font-family: $titleFont;
+  text-transform: uppercase;
+  letter-spacing: 0.2vw;
 }
 
 h2 {
   padding: 8vw 4vw;
+  font-family: $titleFont;
+  text-transform: uppercase;
+  letter-spacing: 0.2vw;
   text-align: center;
   @include background-color(14%, 22%);
 }

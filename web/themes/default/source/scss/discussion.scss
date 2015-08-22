@@ -124,14 +124,14 @@ body[data-controller="private-topics"][data-view="private-topics"] {
 
     article.topic {
       padding: 3rem 0;
-      min-height: 18rem;
+      min-height: 16rem;
 
       h3 {
-        margin: 0 4rem 0 18rem;
+        margin: 0 4rem 0 17rem;
       }
       dd.author {
         margin-top: 1.5rem;
-        margin-left: 18rem;
+        margin-left: 17rem;
       }
       dd.date {
         margin-top: 1.5rem;
@@ -139,18 +139,19 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       dd.replies {
         padding-top: 1.5rem;
-        margin-left: 18rem;
+        margin-left: 17rem;
       }
       dt.last-post {
         right: 15rem;
-        bottom: 4rem;
+        bottom: 3rem;
       }
       dd.last-post {
         right: 4rem;
-        bottom: 4rem;
+        bottom: 3rem;
       }
       a.avatar {
         top: 3.4rem;
+        left: 4rem;
       }
     }
 
