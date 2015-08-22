@@ -40,22 +40,6 @@ from "tblForumPosts";
 
 SELECT SETVAL('posts_id_seq', ( select max("id") + 1 from posts ) );
 
-create index on posts ( "id" );
-
-
--- Update posts with existing edit notes
-create index on "tblForumPostEditNotes" ( "intPostID" );
-create index on "tblForumPostEditNotes" ( "dtePostEditDate" );
-
-update posts p
-set "editorID" = coalesce(( select "intUserID" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), 0),
-    "editReason" = ( select "vchPostEditReason" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ),
-    "lastModified" = coalesce(( select "dtePostEditDate" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), p."lastModified")
-where id = p.id;
-
-
-
-
 create table "postHistory" (
   "id" serial not null,
   "postID" integer not null,
