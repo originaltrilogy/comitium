@@ -44,7 +44,7 @@ function handler(params, context, emitter) {
       emitter.emit('ready', {
         content: {
           talkPrivately: params.session.talkPrivately && output.user.id !== params.session.userID,
-          editProfile: output.user.id === params.session.userID || params.session.moderateUsers,
+          editProfile: output.user.id === params.session.userID,
           banUser: output.user.id !== params.session.userID && params.session.moderateUsers,
           user: output.user,
           posts: output.posts,
