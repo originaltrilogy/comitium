@@ -371,6 +371,7 @@ function insert(args, emitter) {
 
             if ( args.private ) {
               args.invitees.forEach( function (item, index, array) {
+                // Dedupes invitees by overwriting the method if it already exists
                 userMethods[item] = function (emitter) {
                   client.query(
                     'select id from users where username ilike $1;',
@@ -392,18 +393,30 @@ function insert(args, emitter) {
               app.listen(userMethods, function (output) {
                 var userIDs = [ args.userID ],
                     insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
-                    insert = true;
+                    insert = true,
+                    message;
 
                 if ( output.listen.success ) {
                   delete output.listen;
                   for ( var property in output ) {
+                    // If the author mistakenly puts themselves in the invitee field,
+                    // don't insert them.
                     if ( output[property] ) {
-                      userIDs.push(output[property].id);
-                      insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
+                      if ( output[property].id !== args.userID ) {
+                        userIDs.push(output[property].id);
+                        insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
+                      }
                     } else {
                       insert = false;
+                      message = 'One of the users you specified (' + property + ') doesn\'t exist.';
                       break;
                     }
+                  }
+
+                  // The user has only invited themselves, don't insert.
+                  if ( insert && userIDs.length === 1 ) {
+                    insert = false;
+                    message = 'You don\'t need to invite yourself, but you do need to invite at least one other person.';
                   }
 
                   if ( insert ) {
@@ -435,8 +448,8 @@ function insert(args, emitter) {
                   } else {
                     client.query('rollback', function (err) {
                       done();
-                      emitter.emit('error', {
-                        message: 'The user you specified (' + property + ') doesn\'t exist.'
+                      emitter.emit('end', {
+                        message: message
                       });
                     });
                   }
@@ -534,34 +547,41 @@ function insert(args, emitter) {
 
             client.query('commit', function () {
               done();
-              emitter.emit('ready');
+              emitter.emit('ready', true);
             });
 
           }
         }, function (output) {
 
           if ( output.listen.success ) {
-
-            if ( !args.draft ) {
-              if ( args.private ) {
-                output.insertInvitation.userIDs.forEach( function (item, index, array) {
-                  app.cache.clear({ scope: 'private-topics-' + item });
-                });
-              } else if ( args.announcement ) {
-                app.cache.clear({ scope: 'discussion-2' });
-                args.discussions.forEach( function (item, index, array) {
-                  app.cache.clear({ scope: 'announcements', key: 'discussion-' + item });
-                });
-              } else {
-                app.cache.clear({ scope: 'discussion-' + args.discussionID });
-                app.cache.clear({ scope: 'discussions-categories' });
+            if ( output.commit ) {
+              if ( !args.draft ) {
+                if ( args.private ) {
+                  output.insertInvitation.userIDs.forEach( function (item, index, array) {
+                    app.cache.clear({ scope: 'private-topics-' + item });
+                  });
+                } else if ( args.announcement ) {
+                  app.cache.clear({ scope: 'discussion-2' });
+                  args.discussions.forEach( function (item, index, array) {
+                    app.cache.clear({ scope: 'announcements', key: 'discussion-' + item });
+                  });
+                } else {
+                  app.cache.clear({ scope: 'discussion-' + args.discussionID });
+                  app.cache.clear({ scope: 'discussions-categories' });
+                }
               }
-            }
 
-            emitter.emit('ready', {
-              success: true,
-              id: output.insertTopic.id
-            });
+              emitter.emit('ready', {
+                success: true,
+                id: output.insertTopic.id
+              });
+            } else {
+              emitter.emit('ready', {
+                success: false,
+                message: output.insertInvitation.message
+              });
+            }
+            
 
           } else {
 
