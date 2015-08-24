@@ -385,6 +385,7 @@ nav.pagination {
 main {
   clear: both;
   overflow: hidden;
+  @include background-color(14%, 30%);
 
   & > h1:first-child {
     margin-top: 5vw;
@@ -397,8 +398,6 @@ main {
 }
 
 section {
-  @include background-color(14%, 22%);
-
   &.content {
     margin: 6vw 0 8vw;
     line-height: 1.6;
@@ -466,10 +465,6 @@ section {
         margin-left: 10vw;
       }
     }
-  }
-
-  &.form {
-    @include background-color(13%, 30%);
   }
 
   &.summary {
@@ -564,7 +559,6 @@ section {
 
 article {
   padding: 5vw 0 6vw;
-  @include background-color(14%, 30%);
   border-bottom: 1px solid;
   @include border-color(14%, 25%);
 
@@ -652,7 +646,7 @@ h2 {
 }
 
 a.to-the-top {
-  @include button('medium');
+  @include button('medium', 'lightGhost');
   width: 50vw;
   margin: 10vw auto;
 }
@@ -670,7 +664,6 @@ footer {
 form {
   margin: 0 auto;
   padding: 6vw 0;
-  @include background-color(13%, 30%);
 
   label {
     font-family: $titleFont;
@@ -701,14 +694,17 @@ form {
     padding: 3vw 4vw;
   }
 
-  input[type="checkbox"] {
+  input[type="checkbox"],
+  input[type="radio"] {
     display: inline-block;
     margin-top: 0;
     width: 10vw;
     height: 10vw;
     vertical-align: middle;
     position: relative;
+  }
 
+  input[type="checkbox"] {
     &:checked {
       &:after {
         @include icon($gChecked);
@@ -726,12 +722,6 @@ form {
   }
 
   input[type="radio"] {
-    display: inline-block;
-    margin-top: 0;
-    width: 10vw;
-    height: 10vw;
-    vertical-align: middle;
-    position: relative;
     border-radius: 50%;
 
     &:checked {
@@ -1031,21 +1021,28 @@ a.avatar {
       margin-top: 1vw;
       padding: 2vw;
     }
-    input[type="checkbox"] {
+    input[type="checkbox"],
+    input[type="radio"] {
       width: 6vw;
       height: 6vw;
-
+    }
+    input[type="checkbox"] {
       &:checked:after {
         width: 6vw;
         height: 6vw;
         line-height: 6vw;
       }
     }
-    input[type="checkbox"] {
-      width: 6vw;
-      height: 6vw;
+    input[type="radio"] {
+      &:checked {
+        &:after {
+          width: 5vw;
+          height: 5vw;
+        }
+      }
     }
     textarea {
+      margin-top: 1vw;
       padding: 4vw;
     }
     ul.data {
@@ -1057,6 +1054,8 @@ a.avatar {
         }
         &.checkbox,
         &.radio {
+          min-height: 6vw;
+
           label {
             max-width: 50vw;
           }
@@ -1096,6 +1095,10 @@ a.avatar {
     img {
       border-radius: 8%;
     }
+  }
+
+  a.to-the-top {
+    width: 24vw;
   }
 
   .js {
@@ -1351,6 +1354,57 @@ a.avatar {
   }
 
   form {
+    padding: 6rem 0;
+
+    p.label-note {
+      margin: 1rem 0 0;
+    }
+    input,
+    select {
+      margin-top: 1rem;
+      padding: 1.6rem;
+    }
+    input[type="checkbox"],
+    input[type="radio"] {
+      width: 4rem;
+      height: 4rem;
+    }
+    input[type="checkbox"] {
+      &:checked:after {
+        width: 4rem;
+        height: 4rem;
+        line-height: 4rem;
+        font-size: 130%;
+      }
+    }
+    input[type="radio"] {
+      &:checked {
+        &:after {
+          width: 4rem;
+          height: 4rem;
+        }
+      }
+    }
+    textarea {
+      margin-top: 1rem;
+      padding: 4rem;
+      font-size: 100%;
+    }
+    ul.data {
+      & > li {
+        margin: 1rem 26rem 6rem;
+
+        &.checkbox,
+        &.radio {
+          min-height: 4rem;
+
+          label {
+            margin: 0 0 0 1rem;
+            max-width: 38rem;
+          }
+        }
+      }
+    }
     ul.actions {
       padding: 2rem 0;
       text-align: center;
@@ -1367,6 +1421,11 @@ a.avatar {
         }
       }
     }
+  }
+
+  a.to-the-top {
+    width: 20rem;
+    margin: 10rem auto;
   }
 
 }

@@ -103,6 +103,14 @@ $gUpdates:  '\e66c';
   } @else if $color == 'dark' {
     @include color(100%, 90%);
     @include background-color(14%, 25%);
+  } @else if $color == 'lightGhost' {
+    @include color(100%, 90%);
+    border: 1px solid;
+    @include border-color(100%, 90%);
+  } @else if $color == 'darkGhost' {
+    @include color(14%, 25%);
+    border: 1px solid;
+    @include border-color(14%, 25%);
   }
 }
 
