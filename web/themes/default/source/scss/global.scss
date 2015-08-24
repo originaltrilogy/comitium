@@ -428,7 +428,8 @@ section {
       font-family: $italicFont;
     }
 
-    & > img {
+    & > img,
+    p > img {
       width: 100%;
       margin-left: auto;
       margin-right: auto;
@@ -985,6 +986,11 @@ a.avatar {
 
   section {
     &.content {
+      & > img,
+      p > img {
+        width: auto;
+        max-width: 100%;
+      }
       dl, ol, ul {
         margin-bottom: 4vw;
         margin-left: 10vw;
