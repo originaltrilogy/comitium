@@ -49,15 +49,14 @@ function handler(params, context, emitter) {
     topic: function (previous, emitter) {
       app.models.topic.info(params.url.id, emitter);
     },
+    // Gets the first unread post for both public users and authenticated
+    // users based on the presence of params.session.userID
     firstUnreadPost: function (previous, emitter) {
-      if ( params.session.userID ) {
-        app.models.topic.firstUnreadPost({
-          topicID: previous.topic.id,
-          userID: params.session.userID
-        }, emitter);
-      } else {
-        emitter.emit('ready', false);
-      }
+      app.models.topic.firstUnreadPost({
+        topicID: previous.topic.id,
+        userID: params.session.userID,
+        viewTime: params.session.lastActivity
+      }, emitter);
     }
   }, function (output) {
     var topic = output.topic,

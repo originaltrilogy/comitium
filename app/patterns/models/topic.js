@@ -124,10 +124,14 @@ function exists(topicID, emitter) {
 function firstUnreadPost(args, emitter) {
   app.listen('waterfall', {
     viewTime: function (emitter) {
-      app.models.user.topicViewTimes({
-        userID: args.userID,
-        topicID: args.topicID
-      }, emitter);
+      if ( args.userID ) {
+        app.models.user.topicViewTimes({
+          userID: args.userID,
+          topicID: args.topicID
+        }, emitter);
+      } else {
+        emitter.emit('ready', [ { time: args.viewTime } ]);
+      }
     },
     topic: function (previous, emitter) {
       if ( previous.viewTime ) {
@@ -137,31 +141,32 @@ function firstUnreadPost(args, emitter) {
       }
     },
     newPosts: function (previous, emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'select "id" from "posts" where "topicID" = $2 and "draft" = false and "dateCreated" > ( select "time" from "topicViews" where "userID" = $1 and "topicID" = $2 ) order by "dateCreated" asc;',
-            [ args.userID, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                if ( result.rows.length ) {
+      if ( app.toolbox.moment(previous.topic.lastPostDate).isAfter(previous.viewTime[0].time) ) {
+        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            client.query(
+              'select "id" from "posts" where "topicID" = $1 and "draft" = false and "dateCreated" > $2 order by "dateCreated" asc;',
+              [ args.topicID, previous.viewTime[0].time ],
+              function (err, result) {
+                done();
+                if ( err ) {
+                  emitter.emit('error', err);
+                } else {
+                  console.log(result.rows);
                   emitter.emit('ready', {
                     post: result.rows[0],
                     page: Math.ceil(( previous.topic.replies + 1 - result.rows.length ) / 25)
                   });
-                } else {
-                  emitter.emit('ready', false);
                 }
               }
-            }
-          );
-        }
-      });
+            );
+          }
+        });
+      } else {
+        emitter.emit('ready', false);
+      }
     }
   }, function (output) {
     if ( output.listen.success ) {
@@ -240,7 +245,7 @@ function info(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."id", t."discussionID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."id" = $1;',
+              'select t."id", t."discussionID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2."dateCreated" as "lastPostDate" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" join posts p2 on p2."id" = t."lastPostID" where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
