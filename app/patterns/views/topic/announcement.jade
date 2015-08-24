@@ -18,7 +18,7 @@ nav.topic.actions
     if topic.discussionID !== 1
       //- Everyone (including the public) should see the reply button.
       //- Only exception: the topic is locked and the user isn't a mod.
-      if !topic.lockedByID || session.moderateDiscussions
+      if !topic.lockedByID || ( topic.lockedByID && session.moderateDiscussions )
         li.reply
           a(href="topic/action/reply/id/#{url.id}") Reply
       if !userIsSubscribed
