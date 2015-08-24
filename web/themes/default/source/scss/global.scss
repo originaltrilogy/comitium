@@ -429,10 +429,17 @@ section {
     }
 
     & > img,
-    p > img {
+    * > img {
       width: 100%;
       margin-left: auto;
       margin-right: auto;
+
+      // Legacy OT.com emoticons
+      &[src^="i/expressions/"] {
+        display: inline;
+        width: auto;
+        vertical-align: middle;
+      }
     }
 
     dl, ol, ul {
@@ -987,7 +994,7 @@ a.avatar {
   section {
     &.content {
       & > img,
-      p > img {
+      * > img {
         width: auto;
         max-width: 100%;
       }
