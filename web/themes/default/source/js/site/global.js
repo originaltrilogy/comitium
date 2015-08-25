@@ -58,7 +58,7 @@ CF.global = ( function (Modernizr, CF) {
             methods.removeClass(body, 'menu-opening');
             body.className += ' menu-open';
             menu.className += ' open';
-          }, 50);
+          }, 200);
         }
       }, false);
 

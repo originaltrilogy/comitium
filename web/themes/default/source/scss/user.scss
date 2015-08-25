@@ -79,14 +79,26 @@ body[data-view="user"] {
   @media only screen and (min-width: 960px) {
 
     section.summary {
+      padding: 5rem 0;
+      min-height: 30rem;
+
       img {
-        margin: 4rem 4rem 0;
+        margin: 0 4rem;
         width: 20rem;
         height: 20rem;
         border-width: 0.4rem;
       }
       h1 {
-        padding: 6rem 4rem 0;
+        padding: 2rem 4rem 0;
+      }
+      dl {
+        margin-bottom: 0;
+      }
+      dt {
+        min-width: 16rem;
+      }
+      dd {
+        margin-left: 16rem;
       }
     }
     article.post {

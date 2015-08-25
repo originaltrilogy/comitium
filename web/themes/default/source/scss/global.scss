@@ -209,7 +209,7 @@ body > header {
 // Much easier to limit here than to overwrite within the 960px
 // media query later.
 @media only screen and (max-width: 959px) {
-  .js {
+  .js.csstransitions {
     body > header {
       position: relative;
 
@@ -249,7 +249,7 @@ body > header {
         width: 75vw;
         height: 100vh;
         text-align: left;
-        transition: left 0.5s;
+        transition: left 0.4s;
 
         &.open {
           left: 0;
@@ -261,7 +261,7 @@ body > header {
         width: 75vw;
         height: 100vh;
         text-align: right;
-        transition: right 0.5s;
+        transition: right 0.4s;
 
         &.open {
           right: 0;
@@ -272,7 +272,7 @@ body > header {
         width: 100vw;
         height: 50vh;
         text-align: center;
-        transition: bottom 0.5s;
+        transition: bottom 0.4s;
 
         &.open {
           bottom: 0;
@@ -301,10 +301,10 @@ body > header {
       z-index: 999;
       background: rgba(0,0,0,0.5);
       opacity: 0;
-      transition: opacity 0.2s;
+      transition: opacity 0.4s;
     }
 
-    body.menu-opening,
+    // body.menu-opening,
     body.menu-open {
       #menu-shadow {
         width: 100vw;
@@ -443,7 +443,7 @@ section {
     }
 
     dl, ol, ul {
-      margin-left: 14vw;
+      margin-left: 8vw;
     }
 
     blockquote {
@@ -471,7 +471,7 @@ section {
         @include background-color(14%, 22%);
       }
       dl, ol, ul {
-        margin-left: 10vw;
+        margin-left: 8vw;
       }
     }
   }
@@ -1000,7 +1000,7 @@ a.avatar {
       }
       dl, ol, ul {
         margin-bottom: 4vw;
-        margin-left: 10vw;
+        margin-left: 6vw;
       }
       blockquote {
         dl, ol, ul {
