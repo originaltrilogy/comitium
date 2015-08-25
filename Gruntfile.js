@@ -17,21 +17,21 @@ module.exports = function (grunt) {
               'web/themes/default/source/js/lib/respond.min.js',
               'web/themes/default/source/js/site/immediate.js',
               'web/themes/default/source/js/site/*.js'],
-        dest: 'web/themes/default/debug.js'
+        dest: 'web/themes/default/min/debug.js'
       },
       development: {
         src: ['web/themes/default/source/js/lib/modernizr-dev.js',
               'web/themes/default/source/js/lib/respond.min.js',
               'web/themes/default/source/js/site/immediate.js',
               'web/themes/default/source/js/site/*.js'],
-        dest: 'web/themes/default/development.js'
+        dest: 'web/themes/default/min/development.js'
       },
       production: {
         src: ['web/themes/default/source/js/lib/modernizr-prod.js',
               'web/themes/default/source/js/lib/respond.min.js',
               'web/themes/default/source/js/site/immediate.js',
               'web/themes/default/source/js/site/*.js'],
-        dest: 'web/themes/default/production.js'
+        dest: 'web/themes/default/min/production.js'
       }
     },
     sass: {
@@ -40,9 +40,9 @@ module.exports = function (grunt) {
           sourcemap: 'auto'
         },
         files: {
-          'web/themes/default/production.css': ['web/themes/default/source/scss/env/production.scss'],
-          'web/themes/default/debug.css': ['web/themes/default/source/scss/env/debug.scss'],
-          'web/themes/default/development.css': ['web/themes/default/source/scss/env/development.scss']
+          'web/themes/default/min/production.css': ['web/themes/default/source/scss/env/production.scss'],
+          'web/themes/default/min/debug.css': ['web/themes/default/source/scss/env/debug.scss'],
+          'web/themes/default/min/development.css': ['web/themes/default/source/scss/env/development.scss']
         }
       }
     },
@@ -57,16 +57,16 @@ module.exports = function (grunt) {
         ]
       },
       debug: {
-        src: 'web/themes/default/debug.css',
-        dest: 'web/themes/default/debug.css'
+        src: 'web/themes/default/min/debug.css',
+        dest: 'web/themes/default/min/debug.css'
       },
       development: {
-        src: 'web/themes/default/development.css',
-        dest: 'web/themes/default/development.css'
+        src: 'web/themes/default/min/development.css',
+        dest: 'web/themes/default/min/development.css'
       },
       production: {
-        src: 'web/themes/default/production.css',
-        dest: 'web/themes/default/production.css'
+        src: 'web/themes/default/min/production.css',
+        dest: 'web/themes/default/min/production.css'
       }
     },
     uglify: {
@@ -77,7 +77,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'web/themes/default/production.js': ['web/themes/default/production.js']
+          'web/themes/default/min/production.js': ['web/themes/default/min/production.js']
         }
       }
     },
