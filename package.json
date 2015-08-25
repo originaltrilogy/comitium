@@ -1,6 +1,6 @@
 {
   "name": "comitium",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Forum software for Node.js",
   "author": {
     "name": "Jay Sylvester",
@@ -25,15 +25,13 @@
     "numeral": "*",
     "pg": "*",
     "remarkable": "*",
-    "slug": "*",
-    "to-markdown": "*"
+    "slug": "*"
   },
   "devDependencies": {
     "autoprefixer-core": "*",
     "cssnano": "*",
     "grunt": "*",
     "grunt-contrib-concat": "*",
-    "grunt-contrib-imagemin": "*",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-sass": "*",
     "grunt-contrib-uglify": "*",
