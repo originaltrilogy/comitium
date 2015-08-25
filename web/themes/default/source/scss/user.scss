@@ -9,7 +9,7 @@ body[data-view="user"] {
       margin: 4vw auto;
       width: 40vw;
       height: 40vw;
-      border-radius: 15%;
+      border-radius: 8%;
       border: 1vw solid;
       @include border-color(14%, 22%);
     }
@@ -54,9 +54,6 @@ body[data-view="user"] {
         margin: 4vw;
         width: 30vw;
         height: 30vw;
-      }
-
-      img {
         border-width: 0.6vw;
       }
 
@@ -75,6 +72,29 @@ body[data-view="user"] {
 
     nav.actions {
       clear: both;
+    }
+
+  }
+
+  @media only screen and (min-width: 960px) {
+
+    section.summary {
+      img {
+        margin: 4rem 4rem 0;
+        width: 20rem;
+        height: 20rem;
+        border-width: 0.4rem;
+      }
+      h1 {
+        padding: 6rem 4rem 0;
+      }
+    }
+    article.post {
+      header {
+        dt {
+          text-indent: 4rem;
+        }
+      }
     }
 
   }
