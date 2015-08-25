@@ -13,34 +13,26 @@ module.exports = function (grunt) {
     },
     concat: {
       debug: {
-        src: ['web/themes/default/source/js/lib/*.js',
+        src: ['web/themes/default/source/js/lib/modernizr-dev.js',
+              'web/themes/default/source/js/lib/respond.min.js',
               'web/themes/default/source/js/site/immediate.js',
               'web/themes/default/source/js/site/*.js'],
         dest: 'web/themes/default/debug.js'
       },
       development: {
-        src: ['web/themes/default/source/js/lib/*.js',
+        src: ['web/themes/default/source/js/lib/modernizr-dev.js',
+              'web/themes/default/source/js/lib/respond.min.js',
               'web/themes/default/source/js/site/immediate.js',
               'web/themes/default/source/js/site/*.js'],
         dest: 'web/themes/default/development.js'
       },
       production: {
-        src: ['web/themes/default/source/js/lib/*.js',
+        src: ['web/themes/default/source/js/lib/modernizr-prod.js',
+              'web/themes/default/source/js/lib/respond.min.js',
               'web/themes/default/source/js/site/immediate.js',
               'web/themes/default/source/js/site/*.js'],
         dest: 'web/themes/default/production.js'
       }
-    },
-    imagemin: {
-      options: {
-        cache: false
-      },
-      files: [{
-        expand: true,
-        cwd: 'web/themes/default/images/',
-        src: ['**/*.{png,jpg,gif}'],
-        dest: 'web/themes/default/images/'
-      }]
     },
     sass: {
       dist: {
@@ -79,6 +71,7 @@ module.exports = function (grunt) {
     },
     uglify: {
       options: {
+        mangle: false,
         sourceMap: true,
         sourceMapIncludeSources: true
       },
@@ -98,13 +91,6 @@ module.exports = function (grunt) {
       css: {
         files: ['web/themes/default/source/scss/**/*.scss'],
         tasks: ['sass', 'postcss'],
-        options: {
-          livereload: true
-        }
-      },
-      images: {
-        files: 'web/themes/default/images/**/*.{png,jpg,gif}',
-        tasks: ['imagemin'],
         options: {
           livereload: true
         }

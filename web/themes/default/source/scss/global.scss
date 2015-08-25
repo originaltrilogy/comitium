@@ -1,3 +1,19 @@
+
+/////////////////////////
+////    Modernizr    ////
+/////////////////////////
+//
+//  CSS3
+//    Flexible Box Model
+//    CSS Animations
+//    CSS 2D Transforms
+//    CSS Transitions
+//
+//  Extra
+//    Media Queries
+//    Add CSS Classes
+
+
 /////////////////////////
 ////      fonts      ////
 /////////////////////////
@@ -209,7 +225,7 @@ body > header {
 // Much easier to limit here than to overwrite within the 960px
 // media query later.
 @media only screen and (max-width: 959px) {
-  .js.csstransitions {
+  html.js.csstransitions {
     body > header {
       position: relative;
 
@@ -1114,7 +1130,7 @@ a.avatar {
     width: 24vw;
   }
 
-  .js {
+  html.js {
     body {
       & > header {
         position: fixed;
@@ -1350,7 +1366,7 @@ a.avatar {
     }
   }
 
-  .js {
+  html.js {
     body {
       & > header {
         min-height: 8rem;
