@@ -52,11 +52,16 @@ function handler(params, context, emitter) {
     // Gets the first unread post for both public users and authenticated
     // users based on the presence of params.session.userID
     firstUnreadPost: function (previous, emitter) {
-      app.models.topic.firstUnreadPost({
-        topicID: previous.topic.id,
-        userID: params.session.userID,
-        viewTime: params.session.lastActivity
-      }, emitter);
+      // Don't check for unread posts if a specific page is requested.
+      if ( !params.url.page ) {
+        app.models.topic.firstUnreadPost({
+          topicID: previous.topic.id,
+          userID: params.session.userID,
+          viewTime: params.session.lastActivity
+        }, emitter);
+      } else {
+        emitter.emit('ready', false);
+      }
     }
   }, function (output) {
     var topic = output.topic,
@@ -80,7 +85,7 @@ function handler(params, context, emitter) {
 
         // If there are unread posts, the first unread post isn't the first post in the topic,
         // and a specific page hasn't been requested, redirect the user to the first unread post.
-        if ( !params.url.page && output.firstUnreadPost && output.firstUnreadPost.post.id !== topic.firstPostID ) {
+        if ( output.firstUnreadPost && output.firstUnreadPost.post.id !== topic.firstPostID ) {
           emitter.emit('ready', {
             redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + output.firstUnreadPost.page + '/#' + output.firstUnreadPost.post.id
           });
