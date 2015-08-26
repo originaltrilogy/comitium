@@ -104,7 +104,11 @@ body[data-view="user"] {
     article.post {
       header {
         dt {
+          min-width: 12rem;
           text-indent: 4rem;
+        }
+        dd {
+          margin-left: 12rem;
         }
       }
     }
