@@ -58,7 +58,7 @@ function activate(args, emitter) {
                   } else {
                     emitter.emit('ready', {
                       success: true,
-                      message: 'Your account has been activated! You can now sign in using the credentials you chose when you registered.'
+                      message: 'Your account has been activated! You can now sign in.'
                     });
                   }
               });
