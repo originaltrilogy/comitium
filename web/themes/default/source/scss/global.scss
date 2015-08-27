@@ -426,11 +426,11 @@ section {
     }
     h1 {
       padding: 0;
-      margin-top: 6vw;
-      margin-bottom: 6vw;
+      margin-top: 8vw;
+      margin-bottom: 8vw;
     }
     h2 {
-      margin-top: 8vw;
+      margin-top: 10vw;
       margin-bottom: 2vw;
       padding: 0;
       background: none;
@@ -1218,6 +1218,7 @@ a.avatar {
 
   h1 {
     padding: 0 4rem 2rem;
+    font-size: 150%;
   }
 
   h2 {
@@ -1236,7 +1237,7 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding: 2rem 4rem;
+    padding: 2rem 4rem 0;
 
     li {
       margin-bottom: 1rem;

@@ -167,6 +167,12 @@ body[data-controller="private-topics"][data-view="private-topics"] {
         top: 3.4rem;
         left: 4rem;
       }
+
+      &.announcement {
+        h3 {
+          margin-left: 4rem;
+        }
+      }
     }
 
   }
