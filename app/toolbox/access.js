@@ -9,6 +9,7 @@ module.exports = {
   discussionView: discussionView,
   postEdit: postEdit,
   postLock: postLock,
+  postReport: postReport,
   postTrash: postTrash,
   postView: postView,
   privateTopicStart: privateTopicStart,
@@ -223,6 +224,44 @@ function postLock(args, emitter) {
   }, function (output) {
     if ( output.listen.success ) {
       if ( output.topicView === true ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(args, emitter);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+
+}
+
+
+
+function postReport(args, emitter) {
+
+  app.listen('waterfall', {
+    userIsLoggedIn: function (emitter) {
+      if ( args.user.userID ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(app.extend(args, { emit: 'end' }), emitter);
+      }
+    },
+    post: function (previous, emitter) {
+      app.models.post.info(args.postID, emitter);
+    },
+    postView: function (previous, emitter) {
+      if ( previous.post ) {
+        postView(args, emitter);
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.postView === true ) {
         emitter.emit('ready', true);
       } else {
         challenge(args, emitter);

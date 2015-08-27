@@ -538,7 +538,7 @@ function report(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.postView({
+      app.toolbox.access.postReport({
         postID: params.url.id,
         user: params.session
       }, emitter);
@@ -587,7 +587,7 @@ function reportForm(params, context, emitter) {
   if ( params.request.method === 'POST' ) {
     app.listen('waterfall', {
       access: function (emitter) {
-        app.toolbox.access.postView({
+        app.toolbox.access.postReport({
           postID: params.url.id,
           user: params.session
         }, emitter);
