@@ -62,6 +62,12 @@ function handler(params, context, emitter) {
                   }
                 }
 
+                for ( var announcement in announcements ) {
+                  if ( announcements.hasOwnProperty(announcement) ) {
+                    topicID.push(announcements[announcement].id);
+                  }
+                }
+
                 app.models.user.topicViewTimes({
                   userID: params.session.userID,
                   topicID: topicID.join(', ')

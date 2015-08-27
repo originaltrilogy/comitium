@@ -587,6 +587,7 @@ article {
   border-bottom: 1px solid;
   @include border-color(14%, 25%);
 
+  &.unread,
   &.updated {
     position: relative;
 
@@ -1130,7 +1131,7 @@ a.avatar {
     width: 24vw;
   }
 
-  html.js {
+  html.js.csstransitions {
     body {
       & > header {
         position: fixed;
@@ -1366,7 +1367,7 @@ a.avatar {
     }
   }
 
-  html.js {
+  html.js.csstransitions {
     body {
       & > header {
         min-height: 8rem;

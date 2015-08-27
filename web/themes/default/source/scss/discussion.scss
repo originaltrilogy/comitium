@@ -69,6 +69,14 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       bottom: 4.4vw;
       left: 4vw;
     }
+
+    &.announcement {
+      min-height: 0;
+
+      h3 {
+        margin-bottom: 0;
+      }
+    }
   }
 
   @media only screen and (min-width: 768px) {
@@ -100,6 +108,12 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       a.avatar {
         top: 4.4vw;
+      }
+
+      &.announcement {
+        h3 {
+          margin-left: 4vw;
+        }
       }
     }
 

@@ -11,10 +11,10 @@ if announcements
         ul
           li.new-announcement
             a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
-    each announcement in announcements
-      article(class="announcement#{ announcement.updated ? ' updated' : '' }#{ announcement.lockedByID ? ' locked' : '' }" data-announcement-id="#{announcement.id}")
+    each topic in announcements
+      article(class="topic announcement#{ topic.updated ? ' updated' : '' }#{ topic.unreadPosts ? ' unread' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
         h3
-          a(href="announcement/#{announcement.url}/id/#{announcement.id}") !{announcement.titleHtml}
+          a(href="announcement/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
           
 section.topics
   h2 Topics
