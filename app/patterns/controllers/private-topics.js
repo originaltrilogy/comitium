@@ -49,10 +49,14 @@ function handler(params, context, emitter) {
                   }
                 }
 
-                app.models.user.topicViewTimes({
-                  userID: params.session.userID,
-                  topicID: topicID.join(', ')
-                }, emitter);
+                if ( topicID.length ) {
+                  app.models.user.topicViewTimes({
+                    userID: params.session.userID,
+                    topicID: topicID.join(', ')
+                  }, emitter);
+                } else {
+                  emitter.emit('ready', false);
+                }
               }
             }, function (output) {
               var viewTimes = {},
@@ -60,7 +64,7 @@ function handler(params, context, emitter) {
 
               if ( output.listen.success ) {
 
-                if ( output.viewTimes.length ) {
+                if ( output.viewTimes ) {
                   output.viewTimes.forEach( function (item, index, array) {
                     viewTimes[item.topicID] = item;
                   });
