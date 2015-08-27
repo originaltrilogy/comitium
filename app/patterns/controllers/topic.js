@@ -87,7 +87,7 @@ function handler(params, context, emitter) {
         // and a specific page hasn't been requested, redirect the user to the first unread post.
         if ( output.firstUnreadPost && output.firstUnreadPost.post.id !== topic.firstPostID ) {
           emitter.emit('ready', {
-            redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + output.firstUnreadPost.page + '/#' + output.firstUnreadPost.post.id
+            redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + output.firstUnreadPost.page + '#' + output.firstUnreadPost.post.id
           });
         } else {
           // If the user has read access, get the posts for the requested page
@@ -962,7 +962,7 @@ function replyForm(params, context, emitter) {
                     pageParameter = page !== 1 ? '/page/' + page : '',
                     controller = topic.discussionID === 2 ? 'announcement' : 'topic',
                     urlTitle = topic.private ? '' : '/' + topic.url,
-                    replyUrl = params.route.parsed.protocol + app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
+                    replyUrl = params.route.parsed.protocol + app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '#' + output.reply.id,
                     forwardToUrl = draft ? params.route.parsed.protocol + app.config.comitium.baseUrl + '/drafts' : replyUrl;
 
                 if ( output.listen.success ) {
