@@ -2,6 +2,43 @@
 //     post view (shared)   //
 //////////////////////////////
 
+body[data-controller="post"] {
+
+  @media only screen and (min-width: 768px) {
+
+    section.summary {
+      dl {
+        margin-bottom: 2vw;
+      }
+      dt {
+        min-width: 22vw;
+      }
+      dd {
+        margin-left: 22vw;
+      }
+    }
+
+  }
+
+  @media only screen and (min-width: 960px) {
+
+    section.summary {
+      dl {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
+      dt {
+        min-width: 16rem;
+      }
+      dd {
+        margin-left: 16rem;
+      }
+    }
+
+  }
+
+}
+
 article.post {
   padding: 0;
   border-bottom: none;
