@@ -21,7 +21,7 @@ section.form.general#general
         input#email(name="email" type="email" value="#{form.email}" autocomplete="off" required)
       li.password.text
         label(for="password") Password
-        p.label-note At least 8 characters, anything but spaces, case-sensitive
+        p.label-note At least 8 characters, no spaces, case-sensitive
         //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
         //- DO NOT REMOVE
         input(type="password" name="chromeIsStupidPassword" style="display: none;")

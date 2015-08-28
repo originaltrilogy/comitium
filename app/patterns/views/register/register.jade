@@ -20,7 +20,7 @@ section.form.sign-up
           input#email(name="email" type="email" value="#{form.email}" required)
         li.password.text.required
           label(for="password") Password
-          p.label-note At least 8 characters, anything but spaces, case-sensitive
+          p.label-note At least 8 characters, no spaces, case-sensitive
           input#password(name="password" type="password" value="#{form.password}" required)
         li.tos.checkbox.required
           input#tos(name="tos" type="checkbox" value="true" checked=form.tos required)
