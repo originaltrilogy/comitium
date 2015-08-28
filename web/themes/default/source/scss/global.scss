@@ -733,10 +733,8 @@ form {
     padding: 4vw;
     font-size: 130%;
     word-wrap: normal;
-    background: #5E667A;
-    border: 1px solid;
-    @include border-color(14%, 24%);
-    border-radius: 0.3rem;
+    @include inner-border(14%, 24%, 0.4vw);
+    border-radius: 8%;
     @include background-color(13%, 40%);
   }
 
@@ -767,6 +765,7 @@ form {
         line-height: 10vw;
         font-size: 150%;
         text-align: center;
+        @include color(100%, 90%);
       }
     }
   }
@@ -777,12 +776,12 @@ form {
     &:checked {
       &:after {
         position: absolute;
-        top: 1.2vw;
-        left: 1.2vw;
+        top: 1.5vw;
+        left: 1.5vw;
         display: block;
         width: 7vw;
         height: 7vw;
-        background-color: white;
+        @include background-color(100%, 90%);
         border-radius: 50%;
         content: '';
       }
@@ -852,8 +851,25 @@ form {
         }
       }
 
-      ul ul {
-        margin-top: 12vw;
+      ul.data {
+        margin: 8vw 0;
+
+        ul.data {
+          & > li {
+            margin: 4vw 0;
+
+            ul.checkbox,
+            ul.radio {
+              margin-top: 2vw;
+            }
+          }
+        }
+      }
+      ul.checkbox,
+      ul.radio {
+        & > li {
+          margin: 1vw 0 2vw;
+        }
       }
     }
   }
@@ -865,6 +881,9 @@ form {
       display: block;
       margin: 0 4vw 4vw;
 
+      input[type="submit"] {
+        box-shadow: none;
+      }
       input[type="submit"],
       a {
         @include button('large');
@@ -1085,6 +1104,7 @@ a.avatar {
     select {
       margin-top: 1vw;
       padding: 2vw;
+      @include inner-border(14%, 24%, 0.2vw);
     }
     input[type="checkbox"],
     input[type="radio"] {
@@ -1101,8 +1121,10 @@ a.avatar {
     input[type="radio"] {
       &:checked {
         &:after {
-          width: 5vw;
-          height: 5vw;
+          top: 1vw;
+          left: 1vw;
+          width: 4vw;
+          height: 4vw;
         }
       }
     }
@@ -1119,6 +1141,10 @@ a.avatar {
         &.checkbox,
         &.radio {
           min-height: 6vw;
+
+          &:last-child {
+            margin-bottom: 4vw;
+          }
 
           label {
             max-width: 50vw;
@@ -1443,6 +1469,7 @@ a.avatar {
     select {
       margin-top: 1rem;
       padding: 1.6rem;
+      @include inner-border(14%, 24%, 1px);
     }
     input[type="checkbox"],
     input[type="radio"] {
@@ -1460,8 +1487,10 @@ a.avatar {
     input[type="radio"] {
       &:checked {
         &:after {
-          width: 4rem;
-          height: 4rem;
+          top: 6px;
+          left: 6px;
+          width: 2.8rem;
+          height: 2.8rem;
         }
       }
     }
@@ -1478,9 +1507,34 @@ a.avatar {
         &.radio {
           min-height: 4rem;
 
+          &:last-child {
+            margin-bottom: 4rem;
+          }
+
           label {
             margin: 0 0 0 1rem;
             max-width: 38rem;
+          }
+        }
+
+        ul.data {
+          margin: 6rem 0;
+
+          ul.data {
+            & > li {
+              margin: 2rem 0;
+
+              ul.checkbox,
+              ul.radio {
+                margin-top: 2rem;
+              }
+            }
+          }
+        }
+        ul.checkbox,
+        ul.radio {
+          & > li {
+            margin: 1rem 0 2rem;
           }
         }
       }

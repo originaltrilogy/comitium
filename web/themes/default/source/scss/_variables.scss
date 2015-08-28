@@ -109,10 +109,22 @@ $gUpdates:  '\e66c';
     @include background-color(14%, 25%);
   } @else if $color == 'lightGhost' {
     @include color(100%, 90%);
-    @include inner-border(100%, 90%, 1px)
+    @include inner-border(100%, 90%, 0.4vw);
+    @media only screen and (min-width: 768px) {
+      @include inner-border(100%, 90%, 0.2vw);
+    }
+    @media only screen and (min-width: 960px) {
+      @include inner-border(100%, 90%, 1px);
+    }
   } @else if $color == 'darkGhost' {
     @include color(14%, 25%);
-    @include inner-border(14%, 25%, 1px)
+    @include inner-border(14%, 25%, 0.4vw);
+    @media only screen and (min-width: 768px) {
+      @include inner-border(14%, 25%, 0.2vw);
+    }
+    @media only screen and (min-width: 960px) {
+      @include inner-border(14%, 25%, 1px);
+    }
   }
 }
 

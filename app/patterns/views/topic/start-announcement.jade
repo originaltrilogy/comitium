@@ -29,7 +29,7 @@ section.form.topic-write
       li.discussions
         label Where should this announcement appear?
         p.label-note Only people with access rights to the selected forums will see this announcement.
-        ul
+        ul.data.radio
           li.radio
             input(id="display-discussions-none" name="displayDiscussions" type="radio" value="none" checked=(form.displayDiscussions === 'none'))
             label(for="display-discussions-none")
@@ -42,16 +42,17 @@ section.form.topic-write
             input(id="display-discussions-custom" name="displayDiscussions" type="radio" value="custom" checked=(form.displayDiscussions === 'custom'))
             label(for="display-discussions-custom")
               | Within the following forums:
-            ul
+            ul.data
               each category in categories
                 li
                   = category.categoryTitle
-                  ul
+                  ul.data.checkbox
                     each discussion in category.discussions
-                      li.discussion.checkbox
-                        input(id="discussion-#{discussion.discussionID}" name="discussions" type="checkbox" value="#{discussion.discussionID}" checked=form.discussions[discussion.discussionID])
-                        label(for="discussion-#{discussion.discussionID}")
-                          = discussion.discussionTitle
+                      if discussion.discussionID !== 1
+                        li.discussion.checkbox
+                          input(id="discussion-#{discussion.discussionID}" name="discussions" type="checkbox" value="#{discussion.discussionID}" checked=form.discussions[discussion.discussionID])
+                          label(for="discussion-#{discussion.discussionID}")
+                            = discussion.discussionTitle
       li.subscribe.checkbox
         input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
         label(for="subscribe")
