@@ -199,16 +199,40 @@ a {
 }
 
 body > header {
+  min-height: 14vw;
   @include color(0%, 94%);
   @include background-color(14%, 19%);
 
-  & > a {
+  a.home {
     display: block;
     width: 40vw;
     margin: 0 auto;
     padding: 5vw 0;
     text-align: center;
     text-decoration: none;
+  }
+
+  a.sign-in {
+    @include button('small', 'lightGhost');
+    position: absolute;
+    top: 3vw;
+    right: 2.5vw;
+  }
+
+  a.account {
+    position: absolute;
+    top: 2vw;
+    right: 2vw;
+    width: 10vw;
+    height: 10vw;
+    text-indent: -100%;
+    overflow: hidden;
+
+    img {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
   }
 
   nav {
@@ -955,8 +979,18 @@ a.avatar {
     font-size: 2.2vw;
 
     & > header {
-      & > a {
+      a.home {
         padding: 4vw 0;
+      }
+      a.sign-in {
+        top: 2.5vw;
+        right: 2.5vw;
+      }
+      a.account {
+        top: 1vw;
+        right: 1vw;
+        width: 8vw;
+        height: 8vw;
       }
     }
   }
@@ -1144,11 +1178,10 @@ a.avatar {
       padding-top: 10vw;
     }
     #menu-icon {
-      top: 2vw;
-      left: 2vw;
-      padding-left: 6.5vw;
-      font-size: 125%;
-      line-height: 6vw;
+      top: 2.5vw;
+      left: 2.5vw;
+      padding-left: 5.5vw;
+      font-size: 110%;
     }
   }
 
@@ -1185,21 +1218,35 @@ a.avatar {
 
   body {
     & > header {
-      & > a {
+      a.home {
         display: inline-block;
         padding: 0;
-        width: 20vw;
+        width: 20rem;
         min-height: 8rem;
         line-height: 8rem;
       }
+      a.sign-in {
+        display: none;
+      }
+      a.account {
+        top: 1rem;
+        right: 1rem;
+        width: 6rem;
+        height: 6rem;
+      }
       nav {
-        display: inline-block;
-        width: 77vw;
-        text-align: right;
+        float: right;
+        display: flex;
+        min-height: 8rem;
+        margin-right: 2rem;
 
+        ul {
+          align-self: center;
+          text-align: right;
+        }
         li {
           display: inline-block;
-          margin: 0 1rem;
+          margin: 0 0.5rem;
           text-align: center;
 
           a {
@@ -1211,6 +1258,12 @@ a.avatar {
               @include background-color(14%, 27%);
             }
           }
+        }
+      }
+
+      &.authenticated {
+        nav {
+          margin-right: 8rem;
         }
       }
     }

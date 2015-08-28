@@ -1,5 +1,7 @@
-header
-  a(href="/") originaltrilogy.com
+header.authenticated
+  a.home(href="/") originaltrilogy.com
+  a.account.avatar(href="account") Your Account
+    img(src="avatars/#{session.userID}.jpg")
   nav
     ul
       li.news

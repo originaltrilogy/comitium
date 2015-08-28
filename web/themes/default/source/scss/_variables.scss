@@ -35,6 +35,10 @@ $gUpdates:  '\e66c';
 	border-color: hsl($hue, $saturation, $lightness);
 }
 
+@mixin inner-border($saturation, $lightness, $size: '1px') {
+  box-shadow: 0 0 0 $size hsl($hue, $saturation, $lightness) inset;
+}
+
 @mixin background-color($saturation, $lightness) {
 	background-color: hsl($hue, $saturation, $lightness);
 }
@@ -105,12 +109,10 @@ $gUpdates:  '\e66c';
     @include background-color(14%, 25%);
   } @else if $color == 'lightGhost' {
     @include color(100%, 90%);
-    border: 1px solid;
-    @include border-color(100%, 90%);
+    @include inner-border(100%, 90%, 1px)
   } @else if $color == 'darkGhost' {
     @include color(14%, 25%);
-    border: 1px solid;
-    @include border-color(14%, 25%);
+    @include inner-border(14%, 25%, 1px)
   }
 }
 
