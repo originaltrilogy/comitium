@@ -35,7 +35,7 @@ $gUpdates:  '\e66c';
 	border-color: hsl($hue, $saturation, $lightness);
 }
 
-@mixin inner-border($saturation, $lightness, $size: '1px') {
+@mixin inner-border($saturation, $lightness, $size: 1px) {
   box-shadow: 0 0 0 $size hsl($hue, $saturation, $lightness) inset;
 }
 

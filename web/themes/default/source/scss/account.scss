@@ -30,11 +30,7 @@ body[data-controller="account"] {
               margin: 1vw 0 0;
             }
             textarea {
-              padding: 2vw;
-              border: 1px solid;
-              @include border-color(14%, 24%);
-              border-radius: 0.3rem;
-              @include background-color(13%, 40%);
+              padding: 2vw 3vw;
             }
           }
         }

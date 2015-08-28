@@ -728,19 +728,32 @@ form {
     line-height: 1.5;
   }
   input,
-  select {
+  select,
+  textarea {
     width: 100%;
     margin-top: 2vw;
     padding: 4vw;
     font-size: 130%;
     word-wrap: normal;
-    @include inner-border(14%, 24%, 0.4vw);
-    border-radius: 8%;
+    // @include inner-border(14%, 24%);
+    border-radius: 1vw;
     @include background-color(13%, 40%);
   }
 
   select {
     padding: 3vw 4vw;
+  }
+
+  textarea {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 90%;
+    width: 102%;
+    margin-left: -1%;
+    padding: 4vw 5vw;
+
+    &[name="content"] {
+      height: 50vh;
+    }
   }
 
   input[type="checkbox"],
@@ -786,22 +799,6 @@ form {
         border-radius: 50%;
         content: '';
       }
-    }
-  }
-
-  textarea {
-    font-family: Menlo, Consolas, monospace;
-    font-size: 90%;
-    width: 100%;
-    margin-top: 2vw;
-    padding: 4vw;
-    @include background-color(13%, 40%);
-    border-top: 1px solid;
-    border-bottom: 1px solid;
-    @include border-color(14%, 24%);
-
-    &[name="content"] {
-      height: 50vh;
     }
   }
   ul.data {
@@ -1104,10 +1101,14 @@ a.avatar {
     }
 
     input,
-    select {
+    select,
+    textarea {
       margin-top: 1vw;
       padding: 2vw;
-      @include inner-border(14%, 24%, 0.2vw);
+      border-radius: 0.5vw;
+    }
+    textarea {
+      padding: 4vw 5vw;
     }
     input[type="checkbox"],
     input[type="radio"] {
@@ -1130,9 +1131,6 @@ a.avatar {
           height: 4vw;
         }
       }
-    }
-    textarea {
-      margin-top: 1vw;
     }
     ul.data {
       & > li {
@@ -1470,10 +1468,14 @@ a.avatar {
       margin: 1rem 0 0;
     }
     input,
-    select {
+    select,
+    textarea {
       margin-top: 1rem;
       padding: 1.6rem;
-      @include inner-border(14%, 24%, 1px);
+      border-radius: 0.4rem;
+    }
+    textarea {
+      padding: 4rem 5rem;
     }
     input[type="checkbox"],
     input[type="radio"] {
@@ -1497,11 +1499,6 @@ a.avatar {
           height: 2.8rem;
         }
       }
-    }
-    textarea {
-      margin-top: 1rem;
-      padding: 4rem;
-      font-size: 100%;
     }
     ul.data {
       & > li {
