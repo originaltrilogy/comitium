@@ -245,7 +245,7 @@ function info(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."id", t."discussionID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2."dateCreated" as "lastPostDate" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" join posts p2 on p2."id" = t."lastPostID" where t."id" = $1;',
+              'select t."id", t."discussionID", t."firstPostID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2."dateCreated" as "lastPostDate" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" join posts p2 on p2."id" = t."lastPostID" where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
