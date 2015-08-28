@@ -487,6 +487,7 @@ section {
     }
 
     blockquote {
+      margin: 4vw 0 6vw;
       padding: 4vw;
       overflow: hidden;
       @include background-color(14%, 25%);
@@ -1073,6 +1074,8 @@ a.avatar {
         margin-left: 6vw;
       }
       blockquote {
+        margin: 4vw 0;
+
         dl, ol, ul {
           margin-left: 6vw;
         }
@@ -1399,6 +1402,7 @@ a.avatar {
         margin: 3rem 4rem;
       }
       blockquote {
+        margin: 4rem 0;
         padding: 4rem;
 
         & > blockquote {
