@@ -4,6 +4,10 @@
 
 global.app = require('citizen');
 
+if ( app.config.citizen.mode === 'production ' ) {
+  require('newrelic');
+}
+
 app.toolbox = {
   // Native modules
   access: require('./toolbox/access'),

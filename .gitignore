@@ -1,3 +1,4 @@
+app/newrelic.js
 app/config/*
 app/logs/*
 web/avatars/*
