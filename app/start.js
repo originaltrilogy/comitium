@@ -4,11 +4,6 @@
 
 global.app = require('citizen');
 
-require('nodetime').profile({
-  accountKey: app.config.comitium.nodeTime.accountKey,
-  appName: app.config.comitium.nodeTime.appName
-});
-
 app.toolbox = {
   // Native modules
   access: require('./toolbox/access'),
