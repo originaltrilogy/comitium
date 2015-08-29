@@ -8,8 +8,8 @@ module.exports = {
 
 
 function start(params, context, emitter) {
-  // Redirects for legacy OT.com forum URLs. Remove this from
-  // the shipping version.
+  // Redirects for legacy OT.com forum URLs
+  // REMOVE from shipping version
   var url = params.route.parsed.path,
       template,
       statusCode = 301,
