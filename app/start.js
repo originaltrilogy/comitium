@@ -2,11 +2,10 @@
 
 'use strict';
 
-global.app = require('citizen');
+// REMOVE from shipping version
+require('newrelic');
 
-if ( app.config.citizen.mode === 'production ' ) {
-  require('newrelic');
-}
+global.app = require('citizen');
 
 app.toolbox = {
   // Native modules
