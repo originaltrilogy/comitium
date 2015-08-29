@@ -652,12 +652,10 @@ function posts(args, emitter) {
             subset[i] = {};
             for ( var property in output.posts[i] ) {
               if ( output.posts[i].hasOwnProperty(property) ) {
-                if ( property !== 'dateCreated' ) {
-                  subset[i][property] = output.posts[i][property];
-                } else {
-                  subset[i][property] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('MMMM Do YYYY [at] h:mm A');
+                subset[i][property] = output.posts[i][property];
+                if ( property === 'dateCreated' ) {
+                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY, h:mm A');
                 }
-
               }
             }
           } else {

@@ -567,6 +567,8 @@ function info(args, emitter) {
               emitter.emit('error', err);
             } else {
               if ( result.rows.length ) {
+                result.rows[0].joinDateFormatted = app.toolbox.moment.tz(result.rows[0].joinDate, 'America/New_York').format('D-MMM-YYYY');
+                result.rows[0].lastActivityFormatted = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY');
                 emitter.emit('ready', result.rows[0]);
               } else {
                 emitter.emit('ready', false);
@@ -856,6 +858,9 @@ function posts(args, emitter) {
             for ( var property in output.posts[i] ) {
               if ( output.posts[i].hasOwnProperty(property) ) {
                 subset[i][property] = output.posts[i][property];
+                if ( property === 'dateCreated' ) {
+                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY, h:mm A');
+                }
               }
             }
           } else {

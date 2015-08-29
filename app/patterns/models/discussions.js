@@ -65,7 +65,7 @@ function categories(groupID, emitter) {
               if ( property === 'topics' || property === 'posts' ) {
                 categories[category.categoryTitle].discussions[category.discussionTitle][property + 'Formatted'] = app.toolbox.numeral(category[property]).format('0,0');
               } else if ( property === 'lastPostDate' ) {
-                categories[category.categoryTitle].discussions[category.discussionTitle][property + 'Formatted'] = app.toolbox.moment.tz(category[property], 'America/New_York').format('MMM D YYYY [at] h:mm A');
+                categories[category.categoryTitle].discussions[category.discussionTitle][property + 'Formatted'] = app.toolbox.moment.tz(category[property], 'America/New_York').format('D-MMM-YYYY');
                 // Formatting needs to be moved to the controller for this to work.
                 // categories[category.categoryTitle].discussions[category.discussionTitle][property + 'Formatted'] = app.toolbox.moment.tz(category[property], 'America/New_York').fromNow();
               }
