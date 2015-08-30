@@ -64,7 +64,7 @@ section.form.avatar#avatar
     section(class="notice #{ avatarForm.success ? 'success' : 'error' }")
       p #{avatarForm.message}
   a.avatar(href="user/#{session.url}/id/#{session.userID}" rel="author")
-    img(src="avatars/#{session.userID}.jpg")
+    img(src="avatars/#{session.userID}.jpg?v=#{ Math.random() }")
   p Your avatar is an image that appears next to your posts to help identify you to other members.
   form(action="account/action/avatarForm/#avatar" enctype="multipart/form-data" method="post")
     ul.data

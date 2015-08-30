@@ -2,6 +2,8 @@
 
 'use strict';
 
+var fs = require('fs');
+
 module.exports = {
   activate: activate,
   activationStatus: activationStatus,
@@ -59,6 +61,19 @@ function activate(args, emitter) {
                     emitter.emit('ready', {
                       success: true,
                       message: 'Your account has been activated! You can now sign in.'
+                    });
+
+                    // Create the user's avatar
+                    fs.readFile(app.config.citizen.directories.app + '/resources/default-avatar.jpg', function (err, file) {
+                      if ( err ) {
+                        emitter.emit('error', err);
+                      } else {
+                        fs.writeFile(app.config.citizen.directories.web + '/avatars/' + args.id + '.jpg', file, function (err) {
+                          if ( err ) {
+                            emitter.emit('error', err);
+                          }
+                        });
+                      }
                     });
                   }
               });
