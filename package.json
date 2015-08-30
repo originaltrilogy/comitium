@@ -24,8 +24,10 @@
     "nodemailer": "*",
     "numeral": "*",
     "pg": "*",
+    "pg-native": "^1.8.1",
     "remarkable": "*",
-    "slug": "*"
+    "slug": "*",
+    "to-markdown": "*"
   },
   "devDependencies": {
     "autoprefixer-core": "*",
