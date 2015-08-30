@@ -3,7 +3,7 @@
 'use strict';
 
 // REMOVE from shipping version
-require('./toolbox/newrelic');
+require('newrelic');
 
 global.app = require('citizen');
 
