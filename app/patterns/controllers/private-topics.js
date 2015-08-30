@@ -9,7 +9,7 @@ module.exports = {
 
 function handler(params, context, emitter) {
 
-  app.listen('waterfall', {
+  app.listen({
     access: function (emitter) {
       app.toolbox.access.privateTopicsView({
         user: params.session
@@ -77,7 +77,7 @@ function handler(params, context, emitter) {
                       url: app.config.comitium.basePath
                     }
                   },
-                  pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, topics)
+                  pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, stats.topics)
                 };
 
                 if ( topics && app.size(topics) ) {
