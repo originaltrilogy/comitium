@@ -59,3 +59,5 @@ Migration order:
   - topic-url-slug-generation.js
   - post-content-markdown-generation.js
 
+8. Create default avatars for those that are missing
+  - user-default-avatar-generation.js
