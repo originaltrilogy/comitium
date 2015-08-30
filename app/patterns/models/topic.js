@@ -1030,6 +1030,9 @@ function reply(args, emitter) {
               } else {
                 app.cache.clear({ scope: 'discussion-' + args.discussionID });
                 app.cache.clear({ scope: 'discussions-categories' });
+                if ( args.discussionID === 2 ) {
+                  app.cache.clear({ scope: 'announcements' });
+                }
               }
             }
 
