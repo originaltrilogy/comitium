@@ -28,6 +28,7 @@ section.form.general#general
         input#password(name="password" type="password" autocomplete="off" value="#{form.password}")
       li.timezone.select
         label(for="timezone") Time zone
+        p.label-note Doesn't do anything right now, sorry. All times are in Eastern US for now regardless of this setting.
         select#timezone(name="timezone")
           each timezone in timezones
             if timezone !== form.timezone
