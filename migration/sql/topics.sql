@@ -13,7 +13,9 @@ create table "topics" (
   -- make not null for installation script:
   -- "titleHtml" text not null,
   "url" text not null,
-  "sortDate" timestamp not null,
+  "created" timestamp without time zone not null,
+  "modified" timestamp without time zone,
+  "sortDate" timestamp without time zone not null,
   "replies" integer not null,
   "draft" boolean not null,
   "private" boolean not null,
@@ -35,6 +37,7 @@ insert into "topics" (
   "titleMarkdown",
   "titleHtml",
   "url",
+  "created",
   "sortDate",
   "replies",
   "draft",
@@ -52,6 +55,11 @@ select
     where "intPostID" = "intFirstTopicPostID"
   ),
   ' ',
+  coalesce((
+    select "dtePostDateCreated"
+    from "tblForumPosts"
+    where "intPostID" = "intFirstTopicPostID"
+  ), date '2000-01-01' + time '03:00'),
   "dteStickyDate",
   "intTopicReplyCount",
   "bitDraft",

@@ -5,11 +5,11 @@ create table "posts" (
   "userID" integer not null,
   "html" text not null,
   "markdown" text not null,
-  "dateCreated" timestamp not null,
+  "created" timestamp without time zone not null,
+  "modified" timestamp without time zone,
   "draft" boolean not null,
   "editorID" integer default 0,
   "editReason" text,
-  "lastModified" timestamp not null,
   "lockedByID" integer default 0,
   "lockReason" text,
   primary key ("id")
@@ -22,9 +22,8 @@ insert into "posts" (
   "userID",
   "html",
   "markdown",
-  "dateCreated",
-  "draft",
-  "lastModified"
+  "created",
+  "draft"
 )
 select
   "intPostID",
@@ -33,8 +32,7 @@ select
   "vchPostText",
   ' ',
   "dtePostDateCreated",
-  "bitDraft",
-  "dtePostDateCreated"
+  "bitDraft"
 from "tblForumPosts";
 
 
@@ -47,7 +45,7 @@ create table "postHistory" (
   "editReason" text,
   "markdown" text not null,
   "html" text not null,
-  "time" timestamp not null,
+  "time" timestamp without time zone not null,
   primary key ("id")
 );
 
@@ -67,11 +65,11 @@ create table "postTrash" (
   "userID" integer not null,
   "html" text not null,
   "markdown" text not null,
-  "dateCreated" timestamp not null,
+  "created" timestamp without time zone not null,
+  "modified" timestamp without time zone,
   "draft" boolean not null,
   "editorID" integer not null,
   "editReason" text,
-  "lastModified" timestamp not null,
   "lockedByID" integer default 0,
   "lockReason" text,
   "deletedByID" integer not null,

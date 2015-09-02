@@ -295,7 +295,7 @@ function editForm(params, context, emitter) {
                 if ( output.listen.success ) {
                   if ( output.edit.success ) {
                     emitter.emit('ready', {
-                      redirect: forwardToUrl
+                      redirect: forwardToUrl.indexOf('/topic/') >= 0 ? forwardToUrl + '#' + post.id : forwardToUrl
                     });
                   } else {
                     emitter.emit('ready', {

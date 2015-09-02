@@ -86,16 +86,16 @@ function topics(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select distinct t."id", t."titleHtml", t."url", t."sortDate", t."replies", p."id" as "firstPostID", p2."id" as "lastPostID", t."titleHtml", t."url", p."dateCreated" as "postDate", p2."dateCreated" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select distinct t."id", t."titleHtml", t."url", t."sortDate", t."replies", p."id" as "firstPostID", p2."id" as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join announcements a on t."id" = a."topicID" ' +
               'join "discussionPermissions" dp on dp."discussionID" = a."discussionID" ' +
-              'join posts p on p."id" = t."firstPostID" ' +
+              'join posts p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) ' +
               'join users u on u."id" = p."userID" ' +
-              'join posts p2 on p2."id" = t."lastPostID" ' +
+              'join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) ' +
               'join users u2 on u2."id" = p2."userID" ' +
               'where dp."groupID" = $1 and dp."read" = true and t."draft" = false ' +
-              'order by t."sortDate" desc ' +
+              'order by t."sortDate" desc, p2.created desc ' +
               'limit $2 offset $3;',
               [ args.groupID, end - start, start ],
               function (err, result) {

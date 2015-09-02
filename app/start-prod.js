@@ -21,6 +21,8 @@ app.toolbox = {
   slug: require('slug')
 };
 
+app.toolbox.pg.defaults.poolSize = 100;
+
 app.toolbox.pg.types.setTypeParser(1114, function (stringValue) {
   return new Date(Date.parse(stringValue + ' +0000')).toISOString();
 });

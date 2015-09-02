@@ -15,8 +15,8 @@ create table "users" (
   "theme" text not null,
   "signatureMarkdown" text,
   "signatureHtml" text,
-  "lastActivity" timestamp not null,
-  "joinDate" timestamp not null,
+  "lastActivity" timestamp without time zone not null,
+  "joined" timestamp without time zone not null,
   "website" text,
   "blog" text,
   "privateTopicEmailNotification" boolean not null,
@@ -43,7 +43,7 @@ insert into "users" (
   "signatureMarkdown",
   "signatureHtml",
   "lastActivity",
-  "joinDate",
+  "joined",
   "website",
   "blog",
   "privateTopicEmailNotification",
@@ -88,6 +88,6 @@ create table "userLogs" (
   "userID" integer not null,
   "action" text not null,
   "ip" cidr not null,
-  "time" timestamp not null,
+  "time" timestamp without time zone not null,
   primary key ("id")
 );

@@ -1,4 +1,4 @@
-app/toolbox/newrelic.js
+app/newrelic.js
 app/config/*
 app/logs/*
 web/avatars/*

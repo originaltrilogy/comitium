@@ -12,7 +12,7 @@ if announcements
           li.new-announcement
             a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
     each topic in announcements
-      article(class="topic announcement#{ topic.updated ? ' updated' : '' }#{ topic.unreadPosts ? ' unread' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
+      article(class="topic announcement #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
         h3
           a(href="announcement/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
           
@@ -33,7 +33,7 @@ section.topics
   
   if topics
     each topic in topics
-      article(class="topic#{ topic.updated ? ' updated' : '' }#{ topic.unreadPosts ? ' unread' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
+      article(class="topic #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
         h3
           a(href="topic/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
         dl.details

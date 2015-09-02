@@ -19,8 +19,8 @@ function handler(params, context, emitter) {
         if ( output.categories.hasOwnProperty(category) ) {
           for ( var discussion in output.categories[category].discussions ) {
             if ( output.categories[category].discussions.hasOwnProperty(discussion) ) {
-              if ( output.categories[category].discussions[discussion].lastPostAuthorID !== params.session.userID && app.toolbox.moment(output.categories[category].discussions[discussion].lastPostDate).isAfter(params.session.lastActivity) ) {
-                output.categories[category].discussions[discussion].updated = true;
+              if ( app.toolbox.moment(output.categories[category].discussions[discussion].lastPostCreated).isAfter(params.session.lastActivity) && output.categories[category].discussions[discussion].lastPostAuthorID !== params.session.userID ) {
+                output.categories[category].discussions[discussion].unread = true;
               }
             }
           }

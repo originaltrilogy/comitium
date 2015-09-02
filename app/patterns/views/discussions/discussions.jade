@@ -6,7 +6,7 @@ section.summary
 //-     h2 Private Topics
 //-     p Stuff goes here!
 
-if include.announcements
+if include && include.announcements
   section.announcements
     h2 Announcements
     != include.announcements
@@ -16,7 +16,7 @@ section.categories
     section(class="category" data-category-id="#{category.categoryID}")
       h2 #{category.categoryTitle}
       each discussion in category.discussions
-        article(class="discussion #{ discussion.updated ? 'updated' : ''}" data-discussion-id="#{discussion.discussionID}")
+        article(class="discussion #{ discussion.unread ? 'unread' : ''}" data-discussion-id="#{discussion.discussionID}")
           h3
             a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
           if discussion.discussionDescription
@@ -24,9 +24,9 @@ section.categories
           ul.stats
             li.topics <strong>#{discussion.topicsFormatted}</strong> topics
             li.posts <strong>#{discussion.postsFormatted}</strong> posts
-          if discussion.lastPostID !== 0
+          if discussion.lastPostCreated
             .last-post
               h4 Last post
-              time #{discussion.lastPostDateFormatted}
+              time #{discussion.lastPostCreatedFormatted}
               //- |  by 
               //- a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}

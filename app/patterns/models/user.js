@@ -404,7 +404,7 @@ function create(args, emitter) {
                 dateFormat: 'mmmm d, yyyy',
                 theme: 'Default',
                 lastActivity: time,
-                joinDate: time,
+                joined: time,
                 privateTopicEmailNotification: true,
                 subscriptionEmailNotification: true,
                 activated: false,
@@ -559,16 +559,16 @@ function info(args, emitter) {
       emitter.emit('error', err);
     } else {
       if ( args.userID ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joinDate", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
       } else if ( args.username ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joinDate", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
         arg = args.username;
       } else if ( args.usernameHash ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joinDate", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" = $1';
         arg = args.usernameHash;
       } else if ( args.email ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joinDate", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "email" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."email" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "email" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."email" = $1';
         arg = args.email;
       }
 
@@ -582,7 +582,7 @@ function info(args, emitter) {
               emitter.emit('error', err);
             } else {
               if ( result.rows.length ) {
-                result.rows[0].joinDateFormatted = app.toolbox.moment.tz(result.rows[0].joinDate, 'America/New_York').format('D-MMM-YYYY');
+                result.rows[0].joinedFormatted = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY');
                 result.rows[0].lastActivityFormatted = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY');
                 emitter.emit('ready', result.rows[0]);
               } else {
@@ -622,8 +622,8 @@ function insert(args, emitter) {
         },
         insertUser: function (previous, emitter) {
           client.query(
-            'insert into "users" ( "groupID", "username", "usernameHash", "passwordHash", "url", "email", "timezone", "dateFormat", "theme", "lastActivity", "joinDate", "privateTopicEmailNotification", "subscriptionEmailNotification", "activated", "activationCode", "system", "locked" ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17 ) returning id;',
-            [ args.groupID, args.username, args.usernameHash, args.passwordHash, args.url, args.email, args.timezone, args.dateFormat, args.theme, args.lastActivity, args.joinDate, args.privateTopicEmailNotification, args.subscriptionEmailNotification, args.activated, args.activationCode, args.system, args.locked ],
+            'insert into "users" ( "groupID", "username", "usernameHash", "passwordHash", "url", "email", "timezone", "dateFormat", "theme", "lastActivity", "joined", "privateTopicEmailNotification", "subscriptionEmailNotification", "activated", "activationCode", "system", "locked" ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17 ) returning id;',
+            [ args.groupID, args.username, args.usernameHash, args.passwordHash, args.url, args.email, args.timezone, args.dateFormat, args.theme, args.lastActivity, args.joined, args.privateTopicEmailNotification, args.subscriptionEmailNotification, args.activated, args.activationCode, args.system, args.locked ],
             function (err, result) {
               if ( err ) {
                 client.query('rollback', function (err) {
@@ -841,13 +841,13 @@ function posts(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select p."id", p."topicID", p."html", p."dateCreated", p."editorID", p."lockedByID", p."lockReason", t."titleHtml" as "topicTitle", t."url" as "topicUrl", u."username" as "author", u."url" as "authorUrl" ' +
+              'select p."id", p."topicID", p."html", p."created", p."editorID", p."lockedByID", p."lockReason", t."titleHtml" as "topicTitle", t."url" as "topicUrl", u."username" as "author", u."url" as "authorUrl" ' +
               'from posts p ' +
               'join topics t on p."topicID" = t."id" ' +
               'join users u on p."userID" = u.id ' +
               // Only grab public posts, not posts from private topics!
               'where u."id" = $1 and p."draft" = false and t."discussionID" in ( select "discussionID" from "discussionPermissions" where "groupID" = $2 and "read" = true ) ' +
-              'order by p."dateCreated" desc ' +
+              'order by p."created" desc ' +
               'limit $3 offset $4;',
               [ args.userID, args.visitorGroupID, end - start, start ],
               function (err, result) {
@@ -873,7 +873,7 @@ function posts(args, emitter) {
             for ( var property in output.posts[i] ) {
               if ( output.posts[i].hasOwnProperty(property) ) {
                 subset[i][property] = output.posts[i][property];
-                if ( property === 'dateCreated' ) {
+                if ( property === 'created' ) {
                   subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY, h:mm A');
                 }
               }

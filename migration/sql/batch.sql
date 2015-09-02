@@ -9,7 +9,7 @@ create table "categories" (
   "metaDescription" text,
   "keywords" text,
   "sort" smallint unique not null,
-  "dateCreated" timestamp not null,
+  "created" timestamp without time zone not null,
   "hidden" boolean not null,
   "system" boolean not null,
   "locked" boolean not null,
@@ -25,7 +25,7 @@ insert into "categories" (
   "metaDescription",
   "keywords",
   "sort",
-  "dateCreated",
+  "created",
   "hidden",
   "system",
   "locked"
@@ -46,73 +46,6 @@ from "tblForumCategories";
 
 
 SELECT SETVAL('categories_id_seq', ( select max("id") + 1 from categories ) );
-
-
-
-
--- discussions
-
-create table "discussions" (
-  "id" serial not null,
-  "categoryID" integer not null,
-  "title" text not null,
-  "url" text not null,
-  "description" text,
-  "metaDescription" text,
-  "keywords" text,
-  "posts" integer not null,
-  "topics" integer not null,
-  "sort" smallint not null,
-  "dateCreated" timestamp not null,
-  "hidden" boolean not null,
-  "system" boolean not null,
-  "locked" boolean not null,
-  primary key ("id")
-);
-
-
-insert into "discussions" (
-  "id",
-  "categoryID",
-  "title",
-  "url",
-  "description",
-  "metaDescription",
-  "keywords",
-  "posts",
-  "topics",
-  "sort",
-  "dateCreated",
-  "hidden",
-  "system",
-  "locked"
-)
-select
-  "intForumID",
-  "intCategoryID",
-  "vchForumTitle",
-  "vchForumURLTitle",
-  "vchForumDescription",
-  "vchForumMetaDescription",
-  "vchForumMetaKeywords",
-  "intForumPostCount",
-  "intForumTopicCount",
-  "intForumPosition",
-  "dteForumDateCreated",
-  "bitHidden",
-  "bitSystem",
-  "bitLocked"
-from "tblForumSubcategories";
-
-
-SELECT SETVAL('discussions_id_seq', ( select max("id") + 1 from discussions ) );
-
-
-update "discussions"
-set "metaDescription" = "description"
-where "metaDescription" = '';
-
-
 
 
 -- bookmarks
@@ -449,7 +382,7 @@ create table "subscriptions" (
   "id" serial not null,
   "userID" integer not null,
   "topicID" integer not null,
-  "notificationSent" timestamp not null,
+  "notificationSent" timestamp without time zone not null,
   primary key ("id")
 );
 
@@ -479,7 +412,7 @@ create table "topicViews" (
   "id" serial not null,
   "userID" integer not null,
   "topicID" integer not null,
-  "time" timestamp not null,
+  "time" timestamp without time zone not null,
   primary key ("id")
 );
 
@@ -592,6 +525,60 @@ where "id" in (
   from "announcements"
 );
 
+-- discussions
+
+create table "discussions" (
+  "id" serial not null,
+  "categoryID" integer not null,
+  "title" text not null,
+  "url" text not null,
+  "description" text,
+  "metaDescription" text,
+  "keywords" text,
+  "posts" integer not null,
+  "topics" integer not null,
+  "sort" smallint not null,
+  "created" timestamp without time zone not null,
+  "hidden" boolean not null,
+  "system" boolean not null,
+  "locked" boolean not null,
+  primary key ("id")
+);
+
+
+insert into "discussions" (
+  "id",
+  "categoryID",
+  "title",
+  "url",
+  "description",
+  "metaDescription",
+  "keywords",
+  "posts",
+  "topics",
+  "sort",
+  "created",
+  "hidden",
+  "system",
+  "locked"
+)
+select
+  "intForumID",
+  "intCategoryID",
+  "vchForumTitle",
+  "vchForumURLTitle",
+  "vchForumDescription",
+  "vchForumMetaDescription",
+  "vchForumMetaKeywords",
+  "intForumPostCount",
+  "intForumTopicCount",
+  "intForumPosition",
+  "dteForumDateCreated",
+  "bitHidden",
+  "bitSystem",
+  "bitLocked"
+from "tblForumSubcategories";
+
 update "discussions"
 set "id" = 22
 where "id" = 2;
@@ -607,7 +594,7 @@ insert into "discussions" (
   "posts",
   "topics",
   "sort",
-  "dateCreated",
+  "created",
   "hidden",
   "system",
   "locked"
@@ -630,6 +617,19 @@ insert into "discussions" (
 
 SELECT SETVAL('discussions_id_seq', ( select max("id") + 1 from discussions ) );
 
+update "discussions"
+set "metaDescription" = "description"
+where "metaDescription" = '';
+
+
+-- Discussion views
+CREATE TABLE "discussionViews" (
+  "id" serial,
+  "discussionID" integer NOT NULL,
+  "discussionRead" timestamp without time zone NOT NULL,
+  "topicsRead" timestamp without time zone,
+  PRIMARY KEY ("id")
+);
 
 
 -- Put any topics without a lookup record in the trash
@@ -693,7 +693,7 @@ create index on "tblForumPostEditNotes" ( "dtePostEditDate" );
 update posts p
 set "editorID" = coalesce(( select "intUserID" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), 0),
     "editReason" = ( select "vchPostEditReason" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ),
-    "lastModified" = coalesce(( select "dtePostEditDate" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), p."lastModified")
+    "modified" = coalesce(( select "dtePostEditDate" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), p."modified")
 where id = p.id;
 
 
@@ -735,7 +735,12 @@ create index on "posts" ( "draft" );
 create index on "posts" ( "id" );
 create index on "posts" ( "topicID" );
 create index on "posts" ( "userID" );
-create index on "posts" ( "dateCreated" );
+create index on "posts" ( "created" );
+create index on posts ( "topicID" asc );
+create index on posts ( "topicID" desc );
+create index on posts ( "topicID", created asc );
+create index on posts ( "topicID", created desc );
+create index on "posts" ( "draft" ) where draft = false;
 create index on "users" ( "id" );
 create index on "topicViews" ( "userID" );
 create index on "topicViews" ( "topicID" );
@@ -743,3 +748,5 @@ create index on "topicViews" ( "time" );
 create index on "passwordReset" ( "id" );
 create index on "passwordReset" ( "userID" );
 create index on "passwordReset" ( "verificationCode" );
+
+-- Analyze all tables

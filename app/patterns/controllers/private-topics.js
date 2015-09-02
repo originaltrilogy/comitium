@@ -82,18 +82,8 @@ function handler(params, context, emitter) {
 
                 if ( topics && app.size(topics) ) {
                   for ( var topic in topics ) {
-                    if ( !viewTimes[topics[topic].id] ) {
-                      topics[topic].unreadPosts = true;
-                      if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
-                        topics[topic].updated = true;
-                      }
-                    } else {
-                      if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(viewTimes[topics[topic].id].time) ) {
-                        topics[topic].unreadPosts = true;
-                        if ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) {
-                          topics[topic].updated = true;
-                        }
-                      }
+                    if ( !viewTimes[topics[topic].id] || ( topics[topic].lastPostAuthor !== params.session.username && ( app.toolbox.moment(topics[topic].lastPostDate).isAfter(viewTimes[topics[topic].id].time) || app.toolbox.moment(topics[topic].lastPostDate).isAfter(params.session.lastActivity) ) ) ) {
+                      topics[topic].unread = true;
                     }
                   }
                   content.topics = topics;

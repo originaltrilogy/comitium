@@ -17,7 +17,7 @@ section.topics
         //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
   if topics
     each topic in topics
-      article(class="topic#{ topic.updated ? ' updated' : '' }#{ topic.unreadPosts ? ' unread' : '' }#{ topic.lockedByID ? ' locked' : '' }" data-topic-id="#{topic.id}")
+      article(class="topic #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
         h3
           a(href="announcement/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
         dl.details

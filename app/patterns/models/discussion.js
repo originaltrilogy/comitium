@@ -83,15 +83,15 @@ function announcements(discussionID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t.id, t."sortDate", t."replies", t."lockedByID", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."dateCreated" as "postDate", p2."dateCreated" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select t.id, t."sortDate", t."replies", t."lockedByID", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join announcements a on t.id = a."topicID" and a."discussionID" = $1 ' +
-              'join posts p on p.id = t."firstPostID" ' +
+              'join posts p on p.id = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) ' +
               'join users u on u.id = p."userID" ' +
-              'join posts p2 on p2.id = t."lastPostID" ' +
+              'join posts p2 on p2.id = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) ' +
               'join users u2 on u2.id = p2."userID" ' +
               'where t.draft = false ' +
-              'order by t."sortDate" desc;',
+              'order by t."sortDate" desc, p2.created desc;',
               [ discussionID ],
               function (err, result) {
                 done();
@@ -167,18 +167,20 @@ function topics(args, emitter) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            client.query(
-              'select t."id", t."sortDate", t."replies", t."titleHtml", t."url", t."lockedByID", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+            client.query({
+              name: 'topics_discussion',
+              text: 'select t."id", t."sortDate", t."replies", t."titleHtml", t."url", t."lockedByID", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
-              'join posts p on p."id" = t."firstPostID" ' +
+              'join posts p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) ' +
               'join users u on u.id = p."userID" ' +
-              'join posts p2 on p2."id" = t."lastPostID" ' +
+              'join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) ' +
               'join users u2 on u2.id = p2."userID" ' +
               'where t."discussionID" = $1 ' +
               'and t.draft = false and t.private = false ' +
-              'order by t."sortDate" desc ' +
+              'order by t."sortDate" desc, p2.created desc ' +
               'limit $2 offset $3;',
-              [ args.discussionID, end - start, start ],
+              values: [ args.discussionID, end - start, start ]
+            },
               function (err, result) {
                 done();
                 if ( err ) {

@@ -6,10 +6,10 @@ section.summary
     dt Parent topic
     dd <a href="#{topic.link}">!{topic.titleHtml}</a>
     dt Date created
-    dd #{post.dateCreated}
+    dd #{post.createdFormatted}
     if post.editorID
       dt Last modified
-      dd #{post.lastModified}
+      dd #{post.modifiedFormatted}
       dt Edited by
       dd <a href="user/#{post.editorUrl}/id/#{post.editorID}">#{post.editor}</a>
       dt Reason for edit

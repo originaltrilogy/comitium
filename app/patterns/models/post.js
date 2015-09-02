@@ -40,7 +40,7 @@ function edit(args, emitter) {
           updatePost: function (previous, emitter) {
 
             client.query(
-              'update "posts" set "markdown" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "lastModified" = $5 where "id" = $6',
+              'update "posts" set "markdown" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "modified" = $5 where "id" = $6',
               [ args.markdown, args.html, args.editorID, args.reason, args.time, args.id ],
               function (err, result) {
                 if ( err ) {
@@ -59,7 +59,7 @@ function edit(args, emitter) {
 
             client.query(
               'insert into "postHistory" ( "postID", "editorID", "editReason", "markdown", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
-              [ args.id, args.currentPost.editorID === 0 ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.markdown, args.currentPost.html, args.currentPost.lastModified ],
+              [ args.id, args.currentPost.editorID === 0 ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.markdown, args.currentPost.html, args.currentPost.modified || args.currentPost.created ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -112,7 +112,7 @@ function info(postID, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select p.id, p."topicID", p.html, p.markdown, p."dateCreated", p.draft, p."editorID", p."editReason", p."lastModified", p."lockedByID", p."lockReason", t."discussionID", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", u2.username as editor, u2.url as "editorUrl" from posts p join users u on p."userID" = u.id left join users u2 on p."editorID" = u2.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
+        'select p.id, p."topicID", p.html, p.markdown, p."created", p."modified", p.draft, p."editorID", p."editReason", p."lockedByID", p."lockReason", t."discussionID", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", u2.username as editor, u2.url as "editorUrl" from posts p join users u on p."userID" = u.id left join users u2 on p."editorID" = u2.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
         [ postID ],
         function (err, result) {
           done();
@@ -120,6 +120,10 @@ function info(postID, emitter) {
             emitter.emit('error', err);
           } else {
             if ( result.rows.length ) {
+              result.rows[0].createdFormatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A');
+              if ( result.rows[0].modified ) {
+                result.rows[0].modifiedFormatted = app.toolbox.moment.tz(result.rows[0].modified, 'America/New_York').format('D-MMM-YYYY, h:mm A');
+              }
               emitter.emit('ready', result.rows[0]);
             } else {
               emitter.emit('ready', false);
@@ -311,7 +315,7 @@ function trash(args, emitter) {
         insertTrashPost: function (previous, emitter) {
 
           client.query(
-            'insert into "postTrash" ( "id", "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "editReason", "lastModified", "lockedByID", "lockReason", "deletedByID", "deleteReason" ) select "id", "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "editReason", "lastModified", "lockedByID", "lockReason", $2, $3 from "posts" where id = $1;',
+            'insert into "postTrash" ( "id", "topicID", "userID", "html", "markdown", "created", "modified", "draft", "editorID", "editReason", "lockedByID", "lockReason", "deletedByID", "deleteReason" ) select "id", "topicID", "userID", "html", "markdown", "created", "modified", "draft", "editorID", "editReason", "lockedByID", "lockReason", $2, $3 from "posts" where id = $1;',
             [ args.postID, args.deletedByID, args.deleteReason ],
             function (err, result) {
               if ( err ) {
@@ -347,7 +351,7 @@ function trash(args, emitter) {
         updateTopicStats: function (previous, emitter) {
 
           client.query(
-            'update "topics" set "sortDate" = ( select min("dateCreated") from "posts" where "topicID" = $1 and "draft" = false ), "firstPostID" = ( select min("id") from "posts" where "topicID" = $1 and "draft" = false ), "lastPostID" = ( select max("id") from "posts" where "topicID" = $1 and "draft" = false ), "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1 where "id" = $1',
+            'update "topics" set "sortDate" = ( select min("created") from "posts" where "topicID" = $1 and "draft" = false ), "firstPostID" = ( select min("id") from "posts" where "topicID" = $1 and "draft" = false ), "lastPostID" = ( select max("id") from "posts" where "topicID" = $1 and "draft" = false ), "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1 where "id" = $1',
             [ args.topicID ],
             function (err, result) {
               if ( err ) {

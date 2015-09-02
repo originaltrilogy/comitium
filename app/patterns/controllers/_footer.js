@@ -26,6 +26,11 @@ function handler(params, context, emitter) {
           posts: app.toolbox.numeral(output.posts).format('0,0'),
           users: app.toolbox.numeral(output.users).format('0,0')
         }
+      },
+      cache: {
+        controller: {
+          lifespan: 'application'
+        }
       }
     });
   });

@@ -147,17 +147,16 @@ function firstUnreadPost(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select "id" from "posts" where "topicID" = $1 and "draft" = false and "dateCreated" > $2 order by "dateCreated" asc;',
+              'select "id" from "posts" where "topicID" = $1 and "draft" = false and "created" > $2 order by "created" asc;',
               [ args.topicID, previous.viewTime[0].time ],
               function (err, result) {
                 done();
                 if ( err ) {
                   emitter.emit('error', err);
                 } else {
-                  console.log(result.rows);
                   emitter.emit('ready', {
                     post: result.rows[0],
-                    page: Math.ceil(( previous.topic.replies + 1 - result.rows.length ) / 25)
+                    page: Math.ceil(( previous.topic.replies + 1.5 - result.rows.length ) / 25)
                   });
                 }
               }
@@ -245,7 +244,7 @@ function info(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."id", t."discussionID", t."firstPostID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2."dateCreated" as "lastPostDate" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" join posts p2 on p2."id" = t."lastPostID" where t."id" = $1;',
+              'select t."id", t."discussionID", t."firstPostID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2."created" as "lastPostDate" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" join posts p2 on p2."id" = t."lastPostID" where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
@@ -314,8 +313,8 @@ function insert(args, emitter) {
           insertTopic: function (previous, emitter) {
 
             client.query(
-              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
-              'values ( $1, 0, 0, $2, $3, $4, $5, 0, $6, $7, 0 ) returning id;',
+              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "created", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
+              'values ( $1, 0, 0, $2, $3, $4, $5, $5, 0, $6, $7, 0 ) returning id;',
               [ args.discussionID, args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft, args.private ],
               function (err, result) {
                 if ( err ) {
@@ -335,8 +334,8 @@ function insert(args, emitter) {
           insertPost: function (previous, emitter) {
 
             client.query(
-              'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "lastModified" ) ' +
-              'values ( $1, $2, $3, $4, $5, $6, $5 ) returning id;',
+              'insert into posts ( "topicID", "userID", "html", "markdown", "created", "draft" ) ' +
+              'values ( $1, $2, $3, $4, $5, $6 ) returning id;',
               [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
@@ -622,23 +621,23 @@ function posts(args, emitter) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            client.query(
-              'select p."id", p."html", p."dateCreated", p."editorID", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
+            client.query({
+              name: 'topicPosts',
+              text: 'select p."id", p."html", p."created", p."editorID", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
               'from posts p ' +
-              'inner join users u on p."userID" = u.id ' +
+              'join users u on p."userID" = u.id ' +
               'where p."topicID" = $1 and p.draft = false ' +
-              'order by p."dateCreated" asc ' +
+              'order by p."created" asc ' +
               'limit $2 offset $3;',
-              [ args.topicID, end - start, start ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
+              values: [ args.topicID, end - start, start ]
+            }, function (err, result) {
+              done();
+              if ( err ) {
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', result.rows);
               }
-            );
+            });
           }
         });
       }
@@ -653,7 +652,7 @@ function posts(args, emitter) {
             for ( var property in output.posts[i] ) {
               if ( output.posts[i].hasOwnProperty(property) ) {
                 subset[i][property] = output.posts[i][property];
-                if ( property === 'dateCreated' ) {
+                if ( property === 'created' ) {
                   subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY, h:mm A');
                 }
               }
@@ -917,8 +916,8 @@ function reply(args, emitter) {
           insertPost: function (previous, emitter) {
 
             client.query(
-              'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "lastModified" ) ' +
-              'values ( $1, $2, $3, $4, $5, $6, $5 ) returning id;',
+              'insert into posts ( "topicID", "userID", "html", "markdown", "created", "draft" ) ' +
+              'values ( $1, $2, $3, $4, $5, $6 ) returning id;',
               [ args.topicID, args.userID, args.html, args.markdown, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {

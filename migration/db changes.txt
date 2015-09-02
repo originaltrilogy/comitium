@@ -3,34 +3,44 @@ Migration order:
 
 1. Users
   - users.sql
-  - Check for duplicate usernames and e-mails and manually delete/update them:
 
---    delete from "users" where "id" in ( 6276, 4331, 6411, 6827, 8398 );
+  - Update usernames that use newly forbidden characters:
+
+--    update users set username = replace(username, ',', '');
+--    update users set username = replace(username, '(', '');
+--    update users set username = replace(username, ')', '');
+--    update users set username = replace(username, '[', '');
+--    update users set username = replace(username, ']', '');
+--    update users set username = replace(username, ':', '');
+--    update users set username = replace(username, '!', '');
+--    update users set username = replace(username, '@', 'a');
+--  
+--    select * from users where username like '%,%' or username like '%(%' or username like '%)%' or username like '%[%' or username like '%]%' or username like '%:%' or username like '%!%' or username like '%@%';
+
+  - Check for duplicate usernames and manually update them:
+
+--    update users set username = concat(username, '2') where id in ( 6276, 4331, 6411, 6827, 8398, 7562 );
 --
---    select "id", "username", "email", "joinDate", "lastActivity" from "users" where "username" in (
+--    select "id", "username", "email", "joined", "lastActivity" from "users" where "username" in (
 --          SELECT "username"
 --          FROM "users"
 --          GROUP BY "username"
 --          HAVING ( COUNT("username") > 1 )
 --        )
---    order by "username", "joinDate" asc;
+--    order by "username", "joined" asc;
 
+  - Check for duplicate e-mails and manually delete/update them:
 
---    update "users" set "email" = 'invalid@invalid7044.com' where "id" = 7044;
---    update "users" set "email" = 'invalid@invalid5674.com' where "id" = 5674;
+--    update users set email = concat('invalid', id, '@invalid', id, '.com') where id in
+--    ( 7044, 5674, 6276, 8398, 6411, 6827, 5674, 4331 );
 --
---    select "id", "username", "email", "joinDate", "lastActivity" from "users" where "email" in (
+--    select "id", "username", "email", "joined", "lastActivity" from "users" where "email" in (
 --          SELECT "email"
 --          FROM "users"
 --          GROUP BY "email"
 --          HAVING ( COUNT("email") > 1 )
 --        )
---    order by "email", "joinDate" asc;
-
-  - Manually update usernames that use newly forbidden characters:
-
---    select * from users where username like '%,%';
---    select * from users where username like '%@%';
+--    order by "email", "joined" asc;
 
   - user-url-slug-generation.js
   - user-hash-generation.js
@@ -53,11 +63,6 @@ Migration order:
 
 6. Archive restoration
   - archives.sql
-
-7. Run the following again:
-  - topic-title-markdown-generation.js
-  - topic-url-slug-generation.js
-  - post-content-markdown-generation.js
 
 8. Create default avatars for those that are missing
   - user-default-avatar-generation.js

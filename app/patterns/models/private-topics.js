@@ -85,17 +85,17 @@ function topics(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t.id, t."sortDate", t."replies", t."titleHtml", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select t.id, t."sortDate", t."replies", t."titleHtml", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join "topicInvitations" ti on ti."userID" = $1 ' +
               'join posts p on p."topicID" = ti."topicID" ' +
-              'and p."id" = t."firstPostID" ' +
+              'and p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) ' +
               'join users u on u.id = p."userID" ' +
               'join posts p2 on p2."topicID" = ti."topicID" ' +
-              'and p2."id" = t."lastPostID" ' +
+              'and p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) ' +
               'join users u2 on u2.id = p2."userID" ' +
               'and t.draft = false and t.private = true ' +
-              'order by t."sortDate" desc ' +
+              'order by p2.created desc ' +
               'limit $2 offset $3;',
               [ args.userID, end - start, start ],
               function (err, result) {
