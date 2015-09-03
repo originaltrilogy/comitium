@@ -4,8 +4,8 @@ create index on "arcmessages" ( "imessageid" );
 create index on "arcmessages" ( "ithreadid" );
 create index on "arcmessages" ( "dtmessagedate" );
 
-insert into "topics" ( "id", "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "created", "sortDate", "replies", "draft", "private", "lockedByID" )
-  select distinct "ithreadid" as "id", coalesce( ( select distinct 22 from "arcthreads" where "ithreadid" = at."ithreadid" and "icategoryid" = 2 ), "icategoryid" ) as "discussionID", ( select min("imessageid") from "arcmessages" where "ithreadid" = at."ithreadid" ) as "firstPostID", ( select max("imessageid") from "arcmessages" where "ithreadid" = at."ithreadid" ) as "lastPostID", ' ' as "titleMarkdown", "vchthreadname" as "titleHtml", ' ' as "url", "dtinsertdate" as "created", "dtlastmsgdate" as "sortDate", ( select count("imessageid") - 1 from "arcmessages" where "ithreadid" = at."ithreadid" ) as "replies", false as "draft", false as "private", coalesce( ( select 4308 from "arcthreads" where "ithreadid" = at."ithreadid" and "chthreadlock" like 'Locked%' ), 0 ) as "lockedByID"
+insert into "topics" ( "id", "discussionID", "titleMarkdown", "titleHtml", "url", "created", "sortDate", "replies", "draft", "private", "lockedByID" )
+  select distinct "ithreadid" as "id", coalesce( ( select distinct 22 from "arcthreads" where "ithreadid" = at."ithreadid" and "icategoryid" = 2 ), "icategoryid" ) as "discussionID", ' ' as "titleMarkdown", "vchthreadname" as "titleHtml", ' ' as "url", "dtinsertdate" as "created", "dtlastmsgdate" as "sortDate", ( select count("imessageid") - 1 from "arcmessages" where "ithreadid" = at."ithreadid" ) as "replies", false as "draft", false as "private", coalesce( ( select 4308 from "arcthreads" where "ithreadid" = at."ithreadid" and "chthreadlock" like 'Locked%' ), 0 ) as "lockedByID"
   from "arcthreads" at
   order by "sortDate" asc;
 

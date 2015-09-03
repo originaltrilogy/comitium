@@ -351,7 +351,7 @@ function trash(args, emitter) {
         updateTopicStats: function (previous, emitter) {
 
           client.query(
-            'update "topics" set "sortDate" = ( select min("created") from "posts" where "topicID" = $1 and "draft" = false ), "firstPostID" = ( select min("id") from "posts" where "topicID" = $1 and "draft" = false ), "lastPostID" = ( select max("id") from "posts" where "topicID" = $1 and "draft" = false ), "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1 where "id" = $1',
+            'update "topics" set "sortDate" = ( select min("created") from "posts" where "topicID" = $1 and "draft" = false ), "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1 where "id" = $1',
             [ args.topicID ],
             function (err, result) {
               if ( err ) {

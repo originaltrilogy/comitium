@@ -28,7 +28,7 @@ function categories(groupID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query({
-              name: 'discussions_categories',
+              name: 'categories_discussions',
               // Crazy fast, heavily denormalized
               // text: 'select c.id as "categoryID", c."sort" as "categorySort", c."title" as "categoryTitle", c."description" as "categoryDescription", d."id" as "discussionID", d."sort" as "discussionSort", d."title" as "discussionTitle", d."url" as "discussionUrl", d."description" as "discussionDescription", d."topics", d."posts", d."updated", p."userID" as "lastPostAuthorID", p."created" as "lastPostCreated", u."username" as "lastPostAuthor", u."url" as "lastPostAuthorUrl" from "categories" c join "discussions" d on c."id" = d."categoryID" join "discussionPermissions" dp on d."id" = dp."discussionID" and dp."groupID" = $1 and dp."read" = true left join "topics" t on t."id" = ( select t."id" from "topics" t where t."discussionID" = d."id" and t.draft = false and t.updated is not null order by t."updated" desc limit 1 ) left join "posts" p on t."lastPostID" = p."id" join "users" u on p."userID" = u."id" order by c."sort" asc, d."sort" asc;',
 
@@ -121,8 +121,8 @@ function categoriesPost(groupID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query({
-              name: 'categoriesPost',
-              text: 'select c.id as "categoryID", c.sort as "categorySort", c.title as "categoryTitle", c.description as "categoryDescription", d.id as "discussionID", d.sort as "discussionSort", d.title as "discussionTitle", d.url as "discussionUrl", d.description as "discussionDescription", d."topics", d."posts", p.id as "lastPostID", p."created" as "lastPostDate", u.username as "lastPostAuthor", u.url as "lastPostAuthorUrl" from categories c join discussions d on c.id = d."categoryID" join "discussionPermissions" dp on d.id = dp."discussionID" and dp."groupID" = $1 and dp.post = true join topics t on d.id = t."discussionID" and t.id = ( select max(t2.id) from topics t2 where t2."discussionID" = d.id ) left join posts p on t.id = p."topicID" join users u on p."userID" = u.id where p.id = ( select max(p2.id) from posts p2 where p2."topicID" = t.id and p2.draft = false ) order by c.sort asc, d.sort asc;',
+              name: 'discussions_categoriesPost',
+              text: 'select c.id as "categoryID", c.sort as "categorySort", c.title as "categoryTitle", c.description as "categoryDescription", d.id as "discussionID", d.sort as "discussionSort", d.title as "discussionTitle", d.url as "discussionUrl", d.description as "discussionDescription", d."topics", d."posts", p.id as "lastPostID", p."created" as "lastPostCreated", u.username as "lastPostAuthor", u.url as "lastPostAuthorUrl" from categories c join discussions d on c.id = d."categoryID" join "discussionPermissions" dp on d.id = dp."discussionID" and dp."groupID" = $1 and dp.post = true left join posts p on p.id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = d.id and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) join users u on p."userID" = u.id where p.id = ( select max(p2.id) from posts p2 where p2."topicID" = t.id and p2.draft = false ) order by c.sort asc, d.sort asc;',
               values: [ groupID ]
             },
               function (err, result) {
@@ -158,7 +158,7 @@ function categoriesPost(groupID, emitter) {
             if ( category.hasOwnProperty(property) && property.search('category') !== 0 ) {
               if ( property === 'topics' || property === 'posts' ) {
                 categories[category.categoryTitle].discussions[category.discussionTitle][property] = app.toolbox.numeral(category[property]).format('0,0');
-              } else if ( property === 'lastPostDate' ) {
+              } else if ( property === 'lastPostCreated' ) {
                 categories[category.categoryTitle].discussions[category.discussionTitle][property] = app.toolbox.moment(category[property]).format('MMMM Do YYYY');
               } else {
                 categories[category.categoryTitle].discussions[category.discussionTitle][property] = category[property];

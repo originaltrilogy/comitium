@@ -639,6 +639,11 @@ where t."discussionID" is null;
 
 
 -- Delete stray topics without any posts and clean up topic and post counts
+create index on posts ( id );
+create index on posts ( "topicID" );
+create index on posts ( draft ) where draft = false;
+create index on posts ( created asc );
+
 create function cleanup() returns text as $$
 
   declare
@@ -653,7 +658,7 @@ create function cleanup() returns text as $$
         raise notice 'cleaning %', discussion.title;
         
         delete from "topics" t where t."discussionID" = discussion.id and t."id" not in (
-          select t."id" from topics t join posts p on p."topicID" = t."id" and p."id" = t."firstPostID" where t."discussionID" = discussion.id
+          select t."id" from topics t join posts p on p."topicID" = t."id" and p."id" = ( select id from posts where "topicID" = t.id and draft = false order by posts.created asc limit 1 ) where t."discussionID" = discussion.id
         );
         
         update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = discussion.id and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = discussion.id and t.draft = false ) where "id" = discussion.id;
@@ -702,8 +707,6 @@ where id = p.id;
 
 alter table "users" add unique ("username"), add unique ("email");
 alter table "topics" alter column "discussionID" set not null;
-alter table "topics" alter column "firstPostID" set not null;
-alter table "topics" alter column "lastPostID" set not null;
 alter table "topics" alter column "titleHtml" set not null;
 alter table "topics" alter column "url" set not null;
 
@@ -725,8 +728,6 @@ create index on "topics" ( "discussionID" );
 create index on "topics" ( "id" );
 create index on "topics" ( "draft" );
 create index on "topics" ( "sortDate" );
-create index on "topics" ( "firstPostID" );
-create index on "topics" ( "lastPostID" );
 create index on "topics" ( "sortDate" );
 create index on "topics" ( "private" );
 create index on "topicInvitations" ( "userID" );
@@ -750,3 +751,24 @@ create index on "passwordReset" ( "userID" );
 create index on "passwordReset" ( "verificationCode" );
 
 -- Analyze all tables
+
+analyze announcements;
+analyze bookmarks;
+analyze categories;
+analyze "discussionPermissions";
+analyze discussions;
+analyze "discussionViews";
+analyze groups;
+analyze "ignoredUsers";
+analyze moderators;
+analyze "passwordReset";
+analyze "postHistory";
+analyze "postReports";
+analyze posts;
+analyze "postTrash";
+analyze subscriptions;
+analyze "topicInvitations";
+analyze topics;
+analyze "topicViews";
+analyze "userLogs";
+analyze users;

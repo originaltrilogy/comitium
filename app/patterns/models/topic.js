@@ -141,7 +141,7 @@ function firstUnreadPost(args, emitter) {
       }
     },
     newPosts: function (previous, emitter) {
-      if ( app.toolbox.moment(previous.topic.lastPostDate).isAfter(previous.viewTime[0].time) ) {
+      if ( app.toolbox.moment(previous.topic.lastPostCreated).isAfter(previous.viewTime[0].time) ) {
         app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
@@ -244,7 +244,7 @@ function info(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."id", t."discussionID", t."firstPostID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2."created" as "lastPostDate" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" join posts p2 on p2."id" = t."lastPostID" where t."id" = $1;',
+              'select t."id", t."discussionID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
@@ -313,8 +313,8 @@ function insert(args, emitter) {
           insertTopic: function (previous, emitter) {
 
             client.query(
-              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "created", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
-              'values ( $1, 0, 0, $2, $3, $4, $5, $5, 0, $6, $7, 0 ) returning id;',
+              'insert into topics ( "discussionID", "titleMarkdown", "titleHtml", "url", "created", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
+              'values ( $1, $2, $3, $4, $5, $5, 0, $6, $7, 0 ) returning id;',
               [ args.discussionID, args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft, args.private ],
               function (err, result) {
                 if ( err ) {
@@ -347,24 +347,6 @@ function insert(args, emitter) {
                   emitter.emit('ready', {
                     id: result.rows[0].id
                   });
-                }
-              }
-            );
-
-          },
-          updateTopic: function (previous, emitter) {
-
-            client.query(
-              'update topics set "firstPostID" = $1, "lastPostID" = $1 where id = $2;',
-              [ previous.insertPost.id, previous.insertTopic.id ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready');
                 }
               }
             );
@@ -937,8 +919,8 @@ function reply(args, emitter) {
           updateTopicStats: function (previous, emitter) {
 
             client.query(
-              'update topics set "sortDate" = $3, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, "lastPostID" = $2 where "id" = $1;',
-              [ args.topicID, previous.insertPost.id, args.time ],
+              'update topics set "sortDate" = $2, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1 where "id" = $1;',
+              [ args.topicID, args.time ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {

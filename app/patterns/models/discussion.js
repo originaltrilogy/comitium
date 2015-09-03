@@ -83,12 +83,12 @@ function announcements(discussionID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t.id, t."sortDate", t."replies", t."lockedByID", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select t.id, t."sortDate", t."replies", t."lockedByID", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostCreated", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join announcements a on t.id = a."topicID" and a."discussionID" = $1 ' +
-              'join posts p on p.id = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) ' +
+              'join posts p on p.id = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +
               'join users u on u.id = p."userID" ' +
-              'join posts p2 on p2.id = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) ' +
+              'join posts p2 on p2.id = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
               'join users u2 on u2.id = p2."userID" ' +
               'where t.draft = false ' +
               'order by t."sortDate" desc, p2.created desc;',
@@ -118,7 +118,7 @@ function announcements(discussionID, emitter) {
                 announcements[i][property] = output.announcements[i][property];
                 if ( property === 'replies' ) {
                   announcements[i][property + 'Formatted'] = app.toolbox.numeral(output.announcements[i][property]).format('0,0');
-                } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+                } else if ( property === 'postDate' || property === 'lastPostCreated' ) {
                   announcements[i][property + 'Formatted'] = app.toolbox.moment.tz(output.announcements[i][property], 'America/New_York').format('D-MMM-YYYY');
                 }
               }
@@ -169,11 +169,11 @@ function topics(args, emitter) {
           } else {
             client.query({
               name: 'topics_discussion',
-              text: 'select t."id", t."sortDate", t."replies", t."titleHtml", t."url", t."lockedByID", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostDate", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              text: 'select t."id", t."sortDate", t."replies", t."titleHtml", t."url", t."lockedByID", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
-              'join posts p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) ' +
+              'join posts p on p."id" = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +
               'join users u on u.id = p."userID" ' +
-              'join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) ' +
+              'join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
               'join users u2 on u2.id = p2."userID" ' +
               'where t."discussionID" = $1 ' +
               'and t.draft = false and t.private = false ' +
@@ -206,7 +206,7 @@ function topics(args, emitter) {
                 topics[i][property] = output.topics[i][property];
                 if ( property === 'replies' ) {
                   topics[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
-                } else if ( property === 'postDate' || property === 'lastPostDate' ) {
+                } else if ( property === 'postDate' || property === 'lastPostCreated' ) {
                   topics[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('D-MMM-YYYY');
                 }
               }

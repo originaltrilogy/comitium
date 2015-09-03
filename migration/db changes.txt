@@ -42,18 +42,12 @@ Migration order:
 --        )
 --    order by "email", "joined" asc;
 
-  - user-url-slug-generation.js
-  - user-hash-generation.js
-  - user-signature-markdown-generation.js
 
 2. Topics
   - topics.sql
-  - topic-title-markdown-generation.js
-  - topic-url-slug-generation.js
 
 3. Posts
   - posts.sql
-  - post-content-markdown-generation.js
 
 4. Batch items
   - batch.sql
@@ -64,5 +58,11 @@ Migration order:
 6. Archive restoration
   - archives.sql
 
-8. Create default avatars for those that are missing
+8. Data and avatar generation
   - user-default-avatar-generation.js
+  - user-url-slug-generation.js
+  - user-hash-generation.js
+  - user-signature-markdown-generation.js
+  - topic-title-markdown-generation.js
+  - topic-url-slug-generation.js
+  - post-content-markdown-generation.js

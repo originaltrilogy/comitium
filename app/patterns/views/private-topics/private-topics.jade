@@ -29,7 +29,7 @@ if topics
           = topic.repliesFormatted
         dt.last-post Last post
         dd.last-post
-          time #{topic.lastPostDateFormatted}
+          time #{topic.lastPostCreatedFormatted}
       a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
         img(src="avatars/#{topic.topicStarterID}.jpg")
 else

@@ -1026,7 +1026,12 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding-top: 2vw;
+    padding-top: 1vw;
+
+    li {
+      margin-bottom: 0;
+      margin-top: 1vw;
+    }
   }
 
   nav.pagination {
@@ -1079,7 +1084,7 @@ a.avatar {
       }
     }
     &.summary {
-      padding-top: 2vw;
+      padding-top: 4vw;
 
       p {
         &:last-child {
@@ -1320,8 +1325,6 @@ a.avatar {
     padding: 2rem 4rem 0;
 
     li {
-      margin-bottom: 1rem;
-
       &:after {
         padding: 0 1rem 0 2rem;
       }
@@ -1417,7 +1420,7 @@ a.avatar {
       }
     }
     &.summary {
-      padding: 2rem 0;
+      padding: 4rem 0 2rem;
 
       p:last-child {
         margin-bottom: 3rem;
@@ -1504,6 +1507,11 @@ a.avatar {
       & > li {
         margin: 1rem 26rem 6rem;
 
+        &.textarea {
+          label {
+            margin: 0 4rem;
+          }
+        }
         &.checkbox,
         &.radio {
           min-height: 4rem;

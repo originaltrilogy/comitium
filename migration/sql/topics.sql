@@ -6,8 +6,6 @@ create table "topics" (
   "discussionID" integer,
   -- make not null in installation script:
   -- "discussionID" integer not null,
-  "firstPostID" integer not null,
-  "lastPostID" integer not null,
   "titleMarkdown" text not null,
   "titleHtml" text,
   -- make not null for installation script:
@@ -32,8 +30,6 @@ create table "topicInvitations" (
 insert into "topics" (
   "id",
   "discussionID",
-  "firstPostID",
-  "lastPostID",
   "titleMarkdown",
   "titleHtml",
   "url",
@@ -46,8 +42,6 @@ insert into "topics" (
 select
   "intTopicID",
   0,
-  "intFirstTopicPostID",
-  "intLastTopicPostID",
   ' ',
   (
     select "vchPostTitle"
