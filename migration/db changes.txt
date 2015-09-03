@@ -13,6 +13,8 @@ Migration order:
 --    update users set username = replace(username, ']', '');
 --    update users set username = replace(username, ':', '');
 --    update users set username = replace(username, '!', '');
+--    update users set username = replace(username, '<', '');
+--    update users set username = replace(username, '>', '');
 --    update users set username = replace(username, '@', 'a');
 --  
 --    select * from users where username like '%,%' or username like '%(%' or username like '%)%' or username like '%[%' or username like '%]%' or username like '%:%' or username like '%!%' or username like '%@%';
