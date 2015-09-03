@@ -2,7 +2,7 @@
 
 'use strict';
 
-var Remarkable = require('remarkable');
+var Markdown = require('markdown-it');
 
 module.exports = {
   handler: handler,
@@ -241,8 +241,8 @@ function startForm(params, context, emitter) {
       }
     }, function (output) {
       var discussion = output.discussion,
-          titleMarkdown = new Remarkable(),
-          contentMarkdown = new Remarkable({
+          titleMarkdown = new Markdown().disable(['link', 'image']),
+          contentMarkdown = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -257,9 +257,7 @@ function startForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           params.form.subscribe = params.form.subscribe || false;
-          parsedTitle = titleMarkdown.render(params.form.title);
-          // Get rid of the paragraph tags and line break added by Remarkable
-          parsedTitle = parsedTitle.replace(/<p>(.*)<\/p>\n$/, '$1');
+          parsedTitle = titleMarkdown.renderInline(params.form.title);
           parsedContent = contentMarkdown.render(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
@@ -448,8 +446,8 @@ function startAnnouncementForm(params, context, emitter) {
       }
     }, function (output) {
       var categories = output.categoriesPost,
-          titleMarkdown = new Remarkable(),
-          contentMarkdown = new Remarkable({
+          titleMarkdown = new Markdown().disable(['link', 'image']),
+          contentMarkdown = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -463,10 +461,7 @@ function startAnnouncementForm(params, context, emitter) {
       // If the group has post access, process the announcement form
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedTitle = titleMarkdown.render(params.form.title);
-          // Get rid of the paragraph tags and line break added by Remarkable
-          parsedTitle = parsedTitle.replace(/<p>(.*)<\/p>\n$/, '$1');
-
+          parsedTitle = titleMarkdown.renderInline(params.form.title);
           parsedContent = contentMarkdown.render(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
@@ -676,8 +671,8 @@ function startPrivateForm(params, context, emitter) {
         }, emitter);
       }
     }, function (output) {
-      var titleMarkdown = new Remarkable(),
-          contentMarkdown = new Remarkable({
+      var titleMarkdown = new Markdown().disable(['link', 'image']),
+          contentMarkdown = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -692,10 +687,7 @@ function startPrivateForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           params.form.subscribe = params.form.subscribe || false;
-
-          parsedTitle = titleMarkdown.render(params.form.title);
-          // Get rid of the paragraph tags and line break added by Remarkable
-          parsedTitle = parsedTitle.replace(/<p>(.*)<\/p>\n$/, '$1');
+          parsedTitle = titleMarkdown.renderInline(params.form.title);
           parsedContent = contentMarkdown.render(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
@@ -910,7 +902,7 @@ function replyForm(params, context, emitter) {
       }
     }, function (output) {
       var topic = output.topic,
-          contentMarkdown = new Remarkable({
+          contentMarkdown = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -1228,7 +1220,7 @@ function lockForm(params, context, emitter) {
     }
   }, function (output) {
     var topic = output.topic,
-        markdown = new Remarkable({
+        markdown = new Markdown({
           breaks: true,
           linkify: true,
           typographer: true
@@ -1238,7 +1230,7 @@ function lockForm(params, context, emitter) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
         parsedReason = markdown.render(params.form.reason);
-        // Get rid of the paragraph tags and line break added by Remarkable
+        // Get rid of the paragraph tags and line break added by Markdown
         parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
 
         app.listen({

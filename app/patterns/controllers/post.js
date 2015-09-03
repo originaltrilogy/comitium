@@ -2,7 +2,7 @@
 
 'use strict';
 
-var Remarkable = require('remarkable');
+var Markdown = require('markdown-it');
 
 module.exports = {
   handler: handler,
@@ -242,7 +242,7 @@ function editForm(params, context, emitter) {
       }
     }, function (output) {
       var post = output.post,
-          markdown = new Remarkable({
+          markdown = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -256,7 +256,7 @@ function editForm(params, context, emitter) {
         if ( output.access === true ) {
           parsedContent = markdown.render(params.form.content);
           parsedReason = markdown.render(params.form.reason);
-          // Get rid of the paragraph tags and line break added by Remarkable
+          // Get rid of the paragraph tags and line break added by Markdown
           parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
 
           switch ( params.form.formAction ) {
@@ -398,7 +398,7 @@ function lockForm(params, context, emitter) {
       }
     }, function (output) {
       var post = output.post,
-          markdown = new Remarkable({
+          markdown = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -408,7 +408,7 @@ function lockForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           parsedReason = markdown.render(params.form.reason);
-          // Get rid of the paragraph tags and line break added by Remarkable
+          // Get rid of the paragraph tags and line break added by Markdown
           parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
 
           app.listen({
@@ -604,7 +604,7 @@ function reportForm(params, context, emitter) {
       }
     }, function (output) {
       var post = output.post,
-          markdown = new Remarkable({
+          markdown = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -614,7 +614,7 @@ function reportForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           parsedReason = markdown.render(params.form.reason);
-          // Get rid of the paragraph tags and line break added by Remarkable
+          // Get rid of the paragraph tags and line break added by Markdown
           parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
 
           app.listen({
@@ -740,7 +740,7 @@ function trashForm(params, context, emitter) {
       }
     }, function (output) {
       var post = output.post,
-          markdown = new Remarkable({
+          markdown = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -750,7 +750,7 @@ function trashForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           parsedReason = markdown.render(params.form.reason);
-          // Get rid of the paragraph tags and line break added by Remarkable
+          // Get rid of the paragraph tags and line break added by Markdown
           parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
 
           app.listen({

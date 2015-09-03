@@ -4,7 +4,7 @@
 
 var // path = require('path'),
     gm = require('gm'),
-    Remarkable = require('remarkable');
+    Markdown = require('markdown-it');
 
 module.exports = {
   handler: handler,
@@ -46,7 +46,7 @@ function generalForm(params, context, emitter) {
       password = '',
       signatureMarkdown = '',
       signatureHtml = '',
-      markdown = new Remarkable({
+      markdown = new Markdown({
         breaks: true,
         linkify: true,
         typographer: true
