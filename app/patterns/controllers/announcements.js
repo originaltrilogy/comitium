@@ -79,7 +79,7 @@ function handler(params, context, emitter) {
                 if ( topics && app.size(topics) ) {
                   for ( var topic in topics ) {
                     if ( params.session.groupID > 1 ) {
-                      if ( !viewTimes[topics[topic].id] || ( topics[topic].lastPostAuthor !== params.session.username && ( app.toolbox.moment(topics[topic].lastPostCreated).isAfter(viewTimes[topics[topic].id].time) || app.toolbox.moment(topics[topic].lastPostCreated).isAfter(params.session.lastActivity) ) ) ) {
+                      if ( !viewTimes[topics[topic].id] || ( topics[topic].lastPostAuthor !== params.session.username && app.toolbox.moment(topics[topic].lastPostCreated).isAfter(viewTimes[topics[topic].id].time) ) ) {
                         topics[topic].unread = true;
                       }
                     } else if ( app.toolbox.moment(topics[topic].lastPostCreated).isAfter(params.session.lastActivity) ) {

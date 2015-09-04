@@ -133,13 +133,9 @@ function handler(params, context, emitter) {
               if ( params.session.userID ) {
                 app.models.topic.viewTimeUpdate({
                   userID: params.session.userID,
-                  topicID: topic.id,
+                  topic: topic,
                   time: app.toolbox.helpers.isoDate()
                 });
-
-                if ( topic.private ) {
-                  app.cache.clear({ scope: 'user-' + params.session.userID, key: 'private-topics-unread' });
-                }
               }
 
               emitter.emit('ready', {

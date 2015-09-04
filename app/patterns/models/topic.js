@@ -1271,7 +1271,7 @@ function viewTimeUpdate(args, emitter) {
         } else {
           client.query(
             'update "topicViews" set time = $3 where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID, args.time ],
+            [ args.userID, args.topic.id, args.time ],
             function (err, result) {
               if ( err ) {
                 done();
@@ -1283,7 +1283,7 @@ function viewTimeUpdate(args, emitter) {
                 } else {
                   client.query(
                     'insert into "topicViews" ( "userID", "topicID", "time" ) values ( $1, $2, $3 ) returning id;',
-                    [ args.userID, args.topicID, args.time ],
+                    [ args.userID, args.topic.id, args.time ],
                     function (err, result) {
                       done();
                       if ( err ) {
@@ -1294,6 +1294,9 @@ function viewTimeUpdate(args, emitter) {
                     }
                   );
                 }
+              }
+              if ( args.topic.private ) {
+                app.cache.clear({ scope: 'user-' + args.userID, key: 'private-topics-unread' });
               }
             }
           );
