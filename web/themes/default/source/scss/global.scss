@@ -219,13 +219,40 @@ body > header {
     right: 2.5vw;
   }
 
+  a.private-topics {
+    position: absolute;
+    top: 2vw;
+    right: 15vw;
+    width: 10vw;
+    height: 10vw;
+    padding-top: 10vw;
+    overflow: hidden;
+
+    &:before {
+      @include icon($gNoUpdates);
+      @include color(100%, 90%);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10vw;
+      height: 10vw;
+      font-size: 6vw;
+      line-height: 10vw;
+      text-align: center;
+    }
+
+    &.updates:before {
+      @include icon($gUpdates);
+    }
+  }
+
   a.account {
     position: absolute;
     top: 2vw;
     right: 2vw;
     width: 10vw;
     height: 10vw;
-    text-indent: -100%;
+    padding-left: 10vw;
     overflow: hidden;
 
     img {
@@ -262,7 +289,6 @@ body > header {
       position: absolute;
       top: 3vw;
       left: 2.5vw;
-      z-index: 500;
       padding-right: 2vw;
       padding-left: 8vw;
       font-size: 100%;
@@ -1003,11 +1029,25 @@ a.avatar {
         top: 2.5vw;
         right: 2.5vw;
       }
+      a.private-topics {
+        top: 1vw;
+        right: 12vw;
+        width: 8vw;
+        height: 8vw;
+
+        &:before {
+          width: 8vw;
+          height: 8vw;
+          font-size: 5vw;
+          line-height: 8vw;
+        }
+      }
       a.account {
         top: 1vw;
         right: 1vw;
         width: 8vw;
         height: 8vw;
+        padding-left: 8vw;
       }
     }
   }
@@ -1260,11 +1300,26 @@ a.avatar {
       a.sign-in {
         display: none;
       }
+      a.private-topics {
+        top: 1rem;
+        right: 8rem;
+        width: 6rem;
+        height: 6rem;
+        padding-top: 6rem;
+
+        &:before {
+          width: 6rem;
+          height: 6rem;
+          font-size: 3rem;
+          line-height: 6rem;
+        }
+      }
       a.account {
         top: 1rem;
         right: 1rem;
         width: 6rem;
         height: 6rem;
+        padding-left: 6rem;
       }
       nav {
         float: right;
@@ -1295,7 +1350,7 @@ a.avatar {
 
       &.authenticated {
         nav {
-          margin-right: 8rem;
+          margin-right: 14rem;
         }
       }
     }

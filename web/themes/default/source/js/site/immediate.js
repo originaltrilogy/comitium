@@ -1,7 +1,8 @@
 window.CF = {
   params: {
     device: {
-      hiRes: true
+      hiRes: true,
+      relativeSize: 'small'
     }
   },
   boundEvents: {
@@ -28,8 +29,6 @@ CF.immediate = ( function (Modernizr, CF) {
         CF.params.device.relativeSize = 'large';
       } else if ( Modernizr.mq('only screen and (min-width: 500px)') ) {
         CF.params.device.relativeSize = 'medium';
-      } else {
-        CF.params.device.relativeSize = 'small';
       }
       html.setAttribute('data-relative-size', CF.params.device.relativeSize);
       if ( html.classList ) {

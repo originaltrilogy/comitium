@@ -1,5 +1,9 @@
-header.authenticated
+header(class="authenticated #{ updates ? 'updates' : '' }")
   a.home(href="/") originaltrilogy.com
+  if !updates
+    a.private-topics(href="private-topics" title="You have no new private topic updates.") Private topics
+  else
+    a.private-topics.updates(href="private-topics" title="You have unread private topics.") <span class="count">#{updates.length}</span> private topic updates
   a.account.avatar(href="account") Your Account
     img(src="avatars/#{session.userID}.jpg")
   nav

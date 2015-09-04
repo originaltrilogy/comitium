@@ -5,6 +5,7 @@
 module.exports = {
   stats: stats,
   topics: topics,
+  unread: unread,
   breadcrumbs: breadcrumbs,
   metaData: metaData
 };
@@ -55,6 +56,65 @@ function stats(userID, emitter) {
         }
 
         emitter.emit('ready', output.stats[0]);
+      } else {
+        emitter.emit('error', output.listen);
+      }
+
+    });
+  }
+}
+
+
+
+function unread(args, emitter) {
+  // See if this user's unread private topics are already cached
+  var cacheKey = 'private-topics-unread',
+      scope = 'user-' + args.userID,
+      cached = app.cache.get({ scope: scope, key: cacheKey });
+
+  // If it's cached, return the cache object
+  if ( cached ) {
+    emitter.emit('ready', cached);
+    // If it's not cached, retrieve it from the database and cache it
+  } else {
+    app.listen({
+      unread: function (emitter) {
+        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            client.query({
+                name: 'private_topics_unread',
+                text: 'select p."topicID" from posts p join "topicInvitations" ti on ti."userID" = $1 and p."topicID" = ti."topicID" and p.id = ( select id from posts where "topicID" = ti."topicID" order by created desc limit 1 ) left join "topicViews" tv on ti."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
+                values: [ args.userID ]
+              }, function (err, result) {
+                done();
+                if ( err ) {
+                  emitter.emit('error', err);
+                } else {
+                  if ( result.rows.length ) {
+                    emitter.emit('ready', result.rows);
+                  } else {
+                    emitter.emit('ready', false);
+                  }
+                }
+            });
+          }
+        });
+      }
+    }, function (output) {
+
+      if ( output.listen.success ) {
+        // Cache the discussion info object for future requests
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            key: cacheKey,
+            scope: scope,
+            value: output.unread
+          });
+        }
+
+        emitter.emit('ready', output.unread);
       } else {
         emitter.emit('error', output.listen);
       }
