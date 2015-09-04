@@ -23,6 +23,7 @@ module.exports = {
   passwordResetVerify: passwordResetVerify,
   passwordResetDelete: passwordResetDelete,
   posts: posts,
+  profile: profile,
   topicViewTimes: topicViewTimes,
   urlExists: urlExists,
   updateEmail: updateEmail,
@@ -901,6 +902,53 @@ function posts(args, emitter) {
 
     });
   }
+}
+
+
+
+function profile(args, emitter) {
+  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    var sql = '',
+        arg = '';
+
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      if ( args.userID ) {
+        sql = 'select u."id", u."groupID", u."username", u."url", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", g."name" as "group", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
+        arg = args.userID;
+      } else if ( args.username ) {
+        sql = 'select u."id", u."groupID", u."username", u."url", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", g."name" as "group", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
+        arg = args.username;
+      }
+
+      if ( sql.length ) {
+        client.query(
+          sql,
+          [ arg ],
+          function (err, result) {
+            done();
+            if ( err ) {
+              emitter.emit('error', err);
+            } else {
+              if ( result.rows.length ) {
+                result.rows[0].joinedFormatted = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY');
+                result.rows[0].lastActivityFormatted = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY');
+                emitter.emit('ready', result.rows[0]);
+              } else {
+                emitter.emit('ready', false);
+              }
+            }
+        });
+      } else {
+        done();
+        emitter.emit('error', {
+          message: 'Error in user model: no argument specified.'
+        });
+      }
+
+    }
+  });
 }
 
 

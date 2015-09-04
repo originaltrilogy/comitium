@@ -19,7 +19,7 @@ function handler(params, context, emitter) {
 
   app.listen('waterfall', {
     user: function (emitter) {
-      app.models.user.info({
+      app.models.user.profile({
         userID: params.url.id
       }, emitter);
     },
@@ -46,16 +46,7 @@ function handler(params, context, emitter) {
           talkPrivately: params.session.talkPrivately && output.user.id !== params.session.userID,
           editProfile: output.user.id === params.session.userID,
           banUser: output.user.id !== params.session.userID && params.session.moderateUsers,
-          user: {
-            id: output.user.id,
-            username: output.user.username,
-            group: output.user.group,
-            joinedFormatted: output.user.joinedFormatted,
-            lastActivityFormatted: output.user.lastActivityFormatted,
-            postCount: output.user.postCount,
-            website: output.user.website,
-            blog: output.user.blog
-          },
+          user: output.user,
           posts: output.posts,
           pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
         }
