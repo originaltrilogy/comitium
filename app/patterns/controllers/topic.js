@@ -414,16 +414,16 @@ function startAnnouncement(params, context, emitter) {
 
 function startAnnouncementForm(params, context, emitter) {
   var discussions = [];
-  
+
   if ( params.request.method === 'POST' ) {
     params.form.subscribe = params.form.subscribe || false;
     params.form.displayDiscussions = params.form.displayDiscussions || 'none';
     params.form.discussions = params.form.discussions || [];
-    
+
     params.form.discussions.forEach( function (item, index, array) {
       discussions[item] = item;
     });
-    
+
     params.form.discussions = discussions;
 
     // Verify the user's group has post access to the discussion
@@ -489,15 +489,19 @@ function startAnnouncementForm(params, context, emitter) {
               if ( params.form.formAction === 'Save as draft' ) {
                 draft = true;
               }
-          
+
               switch ( params.form.displayDiscussions ) {
                 case 'none':
                   params.form.discussions = [ 2 ];
                   break;
                 case 'all':
                   for ( var category in categories ) {
-                    for ( var discussion in categories[category].discussions ) {
-                      params.form.discussions.push(categories[category].discussions[discussion].discussionID);
+                    if ( categories.hasOwnProperty(category) ) {
+                      for ( var discussion in categories[category].discussions ) {
+                        if ( categories[category].discussions.hasOwnProperty(discussion) ) {
+                          params.form.discussions.push(categories[category].discussions[discussion].discussionID);
+                        }
+                      }
                     }
                   }
                   break;
@@ -709,7 +713,7 @@ function startPrivateForm(params, context, emitter) {
               if ( params.form.formAction === 'Save as draft' ) {
                 draft = true;
               }
-              app.listen({
+              app.listen('waterfall', {
                 saveTopic: function (emitter) {
                   app.models.topic.insert({
                     private: true,
@@ -725,13 +729,27 @@ function startPrivateForm(params, context, emitter) {
                     draft: draft,
                     time: time
                   }, emitter);
+                },
+                mail: function (previous, emitter) {
+                  if ( previous.saveTopic.success ) {
+                    app.models.content.mail({
+                      template: 'Topic Invitation',
+                      replace: {
+                        topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/id/' + previous.saveTopic.id,
+                        author: params.session.username
+                      }
+                    }, emitter);
+                  } else {
+                    emitter.emit('ready', false);
+                  }
                 }
               }, function (output) {
                 var topic = output.saveTopic,
+                    mail = output.mail,
                     methods = {};
 
                 if ( output.listen.success && output.saveTopic.success ) {
-                  if ( !draft ) {
+                  if ( !draft && output.mail.success ) {
                     inviteesArray.forEach( function (item, index, array) {
                       methods[item] = function (emitter) {
                         app.models.user.info({
@@ -745,11 +763,11 @@ function startPrivateForm(params, context, emitter) {
                         delete output.listen;
                         for ( var invitee in output ) {
                           if ( output[invitee].privateTopicEmailNotification ) {
-                            app.mail.sendMail({
+                            app.toolbox.mail.sendMail({
                               from: app.config.comitium.email,
                               to: output[invitee].email,
-                              subject: 'Private topic invitation',
-                              text: params.session.username + ' invited you to a private topic:\n\n' + params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/id/' + topic.id
+                              subject: mail.subject,
+                              text: mail.text
                             });
                           }
                         }
@@ -991,8 +1009,13 @@ function replyForm(params, context, emitter) {
                         scope: 'updates',
                         skip: [ params.session.userID ],
                         time: time,
-                        subject: 'Forum topic update',
-                        text: replyUrl
+                        template: 'Topic Reply',
+                        replace: {
+                          replyAuthor: params.session.username,
+                          replyUrl: replyUrl,
+                          topicTitle: topic.private ? 'Private Topic (title withheld for your privacy)' : topic.titleMarkdown,
+                          unsubscribeUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/action/unsubscribe/id/' + topic.id
+                        }
                       });
                     }
                   } else {
@@ -1029,7 +1052,7 @@ function replyForm(params, context, emitter) {
 
 function notifySubscribers(args, emitter) {
 
-  app.listen({
+  app.listen('waterfall', {
     subscribersToNotify: function (emitter) {
       switch ( args.scope ) {
         case 'updates':
@@ -1043,15 +1066,25 @@ function notifySubscribers(args, emitter) {
             topicID: args.topicID
           }, emitter);
       }
+    },
+    mail: function (previous, emitter) {
+      if ( previous.subscribersToNotify.length ) {
+        app.models.content.mail({
+          template: args.template,
+          replace: args.replace
+        }, emitter);
+      } else {
+        emitter.emit('ready', false);
+      }
     }
   }, function (output) {
-    if ( output.listen.success && output.subscribersToNotify.length ) {
+    if ( output.mail && output.mail.success ) {
       for ( var i = 0; i < output.subscribersToNotify.length; i++ ) {
-        app.mail.sendMail({
+        app.toolbox.mail.sendMail({
           from: app.config.comitium.email,
           to: output.subscribersToNotify[i].email,
-          subject: args.subject,
-          text: args.text
+          subject: output.mail.subject,
+          text: output.mail.text
         });
       }
       if ( args.scope === 'updates' ) {
@@ -1229,9 +1262,7 @@ function lockForm(params, context, emitter) {
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        parsedReason = markdown.render(params.form.reason);
-        // Get rid of the paragraph tags and line break added by Markdown
-        parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
+        parsedReason = markdown.renderInline(params.form.reason);
 
         app.listen({
           lock: function (emitter) {
@@ -1419,8 +1450,13 @@ function moveForm(params, context, emitter) {
                 if ( params.form.notify ) {
                   notifySubscribers({
                     topicID: topic.id,
-                    subject: 'A topic you\'re following was moved',
-                    text: 'The following topic was moved from ' + topic.discussionTitle + ' to ' + output.newDiscussion.title + '.\n\nhttp:' + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id
+                    template: 'Topic Move',
+                    replace: {
+                      topicTitle: topic.titleMarkdown,
+                      topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
+                      oldDiscussionTitle: topic.discussionTitle,
+                      newDiscussionTitle: output.newDiscussion.title
+                    }
                   });
                 }
                 emitter.emit('ready', {
@@ -1477,6 +1513,7 @@ function trash(params, context, emitter) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
         params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'topic/action/trash/id/' + output.topic.id);
+        params.form.reason = '';
 
         emitter.emit('ready', {
           view: 'trash',
@@ -1535,8 +1572,11 @@ function trashForm(params, context, emitter) {
                 if ( params.form.notify ) {
                   notifySubscribers({
                     topicID: topic.id,
-                    subject: 'A topic you\'re following was deleted',
-                    text: 'The following topic was deleted from ' + topic.discussionTitle + '.\n\n' + topic.titleHtml
+                    template: 'Topic Deletion',
+                    replace: {
+                      topicTitle: topic.titleMarkdown,
+                      reason: params.form.reason
+                    }
                   });
                 }
                 emitter.emit('ready', {

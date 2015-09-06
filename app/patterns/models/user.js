@@ -47,7 +47,7 @@ function activate(args, emitter) {
       activateUser: function (previous, emitter) {
         // If the account isn't activated, activate it
         if ( previous.userActivationStatus.userExists && !previous.userActivationStatus.activated && previous.userActivationStatus.activationCode === args.activationCode ) {
-          app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+          app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
             if ( err ) {
               emitter.emit('error', err);
             } else {
@@ -65,15 +65,9 @@ function activate(args, emitter) {
                     });
 
                     // Create the user's avatar
-                    fs.readFile(app.config.citizen.directories.app + '/resources/default-avatar.jpg', function (err, file) {
+                    fs.writeFile(app.config.citizen.directories.web + '/avatars/' + args.id + '.jpg', app.resources.images.defaultAvatar, function (err) {
                       if ( err ) {
                         emitter.emit('error', err);
-                      } else {
-                        fs.writeFile(app.config.citizen.directories.web + '/avatars/' + args.id + '.jpg', file, function (err) {
-                          if ( err ) {
-                            emitter.emit('error', err);
-                          }
-                        });
                       }
                     });
                   }
@@ -121,7 +115,7 @@ function activate(args, emitter) {
 
 
 function activationStatus(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -154,7 +148,7 @@ function activationStatus(args, emitter) {
 
 
 function activityUpdate(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -252,7 +246,7 @@ function authenticate(credentials, emitter) {
                 emitter.emit('ready', {
                   success: false,
                   reason: 'passwordMismatch',
-                  message: 'The password you provided doesn\'t match our records.'
+                  message: 'We\'re fluent in over 6 million forms of communication...but we don\'t recognize that password.'
                 });
               }
             } else {
@@ -287,7 +281,7 @@ function authenticate(credentials, emitter) {
 
 
 function ban(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -315,7 +309,7 @@ function ban(args, emitter) {
 
 
 function liftBan(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -475,7 +469,7 @@ function create(args, emitter) {
 
 
 function emailExists(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -503,7 +497,7 @@ function emailExists(args, emitter) {
 
 
 function exists(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -552,7 +546,7 @@ function exists(args, emitter) {
 
 
 function info(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     var sql = '',
         arg = '';
 
@@ -563,13 +557,13 @@ function info(args, emitter) {
         sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
       } else if ( args.username ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" ilike $1';
         arg = args.username;
       } else if ( args.usernameHash ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" ilike $1';
         arg = args.usernameHash;
       } else if ( args.email ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "email" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."email" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "email" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."email" ilike $1';
         arg = args.email;
       }
 
@@ -606,7 +600,7 @@ function info(args, emitter) {
 
 function insert(args, emitter) {
 
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -666,7 +660,7 @@ function insert(args, emitter) {
 
 
 function isActivated(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -692,7 +686,7 @@ function isActivated(args, emitter) {
 
 
 function isIgnored(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -719,7 +713,7 @@ function isIgnored(args, emitter) {
 
 function log(args, emitter) {
 
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -751,7 +745,7 @@ function log(args, emitter) {
 function passwordResetInsert(args, emitter) {
   var verificationCode = Math.random().toString().replace('0.', '') + Math.random().toString().replace('0.', '');
 
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -764,6 +758,7 @@ function passwordResetInsert(args, emitter) {
             emitter.emit('error', err);
           } else {
             emitter.emit('ready', {
+              success: true,
               verificationCode: verificationCode
             });
           }
@@ -775,7 +770,7 @@ function passwordResetInsert(args, emitter) {
 
 
 function passwordResetVerify(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -801,7 +796,7 @@ function passwordResetVerify(args, emitter) {
 
 
 function passwordResetDelete(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -837,7 +832,7 @@ function posts(args, emitter) {
   } else {
     app.listen({
       posts: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -907,7 +902,7 @@ function posts(args, emitter) {
 
 
 function profile(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     var sql = '',
         arg = '';
 
@@ -954,12 +949,12 @@ function profile(args, emitter) {
 
 
 function topicViewTimes(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "id", "topicID", "time" from "topicViews" where "userID" = $1 and "topicID" in ( ' + args.topicID + ' );',
+        'select "topicID", "time" from "topicViews" where "userID" = $1 and "topicID" in ( ' + args.topicID + ' );',
         [ args.userID ],
         function (err, result) {
           done();
@@ -981,7 +976,7 @@ function topicViewTimes(args, emitter) {
 
 
 function urlExists(user, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -1008,7 +1003,7 @@ function urlExists(user, emitter) {
 
 
 function updateEmail(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     var sql = '',
         activationCode = '';
 
@@ -1052,7 +1047,7 @@ function updatePassword(args, emitter) {
       app.toolbox.helpers.hash(args.password, emitter);
     },
     passwordUpdate: function (previous, emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1088,7 +1083,7 @@ function updatePassword(args, emitter) {
 
 
 function updateSettings(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {

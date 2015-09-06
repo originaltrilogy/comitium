@@ -98,8 +98,7 @@ article.post {
     & > * {
       float: right;
       clear: right;
-      margin-top: 0;
-      margin-bottom: 4vw;
+      margin: 0 0 4vw;
       max-width: 92vw;
     }
 
@@ -206,11 +205,15 @@ article.post {
     }
     nav.actions {
       ul {
-        padding: 2rem 4rem;
+        padding: 2rem;
+      }
+      &:before,
+      &:after {
+        width: 2rem;
       }
     }
     section.signature {
-      padding: 2rem 4rem;
+      padding: 2rem;
 
       & > * {
         margin-bottom: 2.5rem;

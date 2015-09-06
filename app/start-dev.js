@@ -4,6 +4,8 @@
 
 global.app = require('citizen');
 
+var fs = require('fs');
+
 app.toolbox = {
   // Native modules
   access: require('./toolbox/access'),
@@ -12,6 +14,22 @@ app.toolbox = {
 
   // Third party modules
   bcrypt: require('bcrypt'),
+  // Log e-mails to app/logs/email.txt instead of sending them
+  mail: {
+    sendMail: function (args) {
+      app.log({
+        label: 'E-mail debug log (not sent)',
+        content: {
+          from: args.from,
+          to: args.to,
+          subject: args.subject,
+          text: args.text
+        },
+        toFile: true,
+        file: 'email.txt'
+      });
+    }
+  },
   moment: require('moment-timezone'),
   numeral: require('numeral'),
   pg: require('pg').native,
@@ -24,20 +42,10 @@ app.toolbox.pg.types.setTypeParser(1114, function (stringValue) {
   return new Date(Date.parse(stringValue + ' +0000')).toISOString();
 });
 
-// Log e-mails to app/logs/email.txt instead of sending them
-app.mail = {
-  sendMail: function (args) {
-    app.log({
-      label: 'E-mail debug log (not sent)',
-      content: {
-        from: args.from,
-        to: args.to,
-        subject: args.subject,
-        text: args.text
-      },
-      toFile: true,
-      file: 'email.txt'
-    });
+// Static resources
+app.resources = {
+  images: {
+    defaultAvatar: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/default-avatar.jpg')
   }
 };
 

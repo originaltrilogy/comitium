@@ -25,25 +25,34 @@ function form(params, context, emitter) {
   if ( params.request.method === 'POST' ) {
     params.form.tos = params.form.tos || false;
 
-    app.listen({
+    app.listen('waterfall', {
       register: function (emitter) {
         app.models.user.create(params.form, emitter);
+      },
+      mail: function (previous, emitter) {
+        if ( previous.register.success ) {
+          app.models.content.mail({
+            template: 'Registration',
+            replace: {
+              activationUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + previous.register.id + '/activationCode/' + previous.register.activationCode,
+              username: previous.register.username
+            }
+          }, emitter);
+        } else {
+          emitter.emit('ready', false);
+        }
       }
     }, function (output) {
-      var email = {};
-
       if ( output.listen.success ) {
-
         if ( output.register.success ) {
-          email.text = '<a href="' + params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + output.register.id + '/activationCode/' + output.register.activationCode + '">Click here to activate your account</a>';
-
-          app.mail.sendMail({
-            from: app.config.comitium.email,
-            to: output.register.email,
-            subject: 'Forum registration confirmation',
-            text: email.text
-          });
-
+          if ( output.mail.success ) {
+            app.toolbox.mail.sendMail({
+              from: app.config.comitium.email,
+              to: output.register.email,
+              subject: output.mail.subject,
+              text: output.mail.text
+            });
+          }
           emitter.emit('ready', {
             redirect: app.config.comitium.basePath + 'register/action/complete'
           });
@@ -54,13 +63,9 @@ function form(params, context, emitter) {
             }
           });
         }
-
       } else {
-
         emitter.emit('error', output.listen);
-
       }
-
     });
   // If it's a GET, fall back to the default action
   } else {

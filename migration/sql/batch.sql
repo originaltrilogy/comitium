@@ -1,4 +1,158 @@
 
+-- email templates
+create table email_templates (
+  id serial not null,
+  name text unique not null,
+  description text,
+  default_subject text not null,
+  default_text text not null,
+  subject text not null,
+  text text not null,
+  html text,
+  primary key (id)
+);
+
+insert into email_templates ( name, description, default_subject, default_text, subject, text ) values
+(
+'Registration',
+'This e-mail is sent to new users after they register so they can activate their account.',
+'Forum account activation',
+'Thanks for signing up! To activate your account, please click the link below:
+
+[activationUrl]',
+'Welcome to originaltrilogy.com, [username]!',
+'You''ve taken your first step into a larger world.
+
+Click the link below to activate your account and take part in our community:
+
+[activationUrl]
+
+MTFBWY!'
+),
+(
+'Reactivation',
+'When users update their e-mail address, they''re asked to reactivate their account in order to verify that the e-mail they provided is valid.',
+'Your account requires reactivation',
+'When you update your e-mail address, we send this verification e-mail to make sure it''s a valid address. This helps us fight spammers and provide a better community experience.
+
+Click the link below to verify this address and reactivate your account:
+
+[activationUrl]',
+'Your account requires reactivation',
+'When you update your e-mail address, we send this verification e-mail to make sure it''s a valid address. This helps us fight spammers and provide a better community experience.
+
+Click the link below to verify this address and reactivate your account:
+
+[activationUrl]'
+),
+(
+'Password Reset',
+'Users who have forgotten their passwords can request a password reset link via e-mail.',
+'Forum password reset request',
+'We received a request to reset your password. Please click the link below to start the process:
+
+[resetUrl]
+
+If you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.',
+'Forum password reset request',
+'We received a request to reset your password. Please click the link below to start the process:
+
+[resetUrl]
+
+If you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.'
+),
+(
+'Post Deletion',
+'When moderators delete a post, they can notify the author using this e-mail.',
+'Your post was deleted',
+'A moderator deleted one of your posts.
+
+Post ID: [postID]
+Topic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]
+
+[postText]',
+'Your post was deleted',
+'A moderator deleted one of your posts.
+
+Post ID: [postID]
+Topic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]
+
+[postText]'
+),
+(
+'Topic Deletion',
+'When moderators delete a topic, they can notify subscribers using this e-mail.',
+'A topic you''re following was deleted',
+'A moderator deleted a topic you were following.
+
+Topic: [topicTitle]
+
+Reason: [reason]',
+'A topic you''re following was deleted',
+'A moderator deleted a topic you were following.
+
+Topic: [topicTitle]
+
+Reason: [reason]'
+),
+(
+'Topic Invitation',
+'Users who opt in to notifications receive this e-mail when they''re invited to participate in a private topic.',
+'Private topic invitation',
+'[author] invited you to a private topic:
+
+[topicUrl]
+
+Private topics are visible only to members who receive invitations; not even moderators can view your private topics.',
+'Private topic invitation',
+'[author] invited you to a private topic:
+
+[topicUrl]
+
+Private topics are visible only to members who receive invitations; not even moderators can view your private topics.'
+),
+(
+'Topic Move',
+'Subscribers receive an e-mail notification when a topic they''re following is moved to a different discussion.',
+'A topic you''re following was moved',
+'The following topic was moved from [oldDiscussionTitle] to [newDiscussionTitle].
+
+[topicTitle]
+[topicUrl]',
+'A topic you''re following was moved',
+'The following topic was moved from [oldDiscussionTitle] to [newDiscussionTitle].
+
+[topicTitle]
+[topicUrl]'
+),
+(
+'Topic Reply',
+'Subscribers receive an e-mail notification when someone replies to a topic they''re following.',
+'Topic update: [topicTitle]',
+'[replyAuthor] posted a reply to [topicTitle]:
+
+[replyUrl]
+
+Unsubscribe:
+[unsubscribeUrl]',
+'Topic update: [topicTitle]',
+'[replyAuthor] posted a reply to [topicTitle]:
+
+[replyUrl]
+
+Unsubscribe:
+[unsubscribeUrl]'
+);
+
+
 -- categories
 
 create table "categories" (
@@ -407,31 +561,46 @@ SELECT SETVAL('subscriptions_id_seq', ( select max("id") + 1 from subscriptions 
 
 
 -- topicViews
-
-create table "topicViews" (
-  "id" serial not null,
-  "userID" integer not null,
-  "topicID" integer not null,
-  "time" timestamp without time zone not null,
-  primary key ("id")
-);
-
-
-insert into "topicViews" (
-  "id",
-  "userID",
-  "topicID",
-  "time"
-)
+create temp table topicviewtemp as
 select
-  "intTopicViewTimeID",
   "intUserID",
   "intTopicID",
   "dteTopicViewTime"
 from "tblForumTopicViewTimes";
 
+-- dedupe topic view times
+create function topicviewcleanup() returns text as $$
+  declare
+    dupe record;
 
-SELECT SETVAL('"topicViews_id_seq"', ( select max("id") + 1 from "topicViews" ) );
+  begin
+    for dupe in SELECT "intUserID", "intTopicID"
+          FROM "topicviewtemp"
+          GROUP BY "intUserID", "intTopicID"
+          HAVING ( COUNT("intUserID") > 1 and COUNT("intTopicID") > 1 )
+          order by "intTopicID" asc
+
+      loop
+        delete from "topicviewtemp" where "intUserID" = dupe."intUserID" and "intTopicID" = dupe."intTopicID";
+      end loop;
+
+    return true;
+  end;
+
+$$ language 'plpgsql';
+select topicviewcleanup();
+drop function topicviewcleanup();
+
+create table "topicViews" (
+  "userID" integer not null,
+  "topicID" integer not null,
+  "time" timestamp without time zone not null,
+  primary key ("userID", "topicID")
+);
+
+
+insert into "topicViews"
+  select "intUserID", "intTopicID", "dteTopicViewTime" from topicviewtemp;
 
 
 
@@ -639,7 +808,7 @@ where t."discussionID" is null;
 
 
 -- Delete stray topics without any posts and clean up topic and post counts
-create index on posts ( id );
+-- create index on posts ( id );
 create index on posts ( "topicID" );
 create index on posts ( draft ) where draft = false;
 create index on posts ( created asc );
@@ -648,25 +817,25 @@ create function cleanup() returns text as $$
 
   declare
     discussion record;
-  
+
   begin
-  
+
     for discussion in select * from discussions order by id asc
-    
+
       loop
-      
+
         raise notice 'cleaning %', discussion.title;
-        
+
         delete from "topics" t where t."discussionID" = discussion.id and t."id" not in (
           select t."id" from topics t join posts p on p."topicID" = t."id" and p."id" = ( select id from posts where "topicID" = t.id and draft = false order by posts.created asc limit 1 ) where t."discussionID" = discussion.id
         );
-        
+
         update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = discussion.id and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = discussion.id and t.draft = false ) where "id" = discussion.id;
-      
+
       end loop;
-    
+
     return 'topic and post counts cleaned up';
-  
+
   end;
 
 $$ language 'plpgsql';
@@ -678,7 +847,7 @@ drop function cleanup();
 
 -- Update topics with existing locks
 
-create index on topics ( "id" );
+-- create index on topics ( "id" );
 create index on "tblForumTopicLock" ( "intTopicID" );
 create index on "tblForumTopicLock" ( "dteTopicLockDate" );
 
@@ -691,7 +860,7 @@ where id = t.id;
 
 -- Update posts with existing edit notes
 
-create index on posts ( "id" );
+-- create index on posts ( "id" );
 create index on "tblForumPostEditNotes" ( "intPostID" );
 create index on "tblForumPostEditNotes" ( "dtePostEditDate" );
 
@@ -714,9 +883,9 @@ alter table "topics" alter column "url" set not null;
 
 -- Indexes
 
-create index on "categories" ( "id" );
+-- create index on "categories" ( "id" );
 create index on "categories" ( "sort" );
-create index on "discussions" ( "id" );
+-- create index on "discussions" ( "id" );
 create index on "discussions" ( "categoryID" );
 create index on "discussions" ( "sort" );
 create index on "discussionPermissions" ( "discussionID" );
@@ -725,15 +894,14 @@ create index on "discussionPermissions" ( "read" );
 create index on "discussionPermissions" ( "post" );
 create index on "discussionPermissions" ( "reply" );
 create index on "topics" ( "discussionID" );
-create index on "topics" ( "id" );
+-- create index on "topics" ( "id" );
 create index on "topics" ( "draft" );
-create index on "topics" ( "sortDate" );
-create index on "topics" ( "sortDate" );
+create index on "topics" ( "stickyDate" );
 create index on "topics" ( "private" );
 create index on "topicInvitations" ( "userID" );
 create index on "topicInvitations" ( "topicID" );
 create index on "posts" ( "draft" );
-create index on "posts" ( "id" );
+-- create index on "posts" ( "id" );
 create index on "posts" ( "topicID" );
 create index on "posts" ( "userID" );
 create index on "posts" ( "created" );
@@ -742,11 +910,11 @@ create index on posts ( "topicID" desc );
 create index on posts ( "topicID", created asc );
 create index on posts ( "topicID", created desc );
 create index on "posts" ( "draft" ) where draft = false;
-create index on "users" ( "id" );
+-- create index on "users" ( "id" );
 create index on "topicViews" ( "userID" );
 create index on "topicViews" ( "topicID" );
 create index on "topicViews" ( "time" );
-create index on "passwordReset" ( "id" );
+-- create index on "passwordReset" ( "id" );
 create index on "passwordReset" ( "userID" );
 create index on "passwordReset" ( "verificationCode" );
 

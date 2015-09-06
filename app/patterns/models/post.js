@@ -21,7 +21,7 @@ function edit(args, emitter) {
       message: 'Posts can\'t be empty.'
     });
   } else {
-    app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -107,12 +107,12 @@ function edit(args, emitter) {
 
 
 function info(postID, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select p.id, p."topicID", p.html, p.markdown, p."created", p."modified", p.draft, p."editorID", p."editReason", p."lockedByID", p."lockReason", t."discussionID", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", u2.username as editor, u2.url as "editorUrl" from posts p join users u on p."userID" = u.id left join users u2 on p."editorID" = u2.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
+        'select p.id, p."topicID", p.html, p.markdown, p."created", p."modified", p.draft, p."editorID", p."editReason", p."lockedByID", p."lockReason", t."discussionID", t."titleMarkdown" as "topicTitleMarkdown", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", u2.username as editor, u2.url as "editorUrl" from posts p join users u on p."userID" = u.id left join users u2 on p."editorID" = u2.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
         [ postID ],
         function (err, result) {
           done();
@@ -137,7 +137,7 @@ function info(postID, emitter) {
 
 
 function lock(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -166,7 +166,7 @@ function lock(args, emitter) {
 
 
 function unlock(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -197,7 +197,7 @@ function unlock(args, emitter) {
 function saveBookmark(args, emitter) {
   app.listen({
     bookmarkExists: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -228,7 +228,7 @@ function saveBookmark(args, emitter) {
     } else {
       app.listen({
         bookmarkInsert: function (emitter) {
-          app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+          app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
             if ( err ) {
               emitter.emit('error', err);
             } else {
@@ -268,7 +268,7 @@ function saveReport(args, emitter) {
       message: 'You have to provide a reason for the report.'
     });
   } else {
-    app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -296,7 +296,7 @@ function saveReport(args, emitter) {
 
 
 function trash(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -351,7 +351,7 @@ function trash(args, emitter) {
         updateTopicStats: function (previous, emitter) {
 
           client.query(
-            'update "topics" set "sortDate" = ( select min("created") from "posts" where "topicID" = $1 and "draft" = false ), "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1 where "id" = $1',
+            'update "topics" set "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1 where "id" = $1',
             [ args.topicID ],
             function (err, result) {
               if ( err ) {
@@ -371,7 +371,7 @@ function trash(args, emitter) {
         updateDiscussionStats: function (previous, emitter) {
 
           client.query(
-            'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
+            'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t.draft = false and p."draft" = false ) where "id" = $1',
             [ args.discussionID ],
             function (err, result) {
               if ( err ) {

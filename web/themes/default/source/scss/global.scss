@@ -202,6 +202,8 @@ body > header {
   min-height: 14vw;
   @include color(0%, 94%);
   @include background-color(14%, 19%);
+  border-bottom: 1px solid;
+  @include border-color(14%, 10%);
 
   a.home {
     display: block;
@@ -1490,7 +1492,7 @@ a.avatar {
         font-size: 4rem;
       }
       &.locked:before {
-        left: 8rem;
+        left: 6rem;
       }
     }
     & > p {
@@ -1565,6 +1567,10 @@ a.avatar {
         &.textarea {
           label {
             margin: 0 4rem;
+          }
+          p.label-note {
+            margin-right: 4rem;
+            margin-left: 4rem;
           }
         }
         &.checkbox,

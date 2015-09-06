@@ -30,7 +30,7 @@ module.exports = {
 
 
 function announcementView(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -57,7 +57,7 @@ function announcementView(args, emitter) {
 
 
 function announcementReply(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -86,7 +86,7 @@ function announcementReply(args, emitter) {
 function exists(topicID, emitter) {
   app.listen({
     exists: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -142,7 +142,7 @@ function firstUnreadPost(args, emitter) {
     },
     newPosts: function (previous, emitter) {
       if ( app.toolbox.moment(previous.topic.lastPostCreated).isAfter(previous.viewTime[0].time) ) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -179,7 +179,7 @@ function firstUnreadPost(args, emitter) {
 
 
 function hasInvitee(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -205,7 +205,7 @@ function hasInvitee(args, emitter) {
 
 
 function invitees(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -239,12 +239,12 @@ function info(topicID, emitter) {
   } else {
     app.listen({
       topic: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."id", t."discussionID", t."titleMarkdown", t."titleHtml", t."url", t."sortDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) where t."id" = $1;',
+              'select t."id", t."discussionID", t."titleMarkdown", t."titleHtml", t."url", t."stickyDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
@@ -293,7 +293,7 @@ function insert(args, emitter) {
     });
   } else {
 
-    app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -313,7 +313,7 @@ function insert(args, emitter) {
           insertTopic: function (previous, emitter) {
 
             client.query(
-              'insert into topics ( "discussionID", "titleMarkdown", "titleHtml", "url", "created", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
+              'insert into topics ( "discussionID", "titleMarkdown", "titleHtml", "url", "created", "stickyDate", "replies", "draft", "private", "lockedByID" ) ' +
               'values ( $1, $2, $3, $4, $5, $5, 0, $6, $7, 0 ) returning id;',
               [ args.discussionID, args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft, args.private ],
               function (err, result) {
@@ -455,7 +455,7 @@ function insert(args, emitter) {
             if ( args.announcement ) {
               args.discussions.forEach( function (item, index, array) {
                 insertIDs += '( ' + item + ', ' + previous.insertTopic.id + ' )';
-                
+
                 if ( index + 1 !== array.length ) {
                   insertIDs += ', ';
                 }
@@ -567,7 +567,7 @@ function insert(args, emitter) {
                 message: output.insertInvitation.message
               });
             }
-            
+
 
           } else {
 
@@ -599,7 +599,7 @@ function posts(args, emitter) {
   } else {
     app.listen({
       posts: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -665,7 +665,7 @@ function posts(args, emitter) {
 
 
 function lock(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -694,7 +694,7 @@ function lock(args, emitter) {
 
 
 function unlock(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -723,11 +723,11 @@ function unlock(args, emitter) {
 
 
 function move(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -878,7 +878,7 @@ function reply(args, emitter) {
     });
   } else {
 
-    app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -919,8 +919,8 @@ function reply(args, emitter) {
           updateTopicStats: function (previous, emitter) {
 
             client.query(
-              'update topics set "sortDate" = $2, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1 where "id" = $1;',
-              [ args.topicID, args.time ],
+              'update topics set replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1 where "id" = $1;',
+              [ args.topicID ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -1038,7 +1038,7 @@ function reply(args, emitter) {
 function subscriptionExists(args, emitter) {
   app.listen({
     subscriptionExists: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1077,7 +1077,7 @@ function subscriptionExists(args, emitter) {
 function subscribers(args, emitter) {
   app.listen({
     subscribers: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1114,7 +1114,7 @@ function subscribersToUpdate(args, emitter) {
 
   app.listen({
     subscribersToUpdate: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1149,7 +1149,7 @@ function subscribersToUpdate(args, emitter) {
 function subscriptionNotificationSentUpdate(args, emitter) {
   app.listen({
     subscriptionNotificationSentUpdate: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1192,7 +1192,7 @@ function subscribe(args, emitter) {
 
     if ( output.listen.success ) {
       if ( !output.subscriptionExists ) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -1229,7 +1229,7 @@ function subscribe(args, emitter) {
 function unsubscribe(args, emitter) {
   app.listen({
     subscriptionDelete: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1263,56 +1263,85 @@ function unsubscribe(args, emitter) {
 
 
 function viewTimeUpdate(args, emitter) {
-  app.listen({
-    viewTimeUpdate: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
+
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      app.listen('waterfall', {
+        begin: function (emitter) {
+          client.query('begin', function (err) {
+            if ( err ) {
+              done();
+              emitter.emit('error', err);
+            } else {
+              emitter.emit('ready');
+            }
+          });
+        },
+        // Update the existing record if it exists.
+        viewTimeUpdate: function (previous, emitter) {
           client.query(
             'update "topicViews" set time = $3 where "userID" = $1 and "topicID" = $2;',
             [ args.userID, args.topic.id, args.time ],
             function (err, result) {
               if ( err ) {
-                done();
+                client.query('rollback', function (err) {
+                  done();
+                });
                 emitter.emit('error', err);
               } else {
+                // If the update occurs, skip the next method (insert). If not,
+                // insert a new record.
                 if ( result.rowCount ) {
-                  done();
-                  emitter.emit('ready', result.rowCount);
+                  emitter.emit('skip', result.rowCount);
                 } else {
-                  client.query(
-                    'insert into "topicViews" ( "userID", "topicID", "time" ) values ( $1, $2, $3 ) returning id;',
-                    [ args.userID, args.topic.id, args.time ],
-                    function (err, result) {
-                      done();
-                      if ( err ) {
-                        emitter.emit('error', err);
-                      } else {
-                        emitter.emit('ready', result.rows[0].id);
-                      }
-                    }
-                  );
+                  emitter.emit('ready', result.rowCount);
                 }
-              }
-              if ( args.topic.private ) {
-                app.cache.clear({ scope: 'user-' + args.userID, key: 'private-topics-unread' });
               }
             }
           );
+        },
+        // This only runs if viewTimeUpdate has a resulting rowCount of zero.
+        viewTimeInsert: function (previous, emitter) {
+          client.query(
+            'insert into "topicViews" ( "userID", "topicID", "time" ) values ( $1, $2, $3 );',
+            [ args.userID, args.topic.id, args.time ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', result.rowCount);
+              }
+            }
+          );
+        },
+        commit: function (previous, emitter) {
+          client.query('commit', function () {
+            done();
+            emitter.emit('ready');
+          });
+        }
+      }, function (output) {
+        if ( output.listen.success ) {
+          if ( args.topic.private ) {
+            app.cache.clear({ scope: 'user-' + args.userID, key: 'private-topics-unread' });
+          }
+          if ( emitter ) {
+            if ( output.listen.success ) {
+              emitter.emit('ready', {
+                success: true
+              });
+            } else {
+              emitter.emit('error', output.listen);
+            }
+          }
         }
       });
     }
-  }, function (output) {
-
-    if ( output.listen.success && emitter ) {
-      emitter.emit('ready', {
-        success: true
-      });
-    } else if ( emitter ) {
-      emitter.emit('error', output.listen);
-    }
-
   });
 }
 

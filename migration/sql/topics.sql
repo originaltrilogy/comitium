@@ -13,7 +13,7 @@ create table "topics" (
   "url" text not null,
   "created" timestamp without time zone not null,
   "modified" timestamp without time zone,
-  "sortDate" timestamp without time zone not null,
+  "stickyDate" timestamp without time zone not null,
   "replies" integer not null,
   "draft" boolean not null,
   "private" boolean not null,
@@ -34,7 +34,7 @@ insert into "topics" (
   "titleHtml",
   "url",
   "created",
-  "sortDate",
+  "stickyDate",
   "replies",
   "draft",
   "private"
@@ -54,7 +54,7 @@ select
     from "tblForumPosts"
     where "intPostID" = "intFirstTopicPostID"
   ), date '2000-01-01' + time '03:00'),
-  "dteStickyDate",
+  null,
   "intTopicReplyCount",
   "bitDraft",
   false
@@ -65,3 +65,8 @@ SELECT SETVAL('topics_id_seq', ( select max("id") + 1 from topics ) );
 
 
 update topics set "titleHtml" = "id" where "titleHtml" is null;
+
+update topics t set "stickyDate" = (
+  select "dteStickyDate" from "tblForumTopics" where "intTopicID" = t.id
+)
+where id in ( select "intTopicID" from "tblForumTopics" where "dteStickyDate" > now() );

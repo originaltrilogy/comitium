@@ -255,9 +255,7 @@ function editForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           parsedContent = markdown.render(params.form.content);
-          parsedReason = markdown.render(params.form.reason);
-          // Get rid of the paragraph tags and line break added by Markdown
-          parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
+          parsedReason = markdown.renderInline(params.form.reason);
 
           switch ( params.form.formAction ) {
             case 'Preview':
@@ -407,9 +405,7 @@ function lockForm(params, context, emitter) {
 
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedReason = markdown.render(params.form.reason);
-          // Get rid of the paragraph tags and line break added by Markdown
-          parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
+          parsedReason = markdown.renderInline(params.form.reason);
 
           app.listen({
             lock: function (emitter) {
@@ -613,9 +609,7 @@ function reportForm(params, context, emitter) {
 
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedReason = markdown.render(params.form.reason);
-          // Get rid of the paragraph tags and line break added by Markdown
-          parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
+          parsedReason = markdown.renderInline(params.form.reason);
 
           app.listen({
             saveReport: function (emitter) {
@@ -749,9 +743,7 @@ function trashForm(params, context, emitter) {
 
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedReason = markdown.render(params.form.reason);
-          // Get rid of the paragraph tags and line break added by Markdown
-          parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
+          parsedReason = markdown.renderInline(params.form.reason);
 
           app.listen({
             trash: function (emitter) {
@@ -770,24 +762,30 @@ function trashForm(params, context, emitter) {
                   app.listen({
                     user: function (emitter) {
                       app.models.user.info({
-                        user: post.authorUrl
+                        userID: post.authorID
+                      }, emitter);
+                    },
+                    mail: function (emitter) {
+                      app.models.content.mail({
+                        template: 'Post Deletion',
+                        replace: {
+                          postID: post.id,
+                          postText: post.markdown,
+                          topicTitle: post.topicTitleMarkdown,
+                          topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+                          reason: params.form.reason
+                        }
                       }, emitter);
                     }
                   }, function (output) {
-                    var mailText = 'Your post has been deleted by a moderator.';
-
-                    if ( parsedReason.length ) {
-                      mailText += '\n\n' + 'Reason: ' + parsedReason;
+                    if ( output.mail.success ) {
+                      app.toolbox.mail.sendMail({
+                        from: app.config.comitium.email,
+                        to: output.user.email,
+                        subject: output.mail.subject,
+                        text: output.mail.text
+                      });
                     }
-
-                    mailText += '\n\n' + post.html;
-
-                    app.mail.sendMail({
-                      from: app.config.comitium.email,
-                      to: output.user.email,
-                      subject: 'Your forum post was deleted',
-                      text: mailText
-                    });
                   });
                 }
                 emitter.emit('ready', {

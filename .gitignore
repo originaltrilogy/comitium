@@ -1,4 +1,5 @@
 app/newrelic.js
+newrelic_agent.log
 app/config/*
 app/logs/*
 web/avatars/*

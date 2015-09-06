@@ -22,20 +22,20 @@ function handler(params, context, emitter) {
 
 
 function form(params, context, emitter) {
-  
+
   if ( params.request.method === 'POST' ) {
     params.form.email = params.form.email.trim() || '';
 
     app.listen('waterfall', {
       validateForm: function (emitter) {
         var message = '';
-        
+
         if ( !params.form.email.length ) {
           message = 'Your e-mail address is required.';
         } else if ( !app.toolbox.validate.email(params.form.email) ) {
           message = 'That doesn\'t appear to be a properly formatted e-mail address. Please check your entry and try again.';
         }
-        
+
         if ( message.length ) {
           emitter.emit('end', {
             success: false,
@@ -48,44 +48,52 @@ function form(params, context, emitter) {
         }
       },
       user: function (previous, emitter) {
-        app.models.user.info({ email: params.form.email }, emitter);
+        if ( previous.validateForm.success ) {
+          app.models.user.info({ email: params.form.email }, emitter);
+        } else {
+          emitter.emit('end');
+        }
       },
-      proceed: function (previous, emitter) {
+      generateVerification: function (previous, emitter) {
+        var ip = app.toolbox.helpers.ip(params.request);
+
         if ( previous.user ) {
-          emitter.emit('ready', {
-            success: true
-          });
+          app.models.user.passwordResetInsert({
+            userID: previous.user.id,
+            ip: ip
+          }, emitter);
         } else {
           emitter.emit('end', {
             success: false,
             message: 'The e-mail address you provided doesn\'t exist in our system. Please check it and try again.'
           });
         }
+      },
+      mail: function (previous, emitter) {
+        if ( previous.generateVerification.success ) {
+          app.models.content.mail({
+            template: 'Password Reset',
+            replace: {
+              resetUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + previous.user.id + '/code/' + previous.generateVerification.verificationCode
+            }
+          }, emitter);
+        } else {
+          emitter.emit('ready', false);
+        }
       }
     }, function (output) {
-      var ip = app.toolbox.helpers.ip(params.request);
-
       if ( output.listen.success ) {
         if ( output.validateForm.success ) {
-          if ( output.proceed.success ) {
-            
-            app.listen('waterfall', {
-              generateVerification: function (emitter) {
-                app.models.user.passwordResetInsert({
-                  userID: output.user.id,
-                  ip: ip
-                 }, emitter);
-              },
-              sendEmail: function (previous, emitter) {
-                app.mail.sendMail({
-                  from: app.config.comitium.email,
-                  to: output.user.email,
-                  subject: 'Password reset instructions',
-                  text: params.route.parsed.protocol + app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + output.user.id + '/code/' + previous.generateVerification.verificationCode
-                });
-              }
-            });
-            
+          if ( output.generateVerification.success ) {
+            if ( output.mail.success ) {
+              app.toolbox.mail.sendMail({
+                from: app.config.comitium.email,
+                to: output.user.email,
+                subject: output.mail.subject,
+                text: output.mail.text
+              });
+            }
+
             emitter.emit('ready', {
               redirect: app.config.comitium.basePath + 'password-reset/action/confirmation'
             });
@@ -93,7 +101,7 @@ function form(params, context, emitter) {
             emitter.emit('ready', {
               content: {
                 reset: {
-                  message: output.proceed.message
+                  message: output.generateVerification.message
                 }
               }
             });
@@ -114,8 +122,6 @@ function form(params, context, emitter) {
   } else {
     handler(params, context, emitter);
   }
-
-
 }
 
 
@@ -131,7 +137,7 @@ function confirmation(params, context, emitter) {
 function reset(params, context, emitter) {
   params.form.password = '';
   params.form.verifyPassword = '';
-  
+
   app.listen({
     verify: function (emitter) {
       app.models.user.passwordResetVerify({
@@ -163,7 +169,7 @@ function resetForm(params, context, emitter) {
   app.listen('waterfall', {
     validateForm: function (emitter) {
       var message = '';
-      
+
       if ( !params.form.password.length || !params.form.verifyPassword.length ) {
         message = 'All fields are required.';
       } else if ( params.form.password !== params.form.verifyPassword ) {
@@ -171,7 +177,7 @@ function resetForm(params, context, emitter) {
       } else if ( !app.toolbox.validate.password(params.form.password) ) {
         message = 'Your password doesn\'t meet the minimum requirements (between 8 and 50 characters, anything but spaces).';
       }
-      
+
       if ( message.length ) {
         emitter.emit('end', {
           success: false,
@@ -221,12 +227,12 @@ function resetForm(params, context, emitter) {
           }
         });
       }
-      
+
     } else {
       emitter.emit('error', output.listen);
     }
   });
-  
+
 }
 
 

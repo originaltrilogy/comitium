@@ -24,7 +24,7 @@ function info(discussionID, emitter) {
   } else {
     app.listen({
       discussion: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -81,12 +81,12 @@ function topics(args, emitter) {
   } else {
     app.listen({
       announcements: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select distinct t."id", t."titleHtml", t."url", t."sortDate", t."replies", p."id" as "firstPostID", p2."id" as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select distinct t."id", t."titleHtml", t."url", t."stickyDate", t."replies", p."id" as "firstPostID", p2."id" as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join announcements a on t."id" = a."topicID" ' +
               'join "discussionPermissions" dp on dp."discussionID" = a."discussionID" ' +
@@ -95,7 +95,7 @@ function topics(args, emitter) {
               'join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
               'join users u2 on u2."id" = p2."userID" ' +
               'where dp."groupID" = $1 and dp."read" = true and t."draft" = false and t.private = false ' +
-              'order by t."sortDate" desc, p2.created desc ' +
+              'order by t."stickyDate" asc, p2.created desc ' +
               'limit $2 offset $3;',
               [ args.groupID, end - start, start ],
               function (err, result) {

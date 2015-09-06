@@ -11,6 +11,10 @@ section.form.topic-trash
   form#topic-trash-form(action="topic/id/#{url.id}/action/trashForm" method="post" novalidate)
     input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
     ul.data
+      li.reason.textarea
+        label(for="reason") Why are you deleting this topic?
+        p.label-note Optional
+        textarea(id="reason" name="reason" rows="4") #{form.reason}
       li.notify.checkbox
         input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
         label(for="notify") Notify members following this topic

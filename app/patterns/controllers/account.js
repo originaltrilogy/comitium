@@ -135,15 +135,30 @@ function generalForm(params, context, emitter) {
               if ( output.listen.success ) {
                 if ( output.updateEmail ) {
 
-                  app.mail.sendMail({
-                    from: app.config.comitium.email,
-                    to: email,
-                    subject: 'Forum registration confirmation',
-                    text: '<a href="' + params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + params.session.userID + '/activationCode/' + output.updateEmail.activationCode + '">Click here to activate your account</a>'
-                  });
+                  app.listen({
+                    mail: function (emitter) {
+                      app.models.content.mail({
+                        template: 'Reactivation',
+                        replace: {
+                          activationUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + params.session.userID + '/activationCode/' + output.updateEmail.activationCode
+                        }
+                      }, emitter);
+                    }
+                  }, function (output) {
+                    if ( output.listen.success && output.mail.success ) {
+                      app.toolbox.mail.sendMail({
+                        from: app.config.comitium.email,
+                        to: email,
+                        subject: output.mail.subject,
+                        text: output.mail.text
+                      });
 
-                  emitter.emit('ready', {
-                    redirect: app.config.comitium.basePath + 'sign-out/reason/reactivation-required'
+                      emitter.emit('ready', {
+                        redirect: app.config.comitium.basePath + 'sign-out/reason/reactivation-required'
+                      });
+                    } else {
+                      emitter.emit('error', output.listen);
+                    }
                   });
                 } else {
 
