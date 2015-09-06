@@ -18,8 +18,8 @@ function mail(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query({
-          name: 'content_email',
-          text: 'select id, subject, text, html from email_templates where name ilike $1;',
+          name: 'content_mail',
+          text: 'select subject, text, html from email_templates where name ilike $1;',
           values: [ args.template ]
         }, function (err, result) {
           done();

@@ -1,7 +1,6 @@
 
 -- email templates
 create table email_templates (
-  id serial not null,
   name text unique not null,
   description text,
   default_subject text not null,
@@ -9,7 +8,7 @@ create table email_templates (
   subject text not null,
   text text not null,
   html text,
-  primary key (id)
+  primary key (name)
 );
 
 insert into email_templates ( name, description, default_subject, default_text, subject, text ) values
