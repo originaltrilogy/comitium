@@ -74,6 +74,7 @@ Topic: [topicTitle]
 
 Reason: [reason]
 
+Post content:
 [postText]',
 'Your post was deleted',
 'A moderator deleted one of your posts.
@@ -85,6 +86,7 @@ Topic: [topicTitle]
 
 Reason: [reason]
 
+Post content:
 [postText]'
 ),
 (
@@ -141,14 +143,20 @@ Private topics are visible only to members who receive invitations; not even mod
 
 [replyUrl]
 
+
+
 Unsubscribe:
+
 [unsubscribeUrl]',
 'Topic update: [topicTitle]',
 '[replyAuthor] posted a reply to [topicTitle]:
 
 [replyUrl]
 
+
+
 Unsubscribe:
+
 [unsubscribeUrl]'
 );
 
