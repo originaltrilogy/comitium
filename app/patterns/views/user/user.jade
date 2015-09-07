@@ -21,11 +21,8 @@ section.summary
     
     if user.website && user.website.length
       dt Web Site
-      dd <a href="#{user.website}">#{user.website}</a>
-    
-    if user.blog && user.website.length
-      dt Blog
-      dd <a href="#{user.blog}">#{user.blog}</a>
+      dd
+        a(href="#{user.website}") #{user.website}
 
 nav.actions
   ul

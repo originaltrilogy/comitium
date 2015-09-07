@@ -65,7 +65,8 @@ function activate(params, context, emitter) {
     activate: function (emitter) {
       app.models.user.activate({
         id: params.url.id || false,
-        activationCode: params.url.activationCode || false
+        activationCode: params.url.activationCode || false,
+        reactivation: params.url.reactivation || false
       }, emitter);
     }
   }, function (output) {

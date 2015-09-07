@@ -17,7 +17,7 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
       a(href="post/id/#{post.id}") This post has been edited.
   nav.actions
     ul
-      if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
+      if ( session.username === post.author && !post.lockedByID ) || session.moderateDiscussions
         li.edit
           a(href="post/action/edit/id/#{post.id}") Edit
       li.bookmark
@@ -26,7 +26,7 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
         li.report
           a(href="post/action/report/id/#{post.id}") Report
       if session.moderateDiscussions
-        if post.lockedByID === 0
+        if !post.lockedByID
           li.lock
             a(href="post/action/lock/id/#{post.id}") Lock
         else

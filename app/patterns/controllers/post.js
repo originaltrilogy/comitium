@@ -198,7 +198,7 @@ function edit(params, context, emitter) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
         params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + output.post.id);
-        params.form.content = output.post.markdown;
+        params.form.content = output.post.text;
         params.form.reason = '';
 
         emitter.emit('ready', {
@@ -279,8 +279,8 @@ function editForm(params, context, emitter) {
                   app.models.post.edit({
                     id: post.id,
                     editorID: params.session.userID,
+                    text: params.form.content,
                     html: parsedContent,
-                    markdown: params.form.content,
                     reason: parsedReason,
                     currentPost: post,
                     draft: draft,
@@ -770,8 +770,8 @@ function trashForm(params, context, emitter) {
                         template: 'Post Deletion',
                         replace: {
                           postID: post.id,
-                          postText: post.markdown,
-                          topicTitle: post.topicTitleMarkdown,
+                          postText: post.text,
+                          topicTitle: post.topicTitle,
                           topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
                           reason: params.form.reason
                         }

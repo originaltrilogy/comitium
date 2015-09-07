@@ -20,7 +20,7 @@ function buildMethodGroup(emitter) {
         emitter.emit('error', err);
       } else {
         client.query(
-          'select "id", "html" from "posts" where "markdown" = \' \' order by "id" desc limit 5000;',
+          'select "id", "html" from "posts" where "text" = \'\' order by "id" desc limit 5000;',
           function (err, result) {
             done();
             if ( err ) {
@@ -31,12 +31,12 @@ function buildMethodGroup(emitter) {
                 result.rows.forEach( function (item, index, array) {
 
                   methodGroup['row' + item.id] = function (emitter) {
-                    var postMarkdown;
+                    var text;
 
                     try {
-                      postMarkdown = toMarkdown(item.html !== null ? item.html.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : ' ');
+                      text = toMarkdown(item.html !== null ? item.html.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : ' ');
                     } catch ( err ) {
-                      postMarkdown = item.html;
+                      text = item.html;
                     }
 
                     pg.connect(connectionString, function (err, client, done) {
@@ -45,8 +45,8 @@ function buildMethodGroup(emitter) {
                         emitter.emit('error', err);
                       } else {
                         client.query(
-                          'update "posts" set "markdown" = $1 where "id" = $2;',
-                          [ postMarkdown, item.id ],
+                          'update "posts" set "text" = $1 where "id" = $2;',
+                          [ text, item.id ],
                           function (err, result) {
                             done();
                             if ( err ) {

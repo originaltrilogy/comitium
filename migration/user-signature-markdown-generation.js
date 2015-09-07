@@ -20,7 +20,7 @@ app.listen('waterfall', {
         emitter.emit('error', err);
       } else {
         client.query(
-          'select "id", "signatureHtml" from users where "signatureMarkdown" = \'\' order by id asc;',
+          'select "id", "signatureHtml" from users where "signature" is null order by id asc;',
           function (err, result) {
             done();
             if ( err ) {
@@ -30,20 +30,20 @@ app.listen('waterfall', {
               result.rows.forEach( function (item, index, array) {
                 methodGroup['row' + item.id] = function (emitter) {
                   pg.connect(connectionString, function (err, client, done) {
-                    var signatureMarkdown;
+                    var signature;
 
                     try {
-                      signatureMarkdown = toMarkdown(item.signatureHtml !== null ? item.signatureHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : '');
+                      signature = toMarkdown(item.signatureHtml !== null ? item.signatureHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : '');
                     } catch ( err ) {
-                      signatureMarkdown = item.signatureHtml;
+                      signature = item.signatureHtml;
                     }
 
                     if ( err ) {
                       emitter.emit('error', err);
                     } else {
                       client.query(
-                        'update "users" set "signatureMarkdown" = $1 where "id" = $2;',
-                        [ signatureMarkdown, item.id ],
+                        'update "users" set "signature" = $1 where "id" = $2;',
+                        [ signature, item.id ],
                         function (err, result) {
                           done();
                           if ( err ) {

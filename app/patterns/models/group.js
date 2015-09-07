@@ -25,7 +25,7 @@ function discussionPermissions(discussionID, groupID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select id, "groupID", "discussionID", read, post, reply from "discussionPermissions" where "groupID" = $1 and "discussionID" = $2;',
+              'select "groupID", "discussionID", "read", "post", "reply" from "discussionPermissions" where "groupID" = $1 and "discussionID" = $2;',
               [ groupID, discussionID ],
               function (err, result) {
                 done();

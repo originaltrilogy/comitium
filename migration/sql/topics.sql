@@ -1,40 +1,43 @@
 
 create index on "tblForumPosts" ( "intPostID", "intTopicID" );
 
+analyze "tblForumPosts";
+
 create table "topics" (
   "id" serial not null,
   "discussionID" integer,
   -- make not null in installation script:
   -- "discussionID" integer not null,
-  "titleMarkdown" text not null,
+  "title" text not null,
   "titleHtml" text,
   -- make not null for installation script:
   -- "titleHtml" text not null,
   "url" text not null,
   "created" timestamp without time zone not null,
   "modified" timestamp without time zone,
-  "stickyDate" timestamp without time zone not null,
-  "replies" integer not null,
+  "sticky" timestamp without time zone,
+  "replies" integer default 0,
   "draft" boolean not null,
   "private" boolean not null,
-  "lockedByID" integer default 0,
+  "lockedByID" integer,
   "lockReason" text,
   primary key (id)
 );
 
 create table "topicInvitations" (
   "userID" integer not null,
-  "topicID" integer not null
+  "topicID" integer not null,
+  primary key ( "userID", "topicID" )
 );
 
 insert into "topics" (
   "id",
   "discussionID",
-  "titleMarkdown",
+  "title",
   "titleHtml",
   "url",
   "created",
-  "stickyDate",
+  "sticky",
   "replies",
   "draft",
   "private"
@@ -42,13 +45,13 @@ insert into "topics" (
 select
   "intTopicID",
   0,
-  ' ',
+  '',
   (
     select "vchPostTitle"
     from "tblForumPosts"
     where "intPostID" = "intFirstTopicPostID"
   ),
-  ' ',
+  '',
   coalesce((
     select "dtePostDateCreated"
     from "tblForumPosts"
@@ -66,7 +69,7 @@ SELECT SETVAL('topics_id_seq', ( select max("id") + 1 from topics ) );
 
 update topics set "titleHtml" = "id" where "titleHtml" is null;
 
-update topics t set "stickyDate" = (
+update topics t set "sticky" = (
   select "dteStickyDate" from "tblForumTopics" where "intTopicID" = t.id
 )
 where id in ( select "intTopicID" from "tblForumTopics" where "dteStickyDate" > now() );

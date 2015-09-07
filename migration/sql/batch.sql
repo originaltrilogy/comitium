@@ -1,17 +1,17 @@
 
 -- email templates
-create table email_templates (
-  name text unique not null,
-  description text,
-  default_subject text not null,
-  default_text text not null,
-  subject text not null,
-  text text not null,
-  html text,
-  primary key (name)
+create table "emailTemplates" (
+  "name" text unique not null,
+  "description" text,
+  "default_subject" text not null,
+  "default_text" text not null,
+  "subject" text not null,
+  "text" text not null,
+  "html" text,
+  primary key ( "name" )
 );
 
-insert into email_templates ( name, description, default_subject, default_text, subject, text ) values
+insert into "emailTemplates" ( "name", "description", "default_subject", "default_text", "subject", "text" ) values
 (
 'Registration',
 'This e-mail is sent to new users after they register so they can activate their account.',
@@ -59,6 +59,36 @@ If you didn''t initiate this request, it''s possible someone made a typo while e
 [resetUrl]
 
 If you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.'
+),
+(
+'Post Report',
+'When users report a post, moderators are notified via e-mail.',
+'Post report',
+'[reporter] has reported the following post:
+
+Post ID: [post_url]
+Topic: [topic_title]
+
+[topic_url]
+
+Reason: [reason]
+
+Post content:
+
+[post_text]',
+'Post report',
+'[reporter] has reported the following post:
+
+Post ID: [post_url]
+Topic: [topic_title]
+
+[topic_url]
+
+Reason: [reason]
+
+Post content:
+
+[post_text]'
 ),
 (
 'Post Deletion',
@@ -210,59 +240,51 @@ SELECT SETVAL('categories_id_seq', ( select max("id") + 1 from categories ) );
 
 
 -- bookmarks
-
 create table "bookmarks" (
-  "id" serial not null,
   "userID" integer not null,
   "postID" integer not null,
   "notes" text,
-  primary key ("id")
+  primary key ( "userID", "postID" )
 );
 
 
 insert into "bookmarks" (
-  "id",
   "userID",
   "postID",
   "notes"
 )
-select
-  "intBookmarkID",
+select distinct
   "intUserID",
   "intPostID",
   "vchBookmarkNotes"
 from "tblForumBookmarks";
 
 
-SELECT SETVAL('bookmarks_id_seq', ( select max("id") + 1 from bookmarks ) );
-
-
 
 
 -- permissions
-
 create table "groups" (
-    "id" serial not null,
-    "name" text not null,
-    "description" text not null,
-    "login" boolean not null,
-    "post" boolean not null,
-    "reply" boolean not null,
-    "talkPrivately" boolean not null,
-    "moderateDiscussions" boolean not null,
-    "administrateDiscussions" boolean not null,
-    "moderateUsers" boolean not null,
-    "administrateUsers" boolean not null,
-    "administrateApp" boolean not null,
-    "bypassLockdown" boolean not null,
-    "system" boolean not null,
-    "locked" boolean not null,
-    primary key ("id")
+  "id" serial not null,
+  "name" text unique not null,
+  "description" text not null,
+  "login" boolean not null,
+  "post" boolean not null,
+  "reply" boolean not null,
+  "talkPrivately" boolean not null,
+  "moderateDiscussions" boolean not null,
+  "administrateDiscussions" boolean not null,
+  "moderateUsers" boolean not null,
+  "administrateUsers" boolean not null,
+  "administrateApp" boolean not null,
+  "bypassLockdown" boolean not null,
+  "system" boolean not null,
+  "locked" boolean not null,
+  primary key ("id")
 );
 
 
 insert into "groups"
-( id, name, description, login, post, reply, "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", system, locked )
+( "id", "name", "description", "login", "post", "reply", "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", "system", "locked" )
 values
 ( 1, 'Public', 'Public (anonymous) visitors.', false, false, false, false, false, false, false, false, false, false, true, false ),
 ( 2, 'New Members', 'Forum members who can reply to existing topics, but haven''t met the minimum post requirement to start new topics.', true, false, true, false, false, false, false, false, false, false, true, false ),
@@ -302,10 +324,9 @@ update users set "groupID" = 3 where "groupID" = 2;
 
 
 create table "moderators" (
-  "id" serial not null,
   "userID" integer not null,
   "discussionID" integer not null,
-  primary key ("id")
+  primary key ( "userID", "discussionID" )
 );
 
 
@@ -378,13 +399,12 @@ values
 
 
 create table "discussionPermissions" (
-  "id" serial not null,
   "groupID" integer not null,
   "discussionID" integer not null,
   "read" boolean not null,
   "post" boolean not null,
   "reply" boolean not null,
-  primary key ("id")
+  primary key ( "groupID", "discussionID" )
 );
 
 insert into "discussionPermissions"
@@ -536,34 +556,56 @@ values
 
 
 
-
--- subscriptions
-
-create table "subscriptions" (
-  "id" serial not null,
-  "userID" integer not null,
-  "topicID" integer not null,
-  "notificationSent" timestamp without time zone not null,
-  primary key ("id")
-);
-
-
-insert into "subscriptions" (
-  "id",
-  "userID",
-  "topicID",
-  "notificationSent"
-)
+-- topic subscriptions
+create temp table topicsubscriptionstemp as
 select
-  "intTopicSubscriptionID",
   "intUserID",
   "intTopicID",
   "dteSubscriptionNotificationSent"
 from "tblForumTopicSubscriptions";
 
+-- dedupe topic subscriptions
+create function topicsubscriptionscleanup() returns text as $$
+  declare
+    dupe record;
 
-SELECT SETVAL('subscriptions_id_seq', ( select max("id") + 1 from subscriptions ) );
+  begin
+    for dupe in SELECT "intUserID", "intTopicID"
+          FROM "topicsubscriptionstemp"
+          GROUP BY "intUserID", "intTopicID"
+          HAVING ( COUNT("intUserID") > 1 and COUNT("intTopicID") > 1 )
+          order by "intTopicID" asc
 
+      loop
+        delete from "topicsubscriptionstemp" where "intUserID" = dupe."intUserID" and "intTopicID" = dupe."intTopicID";
+      end loop;
+
+    return true;
+  end;
+
+$$ language 'plpgsql';
+select topicsubscriptionscleanup();
+drop function topicsubscriptionscleanup();
+
+create table "topicSubscriptions" (
+  "userID" integer not null,
+  "topicID" integer not null,
+  "notificationSent" timestamp without time zone not null,
+  primary key ( "userID", "topicID" )
+);
+
+insert into "topicSubscriptions" (
+  "userID",
+  "topicID",
+  "notificationSent"
+)
+select
+  "intUserID",
+  "intTopicID",
+  "dteSubscriptionNotificationSent"
+from topicsubscriptionstemp;
+
+drop table topicsubscriptionstemp;
 
 
 
@@ -602,31 +644,28 @@ create table "topicViews" (
   "userID" integer not null,
   "topicID" integer not null,
   "time" timestamp without time zone not null,
-  primary key ("userID", "topicID")
+  primary key ( "userID", "topicID" )
 );
-
 
 insert into "topicViews"
   select "intUserID", "intTopicID", "dteTopicViewTime" from topicviewtemp;
 
+drop table topicviewtemp;
+
 
 
 -- ignored users
-
 create table "ignoredUsers" (
-  "id" serial not null,
   "userID" integer not null,
   "ignoredUserID" integer not null,
-  primary key ("id")
+  primary key ( "userID", "ignoredUserID" )
 );
 
 insert into "ignoredUsers" (
-  "id",
   "userID",
   "ignoredUserID"
 )
-select
-  "intIgnorePairID",
+select distinct
   "intUserID",
   "intIgnoreUserID"
 from "tblForumIgnoredUsers";
@@ -634,42 +673,31 @@ from "tblForumIgnoredUsers";
 
 
 -- Password reset
-
 create table "passwordReset" (
-  "id" serial not null,
   "userID" integer not null,
-  "ip" cidr not null,
   "verificationCode" text not null,
-  "timeRequested" timestamp without time zone not null,
-  primary key ("id")
+  "ip" cidr not null,
+  "time" timestamp without time zone not null,
+  primary key ( "userID", "verificationCode" )
 );
 
 
 
 -- announcements
-
 create table "announcements" (
-  "id" serial not null,
   "discussionID" integer not null,
   "topicID" integer not null,
-  primary key ("id")
+  primary key ( "discussionID", "topicID" )
 );
 
-
 insert into "announcements" (
-  "id",
   "discussionID",
   "topicID"
 )
-select
-  "intTopicForumLookupID",
+select distinct
   "intForumID",
   "intTopicID"
 from "tblForumTopicForumLookup" where "bitAnnouncement" = true;
-
-
-SELECT SETVAL('announcements_id_seq', ( select max("id") + 1 from announcements ) );
-
 
 update "topics" t set "discussionID" = (
   select "intForumID"
@@ -690,10 +718,6 @@ update "announcements"
 set "discussionID" = 22
 where "discussionID" = 2;
 
-update "moderators"
-set "discussionID" = 22
-where "discussionID" = 2;
-
 update "topics"
 set "discussionID" = 2
 where "id" in (
@@ -701,8 +725,9 @@ where "id" in (
   from "announcements"
 );
 
--- discussions
 
+
+-- discussions
 create table "discussions" (
   "id" serial not null,
   "categoryID" integer not null,
@@ -718,9 +743,8 @@ create table "discussions" (
   "hidden" boolean not null,
   "system" boolean not null,
   "locked" boolean not null,
-  primary key ("id")
+  primary key ( "id" )
 );
-
 
 insert into "discussions" (
   "id",
@@ -798,14 +822,16 @@ set "metaDescription" = "description"
 where "metaDescription" = '';
 
 
+
 -- Discussion views
-CREATE TABLE "discussionViews" (
-  "id" serial,
-  "discussionID" integer NOT NULL,
-  "discussionRead" timestamp without time zone NOT NULL,
+create table "discussionViews" (
+  "userID" integer not null,
+  "discussionID" integer not null,
+  "discussionRead" timestamp without time zone not null,
   "topicsRead" timestamp without time zone,
-  PRIMARY KEY ("id")
+  primary key ( "userID", "discussionID" )
 );
+
 
 
 -- Put any topics without a lookup record in the trash
@@ -852,6 +878,7 @@ select cleanup();
 drop function cleanup();
 
 
+
 -- Update topics with existing locks
 
 -- create index on topics ( "id" );
@@ -859,8 +886,8 @@ create index on "tblForumTopicLock" ( "intTopicID" );
 create index on "tblForumTopicLock" ( "dteTopicLockDate" );
 
 update topics t
-set "lockedByID" = coalesce(( select "intTopicLockedBy" from "tblForumTopicLock" where "intTopicID" = t.id order by "dteTopicLockDate" desc limit 1 ), 0),
-    "lockReason" = ( select "vchTopicLockReason" from "tblForumTopicLock" where "intTopicID" = t.id order by "dteTopicLockDate" desc limit 1 )
+set "lockedByID" = coalesce(( select "intTopicLockedBy" from "tblForumTopicLock" where "intTopicID" = t.id order by "dteTopicLockDate" desc limit 1 ), null),
+    "lockReason" = coalesce(( select "vchTopicLockReason" from "tblForumTopicLock" where "intTopicID" = t.id order by "dteTopicLockDate" desc limit 1 ), null)
 where id = t.id;
 
 
@@ -872,8 +899,8 @@ create index on "tblForumPostEditNotes" ( "intPostID" );
 create index on "tblForumPostEditNotes" ( "dtePostEditDate" );
 
 update posts p
-set "editorID" = coalesce(( select "intUserID" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), 0),
-    "editReason" = ( select "vchPostEditReason" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ),
+set "editorID" = coalesce(( select "intUserID" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), null),
+    "editReason" = coalesce(( select "vchPostEditReason" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), null),
     "modified" = coalesce(( select "dtePostEditDate" from "tblForumPostEditNotes" where "intPostID" = p.id order by "dtePostEditDate" desc limit 1 ), p."modified")
 where id = p.id;
 
@@ -903,7 +930,7 @@ create index on "discussionPermissions" ( "reply" );
 create index on "topics" ( "discussionID" );
 -- create index on "topics" ( "id" );
 create index on "topics" ( "draft" );
-create index on "topics" ( "stickyDate" );
+create index on "topics" ( "sticky" );
 create index on "topics" ( "private" );
 create index on "topicInvitations" ( "userID" );
 create index on "topicInvitations" ( "topicID" );
@@ -912,11 +939,13 @@ create index on "posts" ( "draft" );
 create index on "posts" ( "topicID" );
 create index on "posts" ( "userID" );
 create index on "posts" ( "created" );
-create index on posts ( "topicID" asc );
-create index on posts ( "topicID" desc );
-create index on posts ( "topicID", created asc );
-create index on posts ( "topicID", created desc );
+create index on "posts" ( "topicID" asc );
+create index on "posts" ( "topicID" desc );
+create index on "posts" ( "topicID", created asc );
+create index on "posts" ( "topicID", created desc );
 create index on "posts" ( "draft" ) where draft = false;
+create index on "postReports" ( "postID" );
+create index on "postReports" ( "reportedByID" );
 -- create index on "users" ( "id" );
 create index on "topicViews" ( "userID" );
 create index on "topicViews" ( "topicID" );
@@ -924,26 +953,31 @@ create index on "topicViews" ( "time" );
 -- create index on "passwordReset" ( "id" );
 create index on "passwordReset" ( "userID" );
 create index on "passwordReset" ( "verificationCode" );
+create index on "topicSubscriptions" ( "userID" );
+create index on "topicSubscriptions" ( "topicID" );
+create index on "topicSubscriptions" ( "notificationSent" );
+
+
 
 -- Analyze all tables
-
-analyze announcements;
-analyze bookmarks;
-analyze categories;
+analyze "announcements";
+analyze "bookmarks";
+analyze "categories";
 analyze "discussionPermissions";
-analyze discussions;
+analyze "discussions";
+-- analyze "discussionSubscriptions";
 analyze "discussionViews";
-analyze groups;
+analyze "groups";
 analyze "ignoredUsers";
-analyze moderators;
+analyze "moderators";
 analyze "passwordReset";
 analyze "postHistory";
 analyze "postReports";
-analyze posts;
+analyze "posts";
 analyze "postTrash";
-analyze subscriptions;
+analyze "topicSubscriptions";
 analyze "topicInvitations";
-analyze topics;
+analyze "topics";
 analyze "topicViews";
 analyze "userLogs";
-analyze users;
+analyze "users";

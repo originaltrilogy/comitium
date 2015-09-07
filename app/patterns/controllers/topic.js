@@ -241,8 +241,8 @@ function startForm(params, context, emitter) {
       }
     }, function (output) {
       var discussion = output.discussion,
-          titleMarkdown = new Markdown().disable(['link', 'image']),
-          contentMarkdown = new Markdown({
+          mdTitle = new Markdown().disable(['link', 'image']),
+          mdContent = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -257,8 +257,8 @@ function startForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           params.form.subscribe = params.form.subscribe || false;
-          parsedTitle = titleMarkdown.renderInline(params.form.title);
-          parsedContent = contentMarkdown.render(params.form.content);
+          parsedTitle = mdTitle.renderInline(params.form.title);
+          parsedContent = mdContent.render(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
 
@@ -290,10 +290,10 @@ function startForm(params, context, emitter) {
                   app.models.topic.insert({
                     discussionID: discussion.id,
                     userID: params.session.userID,
-                    titleMarkdown: params.form.title,
+                    title: params.form.title,
                     titleHtml: parsedTitle,
                     url: url,
-                    markdown: params.form.content,
+                    text: params.form.content,
                     html: parsedContent,
                     draft: draft,
                     private: false,
@@ -446,8 +446,8 @@ function startAnnouncementForm(params, context, emitter) {
       }
     }, function (output) {
       var categories = output.categoriesPost,
-          titleMarkdown = new Markdown().disable(['link', 'image']),
-          contentMarkdown = new Markdown({
+          mdTitle = new Markdown().disable(['link', 'image']),
+          mdContent = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -461,8 +461,8 @@ function startAnnouncementForm(params, context, emitter) {
       // If the group has post access, process the announcement form
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedTitle = titleMarkdown.renderInline(params.form.title);
-          parsedContent = contentMarkdown.render(params.form.content);
+          parsedTitle = mdTitle.renderInline(params.form.title);
+          parsedContent = mdContent.render(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
 
@@ -513,10 +513,10 @@ function startAnnouncementForm(params, context, emitter) {
                     announcement: true,
                     discussions: params.form.discussions,
                     userID: params.session.userID,
-                    titleMarkdown: params.form.title,
+                    title: params.form.title,
                     titleHtml: parsedTitle,
                     url: url,
-                    markdown: params.form.content,
+                    text: params.form.content,
                     html: parsedContent,
                     draft: draft,
                     time: time
@@ -675,8 +675,8 @@ function startPrivateForm(params, context, emitter) {
         }, emitter);
       }
     }, function (output) {
-      var titleMarkdown = new Markdown().disable(['link', 'image']),
-          contentMarkdown = new Markdown({
+      var mdTitle = new Markdown().disable(['link', 'image']),
+          mdContent = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -691,8 +691,8 @@ function startPrivateForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           params.form.subscribe = params.form.subscribe || false;
-          parsedTitle = titleMarkdown.renderInline(params.form.title);
-          parsedContent = contentMarkdown.render(params.form.content);
+          parsedTitle = mdTitle.renderInline(params.form.title);
+          parsedContent = mdContent.render(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
 
@@ -721,10 +721,10 @@ function startPrivateForm(params, context, emitter) {
                     userID: params.session.userID,
                     username: params.session.username,
                     discussionID: 0,
-                    titleMarkdown: params.form.title,
+                    title: params.form.title,
                     titleHtml: parsedTitle,
                     url: url,
-                    markdown: params.form.content,
+                    text: params.form.content,
                     html: parsedContent,
                     draft: draft,
                     time: time
@@ -751,12 +751,16 @@ function startPrivateForm(params, context, emitter) {
                 if ( output.listen.success && output.saveTopic.success ) {
                   if ( !draft && output.mail.success ) {
                     inviteesArray.forEach( function (item, index, array) {
-                      methods[item] = function (emitter) {
+                      // Dedupes invitees by overwriting the method if it already exists
+                      methods[item.toLowerCase()] = function (emitter) {
                         app.models.user.info({
                           username: item
                         }, emitter);
                       };
                     });
+
+                    // Delete the author if they invited themselves
+                    delete methods[params.session.username.toLowerCase()];
 
                     app.listen(methods, function (output) {
                       if ( output.listen.success ) {
@@ -865,12 +869,11 @@ function reply(params, context, emitter) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
         params.form.content = app.config.comitium.editorIntro;
-        params.form.subscribe = false;
 
         // If the quoted post exists and its topic ID matches this topic ID, add the
         // quote to the post content (this is a security measure, don't remove it).
-        if ( output.quote && output.quote.topicID === output.topic.id && output.quote.markdown ) {
-          params.form.content = '> [**' + output.quote.author + '** said:](post/id/' + output.quote.id + ')\n>\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
+        if ( output.quote && output.quote.topicID === output.topic.id && output.quote.text ) {
+          params.form.content = '> [**' + output.quote.author + '** said:](post/id/' + output.quote.id + ')\n>\n> ' + output.quote.text.replace(/\n/g, '\n> ') + '\n\n';
         } else if ( params.url.quote && !output.quote ) {
           message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.';
         }
@@ -920,7 +923,7 @@ function replyForm(params, context, emitter) {
       }
     }, function (output) {
       var topic = output.topic,
-          contentMarkdown = new Markdown({
+          mdContent = new Markdown({
             breaks: true,
             linkify: true,
             typographer: true
@@ -932,9 +935,7 @@ function replyForm(params, context, emitter) {
       // If the group has reply access, process the form
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          params.form.subscribe = params.form.subscribe || false;
-
-          parsedContent = contentMarkdown.render(params.form.content);
+          parsedContent = mdContent.render(params.form.content);
 
           switch ( params.form.formAction ) {
             case 'Preview':
@@ -961,7 +962,7 @@ function replyForm(params, context, emitter) {
                     discussionID: topic.discussionID,
                     userID: params.session.userID,
                     html: parsedContent,
-                    markdown: params.form.content,
+                    text: params.form.content,
                     draft: draft,
                     private: topic.private,
                     time: time
@@ -1013,7 +1014,7 @@ function replyForm(params, context, emitter) {
                         replace: {
                           replyAuthor: params.session.username,
                           replyUrl: replyUrl,
-                          topicTitle: topic.private ? 'Private Topic (title withheld for your privacy)' : topic.titleMarkdown,
+                          topicTitle: topic.private ? 'Private Topic (title withheld for your privacy)' : topic.title,
                           unsubscribeUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/action/unsubscribe/id/' + topic.id
                         }
                       });
@@ -1452,7 +1453,7 @@ function moveForm(params, context, emitter) {
                     topicID: topic.id,
                     template: 'Topic Move',
                     replace: {
-                      topicTitle: topic.titleMarkdown,
+                      topicTitle: topic.title,
                       topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
                       oldDiscussionTitle: topic.discussionTitle,
                       newDiscussionTitle: output.newDiscussion.title
@@ -1574,7 +1575,7 @@ function trashForm(params, context, emitter) {
                     topicID: topic.id,
                     template: 'Topic Deletion',
                     replace: {
-                      topicTitle: topic.titleMarkdown,
+                      topicTitle: topic.title,
                       reason: params.form.reason
                     }
                   });

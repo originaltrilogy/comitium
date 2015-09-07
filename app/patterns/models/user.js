@@ -64,12 +64,15 @@ function activate(args, emitter) {
                       message: 'Your account has been activated! You can now sign in.'
                     });
 
-                    // Create the user's avatar
-                    fs.writeFile(app.config.citizen.directories.web + '/avatars/' + args.id + '.jpg', app.resources.images.defaultAvatar, function (err) {
-                      if ( err ) {
-                        emitter.emit('error', err);
-                      }
-                    });
+                    // Create the user's avatar if they're activating their
+                    // account for the first time.
+                    if ( !args.reactivation ) {
+                      fs.writeFile(app.config.citizen.directories.web + '/avatars/' + args.id + '.jpg', app.resources.images.defaultAvatar, function (err) {
+                        if ( err ) {
+                          emitter.emit('error', err);
+                        }
+                      });
+                    }
                   }
               });
             }
@@ -554,16 +557,16 @@ function info(args, emitter) {
       emitter.emit('error', err);
     } else {
       if ( args.userID ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
       } else if ( args.username ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" ilike $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" ilike $1';
         arg = args.username;
       } else if ( args.usernameHash ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" ilike $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" ilike $1';
         arg = args.usernameHash;
       } else if ( args.email ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signatureMarkdown", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "email" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."email" ilike $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "email" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."email" ilike $1';
         arg = args.email;
       }
 
@@ -691,7 +694,7 @@ function isIgnored(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "id" from "ignoredUsers" where "userID" = ( select "id" from "users" where "username" ilike $1 ) and "ignoredUserID" = ( select "id" from "users" where "username" ilike $2 )',
+        'select "ignoredUserID" from "ignoredUsers" where "userID" = ( select "id" from "users" where "username" ilike $1 ) and "ignoredUserID" = ( select "id" from "users" where "username" ilike $2 )',
         [ args.ignoredBy, args.username ],
         function (err, result) {
           done();
@@ -750,8 +753,8 @@ function passwordResetInsert(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'insert into "passwordReset" ( "userID", "ip", "verificationCode", "timeRequested" ) values ( $1, $2, $3, $4 ) returning id;',
-        [ args.userID, args.ip, verificationCode, app.toolbox.helpers.isoDate() ],
+        'insert into "passwordReset" ( "userID", "verificationCode", "ip", "time" ) values ( $1, $2, $3, $4 );',
+        [ args.userID, verificationCode, args.ip, app.toolbox.helpers.isoDate() ],
         function (err, result) {
           done();
           if ( err ) {
@@ -775,7 +778,7 @@ function passwordResetVerify(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "id", "userID", "verificationCode", "timeRequested" from "passwordReset" where "userID" = $1 and "verificationCode" = $2;',
+        'select "userID", "verificationCode", "time" from "passwordReset" where "userID" = $1 and "verificationCode" = $2;',
         [ args.userID, args.verificationCode ],
         function (err, result) {
           done();
@@ -910,10 +913,10 @@ function profile(args, emitter) {
       emitter.emit('error', err);
     } else {
       if ( args.userID ) {
-        sql = 'select u."id", u."groupID", u."username", u."url", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", g."name" as "group", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."url", u."signatureHtml", u."lastActivity", u."joined", u."websites", g."name" as "group", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
       } else if ( args.username ) {
-        sql = 'select u."id", u."groupID", u."username", u."url", u."signatureHtml", u."lastActivity", u."joined", u."website", u."blog", g."name" as "group", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
+        sql = 'select u."id", u."groupID", u."username", u."url", u."signatureHtml", u."lastActivity", u."joined", u."websites", g."name" as "group", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" = $1';
         arg = args.username;
       }
 
@@ -1089,8 +1092,8 @@ function updateSettings(args, emitter) {
     } else {
 
       client.query(
-        'update "users" set "signatureMarkdown" = $1, "signatureHtml" = $2, "timezone" = $3, "theme" = $4, "privateTopicEmailNotification" = $5 where "id" = $6;',
-        [ args.signatureMarkdown, args.signatureHtml, args.timezone, args.theme, args.privateTopicEmailNotification, args.userID ],
+        'update "users" set "signature" = $1, "signatureHtml" = $2, "timezone" = $3, "theme" = $4, "privateTopicEmailNotification" = $5 where "id" = $6;',
+        [ args.signature, args.signatureHtml, args.timezone, args.theme, args.privateTopicEmailNotification, args.userID ],
         function (err, result) {
           done();
           if ( err ) {

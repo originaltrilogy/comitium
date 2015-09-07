@@ -4,13 +4,13 @@ create index on "arcmessages" ( "imessageid" );
 create index on "arcmessages" ( "ithreadid" );
 create index on "arcmessages" ( "dtmessagedate" );
 
-insert into "topics" ( "id", "discussionID", "titleMarkdown", "titleHtml", "url", "created", "replies", "draft", "private", "lockedByID" )
-  select distinct "ithreadid" as "id", coalesce( ( select distinct 22 from "arcthreads" where "ithreadid" = at."ithreadid" and "icategoryid" = 2 ), "icategoryid" ) as "discussionID", ' ' as "titleMarkdown", "vchthreadname" as "titleHtml", ' ' as "url", "dtinsertdate" as "created", ( select count("imessageid") - 1 from "arcmessages" where "ithreadid" = at."ithreadid" ) as "replies", false as "draft", false as "private", coalesce( ( select 4308 from "arcthreads" where "ithreadid" = at."ithreadid" and "chthreadlock" like 'Locked%' ), 0 ) as "lockedByID"
+insert into "topics" ( "id", "discussionID", "title", "titleHtml", "url", "created", "replies", "draft", "private", "lockedByID" )
+  select distinct "ithreadid" as "id", coalesce( ( select distinct 22 from "arcthreads" where "ithreadid" = at."ithreadid" and "icategoryid" = 2 ), "icategoryid" ) as "discussionID", '' as "title", "vchthreadname" as "titleHtml", ' ' as "url", "dtinsertdate" as "created", ( select count("imessageid") - 1 from "arcmessages" where "ithreadid" = at."ithreadid" ) as "replies", false as "draft", false as "private", coalesce( ( select 4308 from "arcthreads" where "ithreadid" = at."ithreadid" and "chthreadlock" like 'Locked%' ), null ) as "lockedByID"
   from "arcthreads" at
   order by "created" asc;
 
-insert into "posts" ( "id", "topicID", "userID", "html", "markdown", "created", "draft", "editorID", "lockedByID" )
-  select distinct "imessageid" as "id", "ithreadid" as "topicID", coalesce( ( select distinct 4308 from "arcmessages" where "imessageid" = am."imessageid" and "iuserid" = 1 ), "iuserid" ) as "userID", "txmessage" as "html", ' ' as "markdown", "dtmessagedate" as "created", false as "draft", "iuserid" as "editorID", 0 as "lockedByID"
+insert into "posts" ( "id", "topicID", "userID", "text", "html", "created", "draft" )
+  select distinct "imessageid" as "id", "ithreadid" as "topicID", coalesce( ( select distinct 4308 from "arcmessages" where "imessageid" = am."imessageid" and "iuserid" = 1 ), "iuserid" ) as "userID", '' as "text", "txmessage" as "html", "dtmessagedate" as "created", false as "draft"
   from "arcmessages" am
   order by "created" asc;
 

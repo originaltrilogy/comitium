@@ -20,7 +20,7 @@ app.listen('waterfall', {
         emitter.emit('error', err);
       } else {
         client.query(
-          'select "id", "titleHtml" from topics where "url" = \' \' order by "id" asc;',
+          'select "id", "titleHtml" from topics where "url" = \'\' order by "id" asc;',
           function (err, result) {
             done();
             if ( err ) {

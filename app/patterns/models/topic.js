@@ -244,7 +244,7 @@ function info(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."id", t."discussionID", t."titleMarkdown", t."titleHtml", t."url", t."stickyDate" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) where t."id" = $1;',
+              'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."sticky" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
@@ -282,8 +282,8 @@ function info(topicID, emitter) {
 
 
 function insert(args, emitter) {
-  var title = args.titleMarkdown.trim() || '',
-      content = args.markdown.trim() || '';
+  var title = args.title.trim() || '',
+      content = args.text.trim() || '';
 
   if ( !title.length || !content.length || ( args.private && !args.invitees.length ) ) {
     emitter.emit('ready', {
@@ -313,9 +313,9 @@ function insert(args, emitter) {
           insertTopic: function (previous, emitter) {
 
             client.query(
-              'insert into topics ( "discussionID", "titleMarkdown", "titleHtml", "url", "created", "stickyDate", "replies", "draft", "private", "lockedByID" ) ' +
-              'values ( $1, $2, $3, $4, $5, $5, 0, $6, $7, 0 ) returning id;',
-              [ args.discussionID, args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft, args.private ],
+              'insert into topics ( "discussionID", "title", "titleHtml", "url", "created", "draft", "private" ) ' +
+              'values ( $1, $2, $3, $4, $5, $6, $7 ) returning id;',
+              [ args.discussionID, args.title, args.titleHtml, args.url, args.time, args.draft, args.private ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -334,9 +334,9 @@ function insert(args, emitter) {
           insertPost: function (previous, emitter) {
 
             client.query(
-              'insert into posts ( "topicID", "userID", "html", "markdown", "created", "draft" ) ' +
+              'insert into posts ( "topicID", "userID", "text", "html", "created", "draft" ) ' +
               'values ( $1, $2, $3, $4, $5, $6 ) returning id;',
-              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft ],
+              [ previous.insertTopic.id, args.userID, args.text, args.html, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -358,7 +358,7 @@ function insert(args, emitter) {
             if ( args.private ) {
               args.invitees.forEach( function (item, index, array) {
                 // Dedupes invitees by overwriting the method if it already exists
-                userMethods[item] = function (emitter) {
+                userMethods[item.toLowerCase()] = function (emitter) {
                   client.query(
                     'select id from users where username ilike $1;',
                     [ item ],
@@ -699,7 +699,7 @@ function unlock(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'update "topics" set "lockedByID" = 0, "lockReason" = null where "id" = $1',
+        'update "topics" set "lockedByID" = null, "lockReason" = null where "id" = $1',
         [ args.topicID ],
         function (err, result) {
           done();
@@ -868,7 +868,7 @@ function move(args, emitter) {
 
 
 function reply(args, emitter) {
-  var content = args.markdown.trim() || '';
+  var content = args.text.trim() || '';
 
   if ( !content.length ) {
     emitter.emit('ready', {
@@ -898,9 +898,9 @@ function reply(args, emitter) {
           insertPost: function (previous, emitter) {
 
             client.query(
-              'insert into posts ( "topicID", "userID", "html", "markdown", "created", "draft" ) ' +
+              'insert into posts ( "topicID", "userID", "text", "html", "created", "draft" ) ' +
               'values ( $1, $2, $3, $4, $5, $6 ) returning id;',
-              [ args.topicID, args.userID, args.html, args.markdown, args.time, args.draft ],
+              [ args.topicID, args.userID, args.text, args.html, args.time, args.draft ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -1043,7 +1043,7 @@ function subscriptionExists(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select "id" from subscriptions where "userID" = $1 and "topicID" = $2;',
+            'select "userID" from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;',
             [ args.userID, args.topicID ],
             function (err, result) {
               done();
@@ -1082,7 +1082,7 @@ function subscribers(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select u.email from users u join subscriptions s on u.id = s."userID" where s."topicID" = $1;',
+            'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" where s."topicID" = $1;',
             [ args.topicID ],
             function (err, result) {
               done();
@@ -1119,7 +1119,7 @@ function subscribersToUpdate(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select u.email from users u join subscriptions s on u.id = s."userID" and u.id not in ( ' + skip + ' ) where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
+            'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" and u.id not in ( ' + skip + ' ) where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
             [ args.topicID ],
             function (err, result) {
               done();
@@ -1154,7 +1154,7 @@ function subscriptionNotificationSentUpdate(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'update "subscriptions" set "notificationSent" = $1 where "topicID" = $2;',
+            'update "topicSubscriptions" set "notificationSent" = $1 where "topicID" = $2;',
             [ args.time, args.topicID ],
             function (err, result) {
               done();
@@ -1197,7 +1197,7 @@ function subscribe(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'insert into subscriptions ( "userID", "topicID", "notificationSent" ) values ( $1, $2, $3 ) returning id;',
+              'insert into "topicSubscriptions" ( "userID", "topicID", "notificationSent" ) values ( $1, $2, $3 );',
               [ args.userID, args.topicID, args.time ],
               function (err, result) {
                 done();
@@ -1205,8 +1205,7 @@ function subscribe(args, emitter) {
                   emitter.emit('error', err);
                 } else {
                   emitter.emit('ready', {
-                    success: true,
-                    id: result.rows[0].id
+                    success: true
                   });
                 }
               }
@@ -1227,37 +1226,23 @@ function subscribe(args, emitter) {
 
 
 function unsubscribe(args, emitter) {
-  app.listen({
-    subscriptionDelete: function (emitter) {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'delete from subscriptions where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready');
-              }
-            }
-          );
-        }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', {
-        success: true
-      });
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
     } else {
-      emitter.emit('error', output.listen);
+      client.query(
+        'delete from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;',
+        [ args.userID, args.topicID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready');
+          }
+        }
+      );
     }
-
   });
 }
 

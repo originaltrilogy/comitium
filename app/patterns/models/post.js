@@ -14,7 +14,7 @@ module.exports = {
 
 
 function edit(args, emitter) {
-  if ( !args.markdown.length ) {
+  if ( !args.text.length ) {
     emitter.emit('ready', {
       success: false,
       reason: 'requiredFieldsEmpty',
@@ -40,8 +40,8 @@ function edit(args, emitter) {
           updatePost: function (previous, emitter) {
 
             client.query(
-              'update "posts" set "markdown" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "modified" = $5 where "id" = $6',
-              [ args.markdown, args.html, args.editorID, args.reason, args.time, args.id ],
+              'update "posts" set "text" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "modified" = $5 where "id" = $6',
+              [ args.text, args.html, args.editorID, args.reason, args.time, args.id ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -58,8 +58,8 @@ function edit(args, emitter) {
           insertPostHistory: function (previous, emitter) {
 
             client.query(
-              'insert into "postHistory" ( "postID", "editorID", "editReason", "markdown", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
-              [ args.id, args.currentPost.editorID === 0 ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.markdown, args.currentPost.html, args.currentPost.modified || args.currentPost.created ],
+              'insert into "postHistory" ( "postID", "editorID", "editReason", "text", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
+              [ args.id, !args.currentPost.editorID ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -112,7 +112,7 @@ function info(postID, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select p.id, p."topicID", p.html, p.markdown, p."created", p."modified", p.draft, p."editorID", p."editReason", p."lockedByID", p."lockReason", t."discussionID", t."titleMarkdown" as "topicTitleMarkdown", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", u2.username as editor, u2.url as "editorUrl" from posts p join users u on p."userID" = u.id left join users u2 on p."editorID" = u2.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
+        'select p.id, p."topicID", p.text, p.html, p."created", p."modified", p.draft, p."editorID", p."editReason", p."lockedByID", p."lockReason", t."discussionID", t."title" as "topicTitle", t."titleHtml" as "topicTitle", t.url as "topicUrl", d."url" as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", u2.username as editor, u2.url as "editorUrl" from posts p join users u on p."userID" = u.id left join users u2 on p."editorID" = u2.id join topics t on p."topicID" = t.id left join discussions d on t."discussionID" = d."id" where p.id = $1;',
         [ postID ],
         function (err, result) {
           done();
@@ -202,7 +202,7 @@ function saveBookmark(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select "id" from "bookmarks" where "userID" = $1 and "postID" = $2;',
+            'select "userID" from "bookmarks" where "userID" = $1 and "postID" = $2;',
             [ args.userID, args.postID ],
             function (err, result) {
               done();
@@ -233,7 +233,7 @@ function saveBookmark(args, emitter) {
               emitter.emit('error', err);
             } else {
               client.query(
-                'insert into "bookmarks" ( "userID", "postID", "notes" ) values ( $1, $2, $3 ) returning id;',
+                'insert into "bookmarks" ( "userID", "postID", "notes" ) values ( $1, $2, $3 );',
                 [ args.userID, args.postID, args.notes ],
                 function (err, result) {
                   done();
@@ -241,8 +241,7 @@ function saveBookmark(args, emitter) {
                     emitter.emit('error', err);
                   } else {
                     emitter.emit('ready', {
-                      success: true,
-                      id: result.rows[0].id
+                      success: true
                     });
                   }
                 }
@@ -315,7 +314,7 @@ function trash(args, emitter) {
         insertTrashPost: function (previous, emitter) {
 
           client.query(
-            'insert into "postTrash" ( "id", "topicID", "userID", "html", "markdown", "created", "modified", "draft", "editorID", "editReason", "lockedByID", "lockReason", "deletedByID", "deleteReason" ) select "id", "topicID", "userID", "html", "markdown", "created", "modified", "draft", "editorID", "editReason", "lockedByID", "lockReason", $2, $3 from "posts" where id = $1;',
+            'insert into "postTrash" ( "id", "topicID", "userID", "html", "text", "created", "modified", "draft", "editorID", "editReason", "lockedByID", "lockReason", "deletedByID", "deleteReason" ) select "id", "topicID", "userID", "html", "text", "created", "modified", "draft", "editorID", "editReason", "lockedByID", "lockReason", $2, $3 from "posts" where id = $1;',
             [ args.postID, args.deletedByID, args.deleteReason ],
             function (err, result) {
               if ( err ) {

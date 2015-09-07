@@ -20,7 +20,7 @@ app.listen('waterfall', {
         emitter.emit('error', err);
       } else {
         client.query(
-          'select "id", "titleHtml" from topics where "titleMarkdown" = \' \' order by id asc;',
+          'select "id", "titleHtml" from topics where "title" = \'\' order by id asc;',
           function (err, result) {
             done();
             if ( err ) {
@@ -30,14 +30,14 @@ app.listen('waterfall', {
               result.rows.forEach( function (item, index, array) {
                 methodGroup['row' + item.id] = function (emitter) {
                   pg.connect(connectionString, function (err, client, done) {
-                    var titleMarkdown = toMarkdown(item.titleHtml !== null ? item.titleHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : item.id.toString());
+                    var title = toMarkdown(item.titleHtml !== null ? item.titleHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : item.id.toString());
 
                     if ( err ) {
                       emitter.emit('error', err);
                     } else {
                       client.query(
-                        'update topics set "titleMarkdown" = $1 where "id" = $2;',
-                        [ titleMarkdown, item.id ],
+                        'update topics set "title" = $1 where "id" = $2;',
+                        [ title, item.id ],
                         function (err, result) {
                           done();
                           if ( err ) {

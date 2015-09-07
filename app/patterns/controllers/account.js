@@ -19,7 +19,7 @@ function handler(params, context, emitter) {
   if ( params.session.authenticated ) {
     params.form.email = params.session.email;
     params.form.password = '';
-    params.form.signature = params.session.signatureMarkdown;
+    params.form.signature = params.session.signature;
     params.form.timezone = params.session.timezone;
     params.form.dateFormat = params.session.dateFormat;
     params.form.theme = params.session.theme;
@@ -44,7 +44,7 @@ function handler(params, context, emitter) {
 function generalForm(params, context, emitter) {
   var email = '',
       password = '',
-      signatureMarkdown = '',
+      signature = '',
       signatureHtml = '',
       markdown = new Markdown({
         breaks: true,
@@ -60,7 +60,7 @@ function generalForm(params, context, emitter) {
 
       email = params.form.email.trim();
       password = params.form.password.trim();
-      signatureMarkdown = params.form.signature.trim();
+      signature = params.form.signature.trim();
 
       app.listen('waterfall', {
         emailCheck: function (emitter) {
@@ -116,14 +116,14 @@ function generalForm(params, context, emitter) {
 
           if ( update ) {
 
-            if ( signatureMarkdown.length ) {
-              signatureHtml = markdown.render(signatureMarkdown);
+            if ( signature.length ) {
+              signatureHtml = markdown.render(signature);
             }
 
             methods.updateSettings = function (emitter) {
               app.models.user.updateSettings({
                 userID: params.session.userID,
-                signatureMarkdown: signatureMarkdown,
+                signature: signature,
                 signatureHtml: signatureHtml,
                 timezone: params.form.timezone,
                 theme: params.form.theme,
@@ -140,7 +140,7 @@ function generalForm(params, context, emitter) {
                       app.models.content.mail({
                         template: 'Reactivation',
                         replace: {
-                          activationUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + params.session.userID + '/activationCode/' + output.updateEmail.activationCode
+                          activationUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + params.session.userID + '/activationCode/' + output.updateEmail.activationCode + '/reactivation/true'
                         }
                       }, emitter);
                     }
@@ -241,7 +241,7 @@ function avatarForm(params, context, emitter) {
     if ( params.request.method === 'POST' ) {
       params.form.email = params.session.email;
       params.form.password = '';
-      params.form.signature = params.session.signatureMarkdown;
+      params.form.signature = params.session.signature;
       params.form.timezone = params.session.timezone;
       params.form.dateFormat = params.session.dateFormat;
       params.form.theme = params.session.theme;

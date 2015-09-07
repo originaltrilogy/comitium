@@ -149,7 +149,7 @@ function reset(params, context, emitter) {
     var view = 'reset';
 
     if ( output.verify ) {
-      if ( app.toolbox.moment(Date.now()).diff(output.verify.timeRequested, 'hours') >= 24 ) {
+      if ( app.toolbox.moment(Date.now()).diff(output.verify.time, 'hours') >= 24 ) {
         view = 'expired';
       }
     } else {
