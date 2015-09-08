@@ -2,8 +2,6 @@
 
 'use strict';
 
-var Markdown = require('markdown-it');
-
 module.exports = {
   handler: handler,
   bookmark: bookmark,
@@ -242,11 +240,6 @@ function editForm(params, context, emitter) {
       }
     }, function (output) {
       var post = output.post,
-          markdown = new Markdown({
-            breaks: true,
-            linkify: true,
-            typographer: true
-          }),
           parsedContent,
           parsedReason,
           draft = false,
@@ -254,8 +247,8 @@ function editForm(params, context, emitter) {
 
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedContent = markdown.render(params.form.content);
-          parsedReason = markdown.renderInline(params.form.reason);
+          parsedContent = app.toolbox.markdown.content(params.form.content);
+          parsedReason = app.toolbox.markdown.inline(params.form.reason);
 
           switch ( params.form.formAction ) {
             case 'Preview':
@@ -396,16 +389,11 @@ function lockForm(params, context, emitter) {
       }
     }, function (output) {
       var post = output.post,
-          markdown = new Markdown({
-            breaks: true,
-            linkify: true,
-            typographer: true
-          }),
           parsedReason;
 
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedReason = markdown.renderInline(params.form.reason);
+          parsedReason = app.toolbox.markdown.inline(params.form.reason);
 
           app.listen({
             lock: function (emitter) {
@@ -600,16 +588,11 @@ function reportForm(params, context, emitter) {
       }
     }, function (output) {
       var post = output.post,
-          markdown = new Markdown({
-            breaks: true,
-            linkify: true,
-            typographer: true
-          }),
           parsedReason;
 
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedReason = markdown.renderInline(params.form.reason);
+          parsedReason = app.toolbox.markdown.inline(params.form.reason);
 
           app.listen({
             saveReport: function (emitter) {
@@ -734,16 +717,11 @@ function trashForm(params, context, emitter) {
       }
     }, function (output) {
       var post = output.post,
-          markdown = new Markdown({
-            breaks: true,
-            linkify: true,
-            typographer: true
-          }),
           parsedReason;
 
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedReason = markdown.renderInline(params.form.reason);
+          parsedReason = app.toolbox.markdown.inline(params.form.reason);
 
           app.listen({
             trash: function (emitter) {

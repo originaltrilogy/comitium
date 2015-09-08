@@ -13,6 +13,7 @@ app.toolbox = {
   // Native modules
   access:   require('./toolbox/access'),
   helpers:  require('./toolbox/helpers'),
+  markdown: require('./toolbox/markdown'),
   validate: require('./toolbox/validate'),
 
   // Third party modules

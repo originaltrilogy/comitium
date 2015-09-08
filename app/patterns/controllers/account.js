@@ -2,9 +2,7 @@
 
 'use strict';
 
-var // path = require('path'),
-    gm = require('gm'),
-    Markdown = require('markdown-it');
+var gm = require('gm');
 
 module.exports = {
   handler: handler,
@@ -44,13 +42,8 @@ function handler(params, context, emitter) {
 function generalForm(params, context, emitter) {
   var email = '',
       password = '',
-      signature = '',
-      signatureHtml = '',
-      markdown = new Markdown({
-        breaks: true,
-        linkify: true,
-        typographer: true
-      }),
+      signature,
+      signatureHtml,
       methods = {},
       update = true,
       messages = {};
@@ -117,7 +110,10 @@ function generalForm(params, context, emitter) {
           if ( update ) {
 
             if ( signature.length ) {
-              signatureHtml = markdown.render(signature);
+              signatureHtml = app.toolbox.markdown.content(signature);
+            } else {
+              signature = null;
+              signatureHtml = null;
             }
 
             methods.updateSettings = function (emitter) {

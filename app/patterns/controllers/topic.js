@@ -2,8 +2,6 @@
 
 'use strict';
 
-var Markdown = require('markdown-it');
-
 module.exports = {
   handler: handler,
   notifySubscribers: notifySubscribers,
@@ -241,12 +239,6 @@ function startForm(params, context, emitter) {
       }
     }, function (output) {
       var discussion = output.discussion,
-          mdTitle = new Markdown().disable(['link', 'image']),
-          mdContent = new Markdown({
-            breaks: true,
-            linkify: true,
-            typographer: true
-          }),
           parsedTitle,
           parsedContent,
           url,
@@ -256,9 +248,8 @@ function startForm(params, context, emitter) {
       // If the group has post access, process the topic form
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          params.form.subscribe = params.form.subscribe || false;
-          parsedTitle = mdTitle.renderInline(params.form.title);
-          parsedContent = mdContent.render(params.form.content);
+          parsedTitle = app.toolbox.markdown.title(params.form.title);
+          parsedContent = app.toolbox.markdown.content(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
 
@@ -446,12 +437,6 @@ function startAnnouncementForm(params, context, emitter) {
       }
     }, function (output) {
       var categories = output.categoriesPost,
-          mdTitle = new Markdown().disable(['link', 'image']),
-          mdContent = new Markdown({
-            breaks: true,
-            linkify: true,
-            typographer: true
-          }),
           parsedTitle,
           parsedContent,
           url,
@@ -461,8 +446,8 @@ function startAnnouncementForm(params, context, emitter) {
       // If the group has post access, process the announcement form
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedTitle = mdTitle.renderInline(params.form.title);
-          parsedContent = mdContent.render(params.form.content);
+          parsedTitle = app.toolbox.markdown.title(params.form.title);
+          parsedContent = app.toolbox.markdown.content(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
 
@@ -675,13 +660,7 @@ function startPrivateForm(params, context, emitter) {
         }, emitter);
       }
     }, function (output) {
-      var mdTitle = new Markdown().disable(['link', 'image']),
-          mdContent = new Markdown({
-            breaks: true,
-            linkify: true,
-            typographer: true
-          }),
-          parsedTitle,
+      var parsedTitle,
           parsedContent,
           url,
           draft = false,
@@ -690,9 +669,8 @@ function startPrivateForm(params, context, emitter) {
       // If the user has permission, process the topic form
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          params.form.subscribe = params.form.subscribe || false;
-          parsedTitle = mdTitle.renderInline(params.form.title);
-          parsedContent = mdContent.render(params.form.content);
+          parsedTitle = app.toolbox.markdown.title(params.form.title);
+          parsedContent = app.toolbox.markdown.content(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
 
@@ -923,11 +901,6 @@ function replyForm(params, context, emitter) {
       }
     }, function (output) {
       var topic = output.topic,
-          mdContent = new Markdown({
-            breaks: true,
-            linkify: true,
-            typographer: true
-          }),
           parsedContent,
           draft = false,
           time = app.toolbox.helpers.isoDate();
@@ -935,7 +908,7 @@ function replyForm(params, context, emitter) {
       // If the group has reply access, process the form
       if ( output.listen.success ) {
         if ( output.access === true ) {
-          parsedContent = mdContent.render(params.form.content);
+          parsedContent = app.toolbox.markdown.content(params.form.content);
 
           switch ( params.form.formAction ) {
             case 'Preview':
@@ -1254,16 +1227,11 @@ function lockForm(params, context, emitter) {
     }
   }, function (output) {
     var topic = output.topic,
-        markdown = new Markdown({
-          breaks: true,
-          linkify: true,
-          typographer: true
-        }),
         parsedReason;
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        parsedReason = markdown.renderInline(params.form.reason);
+        parsedReason = app.toolbox.markdown.content(params.form.content);
 
         app.listen({
           lock: function (emitter) {
