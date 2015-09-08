@@ -21,7 +21,7 @@ app.toolbox = {
   mail:     require('nodemailer').createTransport(app.config.comitium.mail),
   moment:   require('moment-timezone'),
   numeral:  require('numeral'),
-  pg:       require('pg').native,
+  pg:       require('pg'),
   slug:     require('slug')
 };
 

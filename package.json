@@ -26,7 +26,6 @@
     "nodemailer": "*",
     "numeral": "*",
     "pg": "*",
-    "pg-native": "^1.8.1",
     "slug": "*",
     "to-markdown": "*"
   },

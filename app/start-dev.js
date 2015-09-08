@@ -33,7 +33,7 @@ app.toolbox = {
   },
   moment: require('moment-timezone'),
   numeral: require('numeral'),
-  pg: require('pg').native,
+  pg: require('pg'),
   slug: require('slug')
 };
 
