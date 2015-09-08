@@ -20,7 +20,7 @@ app.listen('waterfall', {
         emitter.emit('error', err);
       } else {
         client.query(
-          'select "id", "signatureHtml" from users where "signature" is null order by id asc;',
+          'select "id", "signatureHtml" from users where "signatureHtml" is not null order by id asc;',
           function (err, result) {
             done();
             if ( err ) {
@@ -33,7 +33,7 @@ app.listen('waterfall', {
                     var signature;
 
                     try {
-                      signature = toMarkdown(item.signatureHtml !== null ? item.signatureHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&') : '');
+                      signature = toMarkdown(item.signatureHtml.replace(/&quot;/g, '"').replace(/&amp;/g, '&'));
                     } catch ( err ) {
                       signature = item.signatureHtml;
                     }

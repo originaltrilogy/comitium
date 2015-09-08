@@ -39,6 +39,10 @@ function buildMethodGroup(emitter) {
                       text = item.html;
                     }
 
+                    if ( !text.length) {
+                      text = ' ';
+                    }
+
                     pg.connect(connectionString, function (err, client, done) {
                       if ( err ) {
                         console.log('error');

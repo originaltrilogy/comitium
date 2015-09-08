@@ -78,6 +78,8 @@ from "tblForumUsers";
 
 SELECT SETVAL('users_id_seq', ( select max("id") + 1 from users ) );
 
+update "users" set "signatureHtml" = null where "signatureHtml" = '';
+
 delete from "users" where "id" in ( 1, 2 );
 
 create table "userLogs" (
