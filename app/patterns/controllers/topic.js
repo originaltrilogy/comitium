@@ -1231,7 +1231,7 @@ function lockForm(params, context, emitter) {
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        parsedReason = app.toolbox.markdown.content(params.form.content);
+        parsedReason = app.toolbox.markdown.content(params.form.reason);
 
         app.listen({
           lock: function (emitter) {
@@ -1245,9 +1245,15 @@ function lockForm(params, context, emitter) {
           if ( output.listen.success ) {
             if ( output.lock.success ) {
               if ( params.form.notify ) {
-
-                // notify subscribers (if the author isn't subscribed, they probably don't care)
-
+                notifySubscribers({
+                  topicID: topic.id,
+                  template: 'Topic Lock',
+                  replace: {
+                    topicTitle: topic.title,
+                    topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
+                    reason: params.form.reason
+                  }
+                });
               }
               emitter.emit('ready', {
                 redirect: params.form.forwardToUrl

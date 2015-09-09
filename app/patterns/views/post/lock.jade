@@ -14,9 +14,9 @@ section.form.post-lock
         label(for="reason") Why are you locking this post?
         p.label-note Optional
         textarea#reason(name="reason" rows="4") #{form.reason}
-      //- li.notify.checkbox
-      //-   input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
-      //-   label(for="notify") Notify the author
+      li.notify.checkbox
+        input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
+        label(for="notify") Notify the author
   
     ul.actions
       li.primary.report

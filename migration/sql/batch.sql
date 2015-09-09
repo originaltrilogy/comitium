@@ -64,31 +64,57 @@ If you didn''t initiate this request, it''s possible someone made a typo while e
 'Post Report',
 'When users report a post, moderators are notified via e-mail.',
 'Post report',
-'[reporter] has reported the following post:
-
-Post ID: [post_url]
-Topic: [topic_title]
-
-[topic_url]
-
+'Submitted by: [reporter]
 Reason: [reason]
+
+Post: [postUrl]
+Topic: [topicTitle]
+
+[topicUrl]
 
 Post content:
 
-[post_text]',
+[postText]',
 'Post report',
-'[reporter] has reported the following post:
+'Submitted by: [reporter]
+Reason: [reason]
 
-Post ID: [post_url]
-Topic: [topic_title]
+Post: [postUrl]
+Topic: [topicTitle]
 
-[topic_url]
+[topicUrl]
+
+Post content:
+
+[postText]'
+),
+(
+'Post Lock',
+'When moderators lock a post, they can notify the author using this e-mail.',
+'Your post was locked',
+'A moderator locked one of your posts.
+
+Post: [postUrl]
+Topic: [topicTitle]
+
+[topicUrl]
 
 Reason: [reason]
 
 Post content:
+[postText]',
+'Your post was locked',
+'A moderator locked one of your posts.
 
-[post_text]'
+Post: [postUrl]
+Topic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]
+
+Post content:
+[postText]'
 ),
 (
 'Post Deletion',
@@ -117,6 +143,26 @@ Reason: [reason]
 
 Post content:
 [postText]'
+),
+(
+'Topic Lock',
+'When moderators lock a topic, they can notify subscribers using this e-mail.',
+'A topic you''re following was locked',
+'A moderator locked a topic you were following.
+
+Topic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]',
+'A topic you''re following was locked',
+'A moderator locked a topic you were following.
+
+Topic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]'
 ),
 (
 'Topic Deletion',

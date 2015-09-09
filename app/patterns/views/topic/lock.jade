@@ -15,9 +15,9 @@ section.form.topic-lock
         label(for="reason") Why are you locking this topic?
         p.label-note Optional
         textarea(id="reason" name="reason" rows="4") #{form.reason}
-      //- li.notify.checkbox
-      //-   input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
-      //-   label(for="notify") Notify the author
+      li.notify.checkbox
+        input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
+        label(for="notify") Notify members following this topic
   
     ul.actions
       li.primary.report

@@ -411,24 +411,31 @@ function lockForm(params, context, emitter) {
                   app.listen({
                     user: function (emitter) {
                       app.models.user.info({
-                        user: post.authorUrl
+                        userID: post.authorID
+                      }, emitter);
+                    },
+                    mail: function (emitter) {
+                      app.models.content.mail({
+                        template: 'Post Lock',
+                        replace: {
+                          postUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'post/id/' + post.id,
+                          postText: post.text,
+                          topicTitle: post.topicTitle,
+                          topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+                          reason: params.form.reason
+                        }
                       }, emitter);
                     }
                   }, function (output) {
-                    var mailText = 'The following post has been locked by a moderator: ' + params.route.parsed.protocol + app.config.comitium.baseUrl + '/post/id/' + post.id;
-
-                    if ( parsedReason.length ) {
-                      mailText += '\n\n' + 'Reason: ' + parsedReason;
+                    if ( output.listen.success && output.mail.success ) {
+                      app.toolbox.mail.sendMail({
+                        from: app.config.comitium.email,
+                        to: output.user.email,
+                        subject: output.mail.subject,
+                        text: output.mail.text
+                      });
                     }
-
-                    app.mail.sendMail({
-                      from: app.config.comitium.email,
-                      to: output.user.email,
-                      subject: 'Forum post lock notification',
-                      text: mailText
-                    });
                   });
-
                 }
                 emitter.emit('ready', {
                   redirect: params.form.forwardToUrl
@@ -601,16 +608,31 @@ function reportForm(params, context, emitter) {
                 postID: post.id,
                 reason: parsedReason
               }, emitter);
+            },
+            mail: function (emitter) {
+              app.models.content.mail({
+                template: 'Post Report',
+                replace: {
+                  reporter: params.session.username,
+                  postUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'post/id/' + post.id,
+                  postText: post.text,
+                  topicTitle: post.topicTitle,
+                  topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+                  reason: params.form.reason
+                }
+              }, emitter);
             }
           }, function (output) {
             if ( output.listen.success ) {
               if ( output.saveReport.success ) {
-                app.mail.sendMail({
-                  from: app.config.comitium.email,
-                  to: app.config.comitium.email,
-                  subject: 'Forum post report',
-                  text: 'Submitted by: ' + params.session.username + '\n\n' + 'Post: ' + params.route.parsed.protocol + app.config.comitium.baseUrl + '/post/id/' + post.id + '\n\n' + 'Reason: ' + params.form.reason
-                });
+                if ( output.mail.success ) {
+                  app.toolbox.mail.sendMail({
+                    from: app.config.comitium.email,
+                    to: app.config.comitium.email,
+                    subject: output.mail.subject,
+                    text: output.mail.text
+                  });
+                }
                 emitter.emit('ready', {
                   redirect: params.form.forwardToUrl
                 });
