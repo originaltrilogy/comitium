@@ -16,17 +16,17 @@
     "start": "node ./app/start.js"
   },
   "dependencies": {
-    "bcrypt": "*",
+    "bcrypt": "~0.8.5",
     "citizen": "~0.7.0",
     "gm": "^1.18.1",
-    "markdown-it": "^4.4.0",
-    "markdown-it-emoji": "^1.1.0",
-    "moment": "*",
-    "moment-timezone": "*",
-    "nodemailer": "*",
-    "numeral": "*",
-    "pg": "*",
-    "slug": "*",
+    "markdown-it": "~4.4.0",
+    "markdown-it-emoji": "~1.1.0",
+    "moment": "~2.10.6",
+    "moment-timezone": "~0.4.0",
+    "nodemailer": "~1.4.0",
+    "numeral": "~1.5.3",
+    "pg": "~4.4.1",
+    "slug": "~0.9.1",
     "to-markdown": "*"
   },
   "devDependencies": {
