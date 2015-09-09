@@ -16,7 +16,7 @@ Migration order:
 --    update users set username = replace(username, '<', '');
 --    update users set username = replace(username, '>', '');
 --    update users set username = replace(username, '@', 'a');
---  
+--
 --    select * from users where username like '%,%' or username like '%(%' or username like '%)%' or username like '%[%' or username like '%]%' or username like '%:%' or username like '%!%' or username like '%@%';
 
   - Check for duplicate usernames and manually update them:
@@ -61,6 +61,7 @@ Migration order:
   - archives.sql
 
 8. Data and avatar generation
+  - Switch temporarily to Node 0.12.7, install to-markdown, and run the following:
   - user-default-avatar-generation.js
   - user-url-slug-generation.js
   - user-hash-generation.js
@@ -68,3 +69,5 @@ Migration order:
   - topic-title-markdown-generation.js
   - topic-url-slug-generation.js
   - post-content-markdown-generation.js
+
+9. Switch back to 4.0.0
