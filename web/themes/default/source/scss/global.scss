@@ -299,8 +299,7 @@ body > header {
       font-size: 100%;
 
       &:before {
-        content: '\e6bd';
-        font-family: 'glyphs';
+        @include icon($gMenu);
         position: absolute;
         top: 0;
         left: 2vw;
@@ -577,7 +576,7 @@ section {
       font-size: 6vw;
     }
 
-    & > p {
+    & > * {
       margin-left: 0;
       margin-right: 0;
     }
@@ -593,20 +592,33 @@ section {
       }
     }
 
-    &.success:before {
-      content: $gSuccess;
+    &.success {
+      padding-left: 4vw;
+      text-align: center;
+
+      p {
+        display: inline;
+        vertical-align: middle;
+      }
+      &:before {
+        @include icon($gSuccess);
+        position: static;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 4vw;
+      }
     }
 
     &.error:before {
-      content: $gError;
+      @include icon($gError);
     }
 
     &.locked:before {
-      content: $gLock;
+      @include icon($gLock);
     }
 
     &.banned:before {
-      content: $gBanned;
+      @include icon($gBanned);
     }
 
     & > *:first-child {
@@ -614,6 +626,16 @@ section {
     }
     & > *:last-child {
       margin-bottom: 0;
+    }
+
+    p.why {
+      margin-bottom: 0;
+      font-family: $titleFont;
+      font-size: 85%;
+    }
+    p.reason {
+      margin-top: 0;
+      font-size: 85%;
     }
   }
 
@@ -843,9 +865,21 @@ form {
         margin-bottom: 2vw;
       }
       &.text,
+      &.textarea,
       &.select {
         label {
           display: block;
+        }
+      }
+      &.select {
+        position: relative;
+
+        &:after {
+          @include icon($gSelect);
+          position: absolute;
+          right: 2vw;
+          bottom: 2vw;
+          font-size: 6vw;
         }
       }
       &.textarea {
@@ -853,7 +887,6 @@ form {
         margin-left: 0;
 
         label {
-          display: block;
           margin: 0 4vw;
         }
         p.label-note {
@@ -1141,6 +1174,17 @@ a.avatar {
       &:before {
         top: 3vw;
       }
+      &.locked:before {
+        left: 6vw;
+      }
+
+      p.why {
+        display: inline-block;
+        margin-top: 0;
+      }
+      p.reason {
+        display: inline;
+      }
     }
   }
 
@@ -1186,6 +1230,13 @@ a.avatar {
       & > li {
         margin: 1vw 20vw 6vw;
 
+        &.select {
+          &:after {
+            right: 1vw;
+            bottom: 1vw;
+            font-size: 4vw;
+          }
+        }
         &:last-child {
           margin-bottom: 4vw;
         }
@@ -1489,6 +1540,13 @@ a.avatar {
     &.notice {
       padding: 3rem 4rem 3rem 11rem;
 
+      &.success {
+        padding-left: 4rem;
+
+        &:before {
+          margin-right: 2rem;
+        }
+      }
       &:before {
         top: 2rem;
         left: 4rem;
@@ -1567,6 +1625,13 @@ a.avatar {
       & > li {
         margin: 1rem 26rem 6rem;
 
+        &.select {
+          &:after {
+            right: 1rem;
+            bottom: 1rem;
+            font-size: 2.5rem;
+          }
+        }
         &.textarea {
           label {
             margin: 0 4rem;

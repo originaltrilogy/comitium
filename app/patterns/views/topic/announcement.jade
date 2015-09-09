@@ -8,10 +8,8 @@ if topic.lockedByID
     else
       p This topic is locked, but as a moderator, you can still reply and make edits.
     if topic.lockReason
-      dl
-        dt Why was this topic locked?
-        dd
-          != topic.lockReason
+      p.why Why was this topic locked?
+      p.reason !{topic.lockReason}
 
 nav.topic.actions
   ul

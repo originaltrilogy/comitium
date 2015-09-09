@@ -1231,7 +1231,7 @@ function lockForm(params, context, emitter) {
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        parsedReason = app.toolbox.markdown.content(params.form.reason);
+        parsedReason = app.toolbox.markdown.inline(params.form.reason);
 
         app.listen({
           lock: function (emitter) {
