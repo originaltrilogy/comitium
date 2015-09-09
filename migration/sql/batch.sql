@@ -117,7 +117,7 @@ Post content:
 [postText]'
 ),
 (
-'Post Deletion',
+'Post Delete',
 'When moderators delete a post, they can notify the author using this e-mail.',
 'Your post was deleted',
 'A moderator deleted one of your posts.
@@ -165,7 +165,7 @@ Topic: [topicTitle]
 Reason: [reason]'
 ),
 (
-'Topic Deletion',
+'Topic Delete',
 'When moderators delete a topic, they can notify subscribers using this e-mail.',
 'A topic you''re following was deleted',
 'A moderator deleted a topic you were following.

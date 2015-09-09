@@ -1547,7 +1547,7 @@ function trashForm(params, context, emitter) {
                 if ( params.form.notify ) {
                   notifySubscribers({
                     topicID: topic.id,
-                    template: 'Topic Deletion',
+                    template: 'Topic Delete',
                     replace: {
                       topicTitle: topic.title,
                       reason: params.form.reason

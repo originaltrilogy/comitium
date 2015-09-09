@@ -767,7 +767,7 @@ function trashForm(params, context, emitter) {
                     },
                     mail: function (emitter) {
                       app.models.content.mail({
-                        template: 'Post Deletion',
+                        template: 'Post Delete',
                         replace: {
                           postID: post.id,
                           postText: post.text,
