@@ -201,6 +201,16 @@ a {
   @include color(100%, 90%);
 }
 
+a.home {
+  display: block;
+
+  .logo {
+    width: 100%;
+    height: 100%;
+    fill: white;
+  }
+}
+
 body > header {
   min-height: 14vw;
   @include color(0%, 94%);
@@ -209,16 +219,9 @@ body > header {
   @include border-color(14%, 10%);
 
   a.home {
-    display: block;
     width: 32vw;
-    height: 14vw;
     margin: 0 auto;
-
-    .logo {
-      width: 100%;
-      height: 100%;
-      fill: white;
-    }
+    padding: 2vw 0;
   }
 
   a.sign-in {
@@ -760,7 +763,37 @@ a.to-the-top {
 }
 
 footer {
-  border-top: 0.1rem solid #586175;
+  padding-bottom: 4vw;
+  @include background-color(14%, 19%);
+  border-top: 1px solid;
+  @include border-color(14%, 10%);
+
+  a.home {
+    width: 50vw;
+    margin: 12vw auto 10vw;
+  }
+
+  section.stats {
+    p {
+      text-align: center;
+    }
+  }
+  section.copyright {
+    margin-top: 10vw;
+    font-size: 85%;
+    @include color(14%, 60%);
+
+    p {
+      margin: 4vw;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    a {
+      @include color(14%, 60%);
+    }
+  }
 }
 
 
@@ -1318,6 +1351,21 @@ a.avatar {
     }
   }
 
+  footer {
+    section.stats {
+      p {
+        max-width: 72vw;
+        margin: 0 auto;
+        font-size: 125%;
+      }
+    }
+    section.copyright {
+      p {
+        margin: 2vw 4vw;
+      }
+    }
+  }
+
 }
 
 
@@ -1356,6 +1404,7 @@ a.avatar {
         width: 16rem;
         height: 8rem;
         margin-left: 2rem;
+        padding: 0;
       }
       a.sign-in {
         display: none;
@@ -1702,6 +1751,25 @@ a.avatar {
   a.to-the-top {
     width: 20rem;
     margin: 10rem auto;
+  }
+
+  footer {
+    padding-bottom: 4rem;
+
+    a.home {
+      width: 40rem;
+      margin: 8rem auto 6rem;
+    }
+    section.stats {
+      p {
+        max-width: none;
+      }
+    }
+    section.copyright {
+      p {
+        margin: 2rem 4rem;
+      }
+    }
   }
 
 }

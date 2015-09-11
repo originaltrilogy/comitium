@@ -46,7 +46,8 @@ app.toolbox.pg.types.setTypeParser(1114, function (stringValue) {
 // Static resources
 app.resources = {
   images: {
-    defaultAvatar: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/default-avatar.jpg')
+    defaultAvatar: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/default-avatar.jpg'),
+    logo: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/logo.svg')
   }
 };
 

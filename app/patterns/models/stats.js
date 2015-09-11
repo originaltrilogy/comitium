@@ -3,10 +3,51 @@
 'use strict';
 
 module.exports = {
+  firstPost: firstPost,
   topics: topics,
   posts: posts,
   users: users
 };
+
+
+
+function firstPost(emitter) {
+  var cacheKey = 'firstPost',
+      scope = 'stats',
+      cached = app.cache.get({ scope: scope, key: cacheKey });
+
+  // If it's cached, return the cache object
+  if ( cached ) {
+    emitter.emit('ready', cached);
+  // If it's not cached, retrieve the user count and cache it
+  } else {
+    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      if ( err ) {
+        emitter.emit('error', err);
+      } else {
+        client.query(
+          'select min("created") as "created" from "posts" where "draft" = false;',
+          function (err, result) {
+            done();
+            if ( err ) {
+              emitter.emit('error', err);
+            } else {
+              // Cache the first post date for future requests
+              if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+                app.cache.set({
+                  scope: scope,
+                  key: cacheKey,
+                  value: result.rows[0].created
+                });
+              }
+              emitter.emit('ready', result.rows[0].created);
+            }
+          }
+        );
+      }
+    });
+  }
+}
 
 
 
