@@ -1,5 +1,6 @@
 header(class="authenticated #{ updates ? 'updates' : '' }")
-  a.home(href="/") originaltrilogy.com
+  a.home(href="/" title="Go to our home page.")
+    != logo
   if !updates
     a.private-topics(href="private-topics" title="You have no new private topic updates.") Private topics
   else

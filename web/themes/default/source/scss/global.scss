@@ -210,11 +210,15 @@ body > header {
 
   a.home {
     display: block;
-    width: 40vw;
+    width: 32vw;
+    height: 14vw;
     margin: 0 auto;
-    padding: 5vw 0;
-    text-align: center;
-    text-decoration: none;
+
+    .logo {
+      width: 100%;
+      height: 100%;
+      fill: white;
+    }
   }
 
   a.sign-in {
@@ -1061,7 +1065,8 @@ a.avatar {
 
     & > header {
       a.home {
-        padding: 4vw 0;
+        width: 20vw;
+        height: 10vw;
       }
       a.sign-in {
         top: 2.5vw;
@@ -1348,10 +1353,9 @@ a.avatar {
     & > header {
       a.home {
         display: inline-block;
-        padding: 0;
-        width: 20rem;
-        min-height: 8rem;
-        line-height: 8rem;
+        width: 16rem;
+        height: 8rem;
+        margin-left: 2rem;
       }
       a.sign-in {
         display: none;
