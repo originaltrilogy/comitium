@@ -26,8 +26,8 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
       if ( session.username === post.author && !post.lockedByID && !topic.lockedByID ) || session.moderateDiscussions
         li.edit
           a(href="post/action/edit/id/#{post.id}") Edit
-      li.bookmark
-        a(href="post/action/bookmark/id/#{post.id}") Bookmark
+      //- li.bookmark
+      //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
       if post.authorID !== session.userID && !session.moderateDiscussions
         li.report
           a(href="post/action/report/id/#{post.id}") Report
