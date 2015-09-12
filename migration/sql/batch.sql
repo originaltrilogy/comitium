@@ -219,6 +219,8 @@ Private topics are visible only to members who receive invitations; not even mod
 [replyUrl]
 
 
+There may be additional replies, but you won''t receive any further notifications until you visit the forum again.
+
 
 Unsubscribe:
 
@@ -228,6 +230,8 @@ Unsubscribe:
 
 [replyUrl]
 
+
+There may be additional replies, but you won''t receive any further notifications until you visit the forum again.
 
 
 Unsubscribe:
@@ -283,6 +287,8 @@ from "tblForumCategories";
 
 
 SELECT SETVAL('categories_id_seq', ( select max("id") + 1 from categories ) );
+
+update "categories" set "title" = 'Preservation Efforts, Fan Edits, and Other Fan Projects', url = 'Preservation-Efforts-Fan Edits-and-Other-Fan-Projects' where "id" = 4;
 
 
 -- bookmarks
