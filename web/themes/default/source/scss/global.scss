@@ -212,7 +212,6 @@ a.home {
 }
 
 body > header {
-  min-height: 14vw;
   @include color(0%, 94%);
   @include background-color(14%, 19%);
   border-bottom: 1px solid;
@@ -224,6 +223,22 @@ body > header {
     padding: 2vw 0;
   }
 
+  nav {
+    ul {
+      text-align: center;
+    }
+    li {
+      display: inline-block;
+      margin: 0 1vw 1vw;
+
+      a {
+        display: block;
+        padding: 1vw;
+        text-decoration: none;
+      }
+    }
+  }
+
   a.sign-in {
     @include button('small', 'lightGhost');
     position: absolute;
@@ -231,63 +246,59 @@ body > header {
     right: 2.5vw;
   }
 
-  a.private-topics {
-    position: absolute;
-    top: 2vw;
-    right: 15vw;
-    width: 10vw;
-    height: 10vw;
-    padding-top: 10vw;
-    overflow: hidden;
-
-    &:before {
-      @include icon($gNoUpdates);
-      @include color(100%, 90%);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 10vw;
-      height: 10vw;
-      font-size: 6vw;
-      line-height: 10vw;
-      text-align: center;
-    }
-
-    &.updates:before {
-      @include icon($gUpdates);
-    }
-  }
-
-  a.account {
+  section.status {
     position: absolute;
     top: 2vw;
     right: 2vw;
-    width: 10vw;
-    height: 10vw;
-    padding-left: 10vw;
-    overflow: hidden;
 
-    img {
+    a.private-topics {
+      display: block;
       position: absolute;
-      top: 0;
-      right: 0;
+      right: 14vw;
+      width: 10vw;
+      height: 10vw;
+      padding-top: 10vw;
+      overflow: hidden;
+
+      &:before {
+        @include icon($gNoUpdates);
+        @include color(100%, 90%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 10vw;
+        height: 10vw;
+        font-size: 6vw;
+        line-height: 10vw;
+        text-align: center;
+      }
+
+      &.updates:before {
+        @include icon($gUpdates);
+      }
     }
-  }
 
-  nav {
-    text-align: center;
+    a.account {
+      display: block;
+      position: absolute;
+      right: 0;
+      width: 10vw;
+      height: 10vw;
+      padding-left: 10vw;
+      overflow: hidden;
 
-    li {
-      display: inline-block;
-      margin: 1vw;
+      img {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
     }
   }
 }
 
-// The menu button and sliding nav are used on mobile and tablet.
-// Much easier to limit here than to overwrite within the 960px
-// media query later.
-@media only screen and (max-width: 959px) {
+// The menu button and sliding nav are used on mobile only. Much easier to limit
+// here than to overwrite within the 768px media query later.
+@media only screen and (max-width: 767px) {
   html.js.csstransitions {
     body > header {
       position: relative;
@@ -1097,33 +1108,121 @@ a.avatar {
     font-size: 2.2vw;
 
     & > header {
+      display: flex;
+      flex-wrap: wrap;
+
       a.home {
+        margin: 0 2vw;
         width: 20vw;
-        height: 10vw;
       }
       a.sign-in {
-        top: 2.5vw;
-        right: 2.5vw;
+        display: none;
       }
-      a.private-topics {
-        top: 1vw;
-        right: 12vw;
-        width: 8vw;
-        height: 8vw;
-
-        &:before {
-          width: 8vw;
-          height: 8vw;
-          font-size: 5vw;
-          line-height: 8vw;
-        }
-      }
-      a.account {
+      section.status {
         top: 1vw;
         right: 1vw;
-        width: 8vw;
-        height: 8vw;
-        padding-left: 8vw;
+
+        a.private-topics {
+          right: 12vw;
+          width: 8vw;
+          height: 8vw;
+
+          &:before {
+            width: 8vw;
+            height: 8vw;
+            font-size: 5vw;
+            line-height: 8vw;
+          }
+        }
+        a.account {
+          width: 8vw;
+          height: 8vw;
+          padding-left: 8vw;
+        }
+      }
+      nav {
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 8vw;
+
+        ul {
+          flex: 1 1 auto;
+          align-self: center;
+
+          &.content {
+            text-align: left;
+          }
+          &.account {
+            margin-right: 2vw;
+            text-align: right;
+
+            li.sign-in a {
+              @include button('small', 'lightGhost');
+            }
+            li.register {
+              margin-right: 0;
+
+              a {
+                @include button('small');
+              }
+            }
+          }
+        }
+        li {
+          display: inline-block;
+          margin: 0 0.5vw;
+          text-align: center;
+
+          a {
+            display: block;
+            padding: 0.8vw 1.5vw;
+            text-decoration: none;
+
+            &:hover {
+              @include background-color(14%, 27%);
+            }
+          }
+        }
+      }
+
+      &.authenticated {
+        nav {
+          ul {
+            flex: 0 1 auto;
+          }
+        }
+      }
+    }
+  }
+
+  html.js {
+    body {
+      & > header {
+        &.authenticated {
+          nav {
+            ul.account {
+              position: absolute;
+              top: 11vw;
+              right: -22vw;
+              margin: 0;
+              padding: 1vw 0;
+              min-width: 20vw;
+              border-radius: 0.3rem;
+              text-align: center;
+              @include background-color(14%, 25%);
+              border: 1px solid;
+              @include border-color(14%, 21%);
+
+              &.active {
+                right: 1vw;
+              }
+
+              li {
+                display: block;
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -1399,56 +1498,48 @@ a.avatar {
 
   body {
     & > header {
+      display: flex;
+
       a.home {
-        display: inline-block;
-        width: 16rem;
-        height: 8rem;
-        margin-left: 2rem;
+        width: 16.4rem;
+        margin: 1.6rem 2rem;
         padding: 0;
       }
-      a.sign-in {
-        display: none;
-      }
-      a.private-topics {
-        top: 1rem;
-        right: 8rem;
-        width: 6rem;
-        height: 6rem;
-        padding-top: 6rem;
-
-        &:before {
-          width: 6rem;
-          height: 6rem;
-          font-size: 3rem;
-          line-height: 6rem;
-        }
-      }
-      a.account {
+      section.status {
         top: 1rem;
         right: 1rem;
-        width: 6rem;
-        height: 6rem;
-        padding-left: 6rem;
+
+        a.private-topics {
+          right: 8rem;
+          width: 6rem;
+          height: 6rem;
+          padding-top: 6rem;
+
+          &:before {
+            width: 6rem;
+            height: 6rem;
+            font-size: 3rem;
+            line-height: 6rem;
+          }
+        }
+        a.account {
+          width: 6rem;
+          height: 6rem;
+          padding-left: 6rem;
+        }
       }
       nav {
-        float: right;
-        display: flex;
         min-height: 8rem;
-        margin-right: 2rem;
 
-        ul {
-          align-self: center;
-          text-align: right;
+        ul.account {
+          margin-right: 2rem;
+          max-width: 25rem;
         }
         li {
-          display: inline-block;
           margin: 0 0.5rem;
-          text-align: center;
 
           a {
-            display: block;
             padding: 0.5rem 1rem;
-            text-decoration: none;
 
             &:hover {
               @include background-color(14%, 27%);
@@ -1459,7 +1550,33 @@ a.avatar {
 
       &.authenticated {
         nav {
-          margin-right: 14rem;
+          ul.account {
+            margin-right: 15rem;
+            max-width: none;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+
+  html.js {
+    body {
+      & > header {
+        &.authenticated {
+          nav {
+            ul.account {
+              top: 9rem;
+              right: -22rem;
+              padding: 1rem 0;
+              min-width: 18rem;
+              border-radius: 0.3rem;
+
+              &.active {
+                right: 1rem;
+              }
+            }
+          }
         }
       }
     }
@@ -1639,7 +1756,7 @@ a.avatar {
     padding: 6rem 0;
 
     p.label-note {
-      margin: 1rem 0 0;
+      margin: 0.5rem 0 0;
     }
     input,
     select,
@@ -1766,6 +1883,10 @@ a.avatar {
       }
     }
     section.copyright {
+      margin: 10rem auto 0;
+      width: 96rem;
+      font-size: 75%;
+
       p {
         margin: 2rem 4rem;
       }

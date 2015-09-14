@@ -87,6 +87,10 @@ function start(params, context, emitter) {
         case 'password-request':
           url = app.config.citizen.urlPaths.app + '/password-reset';
           break;
+        case 'about':
+          url = app.config.citizen.urlPaths.app + '/about.html';
+          statusCode = 302;
+          break;
         case 'help':
           url = app.config.citizen.urlPaths.app + '/help.html';
           statusCode = 302;

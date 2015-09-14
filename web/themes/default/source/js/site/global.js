@@ -3,9 +3,13 @@ CF.global = ( function (Modernizr, CF) {
   var methods = {
 
     init: function () {
-      if ( CF.params.device.relativeSize !== 'x-large' ) {
-        var header = document.querySelector('header'),
-            menuIcon = document.createElement('div');
+      var header = document.querySelector('body > header'),
+          accountNav = header.querySelector('nav ul.account'),
+          accountNavTimer,
+          menuIcon;
+
+      if ( CF.params.device.relativeSize === 'small' || CF.params.device.relativeSize === 'medium' ) {
+        menuIcon = document.createElement('div');
 
         menuIcon.setAttribute('id', 'menu-icon');
         menuIcon.appendChild(document.createTextNode('Menu'));
@@ -16,6 +20,37 @@ CF.global = ( function (Modernizr, CF) {
           trigger: '#menu-icon',
           position: 'left'
         });
+      }
+
+      if ( CF.params.device.relativeSize === 'large' || CF.params.device.relativeSize === 'x-large' ) {
+        accountNav.addEventListener('mouseleave', function (e) {
+          accountNavTimer = setTimeout( function () {
+            methods.removeClass(accountNav, 'active');
+          }, 500);
+        }, false);
+
+        accountNav.addEventListener('mouseover', function (e) {
+          if ( accountNavTimer ) {
+            clearTimeout(accountNavTimer);
+          }
+        });
+
+        if ( methods.hasClass(header, 'authenticated') ) {
+          header.querySelector('a.account').addEventListener('click', function (e) {
+            if ( methods.hasClass(accountNav, 'active') ) {
+              methods.removeClass(accountNav, 'active');
+            } else {
+              accountNav.className += ' active';
+            }
+            e.preventDefault();
+          });
+
+          window.addEventListener('scroll', function (e) {
+            if ( methods.hasClass(accountNav, 'active') ) {
+              methods.removeClass(accountNav, 'active');
+            }
+          });
+        }
       }
 
       methods.viewportResizeCheck('responsiveModeSet', CF.immediate.responsiveModeSet);
@@ -34,7 +69,7 @@ CF.global = ( function (Modernizr, CF) {
 
       trigger.addEventListener('click', function () {
         var source = document.querySelector(args.menu);
-        
+
         menu = source.cloneNode(true);
 
         body.insertBefore(menu, body.children[0]);

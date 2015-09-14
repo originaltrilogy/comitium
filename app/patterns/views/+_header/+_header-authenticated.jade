@@ -1,23 +1,31 @@
 header(class="authenticated #{ updates ? 'updates' : '' }")
   a.home(href="/" title="Go to our home page.")
     != logo
-  if !updates
-    a.private-topics(href="private-topics" title="You have no new private topic updates.") Private topics
-  else
-    a.private-topics.updates(href="private-topics" title="You have unread private topics.") <span class="count">#{updates.length}</span> private topic updates
-  a.account.avatar(href="account") Your Account
-    img(src="avatars/#{session.userID}.jpg")
   nav
-    ul
+    ul.content
       li.news
         a(href="") News
       li.discussions
         a(href="discussions") Discussions
-      li.private-topics
-        a(href="private-topics") Private Topics
-      li.account
-        a(href="account") Your Account
+      li.about
+        a(href="about") About
       li.help
         a(href="help") Help
+    ul.account
+      if updates
+        li.private-topics.updates
+          a(href="private-topics") Private Topics <span class="count">(#{updates.length} unread)</span>
+      else
+        li.private-topics
+          a(href="private-topics") Private Topics
+      li.account
+        a(href="account") Your Account
       li.sign-out
         a(href="sign-out") Sign Out
+  section.status
+    if updates
+      a.private-topics.updates(href="private-topics" title="You have unread private topics.") Private Topics
+    else
+      a.private-topics(href="private-topics" title="You have no private topic updates.") Private Topics
+    a.account.avatar(href="account") Your Account
+      img(src="avatars/#{session.userID}.jpg")
