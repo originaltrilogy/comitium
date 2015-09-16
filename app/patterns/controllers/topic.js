@@ -252,6 +252,7 @@ function startForm(params, context, emitter) {
           parsedContent = app.toolbox.markdown.content(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
+          url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
             case 'Preview':
@@ -450,6 +451,7 @@ function startAnnouncementForm(params, context, emitter) {
           parsedContent = app.toolbox.markdown.content(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
+          url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
             case 'Preview':
@@ -673,6 +675,7 @@ function startPrivateForm(params, context, emitter) {
           parsedContent = app.toolbox.markdown.content(params.form.content);
 
           url = app.toolbox.slug(params.form.title);
+          url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
             case 'Preview':

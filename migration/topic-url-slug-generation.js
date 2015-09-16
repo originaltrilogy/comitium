@@ -29,7 +29,9 @@ app.listen('waterfall', {
               console.log(result.rows.length + ' topics to process');
               result.rows.forEach( function (item, index, array) {
                 methodGroup['row' + item.id] = function (emitter) {
-                  var url = slug(item.titleHtml !== null ? item.titleHtml.replace(/&quot;/g, ' ').replace(/&amp;/g, '-and-').replace(/\//g, ' ') : item.id.toString());
+                  var url = slug(item.titleHtml.replace(/&quot;/g, ' ').replace(/&amp;/g, '-and-').replace(/\//g, ' '));
+
+                  url = url.length ? url : 'untitled';
 
                   pg.connect(connectionString, function (err, client, done) {
                     if ( err ) {
