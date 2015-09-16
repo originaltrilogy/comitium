@@ -188,11 +188,13 @@ Reason: [reason]'
 
 [topicUrl]
 
+
 Private topics are visible only to members who receive invitations; not even moderators can view your private topics.',
 'Private topic invitation',
 '[author] invited you to a private topic:
 
 [topicUrl]
+
 
 Private topics are visible only to members who receive invitations; not even moderators can view your private topics.'
 ),
@@ -214,8 +216,9 @@ Private topics are visible only to members who receive invitations; not even mod
 'Topic Reply',
 'Subscribers receive an e-mail notification when someone replies to a topic they''re following.',
 'Topic update: [topicTitle]',
-'[replyAuthor] posted a reply to [topicTitle]:
+'[replyAuthor] posted a reply to the following topic:
 
+[topicTitle]
 [replyUrl]
 
 
@@ -226,8 +229,9 @@ Unsubscribe:
 
 [unsubscribeUrl]',
 'Topic update: [topicTitle]',
-'[replyAuthor] posted a reply to [topicTitle]:
+'[replyAuthor] posted a reply to the following topic:
 
+[topicTitle]
 [replyUrl]
 
 
