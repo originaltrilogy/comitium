@@ -14,22 +14,29 @@ function start(params, context, emitter) {
       template,
       statusCode = 301,
       regexp = new RegExp(/.*\/([A-Za-z0-9-_]+)\.cfm(.*)/),
+      forumRegex = new RegExp(/\/forum[\/]?(\/index\.cfm)?$/),
       faneditsRegex = new RegExp(/\/fan-edits[\/]?$/),
       petitionRegex = new RegExp(/\/petition[\/]?$/),
       discussionID;
 
-  if ( !regexp.test(url) && !faneditsRegex.test(url) && !petitionRegex.test(url) ) {
+  if ( !regexp.test(url) && !forumRegex.test(url) && !faneditsRegex.test(url) && !petitionRegex.test(url) ) {
     emitter.emit('ready');
   } else {
-    if ( faneditsRegex.test(url) ) {
-      url = app.config.citizen.urlPaths.app + '/discussion/Fan-Edits-of-Other-Films/id/11';
+    if ( forumRegex.test(url) ) {
+      url = '/discussions';
+    } else if ( faneditsRegex.test(url) ) {
+      url = '/discussion/Fan-Edits-of-Other-Films/id/11';
       statusCode = 302;
     } else if ( petitionRegex.test(url) ) {
       url = '/petition.html';
     } else {
+      url = url.replace('/forum', '');
       template = url.replace(regexp, '$1');
 
       switch ( template ) {
+        case 'index':
+          url = '/index';
+          break;
         case 'topic':
           url = url.replace('/topic/', '/id/');
           url = url.replace('topic.cfm', 'topic');
@@ -44,7 +51,7 @@ function start(params, context, emitter) {
           // Posts
           regexp = new RegExp(/.*\/post\/([0-9]+)[\/]?.*/);
           if ( regexp.test(url) ) {
-            url = url.replace(regexp, app.config.citizen.urlPaths.app + '/post/id/$1');
+            url = url.replace(regexp, '/post/id/$1');
           }
           break;
         case 'forum':
@@ -56,7 +63,7 @@ function start(params, context, emitter) {
           }
           break;
         case 'category':
-          url = app.config.citizen.urlPaths.app + '/discussions';
+          url = '/discussions';
           break;
         case 'user-profile':
           url = url.replace(/(.*)\/user\/([0-9]+)[\/]?.*/, '$1/id/$2');
@@ -72,42 +79,42 @@ function start(params, context, emitter) {
             if ( discussionID == 2 ) {
               discussionID = 22;
             }
-            url = app.config.citizen.urlPaths.app + '/discussion/id/' + discussionID;
+            url = '/discussion/id/' + discussionID;
           }
           break;
         case 'messageview':
           regexp = new RegExp(/.*messageview\.cfm\?.*threadid=([0-9]+)/);
           if ( regexp.test(url) ) {
-            url = url.replace(regexp, app.config.citizen.urlPaths.app + '/topic/id/$1');
+            url = url.replace(regexp, '/topic/id/$1');
           }
           break;
         case 'create-an-account':
-          url = app.config.citizen.urlPaths.app + '/register';
+          url = '/register';
           break;
         case 'password-request':
-          url = app.config.citizen.urlPaths.app + '/password-reset';
+          url = '/password-reset';
           break;
         case 'about':
-          url = app.config.citizen.urlPaths.app + '/about.html';
+          url = '/about.html';
           statusCode = 302;
           break;
         case 'help':
-          url = app.config.citizen.urlPaths.app + '/help.html';
+          url = '/help.html';
           statusCode = 302;
           break;
         case 'user-lists':
-          url = app.config.citizen.urlPaths.app + '/discussions';
+          url = '/discussions';
           statusCode = 302;
           break;
         case 'contact':
-          url = app.config.citizen.urlPaths.app + '/contact';
+          url = '/contact';
           break;
         case 'terms-of-service':
-          url = app.config.citizen.urlPaths.app + '/terms-of-service.html';
+          url = '/terms-of-service.html';
           statusCode = 302;
           break;
         case 'privacy-policy':
-          url = app.config.citizen.urlPaths.app + '/terms-of-service.html';
+          url = '/terms-of-service.html';
           statusCode = 302;
           break;
       }
