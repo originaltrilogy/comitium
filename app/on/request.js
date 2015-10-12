@@ -20,7 +20,36 @@ function start(params, context, emitter) {
       discussionID;
 
   if ( !regexp.test(url) && !forumRegex.test(url) && !faneditsRegex.test(url) && !petitionRegex.test(url) ) {
-    emitter.emit('ready');
+    // Keep all of this (mode security)
+    switch ( app.config.comitium.mode.status ) {
+      // If full access is enabled, send the user on their way
+      case 'online':
+        emitter.emit('ready');
+        break;
+      // If the forum is offline, check the user's permissions
+      case 'offline':
+        // If moderators are allowed to bypass the offline mode, check permissions
+        if ( app.config.comitium.mode.moderatorBypass ) {
+          if ( params.session.authenticated ) {
+            if ( params.session.moderateDiscussions ) {
+              emitter.emit('ready');
+            } else {
+              emitter.emit('ready', {
+                redirect: params.route.controller === 'offline' ? {} : 'offline'
+              });
+            }
+          } else {
+            emitter.emit('ready', {
+              redirect: params.route.controller === 'sign-in' ? {} : 'sign-in'
+            });
+          }
+        } else {
+          emitter.emit('ready', {
+            redirect: params.route.controller === 'offline' ? {} : 'offline'
+          });
+        }
+        break;
+    }
   } else {
     if ( forumRegex.test(url) ) {
       url = '/discussions';
