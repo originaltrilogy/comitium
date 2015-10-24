@@ -16,7 +16,7 @@ app.listen('waterfall', {
     var defaultAvatar,
         methodGroup = {};
 
-    fs.readFile('../app/resources/default-avatar.jpg', function (err, file) {
+    fs.readFile('../app/resources/images/default-avatar.jpg', function (err, file) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
