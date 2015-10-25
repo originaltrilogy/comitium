@@ -1388,7 +1388,6 @@ function metaData(args, emitter) {
       info(args.topicID, emitter);
     }
   }, function (output) {
-    console.log(output);
     if ( output.listen.success ) {
       emitter.emit('ready', {
         title: output.info.title + ' - Original Trilogy',

@@ -19,7 +19,7 @@ function handler(params, context, emitter) {
 
   app.listen({
     metaData: function (emitter) {
-      if ( app.controllers[params.route.controller].head ) {
+      if ( params.route.action === 'handler' && app.controllers[params.route.controller].head ) {
         app.controllers[params.route.controller].head(params, context, emitter);
       } else {
         emitter.emit('ready', {});
