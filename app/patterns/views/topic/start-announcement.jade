@@ -16,7 +16,7 @@ if topic && topic.message
     p !{topic.message}
           
 section.form.topic-write
-  form#topic-write-form(action="announcement/action/startForm" method="post" novalidate)
+  form#topic-write-form(action="topic/action/startAnnouncementForm" method="post" novalidate)
     ul.data
       li.topic-title.textarea.required
         label(for="topic-title")

@@ -515,8 +515,9 @@ function startAnnouncementForm(params, context, emitter) {
 
               app.listen({
                 saveTopic: function (emitter) {
-                  app.models.announcement.insert({
+                  app.models.topic.insert({
                     announcement: true,
+                    discussionID: 2,
                     discussions: params.form.discussions,
                     userID: params.session.userID,
                     title: params.form.title,
@@ -525,6 +526,7 @@ function startAnnouncementForm(params, context, emitter) {
                     text: params.form.content,
                     html: parsedContent,
                     draft: draft,
+                    private: false,
                     time: time
                   }, emitter);
                 }
