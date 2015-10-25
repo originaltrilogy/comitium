@@ -22,7 +22,7 @@ function handler(params, context, emitter) {
       if ( app.controllers[params.route.controller].head ) {
         app.controllers[params.route.controller].head(params, context, emitter);
       } else {
-        emitter.emit('ready');
+        emitter.emit('ready', {});
       }
     }
   }, function (output) {

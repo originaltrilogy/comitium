@@ -3,7 +3,8 @@
 'use strict';
 
 module.exports = {
-  handler: handler
+  handler: handler,
+  head: require('./topic').head
 };
 
 
