@@ -139,9 +139,6 @@ function start(params, context, emitter) {
           url = '/contact';
           break;
         case 'terms-of-service':
-          url = '/terms-of-service.html';
-          statusCode = 302;
-          break;
         case 'privacy-policy':
           url = '/terms-of-service.html';
           statusCode = 302;
