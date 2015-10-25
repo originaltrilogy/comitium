@@ -158,7 +158,9 @@ body {
   &[data-controller="private-topics"] > header li.private-topics a,
   &[data-controller="sign-in"] > header li.sign-in a,
   &[data-controller="register"] > header li.register a,
-  &[data-controller="account"] > header li.account a {
+  &[data-controller="account"] > header li.account a,
+  &[data-controller="about"] > header li.about a,
+  &[data-controller="help"] > header li.help a {
     @include background-color(14%, 27%);
   }
 }
