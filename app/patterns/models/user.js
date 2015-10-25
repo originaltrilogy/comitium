@@ -19,6 +19,7 @@ module.exports = {
   isActivated: isActivated,
   isIgnored: isIgnored,
   log: log,
+  metaData: metaData,
   passwordResetInsert: passwordResetInsert,
   passwordResetVerify: passwordResetVerify,
   passwordResetDelete: passwordResetDelete,
@@ -739,6 +740,28 @@ function log(args, emitter) {
             }
           }
       });
+    }
+  });
+}
+
+
+
+function metaData(args, emitter) {
+  app.listen({
+    info: function (emitter) {
+      info({
+        userID: args.userID
+      }, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      emitter.emit('ready', {
+        title: 'User Profile: ' + output.info.username + ' - Original Trilogy',
+        description: output.info.username + ' has been a member since ' + output.info.joined + '.',
+        keywords: ''
+      });
+    } else {
+      emitter.emit('error', output.listen);
     }
   });
 }

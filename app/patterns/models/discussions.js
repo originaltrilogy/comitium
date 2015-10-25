@@ -191,10 +191,11 @@ function breadcrumbs() {
 }
 
 
+
 function metaData() {
   return {
-    title: 'Discussions View',
-    description: 'This is the discussions view template.',
-    keywords: 'discussions, view'
+    title: 'Original Trilogy - Discussion Forum',
+    description: 'Various discussion forums related to the Star Wars universe, including fan projects such as fan edits, fan documentaries, and preservations of the original unaltered Star Wars trilogy.',
+    keywords: 'star wars forum, forums, star wars bulletin board, bbs, messageboard, message board, discussion forum, fan edit forum, star wars fan films, fan documentaries, fan preservations, film preservation'
   };
 }

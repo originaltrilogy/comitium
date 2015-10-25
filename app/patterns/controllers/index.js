@@ -3,54 +3,16 @@
 'use strict';
 
 module.exports = {
-  'handler': handler
+  handler: handler,
+  head: head
 };
 
 
 function handler(params, context, emitter) {
+  emitter.emit('ready');
+}
 
-  app.listen('waterfall', {
-    categories: function (emitter) {
-      app.models.index.content(params.session.groupID, emitter);
-    },
-    durhay: function (previous, emitter) {
-      if ( params.url.dummy ) {
-        emitter.emit('ready', true);
-      } else if ( params.url.end ) {
-        emitter.emit('end', false);
-      } else if ( params.url.error ) {
-        emitter.emit('error', false);
-      } else {
-        emitter.emit('skip', false);
-      }
-    },
-    dummy: function (previous, emitter) {
-      emitter.emit('ready', true);
-    },
-    dumber: function (previous, emitter) {
-      emitter.emit('ready', true);
-    }
-  }, function (output) {
 
-    if ( output.listen.success ) {
-
-      var myMap = new Map();
-
-      // console.log('myMap:');
-      // console.log('constructor: ' + myMap.constructor);
-      // console.log('typof: ' + typeof myMap);
-
-      emitter.emit('ready', {
-        content: output
-      });
-
-    } else {
-
-      // console.log(output.listen);
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
+function head(params, context, emitter) {
+  emitter.emit('ready', app.models.index.metaData());
 }

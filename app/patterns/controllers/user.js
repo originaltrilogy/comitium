@@ -4,6 +4,7 @@
 
 module.exports = {
   handler: handler,
+  head: head,
   activate: activate,
   ban: ban,
   liftBan: liftBan,
@@ -51,6 +52,24 @@ function handler(params, context, emitter) {
           pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
         }
       });
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+}
+
+
+
+function head(params, context, emitter) {
+  app.listen({
+    metaData: function (emitter) {
+      app.models.user.metaData({
+        userID: params.url.id
+      }, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      emitter.emit('ready', output.metaData);
     } else {
       emitter.emit('error', output.listen);
     }

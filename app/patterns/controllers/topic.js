@@ -4,6 +4,7 @@
 
 module.exports = {
   handler: handler,
+  head: head,
   notifySubscribers: notifySubscribers,
   start: start,
   startForm: startForm,
@@ -161,6 +162,24 @@ function handler(params, context, emitter) {
     }
   });
 
+}
+
+
+
+function head(params, context, emitter) {
+  app.listen({
+    metaData: function (emitter) {
+      app.models.topic.metaData({
+        topicID: params.url.id
+      }, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      emitter.emit('ready', output.metaData);
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 }
 
 

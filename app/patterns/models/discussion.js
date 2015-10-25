@@ -29,7 +29,7 @@ function info(discussionID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description", d."topics", d."posts" from discussions d left join categories c on d."categoryID" = c.id where d."id" = $1;',
+              'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description", d."metaDescription", d."keywords", d."topics", d."posts" from discussions d left join categories c on d."categoryID" = c.id where d."id" = $1;',
               [ discussionID ],
               function (err, result) {
                 done();
@@ -249,10 +249,21 @@ function breadcrumbs(discussionTitle) {
 }
 
 
-function metaData() {
-  return {
-    title: 'Discussion View',
-    description: 'This is the discussion view template.',
-    keywords: 'discussion, view'
-  };
+
+function metaData(args, emitter) {
+  app.listen({
+    info: function (emitter) {
+      info(args.discussionID, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      emitter.emit('ready', {
+        title: output.info.title + ' - ' + output.info.categoryTitle + ' - Original Trilogy',
+        description: output.info.metaDescription,
+        keywords: output.info.keywords
+      });
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 }

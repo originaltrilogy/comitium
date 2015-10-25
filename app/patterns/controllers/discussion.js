@@ -3,7 +3,8 @@
 'use strict';
 
 module.exports = {
-  handler: handler
+  handler: handler,
+  head: head
 };
 
 
@@ -139,4 +140,22 @@ function handler(params, context, emitter) {
     }
   });
 
+}
+
+
+
+function head(params, context, emitter) {
+  app.listen({
+    metaData: function (emitter) {
+      app.models.discussion.metaData({
+        discussionID: params.url.id
+      }, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      emitter.emit('ready', output.metaData);
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 }

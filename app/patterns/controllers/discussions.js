@@ -3,12 +3,13 @@
 'use strict';
 
 module.exports = {
-  handler: handler
+  handler: handler,
+  head: head
 };
 
 
 function handler(params, context, emitter) {
-  
+
   app.listen({
     categories: function (emitter) {
       app.models.discussions.categories(params.session.groupID, emitter);
@@ -44,4 +45,10 @@ function handler(params, context, emitter) {
     }
   });
 
+}
+
+
+
+function head(params, context, emitter) {
+  emitter.emit('ready', app.models.discussions.metaData());
 }

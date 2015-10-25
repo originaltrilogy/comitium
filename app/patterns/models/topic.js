@@ -244,7 +244,7 @@ function info(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."sticky" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) where t."id" = $1;',
+              'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created" as "time", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id order by created desc limit 1 ) where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();
@@ -1382,10 +1382,21 @@ function breadcrumbs(topic) {
 }
 
 
-function metaData() {
-  return {
-    title: 'Discussion View',
-    description: 'This is the discussion view template.',
-    keywords: 'discussion, view'
-  };
+function metaData(args, emitter) {
+  app.listen({
+    info: function (emitter) {
+      info(args.topicID, emitter);
+    }
+  }, function (output) {
+    console.log(output);
+    if ( output.listen.success ) {
+      emitter.emit('ready', {
+        title: output.info.title + ' - Original Trilogy',
+        description: 'Posted by ' + output.info.author + ' on ' + output.info.time,
+        keywords: ''
+      });
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 }

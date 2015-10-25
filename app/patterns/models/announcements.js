@@ -170,8 +170,8 @@ function breadcrumbs(discussionTitle) {
 
 function metaData() {
   return {
-    title: 'Discussion View',
-    description: 'This is the discussion view template.',
-    keywords: 'discussion, view'
+    title: 'Original Trilogy - Discussion Forum: Announcements',
+    description: 'Important news and updates for the Original Trilogy community.',
+    keywords: 'news, announcements'
   };
 }
