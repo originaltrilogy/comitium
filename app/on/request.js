@@ -59,7 +59,7 @@ function start(params, context, emitter) {
     } else if ( petitionRegex.test(url) ) {
       url = '/petition.html';
     } else {
-      url = url.replace('/forum', '');
+      url = url.replace(/\/forum/i, '');
       template = url.replace(regexp, '$1');
 
       switch ( template ) {
