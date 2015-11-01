@@ -60,6 +60,7 @@ function start(params, context, emitter) {
       url = '/petition.html';
     } else {
       url = url.replace(/\/forum/i, '');
+      url = url.replace('index.cfm', '');
       template = url.replace(regexp, '$1');
 
       switch ( template ) {
