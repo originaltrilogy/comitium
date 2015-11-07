@@ -70,7 +70,6 @@ function start(params, context, emitter) {
         case 'topic':
           url = url.replace('/topic/', '/id/');
           url = url.replace('topic.cfm', 'topic');
-          url = url.replace(/&STARTPAGE=([0-9]+)/i, '/page/$1')
 
           // Announcements
           regexp = new RegExp(/(.*)\/forum\/[0-9]+[\/]?(.*)/);
@@ -117,6 +116,7 @@ function start(params, context, emitter) {
           regexp = new RegExp(/.*messageview\.cfm\?.*threadid=([0-9]+)/);
           if ( regexp.test(url) ) {
             url = url.replace(regexp, '/topic/id/$1');
+            url = url.replace(/&STARTPAGE=([0-9]+)/i, '/page/$1');
           }
           break;
         case 'create-an-account':
