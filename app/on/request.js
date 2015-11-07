@@ -100,7 +100,7 @@ function start(params, context, emitter) {
           url = url.replace('user-profile.cfm', 'user');
           break;
         case 'login':
-          url = 'sign-in';
+          url = '/sign-in';
           break;
         case 'categories':
           regexp = new RegExp(/.*categories\.cfm\?catid=([0-9]+)/);
