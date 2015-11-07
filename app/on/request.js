@@ -70,6 +70,7 @@ function start(params, context, emitter) {
         case 'topic':
           url = url.replace('/topic/', '/id/');
           url = url.replace('topic.cfm', 'topic');
+          url = url.replace(/&STARTPAGE=([0-9]+)/i, '/page/$1')
 
           // Announcements
           regexp = new RegExp(/(.*)\/forum\/[0-9]+[\/]?(.*)/);
