@@ -55,12 +55,9 @@ function form(params, context, emitter) {
         }
       },
       generateVerification: function (previous, emitter) {
-        var ip = app.toolbox.helpers.ip(params.request);
-
         if ( previous.user ) {
           app.models.user.passwordResetInsert({
-            userID: previous.user.id,
-            ip: ip
+            userID: previous.user.id
           }, emitter);
         } else {
           emitter.emit('end', {
@@ -69,17 +66,24 @@ function form(params, context, emitter) {
           });
         }
       },
-      mail: function (previous, emitter) {
+      userLog: function (previous, emitter) {
         if ( previous.generateVerification.success ) {
-          app.models.content.mail({
-            template: 'Password Reset',
-            replace: {
-              resetUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + previous.user.id + '/code/' + previous.generateVerification.verificationCode
-            }
+          app.models.user.log({
+            userID: previous.user.id,
+            action: 'Password reset request',
+            ip: app.toolbox.helpers.ip(params.request)
           }, emitter);
         } else {
-          emitter.emit('ready', false);
+          emitter.emit('end', false);
         }
+      },
+      mail: function (previous, emitter) {
+        app.models.content.mail({
+          template: 'Password Reset',
+          replace: {
+            resetUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + previous.user.id + '/code/' + previous.generateVerification.verificationCode
+          }
+        }, emitter);
       }
     }, function (output) {
       if ( output.listen.success ) {

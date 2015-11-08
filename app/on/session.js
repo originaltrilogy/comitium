@@ -17,7 +17,7 @@ function start(params, context, emitter) {
   var cookie = {},
       session = {},
       active;
-  
+
   // If the user has cookies from a previous session, authenticate and start a new
   // session.
   if ( params.cookie.comitium_id ) {
@@ -42,7 +42,7 @@ function start(params, context, emitter) {
             action: 'Session start (cookied)',
             ip: app.toolbox.helpers.ip(params.request)
           });
-          
+
           emitter.emit('ready', {
             session: user
           });
@@ -71,15 +71,15 @@ function start(params, context, emitter) {
     });
 
   } else {
-    
+
     session.groupID = 1;
     active = app.toolbox.helpers.isoDate();
-    
+
     cookie.comitium_active = {
       value: active,
       expires: 'never'
     };
-    
+
     if ( params.cookie.comitium_active ) {
       session.lastActivity = params.cookie.comitium_active;
     } else {

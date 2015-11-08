@@ -46,7 +46,13 @@ function compareHash(str, hash, emitter) {
 function ip(request) {
   var address = request.headers['x-forwarded-for'] || request.connection.remoteAddress || request.socket.remoteAddress || ( request.connection.socket ? request.connection.socket.remoteAddress : 'undefined' );
 
-  return address.replace('::ffff:', '');
+  address = address.split(', ');
+
+  address.forEach( function (item, index, array) {
+    address[index] = address[index].replace('::ffff:', '');
+  });
+
+  return address;
 }
 
 

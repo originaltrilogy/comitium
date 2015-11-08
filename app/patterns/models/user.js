@@ -716,29 +716,71 @@ function isIgnored(args, emitter) {
 
 
 function log(args, emitter) {
-
   app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
-      client.query(
-        'insert into "userLogs" ( "userID", "action", "ip", "time" ) values ( $1, $2, $3, $4 ) returning id;',
-        [ args.userID, args.action, args.ip, app.toolbox.helpers.isoDate() ],
-        function (err, result) {
-          done();
-          if ( emitter ) {
+      app.listen('waterfall', {
+        begin: function (emitter) {
+          client.query('begin', function (err) {
             if ( err ) {
+              done();
               emitter.emit('error', err);
             } else {
-              emitter.emit('ready', {
-                success: true
+              emitter.emit('ready');
+            }
+          });
+        },
+        insertLogs: function (previous, emitter) {
+          var time = app.toolbox.helpers.isoDate(),
+              methods = {};
+
+          args.ip.forEach( function (item, index, array) {
+            methods[item] = function (emitter) {
+              client.query(
+                'insert into "userLogs" ( "userID", "action", "ip", "time" ) values ( $1, $2, $3, $4 ) returning id;',
+                [ args.userID, args.action, item, time ],
+                function (err, result) {
+                  done();
+                  if ( emitter ) {
+                    if ( err ) {
+                      emitter.emit('error', err);
+                    } else {
+                      emitter.emit('ready', {
+                        success: true
+                      });
+                    }
+                  } else {
+                    if ( err ) {
+                      throw err;
+                    }
+                  }
               });
+            };
+          });
+
+          app.listen(methods, function (output) {
+            if ( output.listen.success ) {
+              emitter.emit('ready', output);
+            } else {
+              emitter.emit('error', output.listen);
             }
+          });
+        },
+        commit: function (previous, emitter) {
+          client.query('commit', function () {
+            done();
+            emitter.emit('ready');
+          });
+        }
+      }, function (output) {
+        if ( emitter ) {
+          if ( output.listen.success ) {
+            emitter.emit('ready', output);
           } else {
-            if ( err ) {
-              throw err;
-            }
+            emitter.emit('error', output.listen);
           }
+        }
       });
     }
   });
@@ -776,8 +818,8 @@ function passwordResetInsert(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'insert into "passwordReset" ( "userID", "verificationCode", "ip", "time" ) values ( $1, $2, $3, $4 );',
-        [ args.userID, verificationCode, args.ip, app.toolbox.helpers.isoDate() ],
+        'insert into "passwordReset" ( "userID", "verificationCode", "time" ) values ( $1, $2, $3 );',
+        [ args.userID, verificationCode, app.toolbox.helpers.isoDate() ],
         function (err, result) {
           done();
           if ( err ) {
