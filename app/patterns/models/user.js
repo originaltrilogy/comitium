@@ -480,7 +480,8 @@ function emailExists(args, emitter) {
       client.query(
         'select email ' +
         'from users ' +
-        'where email = $1',
+        // Use lower() so e-mail checks are case-insensitive
+        'where lower(email) = lower($1)',
         [ args.email ],
         function (err, result) {
           done();
@@ -509,8 +510,8 @@ function exists(args, emitter) {
         client.query(
           'select id ' +
           'from users ' +
-          // Use ilike so username checks are case-insensitive.
-          'where username ilike $1',
+          // Use lower() so username checks are case-insensitive
+          'where lower(username) = lower($1)',
           [ args.username ],
           function (err, result) {
             done();
@@ -561,13 +562,13 @@ function info(args, emitter) {
         sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1';
         arg = args.userID;
       } else if ( args.username ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."username" ilike $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "username" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."username") = lower($1)';
         arg = args.username;
       } else if ( args.usernameHash ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."usernameHash" ilike $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."usernameHash") = lower($1)';
         arg = args.usernameHash;
       } else if ( args.email ) {
-        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "email" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."email" ilike $1';
+        sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "email" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."email") = lower($1)';
         arg = args.email;
       }
 
@@ -695,7 +696,7 @@ function isIgnored(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "ignoredUserID" from "ignoredUsers" where "userID" = ( select "id" from "users" where "username" ilike $1 ) and "ignoredUserID" = ( select "id" from "users" where "username" ilike $2 )',
+        'select "ignoredUserID" from "ignoredUsers" where "userID" = ( select "id" from "users" where lower("username") = lower($1) ) and "ignoredUserID" = ( select "id" from "users" where lower("username") = lower($2) )',
         [ args.ignoredBy, args.username ],
         function (err, result) {
           done();

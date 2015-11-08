@@ -360,7 +360,7 @@ function insert(args, emitter) {
                 // Dedupes invitees by overwriting the method if it already exists
                 userMethods[item.toLowerCase()] = function (emitter) {
                   client.query(
-                    'select id from users where username ilike $1;',
+                    'select id from users where lower(username) = lower($1);',
                     [ item ],
                     function (err, result) {
                       if ( err ) {
