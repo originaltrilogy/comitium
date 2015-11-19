@@ -679,6 +679,9 @@ function ipHistory(args, emitter) {
             emitter.emit('error', err);
           } else {
             if ( result.rows.length ) {
+              result.rows.forEach( function (item, index, array) {
+                array[index].ip = array[index].ip.replace('/32', '');
+              });
               emitter.emit('ready', result.rows);
             } else {
               emitter.emit('ready', false);
