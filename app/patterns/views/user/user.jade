@@ -41,13 +41,14 @@ nav.actions
 
 if moderateUser && ipHistory
   section.ip-history
+    h2 IP History
     ul
-      each ip in ipHistory
-        li #{ip}  
+      each log in ipHistory
+        li #{log.ip}  
 
 section.posts
   if posts
-    h2 Posts by #{user.username}
+    h2 Post History
     include ../partials/pagination
     each post in posts
       include ../post/_user-profile-post
