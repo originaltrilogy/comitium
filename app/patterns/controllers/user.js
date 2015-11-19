@@ -41,7 +41,7 @@ function handler(params, context, emitter) {
       }
     },
     ipHistory: function (previous, emitter) {
-      if ( params.session.banUser ) {
+      if ( params.session.moderateUsers ) {
         app.models.user.ipHistory({
           userID: params.url.id
         }, emitter);
@@ -55,7 +55,7 @@ function handler(params, context, emitter) {
         content: {
           talkPrivately: params.session.talkPrivately && output.user.id !== params.session.userID,
           editProfile: output.user.id === params.session.userID,
-          banUser: output.user.id !== params.session.userID && params.session.moderateUsers,
+          moderateUser: output.user.id !== params.session.userID && params.session.moderateUsers,
           user: output.user,
           posts: output.posts,
           ipHistory: output.ipHistory,
