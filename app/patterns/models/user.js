@@ -671,7 +671,7 @@ function ipHistory(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select distinct "ip" from "userLogs" where "userID" = $1;',
+        'select distinct "ip" from "userLogs" where "userID" = $1 order by "ip" asc;',
         [ args.userID ],
         function (err, result) {
           done();
