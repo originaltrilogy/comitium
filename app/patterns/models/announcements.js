@@ -156,11 +156,11 @@ function topics(args, emitter) {
 function breadcrumbs(discussionTitle) {
   return {
     a: {
-      name: 'Forum Home',
+      name: 'Home',
       url: app.config.comitium.basePath
     },
     b: {
-      name: 'Discussion Categories',
+      name: 'Discussions',
       url: app.config.comitium.basePath + 'discussions'
     }
   };

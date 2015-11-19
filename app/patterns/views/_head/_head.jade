@@ -5,8 +5,8 @@ head
   title #{metaData.title}
   meta(name="description" content="#{metaData.description}")
   meta(name="keywords" content="#{metaData.keywords}")
-  script(type="text/javascript" src="#{jsUrl}")
   link(rel="stylesheet" type="text/css" href="#{cssUrl}")
+  script(type="text/javascript" src="#{jsUrl}")
   //- REMOVE from shipping version
   if config.citizen.mode === 'production'
     script

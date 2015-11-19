@@ -1,10 +1,10 @@
 CF.index = ( function (Modernizr, CF) {
   'use strict';
-  
+
   var methods = {
 
       init: function () {
-        console.log('CF.index.init()');
+        // console.log('CF.index.init()');
       }
 
     };
