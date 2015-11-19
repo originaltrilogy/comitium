@@ -39,6 +39,15 @@ function handler(params, context, emitter) {
           statusCode: 404
         });
       }
+    },
+    ipHistory: function (previous, emitter) {
+      if ( params.session.banUser ) {
+        app.models.user.ipHistory({
+          userID: params.url.id
+        }, emitter);
+      } else {
+        emitter.emit('ready', false);
+      }
     }
   }, function (output) {
     if ( output.listen.success ) {
@@ -49,6 +58,7 @@ function handler(params, context, emitter) {
           banUser: output.user.id !== params.session.userID && params.session.moderateUsers,
           user: output.user,
           posts: output.posts,
+          ipHistory: output.ipHistory,
           pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
         }
       });

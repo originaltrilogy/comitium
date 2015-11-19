@@ -16,6 +16,7 @@ module.exports = {
   exists: exists,
   info: info,
   insert: insert,
+  ipHistory: ipHistory,
   isActivated: isActivated,
   isIgnored: isIgnored,
   log: log,
@@ -660,6 +661,28 @@ function insert(args, emitter) {
     }
   });
 
+}
+
+
+
+function ipHistory(args, emitter) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select distinct "ip" from "userLogs" where "userID" = $1;',
+        [ args.userID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', result.rows);
+          }
+      });
+    }
+  });
 }
 
 

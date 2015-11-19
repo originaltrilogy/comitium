@@ -2,6 +2,8 @@ section.summary
   h1 #{discussion.title}
   if discussion.description
     p !{discussion.description}
+    
+include ../partials/pagination
 
 if announcements
   section.announcements
@@ -28,8 +30,6 @@ section.topics
             a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
         //- li.subscribe
         //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
-
-  include ../partials/pagination
   
   if topics
     each topic in topics

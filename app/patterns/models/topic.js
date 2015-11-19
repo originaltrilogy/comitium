@@ -1338,7 +1338,7 @@ function breadcrumbs(topic) {
     case 0:
       return {
         a: {
-          name: 'Forum Home',
+          name: 'Home',
           url: app.config.comitium.basePath
         },
         c: {
@@ -1351,11 +1351,11 @@ function breadcrumbs(topic) {
       url = 'announcements';
       return {
         a: {
-          name: 'Forum Home',
+          name: 'Home',
           url: app.config.comitium.basePath
         },
         b: {
-          name: 'Discussion Categories',
+          name: 'Discussions',
           url: 'discussions'
         },
         c: {
@@ -1366,11 +1366,11 @@ function breadcrumbs(topic) {
     default:
       return {
         a: {
-          name: 'Forum Home',
+          name: 'Home',
           url: app.config.comitium.basePath
         },
         b: {
-          name: 'Discussion Categories',
+          name: 'Discussions',
           url: 'discussions'
         },
         c: {

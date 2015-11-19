@@ -973,21 +973,41 @@ CF.global = ( function (Modernizr, CF) {
   var methods = {
 
     init: function () {
-      var header = document.querySelector('body > header'),
+      var body = document.querySelector('body'),
+          bodyOffset = 0,
+          header = document.querySelector('body > header'),
+          main = document.querySelector('main'),
           accountNav = header.querySelector('nav ul.account'),
           accountNavTimer,
           menuIcon;
 
+      body.className = 'floating-header';
+      main.style.paddingTop = header.getBoundingClientRect().height + 'px';
+
+      window.addEventListener('scroll', function (e) {
+        if ( bodyOffset > body.getBoundingClientRect().top && Math.abs(body.getBoundingClientRect().top) > header.getBoundingClientRect().height && !methods.hasClass(body, 'floating-header-hidden') ) {
+          body.className += ' floating-header-hidden';
+        } else if ( body.getBoundingClientRect().top > bodyOffset ) {
+          methods.removeClass(body, 'floating-header-hidden');
+        }
+
+        if ( body.getBoundingClientRect().top === 0 ) {
+          body.className = 'floating-header';
+        }
+
+        bodyOffset = body.getBoundingClientRect().top;
+      });
+
       if ( CF.params.device.relativeSize === 'small' || CF.params.device.relativeSize === 'medium' ) {
         menuIcon = document.createElement('div');
 
-        menuIcon.setAttribute('id', 'menu-icon');
+        menuIcon.className = 'main-menu-icon';
         menuIcon.appendChild(document.createTextNode('Menu'));
         header.appendChild(menuIcon);
 
         methods.menu({
           menu: 'header nav',
-          trigger: '#menu-icon',
+          trigger: 'header .main-menu-icon',
           position: 'left'
         });
       }
@@ -1031,18 +1051,16 @@ CF.global = ( function (Modernizr, CF) {
     menu: function (args) {
       var body = document.querySelector('body'),
           menu,
-          menuShadow = document.querySelector('#menu-shadow') || document.createElement('div'),
           trigger = document.querySelector(args.trigger);
 
-      menuShadow.setAttribute('id', 'menu-shadow');
-      body.insertBefore(menuShadow, body.children[0]);
-
       trigger.addEventListener('click', function () {
-        var source = document.querySelector(args.menu);
+        var source = document.querySelector(args.menu),
+            menuShadow = document.createElement('div');
 
         menu = source.cloneNode(true);
-
-        body.insertBefore(menu, body.children[0]);
+        body.appendChild(menu);
+        menuShadow.className = 'menu-shadow';
+        body.appendChild(menuShadow);
 
         if ( args.keepClass === false ) {
           menu.className = 'slide-menu ' + args.position;
@@ -1065,18 +1083,19 @@ CF.global = ( function (Modernizr, CF) {
             menu.className += ' open';
           }, 200);
         }
-      }, false);
 
-      menuShadow.addEventListener('click', function () {
-        methods.removeClass(body, 'menu-open');
-        methods.removeClass(menu, 'open');
-        body.className += ' menu-closing';
-        setTimeout( function () {
-          methods.removeClass(body, 'menu-closing');
-          if ( menu.parentNode !== null ) {
-            body.removeChild(menu);
-          }
-        }, 200);
+        menuShadow.addEventListener('click', function () {
+          methods.removeClass(body, 'menu-open');
+          methods.removeClass(menu, 'open');
+          body.className += ' menu-closing';
+          setTimeout( function () {
+            methods.removeClass(body, 'menu-closing');
+            body.removeChild(menuShadow);
+            if ( menu.parentNode !== null ) {
+              body.removeChild(menu);
+            }
+          }, 200);
+        }, false);
       }, false);
     },
 
@@ -1093,6 +1112,14 @@ CF.global = ( function (Modernizr, CF) {
         element.classList.remove(className);
       } else {
         element.className = element.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+      }
+    },
+
+    toggleClass: function (element, className) {
+      if ( methods.hasClass(element, className) ) {
+        methods.removeClass(element, className);
+      } else {
+        element.className += ' ' + className;
       }
     },
 
@@ -1352,11 +1379,11 @@ CF.global = ( function (Modernizr, CF) {
 
 CF.index = ( function (Modernizr, CF) {
   'use strict';
-  
+
   var methods = {
 
       init: function () {
-        console.log('CF.index.init()');
+        // console.log('CF.index.init()');
       }
 
     };

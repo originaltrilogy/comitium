@@ -73,7 +73,7 @@ function handler(params, context, emitter) {
                 content = {
                   breadcrumbs: {
                     a: {
-                      name: 'Forum Home',
+                      name: 'Home',
                       url: app.config.comitium.basePath
                     }
                   },

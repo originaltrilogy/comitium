@@ -184,7 +184,7 @@ function categoriesPost(groupID, emitter) {
 function breadcrumbs() {
   return {
     a: {
-      name: 'Forum Home',
+      name: 'Home',
       url: app.config.comitium.basePath
     }
   };

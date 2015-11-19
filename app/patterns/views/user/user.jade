@@ -39,6 +39,12 @@ nav.actions
         li.unban
           a(href="user/action/liftBan/id/#{user.id}") Lift ban
 
+if banUser && ipHistory
+  section.ip-history
+    ul
+      each ip in ipHistory
+        li #{ip}  
+
 section.posts
   if posts
     h2 Posts by #{user.username}

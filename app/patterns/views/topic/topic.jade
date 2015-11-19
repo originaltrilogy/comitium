@@ -11,6 +11,8 @@ if topic.lockedByID
       p.why Why was this topic locked?
       p.reason !{topic.lockReason}
 
+include ../partials/pagination
+
 if !topic.lockedByID || ( topic.lockedByID && session.moderateDiscussions )
   nav.topic.actions
     ul
@@ -38,8 +40,6 @@ if !topic.lockedByID || ( topic.lockedByID && session.moderateDiscussions )
               a(href="topic/action/unlock/id/#{topic.id}" title="Unlock this topic.") Unlock
           li.delete
             a(href="topic/action/trash/id/#{topic.id}" title="Move this topic to the trash.") Delete
-  
-include ../partials/pagination
           
 section.posts
   if posts
