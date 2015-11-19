@@ -31,7 +31,7 @@ nav.actions
     if editProfile
       li.edit
         a(href="account") Edit profile
-    if banUser
+    if moderateUser
       if user.group !== "Banned Users"
         li.ban
           a(href="user/action/ban/id/#{user.id}") Ban this user
@@ -39,7 +39,7 @@ nav.actions
         li.unban
           a(href="user/action/liftBan/id/#{user.id}") Lift ban
 
-if banUser && ipHistory
+if moderateUser && ipHistory
   section.ip-history
     ul
       each ip in ipHistory

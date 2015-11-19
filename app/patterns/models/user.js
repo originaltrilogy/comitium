@@ -678,7 +678,11 @@ function ipHistory(args, emitter) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
-            emitter.emit('ready', result.rows);
+            if ( result.rows.length ) {
+              emitter.emit('ready', result.rows);
+            } else {
+              emitter.emit('ready', false);
+            }
           }
       });
     }
