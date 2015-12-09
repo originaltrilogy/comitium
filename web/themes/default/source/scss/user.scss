@@ -46,7 +46,7 @@ body[data-view="user"] {
     }
   }
 
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 600px) {
 
     section.summary {
       img {
@@ -76,7 +76,7 @@ body[data-view="user"] {
 
   }
 
-  @media only screen and (min-width: 960px) {
+  @media only screen and (min-width: 768px) {
 
     section.summary {
       padding: 5rem 0;

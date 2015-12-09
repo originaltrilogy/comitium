@@ -3,8 +3,8 @@
 /////////////////////////
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -22,7 +22,7 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 { font-size: 130%; }
 h2 { font-size: 120%; }
-h3 { font-size: 110%; }
+h3 { font-size: 105%; }
 h4, h5, h6 { font-size: 100%; }
 
 ul,
@@ -44,7 +44,7 @@ dt {
   min-width: 34vw;
   font-family: $boldFont;
 
-  &:after {
+  &::after {
     content: ':';
   }
 }
@@ -74,8 +74,8 @@ img {
   -ms-interpolation-mode: bicubic;
 }
 
-q:before,
-q:after {
+q::before,
+q::after {
   content: '';
 }
 

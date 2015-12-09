@@ -169,7 +169,7 @@ function topics(args, emitter) {
           } else {
             client.query({
               name: 'topics_discussion',
-              text: 'select t."id", t."sticky", t."replies", t."titleHtml", t."url", t."lockedByID", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              text: 'select t."id", t."sticky", t."replies", t."titleHtml", t."url", t."lockedByID", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join posts p on p."id" = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +
               'join users u on u.id = p."userID" ' +
