@@ -888,9 +888,9 @@ CF.immediate = ( function (Modernizr, CF) {
     responsiveModeSet: function () {
       var html = document.querySelector('html');
       // var windowWidth = $(window).width();
-      if ( Modernizr.mq('only screen and (min-width: 960px)') ) {
+      if ( Modernizr.mq('only screen and (min-width: 768px)') ) {
         CF.params.device.relativeSize = 'x-large';
-      } else if ( Modernizr.mq('only screen and (min-width: 768px)') ) {
+      } else if ( Modernizr.mq('only screen and (min-width: 600px)') ) {
         CF.params.device.relativeSize = 'large';
       } else if ( Modernizr.mq('only screen and (min-width: 500px)') ) {
         CF.params.device.relativeSize = 'medium';
@@ -986,9 +986,13 @@ CF.global = ( function (Modernizr, CF) {
 
       window.addEventListener('scroll', function (e) {
         if ( bodyOffset > body.getBoundingClientRect().top && Math.abs(body.getBoundingClientRect().top) > header.getBoundingClientRect().height && !methods.hasClass(body, 'floating-header-hidden') ) {
+          methods.removeClass(body, 'floating-header-active');
           body.className += ' floating-header-hidden';
         } else if ( body.getBoundingClientRect().top > bodyOffset ) {
           methods.removeClass(body, 'floating-header-hidden');
+          if ( !methods.hasClass(body, 'floating-header-active') ) {
+            body.className += ' floating-header-active';
+          }
         }
 
         if ( body.getBoundingClientRect().top === 0 ) {
@@ -1044,7 +1048,7 @@ CF.global = ( function (Modernizr, CF) {
       }
 
       methods.viewportResizeCheck('responsiveModeSet', CF.immediate.responsiveModeSet);
-      // methods.viewportResizeCheck('frameworkReinit', CF.global.init);
+      methods.viewportResizeCheck('frameworkReinit', CF.global.init);
       // methods.bindInternalLinks();
     },
 

@@ -25,7 +25,7 @@ body[data-controller="announcement"] {
     }
   }
 
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 600px) {
 
     section.summary h1 {
       padding-bottom: 3vw;
@@ -33,7 +33,7 @@ body[data-controller="announcement"] {
 
   }
 
-  @media only screen and (min-width: 960px) {
+  @media only screen and (min-width: 768px) {
 
     section.summary h1 {
       padding-bottom: 4rem;
@@ -60,11 +60,14 @@ body[data-controller="announcement"] {
 body[data-controller="topic"][data-view="private-topic"] {
 
   section.notice.private {
+    &::before {
+      @include icon($gPrivate);
+    }
     p {
       display: inline;
       margin-bottom: 0;
 
-      &:after {
+      &::after {
         content: ' ';
       }
     }
@@ -80,17 +83,17 @@ body[data-controller="topic"][data-view="private-topic"] {
       &:nth-child(n+2) {
         margin-left: -4px;
 
-        &:before {
+        &::before {
           content: ', ';
         }
       }
       &:last-child {
         margin-left: 0;
 
-        &:before {
+        &::before {
           content: ' and ';
         }
-        &:after {
+        &::after {
           content: '.';
           // Prevents the period from becoming a widow on the next line
           position: absolute;

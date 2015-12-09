@@ -23,9 +23,9 @@ CF.immediate = ( function (Modernizr, CF) {
     responsiveModeSet: function () {
       var html = document.querySelector('html');
       // var windowWidth = $(window).width();
-      if ( Modernizr.mq('only screen and (min-width: 960px)') ) {
+      if ( Modernizr.mq('only screen and (min-width: 768px)') ) {
         CF.params.device.relativeSize = 'x-large';
-      } else if ( Modernizr.mq('only screen and (min-width: 768px)') ) {
+      } else if ( Modernizr.mq('only screen and (min-width: 600px)') ) {
         CF.params.device.relativeSize = 'large';
       } else if ( Modernizr.mq('only screen and (min-width: 500px)') ) {
         CF.params.device.relativeSize = 'medium';

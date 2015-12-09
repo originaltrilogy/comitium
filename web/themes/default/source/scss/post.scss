@@ -125,10 +125,10 @@ article.post {
   nav.actions {
     background: none;
 
-    &:before {
+    &::before {
       background-image: linear-gradient(to right, hsl(226, 12%, 30%), hsla(226, 12%, 30%, 0));
     }
-    &:after {
+    &::after {
       background-image: linear-gradient(to left, hsl(226, 12%, 30%), hsla(226, 12%, 30%, 0));
     }
     ul {
@@ -207,8 +207,8 @@ article.post {
       ul {
         padding: 2rem;
       }
-      &:before,
-      &:after {
+      &::before,
+      &::after {
         width: 2rem;
       }
     }

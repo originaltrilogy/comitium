@@ -2,6 +2,8 @@ section.summary
   h1 Private Topics
   p These topics are visible only to you and the other topic participants.
 
+include ../partials/pagination
+
 section.topics
   nav.discussion.actions
     ul
@@ -10,26 +12,31 @@ section.topics
       //- li.subscribe
       //-   a(href="private-topics/action/subscribe" title="Receive an e-mail notification when you're invited to a new private topic.") Notify me
 
-include ../partials/pagination
-
 if topics
   each topic in topics
     article(class="topic #{ topic.updated ? 'updated' : '' } #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
       h3
         a(href="topic/id/#{topic.id}") !{topic.titleHtml}
-      dl.details
+      dl.byline
         dt.author Author
         dd.author
           a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
         dt.date Date
         dd.date
           = topic.postDateFormatted
+      dl.details
         dt.replies Replies
         dd.replies
           = topic.repliesFormatted
-        dt.last-post Last post
-        dd.last-post
-          time #{topic.lastPostCreatedFormatted}
+        if topic.repliesFormatted !== '0'
+          dt.last-post Last post
+          dd.last-post
+            a(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+              = topic.lastPostAuthor
+            |  replied on 
+            time #{topic.lastPostCreatedFormatted}
+            a.avatar(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+              img(src="avatars/#{topic.lastPostAuthorID}.jpg")
       a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
         img(src="avatars/#{topic.topicStarterID}.jpg")
 else

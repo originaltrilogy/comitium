@@ -1,6 +1,7 @@
-/*-------------------
-discussions pattern
--------------------*/
+////////////////////////////
+//  discussions pattern   //
+////////////////////////////
+
 body[data-controller="discussions"] {
 
   &[data-view="discussions"] {
@@ -13,21 +14,59 @@ body[data-controller="discussions"] {
       margin-top: 2vw;
       margin-bottom: 0;
     }
-    ul.stats {
-      display: inline-block;
-      width: 32vw;
-      margin-top: 4vw;
-      list-style: none;
-    }
-    .last-post {
-      display: inline-block;
-      margin-top: 4vw;
+    dl.details {
+      position: relative;
+      margin-top: 5vw;
 
-      h4 {
-        margin-bottom: 1.5vw;
+      dt.topics,
+      dt.posts {
+        position: absolute;
+        left: -100vw;
+      }
+      dd.topics,
+      dd.posts {
+        margin-left: 0;
+        font-family: $boldFont;
+        font-size: 110%;
 
-        &:after {
-          content: ':';
+        &::after {
+          font-family: $defaultFont;
+        }
+      }
+      dd.topics {
+        &::after {
+          content: 'topics';
+        }
+      }
+      dd.posts {
+        margin-top: 1vw;
+
+        &::after {
+          content: 'posts';
+        }
+      }
+      dt.last-post {
+        position: absolute;
+        bottom: 10vw;
+        right: 18vw;
+        font-size: 85%;
+        text-align: right;
+      }
+      dd.last-post {
+        position: absolute;
+        right: 18vw;
+        bottom: 0;
+        margin: 0;
+        font-size: 85%;
+        text-align: right;
+
+        time {
+          display: block;
+        }
+        a.avatar {
+          position: absolute;
+          top: -4vw;
+          right: -18vw;
         }
       }
     }
@@ -57,7 +96,7 @@ body[data-controller="discussions"] {
       }
     }
 
-    @media only screen and (min-width: 768px) {
+    @media only screen and (min-width: 600px) {
       section.announcements {
         article {
           padding: 2vw 0;
@@ -71,7 +110,7 @@ body[data-controller="discussions"] {
       }
     }
 
-    @media only screen and (min-width: 960px) {
+    @media only screen and (min-width: 768px) {
       section.announcements {
         article {
           padding: 2rem 0;

@@ -21,12 +21,18 @@ section.categories
             a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
           if discussion.discussionDescription
             p.description !{discussion.discussionDescription}
-          ul.stats
-            li.topics <strong>#{discussion.topicsFormatted}</strong> topics
-            li.posts <strong>#{discussion.postsFormatted}</strong> posts
-          if discussion.lastPostCreated
-            .last-post
-              h4 Last post
-              time #{discussion.lastPostCreatedFormatted}
-              //- |  by 
-              //- a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.") #{discussion.lastPostAuthor}
+          dl.details
+            dt.topics Topics
+            dd.topics
+              = discussion.topicsFormatted
+            dt.posts Posts
+            dd.posts
+              = discussion.postsFormatted
+            if discussion.lastPostCreated
+              dt.last-post Last Post
+              dd.last-post
+                a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
+                  = discussion.lastPostAuthor
+                time #{discussion.lastPostCreatedFormatted}
+                a.avatar(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
+                  img(src="avatars/#{discussion.lastPostAuthorID}.jpg")

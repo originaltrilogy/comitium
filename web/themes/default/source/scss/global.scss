@@ -113,7 +113,7 @@ body {
   position: relative;
   font-family: $defaultFont;
   text-rendering: optimizeLegibility;
-  @include background-color(13%, 15%);
+  @include background-color(14%, 27%);
   color: white;
 
   &.transitioning {
@@ -147,21 +147,21 @@ body {
   }
 
   // Navigation highlighting
-  &[data-controller="index"] > header li.news a,
-  &[data-controller="discussions"] > header li.discussions a,
-  &[data-controller="discussion"] > header li.discussions a,
-  &[data-controller="announcements"] > header li.discussions a,
-  &[data-controller="announcement"] > header li.discussions a,
-  &[data-controller="topic"][data-view="topic"] > header li.discussions a,
-  &[data-controller="topic"][data-view="private-topic"] > header li.private-topics a,
-  &[data-controller="topic"][data-view="start-private"] > header li.private-topics a,
-  &[data-controller="private-topics"] > header li.private-topics a,
-  &[data-controller="sign-in"] > header li.sign-in a,
-  &[data-controller="register"] > header li.register a,
-  &[data-controller="account"] > header li.account a,
-  &[data-controller="about"] > header li.about a,
-  &[data-controller="help"] > header li.help a {
-    @include background-color(14%, 27%);
+  &[data-controller="index"] nav li.news a,
+  &[data-controller="discussions"] nav li.discussions a,
+  &[data-controller="discussion"] nav li.discussions a,
+  &[data-controller="announcements"] nav li.discussions a,
+  &[data-controller="announcement"] nav li.discussions a,
+  &[data-controller="topic"][data-view="topic"] nav li.discussions a,
+  &[data-controller="topic"][data-view="private-topic"] nav li.private-topics a,
+  &[data-controller="topic"][data-view="start-private"] nav li.private-topics a,
+  &[data-controller="private-topics"] nav li.private-topics a,
+  &[data-controller="sign-in"] nav li.sign-in a,
+  &[data-controller="register"] nav li.register a,
+  &[data-controller="account"] nav li.account a,
+  &[data-controller="about"] nav li.about a,
+  &[data-controller="help"] nav li.help a {
+    @include background-color(14%, 32%);
   }
 }
 
@@ -218,13 +218,11 @@ body > header {
   width: 100%;
   @include color(0%, 94%);
   @include background-color(14%, 19%);
-  border-bottom: 1px solid;
-  @include border-color(14%, 10%);
 
   a.home {
     width: 32vw;
     margin: 0 auto;
-    padding: 2vw 0;
+    padding: 2.2vw 0;
   }
 
   nav {
@@ -232,7 +230,6 @@ body > header {
       text-align: center;
     }
     li {
-      display: inline-block;
       margin: 0 1vw 1vw;
 
       a {
@@ -264,7 +261,7 @@ body > header {
       padding-top: 10vw;
       overflow: hidden;
 
-      &:before {
+      &::before {
         @include icon($gNoUpdates);
         @include color(100%, 90%);
         position: absolute;
@@ -277,7 +274,7 @@ body > header {
         text-align: center;
       }
 
-      &.updates:before {
+      &.updates::before {
         @include icon($gUpdates);
       }
     }
@@ -308,6 +305,13 @@ body {
     transition: margin 0.3s;
     margin-top: 0;
   }
+  // Hide the current page indicator when the header is floating
+  &.floating-header-active > header,
+  &.floating-header-hidden > header {
+    nav ul.content li.discussions a::after {
+      display: none;
+    }
+  }
   &.floating-header-hidden > header {
     margin-top: -80px;
   }
@@ -315,8 +319,8 @@ body {
 
 
 // The menu button and sliding nav are used on mobile only. Much easier to limit
-// here than to overwrite within the 768px media query later.
-@media only screen and (max-width: 767px) {
+// here than to overwrite within the 600px media query later.
+@media only screen and (max-width: 599px) {
   html.js.csstransitions {
     body > header {
       nav {
@@ -332,7 +336,7 @@ body {
       padding-left: 8vw;
       font-size: 100%;
 
-      &:before {
+      &::before {
         @include icon($gMenu);
         position: absolute;
         top: 0;
@@ -386,7 +390,6 @@ body {
       li {
         display: block;
         line-height: 1;
-        border-top: 1px solid #4F566B;
 
         a {
           display: block;
@@ -436,7 +439,7 @@ nav.breadcrumbs {
     display: inline-block;
     margin-bottom: 1vw;
 
-    &:after {
+    &::after {
       content: '/';
       padding: 0 1vw 0 2vw;
     }
@@ -601,7 +604,7 @@ section {
     clear: both;
     @include background-color(14%, 19%);
 
-    &:before {
+    &::before {
       @include icon($gNotice);
       @include color(100%, 90%);
       position: absolute;
@@ -620,7 +623,7 @@ section {
     &.banned {
       background: hsl(0,40%,50%);
 
-      &:before,
+      &::before,
       a {
         color: white;
       }
@@ -634,7 +637,7 @@ section {
         display: inline;
         vertical-align: middle;
       }
-      &:before {
+      &::before {
         @include icon($gSuccess);
         position: static;
         display: inline-block;
@@ -643,15 +646,15 @@ section {
       }
     }
 
-    &.error:before {
+    &.error::before {
       @include icon($gError);
     }
 
-    &.locked:before {
+    &.locked::before {
       @include icon($gLock);
     }
 
-    &.banned:before {
+    &.banned::before {
       @include icon($gBanned);
     }
 
@@ -885,7 +888,7 @@ form {
 
   input[type="checkbox"] {
     &:checked {
-      &:after {
+      &::after {
         @include icon($gChecked);
         position: absolute;
         top: 0;
@@ -905,7 +908,7 @@ form {
     border-radius: 50%;
 
     &:checked {
-      &:after {
+      &::after {
         position: absolute;
         top: 1.5vw;
         left: 1.5vw;
@@ -938,7 +941,7 @@ form {
       &.select {
         position: relative;
 
-        &:after {
+        &::after {
           @include icon($gSelect);
           position: absolute;
           right: 2vw;
@@ -1025,8 +1028,8 @@ nav.actions {
   overflow: hidden;
   @include background-color(14%, 32%);
 
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     content: '';
     display: block;
     position: absolute;
@@ -1036,11 +1039,11 @@ nav.actions {
     z-index: 101;
   }
 
-  &:before {
+  &::before {
     left: 0;
     background-image: linear-gradient(to right, hsl(225, 14%, 32%), hsla(225, 14%, 32%, 0));
   }
-  &:after {
+  &::after {
     right: 0;
     background-image: linear-gradient(to left, hsl(225, 14%, 32%), hsla(225, 14%, 32%, 0));
   }
@@ -1078,13 +1081,13 @@ nav.actions {
 a.avatar {
   display: block;
   margin: 0;
-  width: 18vw;
-  height: 18vw;
+  width: 14vw;
+  height: 14vw;
 
   img {
     width: 100%;
     height: 100%;
-    border-radius: 12%;
+    border-radius: 8%;
   }
 }
 
@@ -1117,19 +1120,20 @@ a.avatar {
 }
 
 
-// Screens wider than 768px
-@media only screen and (min-width: 768px) {
+// Screens wider than 600px
+@media only screen and (min-width: 600px) {
 
   body {
-    font-size: 2.2vw;
+    font-size: 2vw;
 
     & > header {
       display: flex;
       flex-wrap: wrap;
 
       a.home {
-        margin: 0 2vw;
-        width: 20vw;
+        margin: 0 1.8vw;
+        padding: 1.8vw 0;
+        width: 14.6vw;
       }
       a.sign-in {
         display: none;
@@ -1139,63 +1143,65 @@ a.avatar {
         right: 1vw;
 
         a.private-topics {
-          right: 12vw;
-          width: 8vw;
-          height: 8vw;
+          right: 10vw;
+          padding-top: 6vw;
+          width: 6vw;
+          height: 6vw;
 
-          &:before {
+          &::before {
             width: 8vw;
             height: 8vw;
-            font-size: 5vw;
-            line-height: 8vw;
+            font-size: 4vw;
+            line-height: 6vw;
           }
         }
         a.account {
-          width: 8vw;
-          height: 8vw;
-          padding-left: 8vw;
+          width: 6vw;
+          height: 6vw;
+          padding-left: 6vw;
         }
       }
       nav {
         display: flex;
         flex: 1 1 auto;
-        min-height: 8vw;
+        align-items: center;
 
         ul {
           flex: 1 1 auto;
-          align-self: center;
 
-          &.content {
-            text-align: left;
-          }
-          &.account {
-            margin-right: 2vw;
-            text-align: right;
+          li {
+            margin: 0 0.5vw;
+            float: left;
+            text-align: center;
 
-            li.sign-in a {
-              @include button('small', 'lightGhost');
-            }
-            li.register {
-              margin-right: 0;
+            a {
+              display: block;
+              padding: 2.5vw 1.5vw;
+              text-decoration: none;
 
-              a {
-                @include button('small');
+              &:hover {
+                @include background-color(14%, 27%);
               }
             }
           }
-        }
-        li {
-          display: inline-block;
-          margin: 0 0.5vw;
-          text-align: center;
+          &.account {
+            margin-right: 1.4vw;
+            text-align: right;
 
-          a {
-            display: block;
-            padding: 0.8vw 1.5vw;
-            text-decoration: none;
+            li {
+              display: inline-block;
+              float: none;
 
-            &:hover {
-              @include background-color(14%, 27%);
+              &.sign-in a {
+                @include button('small', 'lightGhost');
+              }
+              &.register {
+                margin-right: 0;
+
+                a {
+                  @include button('small');
+                }
+              }
             }
           }
         }
@@ -1207,6 +1213,39 @@ a.avatar {
             flex: 0 1 auto;
           }
         }
+      }
+    }
+
+    // Navigation highlighting
+    &[data-controller="index"] nav ul.content li.news a,
+    &[data-controller="discussions"] nav ul.content li.discussions a,
+    &[data-controller="discussion"] nav ul.content li.discussions a,
+    &[data-controller="announcements"] nav ul.content li.discussions a,
+    &[data-controller="announcement"] nav ul.content li.discussions a,
+    &[data-controller="topic"][data-view="topic"] nav ul.content li.discussions a,
+    &[data-controller="topic"][data-view="private-topic"] nav ul.content li.private-topics a,
+    &[data-controller="topic"][data-view="start-private"] nav ul.content li.private-topics a,
+    &[data-controller="private-topics"] nav ul.content li.private-topics a,
+    &[data-controller="sign-in"] nav ul.content li.sign-in a,
+    &[data-controller="register"] nav ul.content li.register a,
+    &[data-controller="account"] nav ul.content li.account a,
+    &[data-controller="about"] nav ul.content li.about a,
+    &[data-controller="help"] nav ul.content li.help a {
+      position: relative;
+      background: none;
+      overflow: hidden;
+
+      &::after {
+        position: absolute;
+        bottom: -3vw;
+        left: 50%;
+        margin-left: -2vw;
+        content: '';
+        display: block;
+        width: 4vw;
+        height: 4vw;
+        transform: rotate(45deg);
+        @include background-color(14%, 27%);
       }
     }
   }
@@ -1325,10 +1364,10 @@ a.avatar {
       }
     }
     &.notice {
-      &:before {
+      &::before {
         top: 3vw;
       }
-      &.locked:before {
+      &.locked::before {
         left: 6vw;
       }
 
@@ -1364,7 +1403,7 @@ a.avatar {
       height: 6vw;
     }
     input[type="checkbox"] {
-      &:checked:after {
+      &:checked::after {
         width: 6vw;
         height: 6vw;
         line-height: 6vw;
@@ -1372,7 +1411,7 @@ a.avatar {
     }
     input[type="radio"] {
       &:checked {
-        &:after {
+        &::after {
           top: 1vw;
           left: 1vw;
           width: 4vw;
@@ -1385,7 +1424,7 @@ a.avatar {
         margin: 1vw 20vw 6vw;
 
         &.select {
-          &:after {
+          &::after {
             right: 1vw;
             bottom: 1vw;
             font-size: 4vw;
@@ -1452,6 +1491,9 @@ a.avatar {
   }
 
   footer {
+    a.home {
+      width: 38vw;
+    }
     section.stats {
       p {
         max-width: 72vw;
@@ -1469,8 +1511,8 @@ a.avatar {
 }
 
 
-// Screens wider than 960px
-@media only screen and (min-width: 960px) {
+// Screens wider than 768px
+@media only screen and (min-width: 768px) {
 
   // New baseline establishing rems over viewport units
   html {
@@ -1502,8 +1544,8 @@ a.avatar {
       display: flex;
 
       a.home {
-        width: 16.4rem;
-        margin: 1.6rem 2rem;
+        width: 13.2rem;
+        margin: 1.2rem;
         padding: 0;
       }
       section.status {
@@ -1511,29 +1553,27 @@ a.avatar {
         right: 1rem;
 
         a.private-topics {
-          right: 8rem;
-          width: 6rem;
-          height: 6rem;
-          padding-top: 6rem;
+          right: 6rem;
+          width: 4rem;
+          height: 4rem;
+          padding-top: 4rem;
 
-          &:before {
-            width: 6rem;
-            height: 6rem;
+          &::before {
+            width: 4rem;
+            height: 4rem;
             font-size: 3rem;
-            line-height: 6rem;
+            line-height: 4rem;
           }
         }
         a.account {
-          width: 6rem;
-          height: 6rem;
-          padding-left: 6rem;
+          width: 4.2rem;
+          height: 4.2rem;
+          padding-left: 4.2rem;
         }
       }
       nav {
-        min-height: 8rem;
-
         ul.account {
-          margin-right: 2rem;
+          margin-right: 1.2rem;
           max-width: 25rem;
         }
         li {
@@ -1552,7 +1592,7 @@ a.avatar {
       &.authenticated {
         nav {
           ul.account {
-            margin-right: 15rem;
+            margin-right: 0;
             max-width: none;
             text-align: left;
           }
@@ -1606,15 +1646,15 @@ a.avatar {
     padding: 2rem 4rem 0;
 
     li {
-      &:after {
+      &::after {
         padding: 0 1rem 0 2rem;
       }
     }
   }
 
   nav.actions {
-    &:before,
-    &:after {
+    &::before,
+    &::after {
       width: 4rem;
       height: 10rem;
     }
@@ -1709,16 +1749,16 @@ a.avatar {
       &.success {
         padding-left: 4rem;
 
-        &:before {
+        &::before {
           margin-right: 2rem;
         }
       }
-      &:before {
+      &::before {
         top: 2rem;
         left: 4rem;
         font-size: 4rem;
       }
-      &.locked:before {
+      &.locked::before {
         left: 6rem;
       }
     }
@@ -1733,18 +1773,6 @@ a.avatar {
 
     & > * {
       margin: 0 4rem;
-    }
-  }
-
-  html.js.csstransitions {
-    body {
-      & > header {
-        min-height: 8rem;
-
-      }
-    }
-    main {
-      padding-top: 8rem;
     }
   }
 
@@ -1770,7 +1798,7 @@ a.avatar {
       height: 4rem;
     }
     input[type="checkbox"] {
-      &:checked:after {
+      &:checked::after {
         width: 4rem;
         height: 4rem;
         line-height: 4rem;
@@ -1779,7 +1807,7 @@ a.avatar {
     }
     input[type="radio"] {
       &:checked {
-        &:after {
+        &::after {
           top: 6px;
           left: 6px;
           width: 2.8rem;
@@ -1789,10 +1817,10 @@ a.avatar {
     }
     ul.data {
       & > li {
-        margin: 1rem 26rem 6rem;
+        margin: 1rem 16rem 6rem;
 
         &.select {
-          &:after {
+          &::after {
             right: 1rem;
             bottom: 1rem;
             font-size: 2.5rem;
@@ -1817,7 +1845,7 @@ a.avatar {
 
           label {
             margin: 0 0 0 1rem;
-            max-width: 38rem;
+            max-width: none;
           }
         }
 
@@ -1870,17 +1898,18 @@ a.avatar {
     padding-bottom: 4rem;
 
     a.home {
-      width: 40rem;
+      width: 30rem;
       margin: 8rem auto 6rem;
     }
     section.stats {
       p {
         max-width: none;
+        font-size: 110%;
       }
     }
     section.copyright {
       margin: 10rem auto 0;
-      width: 96rem;
+      width: 100%;
       font-size: 75%;
 
       p {

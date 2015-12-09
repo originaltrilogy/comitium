@@ -10,7 +10,7 @@ section.form.topic-move
   form#topic-move-form(action="topic/id/#{url.id}/action/moveForm" method="post" novalidate)
     input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
     ul.data
-      li.destination
+      li.select.destination
         label(for="destination") Where do you want to move this topic?
         select(id="destination" name="destination")
           each category in categories
