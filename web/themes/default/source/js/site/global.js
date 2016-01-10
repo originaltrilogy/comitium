@@ -32,7 +32,7 @@ CF.global = ( function (Modernizr, CF) {
         bodyOffset = body.getBoundingClientRect().top;
       });
 
-      if ( CF.params.device.relativeSize === 'small' || CF.params.device.relativeSize === 'medium' ) {
+      if ( Modernizr.csstransitions && CF.params.device.relativeSize === 'small' || CF.params.device.relativeSize === 'medium' ) {
         menuIcon = document.createElement('div');
 
         menuIcon.className = 'main-menu-icon';

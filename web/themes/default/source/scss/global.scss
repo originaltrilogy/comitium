@@ -327,104 +327,105 @@ body {
         display: none;
       }
     }
-    .main-menu-icon {
-      @include button('small');
+  }
+
+  .main-menu-icon {
+    @include button('small');
+    position: absolute;
+    top: 3vw;
+    left: 2.5vw;
+    padding-right: 2vw;
+    padding-left: 8vw;
+    font-size: 100%;
+
+    &::before {
+      @include icon($gMenu);
       position: absolute;
-      top: 3vw;
-      left: 2.5vw;
-      padding-right: 2vw;
-      padding-left: 8vw;
-      font-size: 100%;
-
-      &::before {
-        @include icon($gMenu);
-        position: absolute;
-        top: 0;
-        left: 2vw;
-        font-size: 120%;
-      }
-    }
-
-    .slide-menu {
-      position: fixed;
-      z-index: 1001;
-      font-size: 125%;
-      @include background-color(14%, 25%);
-
-      &.left {
-        top: 0;
-        left: -100vw;
-        width: 75vw;
-        height: 100vh;
-        text-align: left;
-        transition: left 0.4s;
-
-        &.open {
-          left: 0;
-        }
-      }
-      &.right {
-        top: 0;
-        right: -100vw;
-        width: 75vw;
-        height: 100vh;
-        text-align: right;
-        transition: right 0.4s;
-
-        &.open {
-          right: 0;
-        }
-      }
-      &.bottom {
-        bottom: -50vh;
-        width: 100vw;
-        height: 50vh;
-        text-align: center;
-        transition: bottom 0.4s;
-
-        &.open {
-          bottom: 0;
-        }
-      }
-
-      li {
-        display: block;
-        line-height: 1;
-
-        a {
-          display: block;
-          padding: 5vw 5vw 6vw;
-          text-decoration: none;
-        }
-      }
-    }
-
-    .menu-shadow {
-      position: fixed;
       top: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      z-index: 1000;
-      background: rgba(0,0,0,0.5);
-      opacity: 0;
-      transition: opacity 0.4s;
+      left: 2vw;
+      font-size: 120%;
     }
+  }
 
-    // body.menu-opening,
-    body.menu-open {
-      .menu-shadow {
-        width: 100vw;
-        height: 100vh;
-        opacity: 1;
+  .slide-menu {
+    position: fixed;
+    z-index: 1001;
+    font-size: 125%;
+    @include background-color(14%, 25%);
+
+    &.left {
+      top: 0;
+      left: -100vw;
+      width: 75vw;
+      height: 100vh;
+      text-align: left;
+      transition: left 0.4s;
+
+      &.open {
+        left: 0;
+      }
+    }
+    &.right {
+      top: 0;
+      right: -100vw;
+      width: 75vw;
+      height: 100vh;
+      text-align: right;
+      transition: right 0.4s;
+
+      &.open {
+        right: 0;
+      }
+    }
+    &.bottom {
+      bottom: -50vh;
+      width: 100vw;
+      height: 50vh;
+      text-align: center;
+      transition: bottom 0.4s;
+
+      &.open {
+        bottom: 0;
       }
     }
 
-    body.menu-closing {
-      .menu-shadow {
-        width: 100vw;
-        height: 100vh;
+    li {
+      display: block;
+      line-height: 1;
+
+      a {
+        display: block;
+        padding: 5vw;
+        text-decoration: none;
       }
+    }
+  }
+
+  .menu-shadow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  // body.menu-opening,
+  body.menu-open {
+    .menu-shadow {
+      width: 100vw;
+      height: 100vh;
+      opacity: 1;
+    }
+  }
+
+  body.menu-closing {
+    .menu-shadow {
+      width: 100vw;
+      height: 100vh;
     }
   }
 
@@ -585,15 +586,17 @@ section {
   }
 
   &.summary {
-    padding: 5vw 0 2vw;
     @include background-color(14%, 27%);
 
     & > p {
+      font-size: 105%;
+
       &:nth-child(2) {
         margin-top: 0;
       }
       &:last-child {
-        margin-bottom: 4vw;
+        margin-bottom: 0;
+        padding-bottom: 4vw;
       }
     }
   }
@@ -697,6 +700,13 @@ section {
   }
 }
 
+// If the page doesn't have breadcrumbs...
+body[data-breadcrumbs="false"] {
+  section.summary {
+    padding: 5vw 0 2vw;
+  }
+}
+
 article {
   padding: 5vw 0 6vw;
   border-bottom: 1px solid;
@@ -721,43 +731,6 @@ article {
     margin: 0 4vw;
   }
 
-  header {
-    position: relative;
-    min-height: 22vw;
-    margin: 0;
-    text-align: left;
-    @include background-color(14%, 22%);
-
-    img {
-      position: absolute;
-      width: 22vw;
-      height: 22vw;
-    }
-    dl {
-      margin-bottom: 0;
-      padding: 5vw 0;
-    }
-    dt {
-      min-width: 24vw;
-      text-indent: -100vw;
-
-      &.time {
-        font-size: 85%;
-      }
-    }
-    dd {
-      margin-left: 24vw;
-
-      &.topic,
-      &.author {
-        font-family: $titleFont;
-      }
-      &.time {
-        font-size: 85%;
-      }
-    }
-  }
-
   img {
     max-width: 100%;
     height: auto;
@@ -771,7 +744,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  padding: 0 4vw 5vw;
+  padding: 0 4vw 4vw;
   font-family: $titleFont;
   text-transform: uppercase;
   letter-spacing: 0.2vw;
@@ -1106,7 +1079,22 @@ a.avatar {
 @media only screen and (min-width: 400px) {
 
   body {
-    font-size: 3.8vw;
+    font-size: 3.4vw;
+
+    & > header {
+      a.sign-in {
+        font-size: 100%;
+      }
+    }
+  }
+
+  .main-menu-icon {
+    font-size: 110%;
+  }
+
+  a.avatar {
+    width: 12vw;
+    height: 12vw;
   }
 
 }
@@ -1257,7 +1245,7 @@ a.avatar {
           nav {
             ul.account {
               position: absolute;
-              top: 11vw;
+              top: 9vw;
               right: -50%;
               margin: 0;
               padding: 1vw 0;
@@ -1267,13 +1255,35 @@ a.avatar {
               @include background-color(14%, 25%);
               border: 1px solid;
               @include border-color(14%, 21%);
+              z-index: 4;
 
               &.active {
                 right: 1vw;
               }
 
+              &::after {
+                content: '';
+                display: block;
+                width: 4vw;
+                height: 4vw;
+                transform: rotate(45deg);
+                position: absolute;
+                top: -2vw;
+                right: 1vw;
+                @include background-color(14%, 25%);
+                border-top: 1px solid;
+                border-left: 1px solid;
+                @include border-color(14%, 21%);
+                z-index: 1;
+              }
+
               li {
                 display: block;
+                z-index: 2;
+
+                a {
+                  padding: 1.5vw;
+                }
               }
             }
           }
@@ -1283,11 +1293,11 @@ a.avatar {
   }
 
   h1 {
-    padding-bottom: 3vw;
+    padding: 0 3vw 2vw;
   }
 
   h2 {
-    padding: 5vw 4vw;
+    padding: 3vw;
   }
 
   p {
@@ -1296,7 +1306,7 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding-top: 1vw;
+    padding: 1vw 3vw 0;
 
     li {
       margin-bottom: 0;
@@ -1336,6 +1346,10 @@ a.avatar {
   }
 
   section {
+    p {
+      margin-right: 3vw;
+      margin-left: 3vw;
+    }
     &.content {
       & > img,
       * > img {
@@ -1355,11 +1369,9 @@ a.avatar {
       }
     }
     &.summary {
-      padding-top: 4vw;
-
       p {
         &:last-child {
-          margin-bottom: 3vw;
+          padding-bottom: 2vw;
         }
       }
     }
@@ -1478,11 +1490,11 @@ a.avatar {
   }
 
   a.avatar {
-    width: 14vw;
-    height: 14vw;
+    width: 8vw;
+    height: 8vw;
 
     img {
-      border-radius: 8%;
+      border-radius: 4%;
     }
   }
 

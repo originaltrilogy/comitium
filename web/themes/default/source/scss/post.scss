@@ -1,7 +1,8 @@
 //////////////////////////////
-//     post view (shared)   //
+//        post styles       //
 //////////////////////////////
 
+// Post view styles
 body[data-controller="post"] {
 
   @media only screen and (min-width: 768px) {
@@ -39,43 +40,45 @@ body[data-controller="post"] {
 
 }
 
+
+// Global post styles
 article.post {
   padding: 0;
   border-bottom: none;
 
   header {
-    position: relative;
-    min-height: 18vw;
+    display: flex;
     margin: 0;
+    padding-left: 4vw;
+    position: relative;
     font-size: 110%;
     text-align: left;
     @include background-color(14%, 22%);
 
     a.avatar {
-      position: absolute;
-      left: 4vw;
+      flex: 0 0 14vw;
     }
     dl {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
       margin-bottom: 0;
-      padding: 2vw 0;
     }
     dt {
-      min-width: 21vw;
-      text-indent: -100vw;
-
-      &.time {
-        font-size: 85%;
-      }
+      position: absolute;
+      left: -100vw;
     }
     dd {
-      margin-left: 22vw;
+      margin: 0;
 
-      &.topic,
       &.author {
-        font-family: $titleFont;
+        flex: 0 0 40vw;
+        line-height: 1.2;
       }
       &.time {
-        font-size: 85%;
+        flex: 0 0 34vw;
+        font-size: 75%;
+        text-align: right;
       }
     }
   }
@@ -143,6 +146,19 @@ article.post {
     }
     a {
       @include button('small', 'dark');
+    }
+  }
+}
+
+@media only screen and (min-width: 400px) {
+  article.post {
+    header {
+      a.avatar {
+        flex: 0 0 12vw;
+      }
+      dd.author {
+        flex: 0 0 42vw;
+      }
     }
   }
 }

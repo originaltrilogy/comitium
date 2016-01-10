@@ -26,25 +26,49 @@ body[data-view="user"] {
 
   article.post {
     header {
-      min-height: 0;
+      display: block;
+      padding: 2vw 0;
 
+      dl {
+        display: block;
+      }
       dt {
+        position: relative;
+        left: 0;
         min-width: 16vw;
-        text-indent: 0;
-
-        &.time {
-          font-size: 100%;
-        }
       }
       dd {
         margin-left: 16vw;
 
         &.time {
           font-size: 100%;
+          text-align: left;
         }
       }
     }
   }
+
+  // article.post {
+  //   header {
+  //     min-height: 0;
+  //
+  //     dt {
+  //       min-width: 16vw;
+  //       text-indent: 0;
+  //
+  //       &.time {
+  //         font-size: 100%;
+  //       }
+  //     }
+  //     dd {
+  //       margin-left: 16vw;
+  //
+  //       &.time {
+  //         font-size: 100%;
+  //       }
+  //     }
+  //   }
+  // }
 
   @media only screen and (min-width: 600px) {
 

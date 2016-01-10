@@ -71,6 +71,23 @@ body[data-controller="discussions"] {
       }
     }
 
+    @media only screen and (min-width: 400px) {
+      dl.details {
+        dt.last-post {
+          right: 16vw;
+          bottom: 9vw;
+        }
+        dd.last-post {
+          right: 16vw;
+
+          a.avatar {
+            top: -3vw;
+            right: -16vw;
+          }
+        }
+      }
+    }
+
     @media only screen and (min-width: 500px) {
       ul.stats {
         width: 46vw;
@@ -83,15 +100,6 @@ body[data-controller="discussions"] {
           &:first-child {
             margin-right: 4vw;
           }
-        }
-      }
-
-      .last-post {
-        h4 {
-          display: inline;
-        }
-        time {
-          display: inline;
         }
       }
     }

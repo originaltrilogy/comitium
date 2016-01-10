@@ -90,8 +90,8 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       dd.last-post {
         position: absolute;
+        top: 0;
         right: 17vw;
-        bottom: 0;
         margin: 0;
         font-size: 85%;
         text-align: right;
@@ -125,13 +125,42 @@ body[data-controller="private-topics"][data-view="private-topics"] {
     }
   }
 
+  @media only screen and (min-width: 400px) {
+    article.topic {
+      h3 {
+        margin-left: 20vw;
+      }
+      dl.byline {
+        margin-left: 20vw;
+      }
+      dl.details {
+        min-height: 10vw;
+
+        dd.last-post {
+          right: 15vw;
+
+          a.avatar {
+            right: -11vw;
+            width: 8vw;
+            height: 8vw;
+          }
+        }
+      }
+    }
+  }
+
   @media only screen and (min-width: 600px) {
 
     article.topic {
       min-height: 22vw;
+      padding: 3vw 0;
 
       h3 {
-        margin: 0 4vw 0 21vw;
+        margin: 0 3vw 2vw 14vw;
+      }
+      dl.byline {
+        margin-left: 14vw;
+        font-size: 100%;
       }
       dd.author {
         float: left;
@@ -140,8 +169,6 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       dd.date {
         float: left;
-        margin-top: 2vw;
-        margin-left: 4vw;
       }
       dd.replies {
         clear: left;
@@ -153,12 +180,13 @@ body[data-controller="private-topics"][data-view="private-topics"] {
         bottom: 4vw;
       }
       a.avatar {
-        top: 4.4vw;
+        top: 3.4vw;
+        left: 3vw;
       }
 
       &.announcement {
         h3 {
-          margin-left: 4vw;
+          margin-left: 3vw;
         }
       }
     }
@@ -260,8 +288,12 @@ body[data-controller="discussion"][data-view="discussion"] {
       nav.actions {
         align-self: center;
 
+        &::after,
+        &::before {
+          width: 2vw;
+        }
         ul {
-          padding: 4.5vw;
+          padding: 2.2vw;
           text-align: right;
         }
         li {
