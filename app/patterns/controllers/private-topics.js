@@ -71,12 +71,7 @@ function handler(params, context, emitter) {
                 }
 
                 content = {
-                  breadcrumbs: {
-                    a: {
-                      name: 'Home',
-                      url: app.config.comitium.basePath
-                    }
-                  },
+                  breadcrumbs: app.models['private-topics'].breadcrumbs(),
                   pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, stats.topics)
                 };
 

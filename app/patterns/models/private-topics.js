@@ -212,15 +212,11 @@ function topics(args, emitter) {
 }
 
 
-function breadcrumbs(discussionTitle) {
+function breadcrumbs() {
   return {
     a: {
       name: 'Home',
       url: app.config.comitium.basePath
-    },
-    b: {
-      name: 'Discussions',
-      url: app.config.comitium.basePath + 'discussions'
     }
   };
 }

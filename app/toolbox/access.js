@@ -18,10 +18,10 @@ module.exports = {
   topicMove: topicMove,
   topicMoveForm: topicMoveForm,
   topicReply: topicReply,
-  topicSubscribe: topicSubscribe,
   topicTrash: topicTrash,
   topicView: topicView,
   signInRedirect: signInRedirect,
+  subscriptionsView: subscriptionsView,
   userBan: userBan,
   userEdit: userEdit
 };
@@ -623,75 +623,6 @@ function topicReply(args, emitter) {
 
 
 
-function topicSubscribe(args, emitter) {
-
-  app.listen('waterfall', {
-    topic: function (emitter) {
-      app.models.topic.info(args.topicID, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      if ( output.topic ) {
-        if ( !output.topic.private ) {
-          app.listen('waterfall', {
-            userIsLoggedIn: function (emitter) {
-              if ( args.user.userID ) {
-                emitter.emit('ready', true);
-              } else {
-                challenge(app.extend(args, { emit: 'end' }), emitter);
-              }
-            },
-            topicView: function (previous, emitter) {
-              topicView(args, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              if ( output.topicView === true ) {
-                emitter.emit('ready', true);
-              } else {
-                challenge(args, emitter);
-              }
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
-        } else {
-          app.listen({
-            userIsInvited: function (emitter) {
-              app.models.topic.hasInvitee({
-                topicID: args.topicID,
-                userID: args.user.userID
-              }, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              if ( args.user.talkPrivately && output.userIsInvited ) {
-                emitter.emit('ready', true);
-              } else {
-                challenge(args, emitter);
-              }
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
-        }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-
-}
-
-
-
 function topicTrash(args, emitter) {
 
 	app.listen({
@@ -806,6 +737,20 @@ function topicView(args, emitter) {
 function signInRedirect(params, url) {
 
   return params.request.headers.referer && params.request.headers.referer.search('/sign-in') < 0 ? params.request.headers.referer : url;
+
+}
+
+
+
+function subscriptionsView(args, emitter) {
+
+  // If the user is logged in, proceed.
+  if ( args.user.userID ) {
+    emitter.emit('ready', true);
+  // Otherwise, challenge.
+  } else {
+    challenge(args, emitter);
+  }
 
 }
 
