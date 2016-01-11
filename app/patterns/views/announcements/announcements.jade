@@ -17,24 +17,7 @@ section.topics
         //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
   if topics
     each topic in topics
-      article(class="topic #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
-        h3
-          a(href="announcement/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
-        dl.details
-          dt.author Author
-          dd.author
-            a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
-          dt.date Date
-          dd.date
-            = topic.postDateFormatted
-          dt.replies Replies
-          dd.replies
-            = topic.repliesFormatted
-          dt.last-post Last post
-          dd.last-post
-            time #{topic.lastPostCreatedFormatted}
-        a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
-          img(src="avatars/#{topic.topicStarterID}.jpg")
+      include ../partials/announcement
   else
     p There are no current announcements.
 

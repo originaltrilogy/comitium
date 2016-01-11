@@ -3,8 +3,7 @@
 'use strict';
 
 module.exports = {
-  handler: handler,
-  head: head
+  handler: handler
 };
 
 
@@ -12,43 +11,30 @@ function handler(params, context, emitter) {
 
   app.listen({
     access: function (emitter) {
-      app.toolbox.access.discussionView({
-        discussionID: params.url.id,
+      app.toolbox.access.subscriptionsView({
         user: params.session
       }, emitter);
     }
   }, function (output) {
-    var models = {};
-
     if ( output.listen.success ) {
       if ( output.access === true ) {
-
         params.url.page = params.url.page || 1;
 
-        models = {
-          discussion: function (emitter) {
-            app.models.discussion.info(params.url.id, emitter);
+        app.listen({
+          stats: function (emitter) {
+            app.models.subscriptions.stats(params.session.userID, emitter);
           },
           topics: function (emitter) {
             var start = ( params.url.page - 1 ) * 25,
                 end = start + 25;
-            app.models.discussion.topics({
-              discussionID: params.url.id,
+            app.models.subscriptions.topics({
+              userID: params.session.userID,
               start: start,
               end: end
             }, emitter);
           }
-        };
-
-        if ( params.url.page === 1 ) {
-          models.announcements = function (emitter) {
-            app.models.discussion.announcements(params.url.id, emitter);
-          };
-        }
-
-        app.listen(models, function (output) {
-          var discussion = output.discussion,
-              announcements = output.announcements,
+        }, function (output) {
+          var stats = output.stats,
               topics = output.topics;
 
           if ( output.listen.success ) {
@@ -63,16 +49,14 @@ function handler(params, context, emitter) {
                   }
                 }
 
-                for ( var announcement in announcements ) {
-                  if ( announcements.hasOwnProperty(announcement) ) {
-                    topicID.push(announcements[announcement].id);
-                  }
+                if ( topicID.length ) {
+                  app.models.user.topicViewTimes({
+                    userID: params.session.userID,
+                    topicID: topicID.join(', ')
+                  }, emitter);
+                } else {
+                  emitter.emit('ready', false);
                 }
-
-                app.models.user.topicViewTimes({
-                  userID: params.session.userID,
-                  topicID: topicID.join(', ')
-                }, emitter);
               }
             }, function (output) {
               var viewTimes = {},
@@ -80,40 +64,25 @@ function handler(params, context, emitter) {
 
               if ( output.listen.success ) {
 
-                if ( output.viewTimes.length ) {
+                if ( output.viewTimes ) {
                   output.viewTimes.forEach( function (item, index, array) {
                     viewTimes[item.topicID] = item;
                   });
                 }
 
                 content = {
-                  discussion: discussion,
-                  breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
-                  pagination: app.toolbox.helpers.paginate('discussion/' + discussion.url + '/id/' + discussion.id, params.url.page, discussion.topics)
-                };
-
-                if ( announcements && app.size(announcements) ) {
-                  for ( var announcement in announcements ) {
-                    if ( params.session.groupID > 1 ) {
-                      if ( !viewTimes[announcements[announcement].id] || ( announcements[announcement].lastPostAuthor !== params.session.username && app.toolbox.moment(announcements[announcement].lastPostCreated).isAfter(viewTimes[announcements[announcement].id].time) ) ) {
-                        announcements[announcement].unread = true;
-                      }
-                    } else {
-                      if ( app.toolbox.moment(announcements[announcement].lastPostCreated).isAfter(params.session.lastActivity) ) {
-                        announcements[announcement].unread = true;
-                      }
+                  breadcrumbs: {
+                    a: {
+                      name: 'Home',
+                      url: app.config.comitium.basePath
                     }
-                  }
-                  content.announcements = announcements;
-                }
+                  },
+                  pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, stats.topics)
+                };
 
                 if ( topics && app.size(topics) ) {
                   for ( var topic in topics ) {
-                    if ( params.session.groupID > 1 ) {
-                      if ( !viewTimes[topics[topic].id] || ( topics[topic].lastPostAuthor !== params.session.username && app.toolbox.moment(topics[topic].lastPostCreated).isAfter(viewTimes[topics[topic].id].time) ) ) {
-                        topics[topic].unread = true;
-                      }
-                    } else if ( app.toolbox.moment(topics[topic].lastPostCreated).isAfter(params.session.lastActivity) ) {
+                    if ( !viewTimes[topics[topic].id] || ( topics[topic].lastPostAuthor !== params.session.username && app.toolbox.moment(topics[topic].lastPostCreated).isAfter(viewTimes[topics[topic].id].time) ) ) {
                       topics[topic].unread = true;
                     }
                   }
@@ -140,22 +109,4 @@ function handler(params, context, emitter) {
     }
   });
 
-}
-
-
-
-function head(params, context, emitter) {
-  app.listen({
-    metaData: function (emitter) {
-      app.models.discussion.metaData({
-        discussionID: params.url.id
-      }, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.metaData);
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
 }

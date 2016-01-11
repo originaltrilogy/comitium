@@ -1312,7 +1312,9 @@ function viewTimeUpdate(args, emitter) {
         }
       }, function (output) {
         if ( output.listen.success ) {
-          if ( args.topic.private ) {
+          if ( !args.topic.private ) {
+            app.cache.clear({ scope: 'user-' + args.userID, key: 'subscriptions-unread' });
+          } else {
             app.cache.clear({ scope: 'user-' + args.userID, key: 'private-topics-unread' });
           }
           if ( emitter ) {
