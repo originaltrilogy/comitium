@@ -153,6 +153,7 @@ body {
   &[data-controller="announcements"] nav li.discussions a,
   &[data-controller="announcement"] nav li.discussions a,
   &[data-controller="topic"][data-view="topic"] nav li.discussions a,
+  &[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a,
   &[data-controller="topic"][data-view="private-topic"] nav li.private-topics a,
   &[data-controller="topic"][data-view="start-private"] nav li.private-topics a,
   &[data-controller="private-topics"] nav li.private-topics a,
@@ -585,7 +586,7 @@ section {
   }
 
   &.summary {
-    padding: 5vw 0 2vw;
+    padding-bottom: 2vw;
     @include background-color(14%, 27%);
 
     & > p {

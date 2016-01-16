@@ -12,6 +12,8 @@ header(class="authenticated #{ updates ? 'updates' : '' }")
       li.help
         a(href="help.html") Help
     ul.account
+      li.subscriptions
+        a(href="subscriptions") Subscriptions
       if updates
         li.private-topics.updates
           a(href="private-topics") Private Topics <span class="count">(#{updates.length} unread)</span>

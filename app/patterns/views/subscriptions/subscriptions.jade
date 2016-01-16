@@ -4,13 +4,6 @@ section.summary
 include ../partials/pagination
 
 section.topics
-  nav.discussion.actions
-    ul
-      li.new-topic
-        a(href="topic/action/startPrivate") Start a new private topic
-      //- li.subscribe
-      //-   a(href="private-topics/action/subscribe" title="Receive an e-mail notification when you're invited to a new private topic.") Notify me
-
   if topics
     each topic in topics
       include ../partials/topic

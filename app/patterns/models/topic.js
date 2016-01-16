@@ -1204,6 +1204,7 @@ function subscribe(args, emitter) {
                 if ( err ) {
                   emitter.emit('error', err);
                 } else {
+                  app.cache.clear({ scope: 'subscriptions-' + args.userID });
                   emitter.emit('ready', {
                     success: true
                   });
@@ -1238,6 +1239,7 @@ function unsubscribe(args, emitter) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
+            app.cache.clear({ scope: 'subscriptions-' + args.userID });
             emitter.emit('ready');
           }
         }
