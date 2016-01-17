@@ -75,7 +75,7 @@ function unread(args, emitter) {
   // If it's cached, return the cache object
   if ( cached ) {
     emitter.emit('ready', cached);
-    // If it's not cached, retrieve it from the database and cache it
+  // If it's not cached, retrieve it from the database and cache it
   } else {
     app.listen({
       unread: function (emitter) {
@@ -105,7 +105,7 @@ function unread(args, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
-        // Cache the discussion info object for future requests
+        // Cache the data for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
             key: cacheKey,

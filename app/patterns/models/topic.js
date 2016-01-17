@@ -1014,6 +1014,17 @@ function reply(args, emitter) {
                 if ( args.discussionID === 2 ) {
                   app.cache.clear({ scope: 'announcements' });
                 }
+                app.listen({
+                  subscribers: function (emitter) {
+                    subscribers({
+                      topicID: args.topicID
+                    }, emitter);
+                  }
+                }, function (output) {
+                  output.subscribers.forEach( function (item, index, array) {
+                    app.cache.clear({ scope: 'subscriptions-' + item.id });
+                  });
+                });
               }
             }
 
@@ -1082,7 +1093,7 @@ function subscribers(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" where s."topicID" = $1;',
+            'select u.id, u.email from users u join "topicSubscriptions" s on u.id = s."userID" where s."topicID" = $1;',
             [ args.topicID ],
             function (err, result) {
               done();
@@ -1119,7 +1130,7 @@ function subscribersToUpdate(args, emitter) {
           emitter.emit('error', err);
         } else {
           client.query(
-            'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" and u.id not in ( ' + skip + ' ) where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
+            'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" and u.id not in ( ' + skip + ' ) and u."subscriptionEmailNotification" = true where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
             [ args.topicID ],
             function (err, result) {
               done();
@@ -1315,9 +1326,9 @@ function viewTimeUpdate(args, emitter) {
       }, function (output) {
         if ( output.listen.success ) {
           if ( !args.topic.private ) {
-            app.cache.clear({ scope: 'user-' + args.userID, key: 'subscriptions-unread' });
+            app.cache.clear({ scope: 'subscriptions-' + args.userID, key: 'models-subscriptions-unread' });
           } else {
-            app.cache.clear({ scope: 'user-' + args.userID, key: 'private-topics-unread' });
+            app.cache.clear({ scope: 'private-topics-' + args.userID, key: 'private-topics-unread' });
           }
           if ( emitter ) {
             if ( output.listen.success ) {

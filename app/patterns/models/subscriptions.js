@@ -68,14 +68,14 @@ function stats(userID, emitter) {
 
 function unread(args, emitter) {
   // See if this user's unread private topics are already cached
-  var cacheKey = 'subscriptions-unread',
+  var cacheKey = 'models-subscriptions-unread',
       scope = 'subscriptions-' + args.userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
   if ( cached ) {
     emitter.emit('ready', cached);
-    // If it's not cached, retrieve it from the database and cache it
+  // If it's not cached, retrieve it from the database and cache it
   } else {
     app.listen({
       unread: function (emitter) {
@@ -84,7 +84,7 @@ function unread(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query({
-                name: 'subscriptinos_unread',
+                name: 'subscriptions_unread',
                 text: 'select p."topicID" from posts p join "topicSubscriptions" ts on ts."userID" = $1 and p."topicID" = ts."topicID" and p.id = ( select id from posts where "topicID" = ts."topicID" and "userID" <> $1 order by created desc limit 1 ) left join "topicViews" tv on ts."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
                 values: [ args.userID ]
               }, function (err, result) {
@@ -105,7 +105,7 @@ function unread(args, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
-        // Cache the discussion info object for future requests
+        // Cache the data for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
             key: cacheKey,

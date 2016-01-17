@@ -586,7 +586,7 @@ section {
   }
 
   &.summary {
-    padding-bottom: 2vw;
+    padding: 5vw 0 2vw;
     @include background-color(14%, 27%);
 
     & > p {

@@ -12,11 +12,15 @@ header(class="authenticated #{ updates ? 'updates' : '' }")
       li.help
         a(href="help.html") Help
     ul.account
-      li.subscriptions
-        a(href="subscriptions") Subscriptions
-      if updates
+      if unread.topics
+        li.subscriptions.updates
+          a(href="subscriptions") Subscriptions <span class="count">(#{unread.topics.length} unread)</span>
+      else
+        li.subscriptions
+          a(href="subscriptions") Subscriptions
+      if unread.privateTopics
         li.private-topics.updates
-          a(href="private-topics") Private Topics <span class="count">(#{updates.length} unread)</span>
+          a(href="private-topics") Private Topics <span class="count">(#{unread.privateTopics.length} unread)</span>
       else
         li.private-topics
           a(href="private-topics") Private Topics

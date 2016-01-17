@@ -21,6 +21,7 @@ function handler(params, context, emitter) {
     params.form.timezone = params.session.timezone;
     params.form.dateFormat = params.session.dateFormat;
     params.form.theme = params.session.theme;
+    params.form.subscriptionEmailNotification = params.session.subscriptionEmailNotification;
     params.form.privateTopicEmailNotification = params.session.privateTopicEmailNotification;
 
     emitter.emit('ready', {
@@ -123,6 +124,7 @@ function generalForm(params, context, emitter) {
                 signatureHtml: signatureHtml,
                 timezone: params.form.timezone,
                 theme: params.form.theme,
+                subscriptionEmailNotification: params.form.subscriptionEmailNotification || false,
                 privateTopicEmailNotification: params.form.privateTopicEmailNotification || false
               }, emitter);
             };
