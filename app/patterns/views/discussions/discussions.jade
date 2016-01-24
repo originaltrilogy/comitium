@@ -1,10 +1,7 @@
 section.summary
   h1 Discussion Categories
-
-//- if session.talkPrivately
-//-   section.category.private-topics
-//-     h2 Private Topics
-//-     p Stuff goes here!
+  p Welcome to the Original Trilogy forums! Talk about Star Wars, including fan preservations and fan edits, or just hang out in our Off Topic section.
+  
 
 if include && include.announcements
   section.announcements
@@ -33,6 +30,7 @@ section.categories
               dd.last-post
                 a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
                   = discussion.lastPostAuthor
+                |  posted 
                 time #{discussion.lastPostCreatedFormatted}
                 a.avatar(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
                   img(src="avatars/#{discussion.lastPostAuthorID}.jpg")

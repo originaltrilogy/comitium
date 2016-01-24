@@ -3,10 +3,13 @@
 /////////////////////////
 $version: '0.1';
 $defaultFont: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
-$titleFont: 'Open Sans Semibold', $defaultFont;
-$boldFont: 'Open Sans Bold', $titleFont;
-$italicFont: 'Open Sans Italic', $defaultFont;
-$boldItalicFont: 'Open Sans Bold Italic', $defaultFont;
+$titleFont: AvenirNextCondensed-DemiBold, 'Open Sans Semibold', $defaultFont;
+$subtitleFont: AvenirNextCondensed-Medium, $titleFont;
+$italicTitleFont: AvenirNext-Italic, 'Open Sans Italic', $defaultFont;
+$boldFont: 'Open Sans Bold';
+$italicFont: 'Open Sans Italic';
+$boldItalicFont: 'Open Sans Bold Italic';
+$lightFont: 'Open Sans Light';
 $hue: 226;
 
 // Icons
