@@ -5,9 +5,52 @@
 body[data-controller="discussions"] {
 
   &[data-view="discussions"] {
-    section.announcements {
-      margin-bottom: 14vw;
+    section.summary {
+      display: flex;
+      flex-wrap: wrap;
+      // overflow: hidden;
 
+      h1 {
+        flex: 1 0 100%;
+      }
+      p {
+        flex: 0 1 66vw;
+      }
+      dl.stats {
+        flex: 0 0 22vw;
+        display: flex;
+        flex-direction: column;
+        width: 22vw;
+        height: 22vw;
+        margin: 0.5vw 0 0;
+        padding: 7.25vw 2vw 2vw;
+        border: 1px solid #747D99;
+        border-radius: 50%;
+        text-align: center;
+        color: #CDCDCD;
+
+        dt {
+          float: none;
+          min-width: 0;
+          order: 2;
+          font-family: $lightTitleFont;
+          line-height: 1;
+          text-transform: lowercase;
+
+          &::after {
+            content: '';
+          }
+        }
+        dd {
+          margin: 0;
+          order: 1;
+          font-family: $demiBoldFont;
+          font-size: 120%;
+          line-height: 1;
+        }
+      }
+    }
+    section.announcements {
       article {
         padding: 3vw 0 4vw;
       }

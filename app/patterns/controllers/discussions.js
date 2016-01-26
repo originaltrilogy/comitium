@@ -13,6 +13,9 @@ function handler(params, context, emitter) {
   app.listen({
     categories: function (emitter) {
       app.models.discussions.categories(params.session.groupID, emitter);
+    },
+    topicCount: function (emitter) {
+      app.models.stats.topics(emitter);
     }
   }, function (output) {
     if ( output.listen.success ) {
@@ -31,6 +34,7 @@ function handler(params, context, emitter) {
       emitter.emit('ready', {
         content: {
           categories: output.categories,
+          topicCount: app.toolbox.numeral(output.topicCount).format('0,0'),
           breadcrumbs: app.models.discussions.breadcrumbs()
         },
         include: {
