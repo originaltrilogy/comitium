@@ -2,6 +2,9 @@ section.summary
   h1 #{discussion.title}
   if discussion.description
     p !{discussion.description}
+  dl.content-stats
+    dt Topics
+    dd #{discussion.topicsFormatted}
     
 include ../partials/pagination
 

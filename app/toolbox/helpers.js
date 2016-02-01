@@ -75,37 +75,82 @@ function isoDate(date) {
 
 
 
-function paginate(url, page, itemCount) {
+function paginate(baseUrl, currentPage, itemCount) {
   var pagination = {
-        current: parseInt(page, 10),
-        total: Math.ceil( itemCount / 25 )
+        // Make sure currentPage and itemCount are number types
+        currentPage: parseInt(currentPage, 10),
+        lastPage: Math.ceil( parseInt(itemCount) / 25 ),
+        pages: {}
       };
 
-  if ( pagination.current > 1 ) {
-    pagination.first = {
+  if ( pagination.currentPage <= 3 ) {
+    for ( var i = 1; i <= pagination.lastPage; i++ ) {
+      pagination.pages[i] = {
+        number: i,
+        url: i > 1 ? baseUrl + '/page/' + i : baseUrl,
+        text: i > 1 ? i.toString() : 'Page 1',
+        isCurrentPage: i === pagination.currentPage
+      };
+
+      if ( i === 4 && pagination.lastPage > 4 ) {
+        break;
+      }
+    }
+  } else {
+    // First page
+    pagination.pages[1] = {
       number: 1,
-      url: url
+      url: baseUrl,
+      text: 'Page 1',
+      isCurrentPage: false
     };
-    pagination.previous = {
-      number: pagination.current - 1
+
+    // Current page
+    pagination.pages[pagination.currentPage] = {
+      number: pagination.currentPage,
+      url: baseUrl + '/page/' + pagination.currentPage,
+      text: pagination.currentPage.toString(),
+      isCurrentPage: true
     };
-    if ( pagination.previous.number === 1 ) {
-      pagination.previous.url = url;
-    } else {
-      pagination.previous.url = url + '/page/' + pagination.previous.number;
+
+    // Previous page
+    pagination.previousPage = pagination.currentPage - 1;
+    pagination.pages[pagination.previousPage] = {
+      number: pagination.previousPage,
+      url: baseUrl + '/page/' + ( pagination.previousPage ),
+      text: pagination.previousPage.toString(),
+      isCurrentPage: false
+    };
+
+    // Next page
+    pagination.nextPage = pagination.currentPage + 1;
+    if ( pagination.nextPage < pagination.lastPage ) {
+      pagination.pages[pagination.nextPage] = {
+        number: pagination.nextPage,
+        url: baseUrl + '/page/' + ( pagination.nextPage ),
+        text: pagination.nextPage.toString(),
+        isCurrentPage: false
+      };
+    }
+
+    // Last page
+    if ( pagination.nextPage === pagination.lastPage ) {
+      pagination.pages[pagination.lastPage] = {
+        number: pagination.lastPage,
+        url: baseUrl + '/page/' + pagination.lastPage,
+        text: pagination.lastPage.toString(),
+        isCurrentPage: pagination.lastPage === pagination.currentPage
+      };
     }
   }
 
-  if ( pagination.current < pagination.total ) {
-    pagination.next = {
-      number: pagination.current + 1
-    };
-    pagination.next.url = url + '/page/' + pagination.next.number;
-    pagination.last = {
-      number: pagination.total,
-      url: url + '/page/' + pagination.total
-    };
-  }
+  // Extra last page for mirrored navigation
+  pagination.pages.lastPage = {
+    number: pagination.lastPage,
+    url: baseUrl + '/page/' + ( pagination.lastPage ),
+    text: pagination.lastPage.toString(),
+    isCurrentPage: false
+  };
 
   return pagination;
 }

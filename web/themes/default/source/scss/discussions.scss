@@ -5,51 +5,6 @@
 body[data-controller="discussions"] {
 
   &[data-view="discussions"] {
-    section.summary {
-      display: flex;
-      flex-wrap: wrap;
-      // overflow: hidden;
-
-      h1 {
-        flex: 1 0 100%;
-      }
-      p {
-        flex: 0 1 66vw;
-      }
-      dl.stats {
-        flex: 0 0 22vw;
-        display: flex;
-        flex-direction: column;
-        width: 22vw;
-        height: 22vw;
-        margin: 0.5vw 0 0;
-        padding: 7.25vw 2vw 2vw;
-        border: 1px solid #747D99;
-        border-radius: 50%;
-        text-align: center;
-        color: #CDCDCD;
-
-        dt {
-          float: none;
-          min-width: 0;
-          order: 2;
-          font-family: $lightTitleFont;
-          line-height: 1;
-          text-transform: lowercase;
-
-          &::after {
-            content: '';
-          }
-        }
-        dd {
-          margin: 0;
-          order: 1;
-          font-family: $demiBoldFont;
-          font-size: 120%;
-          line-height: 1;
-        }
-      }
-    }
     section.announcements {
       article {
         padding: 3vw 0 4vw;
@@ -57,53 +12,35 @@ body[data-controller="discussions"] {
     }
     p.description {
       margin-top: 2vw;
-      margin-bottom: 0;
+      margin-bottom: 4vw;
       font-family: $lightFont;
     }
-    dl.details {
-      position: relative;
-      margin-top: 5vw;
+    section.categories {
+      article {
+        position: relative;
 
-      dt.topics,
-      dt.posts {
-        position: absolute;
-        left: -100vw;
-      }
-      dd.topics,
-      dd.posts {
-        display: inline-block;
-        margin-left: 0;
-        font-family: $boldFont;
-
-        &::after {
-          font-family: $defaultFont;
+        &::before {
+          content: '';
+          display: block;
+          float: right;
+          width: 28vw;
+          height: 24vw;
         }
-      }
-      dd.topics {
-        &::after {
-          content: 'topics with ';
-        }
-      }
-      dd.posts {
-        &::after {
-          content: 'posts';
-        }
-      }
-      dt.last-post {
-        position: absolute;
-        left: -100vw;
-      }
-      dd.last-post {
-        min-height: 8vw;
-        margin: 6vw 4vw 0 13vw;
-        font-size: 85%;
-
-        a.avatar {
+        dl.content-stats {
           position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 10vw;
-          height: 10vw;
+          top: 6vw;
+          right: 4vw;
+        }
+        p.last-post {
+          font-size: 85%;
+
+          a.avatar {
+            display: inline-block;
+            vertical-align: middle;
+            width: 10vw;
+            height: 10vw;
+            margin-right: 3vw;
+          }
         }
       }
     }

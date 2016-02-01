@@ -1,7 +1,7 @@
 section.summary
   h1 Discussion Categories
   p Welcome to the Original Trilogy forums! Talk about Star Wars fan preservations and fan edits, or just hang out in our Off Topic section.
-  dl.stats
+  dl.content-stats
     dt Topics
     dd #{topicCount}
 
@@ -20,19 +20,19 @@ section.categories
             a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
           if discussion.discussionDescription
             p.description !{discussion.discussionDescription}
-          dl.details
-            dt.topics Topics
-            dd.topics
-              = discussion.topicsFormatted
-            dt.posts Posts
-            dd.posts
-              = discussion.postsFormatted
-            if discussion.lastPostCreated
-              dt.last-post Last Post
-              dd.last-post
-                a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
-                  = discussion.lastPostAuthor
-                |  posted 
-                time #{discussion.lastPostCreatedFormatted}
-                a.avatar(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
-                  img(src="avatars/#{discussion.lastPostAuthorID}.jpg")
+          a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}")
+            dl.content-stats
+              dt.topics Topics
+              dd.topics
+                = discussion.topicsFormatted
+              dt.posts Posts
+              dd.posts
+                = discussion.postsFormatted
+          if discussion.lastPostCreated
+            p.last-post
+              a.avatar(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
+                img(src="avatars/#{discussion.lastPostAuthorID}.jpg")
+              a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
+                = discussion.lastPostAuthor
+              |  posted 
+              time #{discussion.lastPostCreatedFormatted}

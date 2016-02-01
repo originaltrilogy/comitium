@@ -127,7 +127,6 @@ body {
   position: relative;
   font-family: $defaultFont;
   text-rendering: optimizeLegibility;
-  @include background-color(14%, 27%);
   color: white;
 
   &.transitioning {
@@ -319,6 +318,17 @@ body {
     transition: margin 0.3s;
     margin-top: 0;
   }
+  // So the main background color doesn't show through if the user scrolls up
+  &.floating-header main::before {
+    content: '';
+    display: block;
+    width: 100vw;
+    height: 60px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #2B2E38;
+  }
   // Hide the current page indicator when the header is floating
   &.floating-header-active > header,
   &.floating-header-hidden > header {
@@ -427,7 +437,6 @@ body {
     transition: opacity 0.4s;
   }
 
-  // body.menu-opening,
   body.menu-open {
     .menu-shadow {
       width: 100vw;
@@ -449,7 +458,7 @@ nav.breadcrumbs {
   padding: 4vw 4vw 0;
   font-family: $italicTitleFont;
   text-transform: uppercase;
-  background-color: #2F323D;
+  background: #2B2E38;
 
   li {
     display: inline-block;
@@ -463,52 +472,45 @@ nav.breadcrumbs {
 }
 
 nav.pagination {
-  position: relative;
-  width: 100vw;
-  padding: 4vw 0;
-  font-size: 120%;
-  text-align: center;
-  text-transform: uppercase;
-  line-height: 1;
-  @include background-color(14%, 40%);
+  padding: 2vw 0 4vw;
+  display: flex;
+  background-image: linear-gradient(-180deg, #323742 0%, #3B404E 100%);
 
+  ul {
+    display: flex;
+    margin: 0 auto;
+    border-radius: 2px;
+    font-family: $lightTitleFont;
+    color: #A5B2D9;
+  }
   li {
-    line-height: 10vw;
+    flex: 0 0 auto;
+    background-image: linear-gradient(180deg, #2F323D 0%, #272A33 98%);
+    border: 1px solid #474F66;
 
-    &.first,
-    &.previous,
-    &.next,
-    &.last {
-      position: absolute;
-      top: 4vw;
+    &:nth-child(1n+1) {
+      border-right: none;
     }
-
-    &.first {
-      left: 4vw;
+    &:first-child {
+      border-radius: 2px 0 0 2px;
     }
-    &.previous {
-      left: 22vw;
+    &:last-child {
+      border: 1px solid #474F66;
+      border-radius: 0 2px 2px 0;
     }
-    &.next {
-      right: 22vw;
-    }
-    &.last {
-      right: 4vw;
-    }
-
-    a {
-      @include button('medium');
-      padding: 0;
-      min-width: 14vw;
-      font-size: 100%;
-    }
+  }
+  a {
+    display: block;
+    padding: 4vw 5vw;
+    line-height: 1;
+    text-decoration: none;
   }
 }
 
 main {
   clear: both;
   overflow: hidden;
-  background-color: #3B404E;
+  background: #3B404E;
 
   & > h1:first-child {
     margin-top: 5vw;
@@ -521,88 +523,17 @@ main {
 }
 
 section {
-  &.content {
-    margin: 6vw 0 8vw;
-    padding: 0 4vw;
-    line-height: 1.6;
-    background: none;
-
-    & > * {
-      margin-left: 0;
-      margin-right: 0;
-    }
-    h1 {
-      padding: 0;
-      margin-top: 8vw;
-      margin-bottom: 8vw;
-    }
-    h2 {
-      margin-top: 10vw;
-      margin-bottom: 2vw;
-      padding: 0;
-      background: none;
-      text-align: left;
-      text-decoration: underline;
-    }
-    h3 {
-      margin-top: 8vw;
-      margin-bottom: 0;
-      padding: 0;
-      font-family: $italicFont;
-    }
-
-    & > img,
-    * > img {
-      width: 100%;
-      margin-left: auto;
-      margin-right: auto;
-
-      // Legacy OT.com emoticons
-      &[src^="i/expressions/"] {
-        display: inline;
-        width: auto;
-        vertical-align: middle;
-      }
-    }
-
-    dl, ol, ul {
-      margin-left: 8vw;
-    }
-
-    blockquote {
-      margin: 4vw 0 6vw;
-      padding: 4vw;
-      overflow: hidden;
-      @include background-color(14%, 25%);
-
-      & > blockquote {
-        border: 1px solid;
-        @include border-color(14%, 22%);
-      }
-
-      *:first-child {
-        margin-top: 0;
-      }
-      *:last-child {
-        margin-bottom: 0;
-      }
-      p > a:first-child[href^="post/"] {
-        display: block;
-        width: 120%;
-        padding: 2vw 4vw 3vw;
-        margin-left: -4vw;
-        margin-top: -4vw;
-        @include background-color(14%, 22%);
-      }
-      dl, ol, ul {
-        margin-left: 8vw;
-      }
-    }
-  }
-
   &.summary {
-    background-color: #2F323D;
+    position: relative;
+    background-image: linear-gradient(-180deg, #2B2E38 0%, #323742 100%);
 
+    &::before {
+      content: '';
+      display: block;
+      float: right;
+      width: 28vw;
+      height: 26vw;
+    }
     & > p {
       font-family: $lightFont;
       color: hsla(0,0%,80%,1);
@@ -610,10 +541,15 @@ section {
       &:nth-child(2) {
         margin-top: 0;
       }
-      &:last-child {
+      &:nth-child(n-1) {
         margin-bottom: 0;
         padding-bottom: 4vw;
       }
+    }
+    dl.content-stats {
+      position: absolute;
+      top: 2vw;
+      right: 4vw;
     }
   }
 
@@ -695,6 +631,85 @@ section {
     }
   }
 
+  &.content {
+    margin: 6vw 0 8vw;
+    padding: 0 4vw;
+    line-height: 1.6;
+    background: none;
+
+    & > * {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    h1 {
+      padding: 0;
+      margin-top: 8vw;
+      margin-bottom: 8vw;
+    }
+    h2 {
+      margin-top: 10vw;
+      margin-bottom: 2vw;
+      padding: 0;
+      background: none;
+      text-align: left;
+      text-decoration: underline;
+    }
+    h3 {
+      margin-top: 8vw;
+      margin-bottom: 0;
+      padding: 0;
+      font-family: $italicFont;
+    }
+
+    & > img,
+    * > img {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+
+      // Legacy OT.com emoticons
+      &[src^="i/expressions/"] {
+        display: inline;
+        width: auto;
+        vertical-align: middle;
+      }
+    }
+
+    dl, ol, ul {
+      margin-left: 8vw;
+    }
+
+    blockquote {
+      margin: 4vw 0 6vw;
+      padding: 4vw;
+      overflow: hidden;
+      @include background-color(14%, 25%);
+
+      & > blockquote {
+        border: 1px solid;
+        @include border-color(14%, 22%);
+      }
+
+      *:first-child {
+        margin-top: 0;
+      }
+      *:last-child {
+        margin-bottom: 0;
+      }
+      p > a:first-child[href^="post/"] {
+        display: block;
+        width: 120%;
+        padding: 2vw 4vw 3vw;
+        margin-left: -4vw;
+        margin-top: -4vw;
+        @include background-color(14%, 22%);
+      }
+      dl, ol, ul {
+        margin-left: 8vw;
+      }
+    }
+  }
+
   &.preview {
     article {
       padding: 4vw 0;
@@ -723,10 +738,58 @@ body[data-breadcrumbs="false"] {
   }
 }
 
+// Topic counts for forums, post counts for topics
+dl.content-stats {
+  flex: 0 0 22vw;
+  display: flex;
+  flex-direction: column;
+  width: 20vw;
+  height: 20vw;
+  margin: 0;
+  padding: 6vw 2vw 2vw;
+  border: 1px solid #747D99;
+  border-radius: 50%;
+  text-align: center;
+  color: #CDCDCD;
+
+  dt {
+    &:first-child {
+      float: none;
+      min-width: 0;
+      order: 2;
+      font-family: $lightTitleFont;
+      font-size: 90%;
+      line-height: 1;
+      text-transform: lowercase;
+
+      &::after {
+        content: '';
+      }
+    }
+    &:nth-child(n+3) {
+      position: absolute;
+      left: -100vw;
+    }
+  }
+  dd {
+    &:nth-child(n+2) {
+      margin: 0;
+      order: 1;
+      font-family: $demiBoldFont;
+      font-size: 110%;
+      line-height: 1;
+    }
+    &:nth-child(n+4) {
+      position: absolute;
+      left: -100vw;
+    }
+  }
+}
+
 article {
   padding: 5vw 0 6vw;
-  margin: 1px 0;
   background-color: #323742;
+  border-bottom: 1px solid #2A2E37;
 
   &.unread,
   &.updated {

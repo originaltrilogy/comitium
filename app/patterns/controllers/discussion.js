@@ -86,6 +86,8 @@ function handler(params, context, emitter) {
                   });
                 }
 
+                discussion.topicsFormatted = app.toolbox.numeral(discussion.topics).format('0,0');
+
                 content = {
                   discussion: discussion,
                   breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
