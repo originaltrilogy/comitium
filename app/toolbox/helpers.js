@@ -83,12 +83,20 @@ function paginate(baseUrl, currentPage, itemCount) {
         pages: {}
       };
 
+  // First page
+  pagination.pages[1] = {
+    number: 1,
+    url: baseUrl,
+    text: 'Page 1',
+    isCurrentPage: false
+  };
+
   if ( pagination.currentPage <= 3 ) {
-    for ( var i = 1; i <= pagination.lastPage; i++ ) {
+    for ( var i = 2; i <= pagination.lastPage; i++ ) {
       pagination.pages[i] = {
         number: i,
-        url: i > 1 ? baseUrl + '/page/' + i : baseUrl,
-        text: i > 1 ? i.toString() : 'Page 1',
+        url: baseUrl + '/page/' + i,
+        text: i.toString(),
         isCurrentPage: i === pagination.currentPage
       };
 
@@ -96,12 +104,31 @@ function paginate(baseUrl, currentPage, itemCount) {
         break;
       }
     }
+
+    if ( pagination.lastPage > 4 ) {
+      pagination.pages.lastPage = {
+        number: pagination.lastPage,
+        url: baseUrl + '/page/' + ( pagination.lastPage ),
+        text: pagination.lastPage.toString(),
+        isCurrentPage: false
+      };
+    }
+  } else if ( pagination.lastPage > 5 && pagination.currentPage >= pagination.lastPage - 2 ) {
+    for ( var i = pagination.lastPage - 3; i <= pagination.lastPage; i++ ) {
+      pagination.pages[i] = {
+        number: i,
+        url: baseUrl + '/page/' + i,
+        text: i.toString(),
+        isCurrentPage: i === pagination.currentPage
+      };
+    }
   } else {
-    // First page
-    pagination.pages[1] = {
-      number: 1,
-      url: baseUrl,
-      text: 'Page 1',
+    // Previous page
+    pagination.previousPage = pagination.currentPage - 1;
+    pagination.pages[pagination.previousPage] = {
+      number: pagination.previousPage,
+      url: baseUrl + '/page/' + ( pagination.previousPage ),
+      text: pagination.previousPage.toString(),
       isCurrentPage: false
     };
 
@@ -111,15 +138,6 @@ function paginate(baseUrl, currentPage, itemCount) {
       url: baseUrl + '/page/' + pagination.currentPage,
       text: pagination.currentPage.toString(),
       isCurrentPage: true
-    };
-
-    // Previous page
-    pagination.previousPage = pagination.currentPage - 1;
-    pagination.pages[pagination.previousPage] = {
-      number: pagination.previousPage,
-      url: baseUrl + '/page/' + ( pagination.previousPage ),
-      text: pagination.previousPage.toString(),
-      isCurrentPage: false
     };
 
     // Next page
@@ -134,23 +152,13 @@ function paginate(baseUrl, currentPage, itemCount) {
     }
 
     // Last page
-    if ( pagination.nextPage === pagination.lastPage ) {
-      pagination.pages[pagination.lastPage] = {
-        number: pagination.lastPage,
-        url: baseUrl + '/page/' + pagination.lastPage,
-        text: pagination.lastPage.toString(),
-        isCurrentPage: pagination.lastPage === pagination.currentPage
-      };
-    }
+    pagination.pages[pagination.lastPage] = {
+      number: pagination.lastPage,
+      url: baseUrl + '/page/' + pagination.lastPage,
+      text: pagination.lastPage.toString(),
+      isCurrentPage: pagination.lastPage === pagination.currentPage
+    };
   }
-
-  // Extra last page for mirrored navigation
-  pagination.pages.lastPage = {
-    number: pagination.lastPage,
-    url: baseUrl + '/page/' + ( pagination.lastPage ),
-    text: pagination.lastPage.toString(),
-    isCurrentPage: false
-  };
 
   return pagination;
 }
