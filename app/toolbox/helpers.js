@@ -88,7 +88,7 @@ function paginate(baseUrl, currentPage, itemCount) {
     number: 1,
     url: baseUrl,
     text: 'Page 1',
-    isCurrentPage: false
+    isCurrentPage: currentPage === 1
   };
 
   if ( pagination.currentPage <= 3 ) {
@@ -110,7 +110,7 @@ function paginate(baseUrl, currentPage, itemCount) {
         number: pagination.lastPage,
         url: baseUrl + '/page/' + ( pagination.lastPage ),
         text: pagination.lastPage.toString(),
-        isCurrentPage: false
+        isCurrentPage: pagination.currentPage === pagination.lastPage
       };
     }
   } else if ( pagination.lastPage > 5 && pagination.currentPage >= pagination.lastPage - 2 ) {
@@ -156,7 +156,7 @@ function paginate(baseUrl, currentPage, itemCount) {
       number: pagination.lastPage,
       url: baseUrl + '/page/' + pagination.lastPage,
       text: pagination.lastPage.toString(),
-      isCurrentPage: pagination.lastPage === pagination.currentPage
+      isCurrentPage: false
     };
   }
 
