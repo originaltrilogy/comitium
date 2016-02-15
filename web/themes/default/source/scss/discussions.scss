@@ -13,7 +13,6 @@ body[data-controller="discussions"] {
     p.description {
       margin-top: 2vw;
       margin-bottom: 4vw;
-      font-family: $lightFont;
     }
     section.categories {
       article {
@@ -23,24 +22,8 @@ body[data-controller="discussions"] {
           content: '';
           display: block;
           float: right;
-          width: 28vw;
-          height: 24vw;
-        }
-        dl.content-stats {
-          position: absolute;
-          top: 6vw;
-          right: 4vw;
-        }
-        p.last-post {
-          font-size: 85%;
-
-          a.avatar {
-            display: inline-block;
-            vertical-align: middle;
-            width: 10vw;
-            height: 10vw;
-            margin-right: 3vw;
-          }
+          width: 24vw;
+          height: 19vw;
         }
       }
     }

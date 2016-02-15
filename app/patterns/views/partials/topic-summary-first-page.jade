@@ -1,0 +1,13 @@
+section.summary
+  h1 !{topic.titleHtml}
+  a.avatar(href="user/#{topic.authorUrl}/id/#{topic.authorID}" rel="author" title="View #{topic.author}'s profile.")
+    img(src="avatars/#{topic.authorID}.jpg")
+  dl.byline
+    dt.author Author
+    dd.author
+      a(href="user/#{topic.authorUrl}/id/#{topic.authorID}" rel="author" title="View #{topic.author}'s profile.") #{topic.author}
+  if topic.replies
+    dl.content-stats
+      dt Replies
+      dd #{topic.repliesFormatted}
+  include ../partials/pagination

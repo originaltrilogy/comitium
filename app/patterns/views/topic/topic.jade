@@ -1,5 +1,7 @@
-section.summary
-  h1 !{topic.titleHtml}
+if !url.page || url.page === 1
+  include ../partials/topic-summary-first-page
+else
+  include ../partials/topic-summary
 
 if topic.lockedByID
   section.notice.locked
@@ -10,8 +12,6 @@ if topic.lockedByID
     if topic.lockReason
       p.why Why was this topic locked?
       p.reason !{topic.lockReason}
-
-include ../partials/pagination
 
 if !topic.lockedByID || ( topic.lockedByID && session.moderateDiscussions )
   nav.topic.actions

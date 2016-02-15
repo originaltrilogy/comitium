@@ -7,12 +7,14 @@ $titleFont: AvenirNextCondensed-DemiBold, 'Open Sans Semibold', $defaultFont;
 $subtitleFont: AvenirNextCondensed-Medium, $titleFont;
 $italicTitleFont: AvenirNext-Italic, 'Open Sans Italic', $defaultFont;
 $boldFont: 'Open Sans Bold';
-$demiBoldFont: AvenirNext-DemiBold, 'Open Sans Semibold';
+$semiboldFont: 'Open Sans Semibold';
+$demiboldFont: AvenirNext-DemiBold, $semiboldFont;
 $italicFont: 'Open Sans Italic';
 $boldItalicFont: 'Open Sans Bold Italic';
 $lightFont: 'Open Sans Light';
 $lightTitleFont: AvenirNext-Regular, 'Open Sans Light';
-$hue: 226;
+$buttonFont: AvenirNext-Regular, $defaultFont;
+$hue: 225;
 
 // Icons
 $gBanned:   '\ed64';
@@ -53,6 +55,7 @@ $gNoUpdates: '\eac4';
   display: block;
   border-radius: 0.6vw;
   border: none;
+	font-family: $buttonFont;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
@@ -108,11 +111,12 @@ $gNoUpdates: '\eac4';
   }
 
   @if $color == 'light' {
-    @include color(14%, 25%);
-    @include background-color(100%, 90%);
+		color: #373B49;
+		background-image: linear-gradient(-180deg, #D9E2FF 0%, #A3ADCC 98%);
   } @else if $color == 'dark' {
-    @include color(100%, 90%);
-    @include background-color(14%, 25%);
+		color: #A5B2D9;
+		background-image: linear-gradient(-180deg, #2F323D 0%, #272A33 98%);
+		border: 1px solid #474F66;
   } @else if $color == 'lightGhost' {
     @include color(100%, 90%);
     @include inner-border(100%, 90%, 0.4vw);

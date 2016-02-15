@@ -22,7 +22,8 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 { font-size: 150%; }
 h2 { font-size: 125%; }
-h3, h4, h5, h6 { font-size: 100%; }
+h3 { font-size: 105%; }
+h4, h5, h6 { font-size: 100%; }
 
 ul,
 ol,
@@ -99,7 +100,6 @@ strong {
 
 i,
 em {
-  font-style: normal;
   font-family: $italicFont;
 
   b,

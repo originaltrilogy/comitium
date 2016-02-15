@@ -1355,7 +1355,7 @@ function breadcrumbs(topic) {
           url: app.config.comitium.basePath
         },
         b: {
-          name: 'Discussions',
+          name: 'Discussion Categories',
           url: 'discussions'
         },
         c: {
@@ -1370,7 +1370,7 @@ function breadcrumbs(topic) {
           url: app.config.comitium.basePath
         },
         b: {
-          name: 'Discussions',
+          name: 'Discussion Categories',
           url: 'discussions'
         },
         c: {

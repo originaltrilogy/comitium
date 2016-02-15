@@ -5,9 +5,70 @@
 body[data-controller="topic"],
 body[data-controller="announcement"] {
 
-  section.summary h1 {
-    padding-bottom: 6vw;
+  section.summary {
+    h1 {
+      padding-bottom: 3vw;
+    }
+    a.avatar {
+      display: inline-block;
+      margin-left: 4vw;
+      vertical-align: middle;
+    }
+    dl.byline {
+      display: inline-block;
+      margin: 0 4vw 0 2vw;
+      vertical-align: middle;
+
+      dt {
+        position: absolute;
+        left: -100vw;
+      }
+      dd {
+        display: inline-block;
+        margin-left: 0;
+      }
+    }
   }
+
+  // First page
+  &[data-page="1"] {
+    article.post:first-child {
+      header {
+        padding: 0;
+        background: none;
+
+        a.avatar,
+        dd.author {
+          position: absolute;
+          left: -100vw;
+        }
+
+        dl {
+          margin: 8vw 4vw 4vw;
+
+          dd.time {
+            flex: 1 1 auto;
+            text-align: center;
+            color: #ACACAC;
+          }
+        }
+      }
+    }
+  }
+
+  // Subsequent pages
+  &:not([data-page="1"]) {
+    section.summary {
+      &::before {
+        display: none;
+      }
+    }
+  }
+
+  nav.topic.actions {
+    margin-top: 4vw;
+  }
+
   section.form.quick-reply {
     form {
       padding-top: 0;

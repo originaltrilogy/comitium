@@ -137,6 +137,9 @@ function handler(params, context, emitter) {
                 });
               }
 
+              topic.timeFormatted = app.toolbox.moment.tz(topic.time, 'America/New_York').format('D-MMM-YYYY');
+              topic.repliesFormatted = app.toolbox.numeral(topic.replies).format('0,0');
+
               emitter.emit('ready', {
                 view: type,
                 content: {

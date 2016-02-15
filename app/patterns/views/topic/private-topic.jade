@@ -1,5 +1,7 @@
-section.summary
-  h1 !{topic.titleHtml}
+if !url.page || url.page === 1
+  include ../partials/topic-summary-first-page
+else
+  include ../partials/topic-summary
 
 section.notice.private
   p This topic is private and visible only to
@@ -8,8 +10,6 @@ section.notice.private
       li
         a(href="user/#{user.username}/id/#{user.id}")
           = user.username
-
-include ../partials/pagination
 
 nav.topic.actions
   ul

@@ -49,19 +49,19 @@ article.post {
   header {
     display: flex;
     margin: 0;
-    padding-left: 4vw;
+    padding: 2vw;
     position: relative;
-    font-size: 110%;
     text-align: left;
-    @include background-color(14%, 22%);
+    background: hsl(225, 13%, 18%);
 
     a.avatar {
-      flex: 0 0 14vw;
+      flex: 0 0 12vw;
     }
     dl {
       flex: 1 1 auto;
       display: flex;
       align-items: center;
+      margin-right: 0;
       margin-bottom: 0;
     }
     dt {
@@ -76,8 +76,8 @@ article.post {
         line-height: 1.2;
       }
       &.time {
-        flex: 0 0 34vw;
-        font-size: 75%;
+        flex: 0 0 38vw;
+        font-size: 85%;
         text-align: right;
       }
     }
@@ -94,9 +94,10 @@ article.post {
     padding: 4vw;
     text-align: right;
     font-size: 85%;
+    color: #D2D2D2;
     line-height: 1.6;
     overflow: auto;
-    @include background-color(12%, 34%);
+    background: #434A59;
 
     & > * {
       float: right;
@@ -129,10 +130,10 @@ article.post {
     background: none;
 
     &::before {
-      background-image: linear-gradient(to right, hsl(226, 12%, 30%), hsla(226, 12%, 30%, 0));
+      background-image: linear-gradient(to right, #323843, hsla(226, 12%, 30%, 0));
     }
     &::after {
-      background-image: linear-gradient(to left, hsl(226, 12%, 30%), hsla(226, 12%, 30%, 0));
+      background-image: linear-gradient(to left, #323843, hsla(226, 12%, 30%, 0));
     }
     ul {
       text-align: right;

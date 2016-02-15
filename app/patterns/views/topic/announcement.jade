@@ -1,5 +1,7 @@
-section.summary
-  h1 Announcement: !{topic.titleHtml}
+if !url.page || url.page === 1
+  include ../partials/topic-summary-first-page
+else
+  include ../partials/topic-summary
 
 if topic.lockedByID
   section.notice.locked
@@ -35,8 +37,6 @@ nav.topic.actions
             a(href="topic/action/unlock/id/#{url.id}" title="Unlock this topic.") Unlock
         li.delete
           a(href="topic/action/trash/id/#{url.id}" title="Move this topic to the trash.") Delete
-  
-include ../partials/pagination
           
 section.posts
   if posts

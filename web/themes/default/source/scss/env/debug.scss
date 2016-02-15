@@ -4,18 +4,16 @@
 
 @font-face {
   font-family: 'glyphs';
-  src: url('../fonts/glyphs/icomoon.eot');
-  src: url('../fonts/glyphs/icomoon.eot?#iefix') format('embedded-opentype'),
-     // url('../fonts/glyphs/icomoon.woff2') format('woff2'),
-     url('../fonts/glyphs/icomoon.woff') format('woff'),
-     url('../fonts/glyphs/icomoon.ttf') format('truetype'),
-     url('../fonts/glyphs/icomoon.svg#glyphs') format('svg');
+  src: // url('../fonts/glyphs/icomoon.woff2') format('woff2'),
+       url('../fonts/glyphs/icomoon.woff') format('woff'),
+       url('../fonts/glyphs/icomoon.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-feature-settings: 'liga';
 }
 
 @import '../global';
+@import '../index';
 @import '../discussions';
 @import '../discussion';
 @import '../topic';

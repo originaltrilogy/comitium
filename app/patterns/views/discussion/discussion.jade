@@ -5,8 +5,7 @@ section.summary
   dl.content-stats
     dt Topics
     dd #{discussion.topicsFormatted}
-    
-include ../partials/pagination
+  include ../partials/pagination
 
 if announcements
   section.announcements
@@ -36,7 +35,7 @@ section.topics
   
   if topics
     each topic in topics
-      article(class="topic #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
+      article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
         h3
           a(href="topic/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
         dl.byline
@@ -46,19 +45,19 @@ section.topics
           dt.date Date
           dd.date
             = topic.postDateFormatted
-        dl.details
-          dt.replies Replies
-          dd.replies
-            = topic.repliesFormatted
-          if topic.repliesFormatted !== '0'
-            dt.last-post Last post
-            dd.last-post
-              a(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
-                = topic.lastPostAuthor
-              |  replied on 
-              time #{topic.lastPostCreatedFormatted}
-              a.avatar(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
-                img(src="avatars/#{topic.lastPostAuthorID}.jpg")
+        if topic.replies
+          a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
+            dl.content-stats
+              dt.replies Replies
+              dd.replies
+                = topic.repliesFormatted
+          p.last-post
+            a.avatar(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+              img(src="avatars/#{topic.lastPostAuthorID}.jpg")
+            a(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+              = topic.lastPostAuthor
+            |  replied 
+            time #{topic.lastPostCreatedFormatted}
         a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
           img(src="avatars/#{topic.topicStarterID}.jpg")
   else
