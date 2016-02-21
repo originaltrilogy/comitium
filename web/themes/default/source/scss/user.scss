@@ -43,6 +43,11 @@ body[data-view="user"] {
         &.time {
           font-size: 100%;
           text-align: left;
+
+          time {
+            display: inline;
+            width: auto;
+          }
         }
       }
     }

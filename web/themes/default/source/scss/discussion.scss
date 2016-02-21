@@ -273,3 +273,14 @@ body[data-controller="discussion"][data-view="discussion"] {
   }
 
 }
+
+body[data-controller="announcements"][data-view="announcements"] {
+  section.summary {
+    &::before {
+      display: none;
+    }
+    h1 {
+      text-align: center;
+    }
+  }
+}

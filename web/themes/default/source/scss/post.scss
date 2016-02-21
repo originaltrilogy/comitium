@@ -44,6 +44,7 @@ body[data-controller="post"] {
 // Global post styles
 article.post {
   padding: 0;
+  margin: 0 2vw 4vw;
   border-bottom: none;
 
   header {
@@ -72,13 +73,19 @@ article.post {
       margin: 0;
 
       &.author {
-        flex: 0 0 40vw;
+        flex: 0 0 53vw;
         line-height: 1.2;
       }
       &.time {
         flex: 0 0 38vw;
         font-size: 85%;
         text-align: right;
+        color: #acacac;
+
+        time {
+          display: block;
+          width: 22vw;
+        }
       }
     }
   }
@@ -91,13 +98,13 @@ article.post {
 
   section.signature {
     margin: 0;
-    padding: 4vw;
+    padding: 3vw;
     text-align: right;
     font-size: 85%;
     color: #D2D2D2;
     line-height: 1.6;
     overflow: auto;
-    background: #434A59;
+    background: hsl(221, 14%, 31%);
 
     & > * {
       float: right;
@@ -130,10 +137,10 @@ article.post {
     background: none;
 
     &::before {
-      background-image: linear-gradient(to right, #323843, hsla(226, 12%, 30%, 0));
+      background-image: linear-gradient(to right, #323843, hsla(219, 15%, 23%, 0));
     }
     &::after {
-      background-image: linear-gradient(to left, #323843, hsla(226, 12%, 30%, 0));
+      background-image: linear-gradient(to left, #323843, hsla(219, 15%, 23%, 0));
     }
     ul {
       text-align: right;

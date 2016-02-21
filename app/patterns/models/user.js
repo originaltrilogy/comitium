@@ -969,7 +969,7 @@ function posts(args, emitter) {
               if ( output.posts[i].hasOwnProperty(property) ) {
                 subset[i][property] = output.posts[i][property];
                 if ( property === 'created' ) {
-                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY, h:mm A');
+                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY h:mm A');
                 }
               }
             }
