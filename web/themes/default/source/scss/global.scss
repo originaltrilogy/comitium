@@ -182,6 +182,10 @@ a {
   color: #A5B2D9;
 }
 
+p {
+  color: rgb(230, 230, 230);
+}
+
 a.home {
   display: block;
 
@@ -828,9 +832,9 @@ p.last-post {
 }
 
 article {
+  margin: 1vw 0;
   padding: 5vw 0 6vw;
   background-color: rgb(50,55,66);
-  border-bottom: 1px solid rgb(42,46,55);
 
   &:last-child {
     border-bottom: none;
@@ -847,6 +851,7 @@ article {
       height: 100%;
       position: absolute;
       top: 0;
+      left: 0;
       @include background-color(100%, 90%);
     }
   }
@@ -1256,6 +1261,44 @@ a.avatar {
     height: 12vw;
   }
 
+  dl.content-stats {
+    dt {
+      &:first-child {
+        font-size: 115%;
+      }
+    }
+    dd {
+      &:nth-child(n+2) {
+        font-size: 135%;
+      }
+    }
+  }
+
+  article {
+    dl.content-stats {
+      dt:first-child {
+        font-size: 95%;
+      }
+      dd:nth-child(n+2) {
+        font-size: 105%;
+      }
+    }
+  }
+
+  // Discussion, discussions, and topic view summaries
+  body[data-controller="discussions"],
+  body[data-controller="discussion"],
+  body[data-controller="topic"],
+  body[data-controller="announcements"],
+  body[data-controller="announcement"] {
+    section.summary {
+      &::before {
+        width: 28vw;
+        height: 25vw;
+      }
+    }
+  }
+
 }
 
 @media only screen and (min-width: 500px) {
@@ -1470,37 +1513,6 @@ a.avatar {
     li {
       margin-bottom: 0;
       margin-top: 1vw;
-    }
-  }
-
-  nav.pagination {
-    padding: 2vw 0;
-
-    li {
-      line-height: 5vw;
-
-      &.first,
-      &.previous,
-      &.next,
-      &.last {
-        top: 2vw;
-      }
-      &.first {
-        left: 21vw;
-      }
-      &.previous {
-        left: 32vw;
-      }
-      &.next {
-        right: 32vw;
-      }
-      &.last {
-        right: 21vw;
-      }
-      a {
-        @include button('small');
-        min-width: 8vw;
-      }
     }
   }
 
@@ -1835,37 +1847,6 @@ a.avatar {
 
       & > li {
         margin: 0 0.6rem;
-      }
-    }
-  }
-
-  nav.pagination {
-    padding: 2rem 0;
-    width: 100%;
-
-    li {
-      line-height: 4rem;
-
-      &.first,
-      &.previous,
-      &.next,
-      &.last {
-        top: 2rem;
-      }
-      &.first {
-        left: 18rem;
-      }
-      &.previous {
-        left: 30rem;
-      }
-      &.next {
-        right: 30rem;
-      }
-      &.last {
-        right: 18rem;
-      }
-      a {
-        min-width: 8rem;
       }
     }
   }

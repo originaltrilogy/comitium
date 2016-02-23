@@ -11,24 +11,21 @@ body[data-controller="private-topics"][data-view="private-topics"] {
     color: white;
   }
   article.topic {
+    display: flex;
+    flex-wrap: wrap;
     position: relative;
-    overflow: hidden;
 
-    &.has-replies {
-      &::before {
-        content: '';
-        display: block;
-        float: right;
-        width: 24vw;
-        height: 20vw;
-      }
-    }
     h3 {
-      margin-bottom: 1vw;
-      margin-left: 20vw;
+      display: flex;
+      align-items: center;
+      min-height: 12vw;
+      flex: 0 0 88vw;
+      margin-bottom: 4vw;
+      padding-right: 19vw;
     }
     dl.byline {
-      margin-left: 20vw;
+      flex: 0 0 32vw;
+      margin: 0;
       font-size: 85%;
 
       dt.author,
@@ -38,59 +35,31 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       dd.author {
         margin: 0;
-        float: left;
       }
       dd.date {
-        margin-left: 2vw;
-        float: left;
-
-        &::before {
-          display: inline-block;
-          margin-right: 2vw;
-          content: '–';
-        }
+        margin-left: 0;
       }
     }
     p.last-post {
-      clear: both;
+      flex: 0 0 40vw;
+      margin: 3vw 2vw 0;
+
+      a.avatar {
+        width: 8vw;
+        height: 8vw;
+        margin: 1vw 2vw 0 0;
+        float: left;
+      }
     }
     & > a.avatar {
-      position: absolute;
-      top: 6vw;
-      left: 4vw;
+      margin: 0 3vw 0 4vw;
     }
 
     &.announcement {
-      min-height: 0;
-
       h3 {
-        margin-bottom: 0;
-        margin-left: 4vw;
         min-height: 0;
-      }
-    }
-  }
-
-  @media only screen and (min-width: 400px) {
-    article.topic {
-      h3 {
-        margin-left: 20vw;
-      }
-      dl.byline {
-        margin-left: 20vw;
-      }
-      dl.details {
-        min-height: 10vw;
-
-        dd.last-post {
-          right: 15vw;
-
-          a.avatar {
-            right: -11vw;
-            width: 8vw;
-            height: 8vw;
-          }
-        }
+        margin-bottom: 0;
+        padding: 0;
       }
     }
   }
