@@ -35,6 +35,10 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       dd.author {
         margin: 0;
+
+        a {
+          text-decoration: none;
+        }
       }
       dd.date {
         margin-left: 0;
@@ -174,7 +178,7 @@ body[data-controller="discussion"][data-view="discussion"] {
 
   section.announcements {
     article {
-      padding: 3vw 0 4vw;
+      padding: 3vw 0;
     }
   }
   nav.actions {

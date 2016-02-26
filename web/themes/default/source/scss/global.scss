@@ -140,7 +140,7 @@ body {
   &[data-controller="account"] nav li.account a,
   &[data-controller="about"] nav li.about a,
   &[data-controller="help"] nav li.help a {
-    @include background-color(14%, 32%);
+    background: rgb(58, 62, 75);
   }
 }
 
@@ -218,6 +218,7 @@ body > header {
       a {
         display: block;
         padding: 1vw;
+        color: rgb(204, 216, 255);
         text-decoration: none;
       }
     }
@@ -346,7 +347,7 @@ body {
     position: fixed;
     z-index: 1001;
     font-size: 125%;
-    @include background-color(14%, 25%);
+    background: rgb(39, 42, 51);
 
     &.left {
       top: 0;
@@ -445,10 +446,6 @@ nav.breadcrumbs {
         vertical-align: top;
       }
     }
-    &::after {
-      content: '/';
-      padding: 0 1vw 0 2vw;
-    }
     &:nth-child(3) {
       a {
         display: inline-block;
@@ -463,6 +460,11 @@ nav.breadcrumbs {
         display: none;
       }
     }
+  }
+
+  a {
+    color: rgb(145,157,191);
+    text-decoration: none;
   }
 }
 
@@ -822,6 +824,9 @@ dl.content-stats {
 p.last-post {
   font-size: 85%;
 
+  a {
+    text-decoration: none;
+  }
   a.avatar {
     display: inline-block;
     vertical-align: middle;
@@ -869,10 +874,17 @@ article {
     }
   }
 
+  h3 {
+    a {
+      text-decoration: none;
+    }
+  }
+
   img {
     max-width: 100%;
     height: auto;
   }
+
   dl.content-stats {
     width: 16vw;
     height: 16vw;
@@ -1322,8 +1334,8 @@ a.avatar {
 
       a.home {
         margin: 0 1.8vw;
-        padding: 1.8vw 0;
-        width: 14.6vw;
+        padding: 1.4vw 0;
+        width: 18.4vw;
       }
       a.sign-in {
         display: none;
@@ -1366,7 +1378,7 @@ a.avatar {
 
             a {
               display: block;
-              padding: 2.5vw 1.5vw;
+              padding: 0.5vw 1.5vw;
               text-decoration: none;
 
               &:hover {
@@ -1406,38 +1418,6 @@ a.avatar {
       }
     }
 
-    // Navigation highlighting
-    &[data-controller="index"] nav ul.content li.news a,
-    &[data-controller="discussions"] nav ul.content li.discussions a,
-    &[data-controller="discussion"] nav ul.content li.discussions a,
-    &[data-controller="announcements"] nav ul.content li.discussions a,
-    &[data-controller="announcement"] nav ul.content li.discussions a,
-    &[data-controller="topic"][data-view="topic"] nav ul.content li.discussions a,
-    &[data-controller="topic"][data-view="private-topic"] nav ul.content li.private-topics a,
-    &[data-controller="topic"][data-view="start-private"] nav ul.content li.private-topics a,
-    &[data-controller="private-topics"] nav ul.content li.private-topics a,
-    &[data-controller="sign-in"] nav ul.content li.sign-in a,
-    &[data-controller="register"] nav ul.content li.register a,
-    &[data-controller="account"] nav ul.content li.account a,
-    &[data-controller="about"] nav ul.content li.about a,
-    &[data-controller="help"] nav ul.content li.help a {
-      position: relative;
-      background: none;
-      overflow: hidden;
-
-      &::after {
-        position: absolute;
-        bottom: -3vw;
-        left: 50%;
-        margin-left: -2vw;
-        content: '';
-        display: block;
-        width: 4vw;
-        height: 4vw;
-        transform: rotate(45deg);
-        @include background-color(14%, 27%);
-      }
-    }
   }
 
   html.js {
@@ -1495,11 +1475,15 @@ a.avatar {
   }
 
   h1 {
-    padding: 0 3vw 2vw;
+    padding: 1vw 3vw;
+    font-size: 4vw;
+    line-height: 1.2;
   }
 
   h2 {
-    padding: 3vw;
+    padding: 2vw 3vw 1.6vw;
+    font-size: 145%;
+    text-transform: none;
   }
 
   p {
@@ -1508,11 +1492,31 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding: 1vw 3vw 0;
+    padding: 2vw 3vw 0;
+    font-size: 2.2vw;
 
     li {
+      position: static;
       margin-bottom: 0;
       margin-top: 1vw;
+
+      &:last-child::before {
+        display: none;
+      }
+      &::after {
+        content: '>';
+        padding: 0 1vw 0 2vw;
+      }
+      &:nth-child(3) {
+        a {
+          display: inline;
+        }
+      }
+      &:last-child {
+        &::after {
+          display: inline;
+        }
+      }
     }
   }
 
@@ -1540,7 +1544,13 @@ a.avatar {
       }
     }
     &.summary {
+      padding: 4vw 0;
+
       p {
+        font-family: $lightFont;
+        font-size: 2.6vw;
+        color: rgb(191,191,191);
+
         &:last-child {
           padding-bottom: 2vw;
         }
@@ -1561,6 +1571,59 @@ a.avatar {
       p.reason {
         display: inline;
       }
+    }
+    &.category,
+    &.announcements,
+    &.topics {
+      margin: 0 3vw 4vw;
+    }
+  }
+
+  // Discussion, discussions, and topic view summaries
+  body[data-controller="discussions"],
+  body[data-controller="discussion"],
+  body[data-controller="topic"],
+  body[data-controller="announcements"],
+  body[data-controller="announcement"] {
+    section.summary {
+      &::before {
+        width: 22vw;
+        height: 18vw;
+      }
+      & > p {
+        &:nth-child(n-1) {
+          padding-bottom: 2vw;
+        }
+      }
+      dl.content-stats {
+        right: 3vw;
+      }
+    }
+  }
+
+  dl.content-stats {
+    width: 16vw;
+    height: 16vw;
+    padding-top: 5vw;
+
+    dt {
+      &:first-child {
+        font-size: 130%;
+      }
+    }
+    dd {
+      &:nth-child(n+2) {
+        font-size: 175%;
+      }
+    }
+  }
+
+  article {
+    margin: 0.3vw 0;
+
+    & > * {
+      margin-right: 3vw;
+      margin-left: 3vw;
     }
   }
 
