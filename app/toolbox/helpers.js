@@ -86,7 +86,7 @@ function paginate(baseUrl, currentPage, itemCount) {
   // First page
   pagination.pages[1] = {
     number: 1,
-    url: baseUrl,
+    url: baseUrl + '/page/1',
     text: 'Page 1',
     isCurrentPage: currentPage === 1
   };
