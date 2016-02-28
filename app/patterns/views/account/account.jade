@@ -2,8 +2,6 @@ section.summary
   h1 Your Account
   p Update your account information and adjust your settings.
 
-
-
 section.form.general#general
   h2 Info and settings
   if general && general.messages
@@ -54,7 +52,11 @@ section.form.general#general
         label(for="signature") Post signature
         p.label-note This content appears beneath your forum posts
         textarea#signature(name="signature" rows="4") #{form.signature}
-  
+      li.website.text
+        label(for="website") Web site
+        p.label-note This will appear in your public user profile
+        input#website(name="website" value="#{form.website}" placeholder="http://")
+
     ul.actions
       li.primary
         input(name="formAction" type="submit" value="Save changes")
@@ -73,7 +75,7 @@ section.form.avatar#avatar
         label(for="avatar-file") Choose an image to upload
         p.label-note Most file formats are supported except for animated GIFs. File sizes up to 5MB accepted.
         input#avatar-file(name="avatar" type="file")
-  
+
     ul.actions
       li.primary
         input(name="formAction" type="submit" value="Upload image")

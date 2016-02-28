@@ -5,7 +5,7 @@
 // Post view styles
 body[data-controller="post"] {
 
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 720px) {
 
     section.summary {
       dl {
@@ -172,7 +172,7 @@ article.post {
 }
 
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 720px) {
 
   article.post {
     header {

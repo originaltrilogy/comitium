@@ -707,6 +707,7 @@ body[data-controller="announcement"] {
         margin-top: 0;
       }
       &:nth-child(n-1) {
+        min-height: 12vw;
         margin-bottom: 0;
         padding-bottom: 4vw;
       }
@@ -830,8 +831,6 @@ p.last-post {
   a.avatar {
     display: inline-block;
     vertical-align: middle;
-    width: 10vw;
-    height: 10vw;
     margin-right: 3vw;
   }
 }
@@ -891,10 +890,10 @@ article {
     padding: 4.5vw 1.5vw 2vw;
 
     dt:first-child {
-      font-size: 80%;
+      font-size: 75%;
     }
     dd:nth-child(n+2) {
-      font-size: 90%;
+      font-size: 80%;
     }
   }
 }
@@ -1248,6 +1247,17 @@ a.avatar {
     padding: 6vw 2vw 2vw;
   }
 
+  article {
+    dl.content-stats {
+      dt:first-child {
+        font-size: 80%;
+      }
+      dd:nth-child(n+2) {
+        font-size: 90%;
+      }
+    }
+  }
+
 }
 
 
@@ -1269,8 +1279,8 @@ a.avatar {
   }
 
   a.avatar {
-    width: 12vw;
-    height: 12vw;
+    width: 10vw;
+    height: 10vw;
   }
 
   dl.content-stats {
@@ -1311,6 +1321,10 @@ a.avatar {
     }
   }
 
+  p.last-post {
+    font-size: 100%;
+  }
+
 }
 
 @media only screen and (min-width: 500px) {
@@ -1326,7 +1340,7 @@ a.avatar {
 @media only screen and (min-width: 600px) {
 
   body {
-    font-size: 2vw;
+    font-size: 2.2vw;
 
     & > header {
       display: flex;
@@ -1486,6 +1500,10 @@ a.avatar {
     text-transform: none;
   }
 
+  h3 {
+    font-size: 115%;
+  }
+
   p {
     margin-top: 4vw;
     margin-bottom: 4vw;
@@ -1608,13 +1626,21 @@ a.avatar {
 
     dt {
       &:first-child {
-        font-size: 130%;
+        font-size: 125%;
       }
     }
     dd {
       &:nth-child(n+2) {
-        font-size: 175%;
+        font-size: 160%;
       }
+    }
+  }
+
+  nav.pagination {
+    margin: 2vw 3vw 0;
+
+    a {
+      padding: 2vw 3vw;
     }
   }
 
@@ -1624,6 +1650,20 @@ a.avatar {
     & > * {
       margin-right: 3vw;
       margin-left: 3vw;
+    }
+
+    dl.content-stats {
+      width: 13vw;
+      height: 13vw;
+      padding: 4vw 1.5vw 2vw;
+
+      dt:first-child {
+        font-size: 105%;
+      }
+
+      dd:nth-child(n+2) {
+        font-size: 120%;
+      }
     }
   }
 
@@ -1732,6 +1772,16 @@ a.avatar {
     }
   }
 
+  p.last-post {
+    font-size: 100%;
+
+    a.avatar {
+      width: 6vw;
+      height: 6vw;
+      margin-right: 2vw;
+    }
+  }
+
   a.to-the-top {
     width: 24vw;
   }
@@ -1757,8 +1807,8 @@ a.avatar {
 }
 
 
-// Screens wider than 768px
-@media only screen and (min-width: 768px) {
+// Screens wider than 720px
+@media only screen and (min-width: 720px) {
 
   // New baseline establishing rems over viewport units
   html {

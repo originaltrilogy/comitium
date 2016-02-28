@@ -64,7 +64,7 @@ $gNoUpdates: '\eac4';
   @media only screen and (min-width: 600px) {
     border-radius: 0.4vw;
   }
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 720px) {
     border-radius: 0.4rem;
   }
 
@@ -76,7 +76,7 @@ $gNoUpdates: '\eac4';
     @media only screen and (min-width: 600px) {
       line-height: 12vw;
     }
-    @media only screen and (min-width: 768px) {
+    @media only screen and (min-width: 720px) {
       line-height: 12rem;
       padding: 0 5rem;
     }
@@ -90,7 +90,7 @@ $gNoUpdates: '\eac4';
       line-height: 6vw;
       padding: 0 3vw;
     }
-    @media only screen and (min-width: 768px) {
+    @media only screen and (min-width: 720px) {
       line-height: 6rem;
       padding: 0 3rem;
     }
@@ -104,7 +104,7 @@ $gNoUpdates: '\eac4';
       line-height: 5vw;
       padding: 0 2vw;
     }
-    @media only screen and (min-width: 768px) {
+    @media only screen and (min-width: 720px) {
       line-height: 4rem;
       padding: 0 2rem;
     }
@@ -123,7 +123,7 @@ $gNoUpdates: '\eac4';
     @media only screen and (min-width: 600px) {
       @include inner-border(100%, 90%, 0.2vw);
     }
-    @media only screen and (min-width: 768px) {
+    @media only screen and (min-width: 720px) {
       @include inner-border(100%, 90%, 1px);
     }
   } @else if $color == 'darkGhost' {
@@ -132,7 +132,7 @@ $gNoUpdates: '\eac4';
     @media only screen and (min-width: 600px) {
       @include inner-border(14%, 25%, 0.2vw);
     }
-    @media only screen and (min-width: 768px) {
+    @media only screen and (min-width: 720px) {
       @include inner-border(14%, 25%, 1px);
     }
   }

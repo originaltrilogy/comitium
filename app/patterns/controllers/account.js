@@ -22,6 +22,7 @@ function handler(params, context, emitter) {
     params.form.dateFormat = params.session.dateFormat;
     params.form.theme = params.session.theme;
     params.form.privateTopicEmailNotification = params.session.privateTopicEmailNotification;
+    params.form.website = params.session.website;
 
     emitter.emit('ready', {
       content: {
@@ -44,6 +45,7 @@ function generalForm(params, context, emitter) {
       password = '',
       signature,
       signatureHtml,
+      website,
       methods = {},
       update = true,
       messages = {};
@@ -54,6 +56,7 @@ function generalForm(params, context, emitter) {
       email = params.form.email.trim();
       password = params.form.password.trim();
       signature = params.form.signature.trim();
+      website = params.form.website.trim();
 
       app.listen('waterfall', {
         emailCheck: function (emitter) {

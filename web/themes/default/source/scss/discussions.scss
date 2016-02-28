@@ -67,15 +67,23 @@ body[data-controller="discussions"] {
           padding: 2vw 0;
         }
       }
-      ul.stats {
-        margin-top: 2vw;
+      p.description {
+        margin-bottom: 3vw;
       }
-      .last-post {
+      section.categories {
+        article {
+          &::before {
+            width: 20vw;
+            height: 16vw;
+          }
+        }
+      }
+      p.last-post {
         margin-top: 2vw;
       }
     }
 
-    @media only screen and (min-width: 768px) {
+    @media only screen and (min-width: 720px) {
       section.announcements {
         article {
           padding: 2rem 0;

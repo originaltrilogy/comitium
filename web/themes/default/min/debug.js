@@ -888,7 +888,7 @@ CF.immediate = ( function (Modernizr, CF) {
     responsiveModeSet: function () {
       var html = document.querySelector('html');
       // var windowWidth = $(window).width();
-      if ( Modernizr.mq('only screen and (min-width: 768px)') ) {
+      if ( Modernizr.mq('only screen and (min-width: 720px)') ) {
         CF.params.device.relativeSize = 'x-large';
       } else if ( Modernizr.mq('only screen and (min-width: 600px)') ) {
         CF.params.device.relativeSize = 'large';
