@@ -79,7 +79,7 @@ function paginate(baseUrl, currentPage, itemCount) {
   var pagination = {
         // Make sure currentPage and itemCount are number types
         currentPage: parseInt(currentPage, 10),
-        lastPage: Math.ceil( parseInt(itemCount) / 25 ),
+        lastPage: Math.ceil( parseInt(itemCount, 10) / 25 ),
         pages: {}
       };
 
@@ -88,7 +88,7 @@ function paginate(baseUrl, currentPage, itemCount) {
     number: 1,
     url: baseUrl + '/page/1',
     text: 'Page 1',
-    isCurrentPage: currentPage === 1
+    isCurrentPage: pagination.currentPage === 1
   };
 
   if ( pagination.currentPage <= 3 ) {
