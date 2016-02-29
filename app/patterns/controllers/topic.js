@@ -149,6 +149,7 @@ function handler(params, context, emitter) {
                   userIsSubscribed: output.subscriptionExists,
                   userCanReply: output.userCanReply,
                   pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
+                  previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),
                   breadcrumbs: app.models.topic.breadcrumbs(topic)
                 }
               });

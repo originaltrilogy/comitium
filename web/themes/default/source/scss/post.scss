@@ -84,7 +84,7 @@ article.post {
 
         time {
           display: block;
-          width: 22vw;
+          width: 23vw;
         }
       }
     }
@@ -162,10 +162,15 @@ article.post {
   article.post {
     header {
       a.avatar {
-        flex: 0 0 12vw;
+        flex: 0 0 10vw;
       }
       dd.author {
-        flex: 0 0 52vw;
+        flex: 0 0 57vw;
+      }
+      dd.time {
+        time {
+          width: 20vw;
+        }
       }
     }
   }

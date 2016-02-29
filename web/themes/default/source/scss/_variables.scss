@@ -82,7 +82,7 @@ $gNoUpdates: '\eac4';
     }
 
   } @else if $size == 'medium' {
-  	line-height: 10vw;
+  	line-height: 8.5vw;
 	  padding: 1vw 4vw 0.8vw;
 	  font-size: 100%;
 
@@ -112,10 +112,10 @@ $gNoUpdates: '\eac4';
 
   @if $color == 'light' {
 		color: #373B49;
-		background-image: linear-gradient(-180deg, #D9E2FF 0%, #A3ADCC 98%);
+		background-image: linear-gradient(to bottom, #D9E2FF 0%, #A3ADCC 98%);
   } @else if $color == 'dark' {
 		color: #A5B2D9;
-		background-image: linear-gradient(-180deg, #2F323D 0%, #272A33 98%);
+		background-image: linear-gradient(to bottom, #2F323D 0%, #272A33 98%);
 		border: 1px solid #474F66;
   } @else if $color == 'lightGhost' {
     @include color(100%, 90%);

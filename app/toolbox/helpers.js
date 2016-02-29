@@ -8,7 +8,8 @@ module.exports = {
   compareHash: compareHash,
   ip: ip,
   isoDate: isoDate,
-  paginate: paginate
+  paginate: paginate,
+  previousAndNext: previousAndNext
 };
 
 
@@ -108,7 +109,7 @@ function paginate(baseUrl, currentPage, itemCount) {
     if ( pagination.lastPage > 4 ) {
       pagination.pages.lastPage = {
         number: pagination.lastPage,
-        url: baseUrl + '/page/' + ( pagination.lastPage ),
+        url: baseUrl + '/page/' + pagination.lastPage,
         text: pagination.lastPage.toString(),
         isCurrentPage: pagination.currentPage === pagination.lastPage
       };
@@ -127,7 +128,7 @@ function paginate(baseUrl, currentPage, itemCount) {
     pagination.previousPage = pagination.currentPage - 1;
     pagination.pages[pagination.previousPage] = {
       number: pagination.previousPage,
-      url: baseUrl + '/page/' + ( pagination.previousPage ),
+      url: baseUrl + '/page/' + pagination.previousPage,
       text: pagination.previousPage.toString(),
       isCurrentPage: false
     };
@@ -145,7 +146,7 @@ function paginate(baseUrl, currentPage, itemCount) {
     if ( pagination.nextPage < pagination.lastPage ) {
       pagination.pages[pagination.nextPage] = {
         number: pagination.nextPage,
-        url: baseUrl + '/page/' + ( pagination.nextPage ),
+        url: baseUrl + '/page/' + pagination.nextPage,
         text: pagination.nextPage.toString(),
         isCurrentPage: false
       };
@@ -157,6 +158,35 @@ function paginate(baseUrl, currentPage, itemCount) {
       url: baseUrl + '/page/' + pagination.lastPage,
       text: pagination.lastPage.toString(),
       isCurrentPage: false
+    };
+  }
+
+  return pagination;
+}
+
+
+
+function previousAndNext(baseUrl, currentPage, itemCount) {
+  var pagination = {
+        // Make sure currentPage and itemCount are number types
+        currentPage: parseInt(currentPage, 10),
+        lastPage: Math.ceil( parseInt(itemCount, 10) / 25 ),
+        pages: {}
+      };
+
+  if ( pagination.currentPage > 1 ) {
+    pagination.pages.previous = {
+      number: pagination.currentPage - 1,
+      url: baseUrl + '/page/' + ( pagination.currentPage - 1 ),
+      text: 'Previous page (' + ( pagination.currentPage - 1 ).toString() + ')'
+    };
+  }
+
+  if ( pagination.currentPage !== pagination.lastPage ) {
+    pagination.pages.next = {
+      number: pagination.currentPage + 1,
+      url: baseUrl + '/page/' + ( pagination.currentPage + 1 ),
+      text: 'Next page (' + ( pagination.currentPage + 1 ).toString() + ')'
     };
   }
 
