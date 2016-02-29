@@ -3,7 +3,7 @@ section.summary
   if discussion.description
     p !{discussion.description}
   include ../partials/pagination
-          
+
 section.topics
   //- Remove this logic and put it back above li.new-announcement after the subscribe functionality is working
   if session.moderateDiscussions
@@ -39,9 +39,9 @@ section.topics
               img(src="avatars/#{topic.lastPostAuthorID}.jpg")
             a(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
               = topic.lastPostAuthor
-            |  replied 
+            |  replied
             time #{topic.lastPostCreatedFormatted}
   else
     p There are no current announcements.
 
-include ../partials/pagination
+include ../partials/previous-and-next

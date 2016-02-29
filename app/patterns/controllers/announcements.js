@@ -74,7 +74,8 @@ function handler(params, context, emitter) {
                 content = {
                   discussion: discussion,
                   breadcrumbs: app.models.announcements.breadcrumbs(),
-                  pagination: app.toolbox.helpers.paginate('announcements/id/2', params.url.page, discussion.topics)
+                  pagination: app.toolbox.helpers.paginate('announcements/id/2', params.url.page, discussion.topics),
+                  previousAndNext: app.toolbox.helpers.previousAndNext('announcements/id/2', params.url.page, discussion.topics)
                 };
 
                 if ( topics && app.size(topics) ) {

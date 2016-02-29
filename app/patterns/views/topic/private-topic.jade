@@ -27,7 +27,7 @@ section.posts
     each post in posts
       include ../post/_private-topic-post
 
-include ../partials/pagination
+include ../partials/previous-and-next
 
 if userCanReply
   section.form.quick-reply
@@ -42,7 +42,7 @@ if userCanReply
           input(id="subscribe" name="subscribe" type="checkbox" value="true")
           label(for="subscribe")
             | Notify me when someone replies
-    
+
       ul.actions
         li.secondary.preview
           input(name="formAction" type="submit" value="Preview")
