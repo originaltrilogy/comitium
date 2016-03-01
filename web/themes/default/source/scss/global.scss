@@ -876,7 +876,7 @@ p.last-post {
 
 article {
   // Use px for consistent spacing (vw varies)
-  margin: 4px 0;
+  margin: 2px 0;
   padding: 5vw 0;
   background-color: rgb(50,55,66);
 
@@ -948,6 +948,7 @@ h1 {
   padding: 2vw 4vw;
   font-family: $titleFont;
   color: #E6E6E6;
+  text-shadow: 2px 2px 0 rgb(31, 33, 40);
 
   span.page {
     display: inline-block;
@@ -1335,8 +1336,6 @@ a.avatar {
   }
 
   article {
-    margin: 2px 0;
-
     dl.content-stats {
       dt:first-child {
         font-size: 95%;
@@ -1538,6 +1537,7 @@ a.avatar {
     padding: 2vw 3vw 1.6vw;
     font-size: 145%;
     text-transform: none;
+    text-align: left;
   }
 
   h3 {
@@ -1631,7 +1631,14 @@ a.avatar {
     &.category,
     &.announcements,
     &.topics {
+      position: relative;
       margin: 0 3vw 4vw;
+
+      nav.actions {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
     }
   }
 
@@ -1692,8 +1699,6 @@ a.avatar {
   }
 
   article {
-    margin: 0.3vw 0;
-
     & > * {
       margin-right: 3vw;
       margin-left: 3vw;

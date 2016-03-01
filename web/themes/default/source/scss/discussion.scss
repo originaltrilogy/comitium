@@ -228,30 +228,18 @@ body[data-controller="discussion"][data-view="discussion"] {
 
     section.announcements,
     section.topics {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-
-      h2 {
-        flex: 1 1 auto;
-      }
       nav.actions {
-        align-self: center;
-
         &::after,
         &::before {
-          width: 2vw;
+          display: none;
         }
         ul {
-          padding: 2.2vw;
+          padding: 1.6vw;
           text-align: right;
         }
         li {
           margin-bottom: 0;
         }
-      }
-      article {
-        width: 100%;
       }
     }
 
