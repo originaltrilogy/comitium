@@ -99,7 +99,7 @@ function categories(groupID, emitter) {
 function categoriesPost(groupID, emitter) {
   // See if the category list is already cached
   var cacheKey = 'group-' + groupID,
-      scope = 'discussions-categories',
+      scope = 'discussions-categoriesPost',
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
