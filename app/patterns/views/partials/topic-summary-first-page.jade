@@ -6,8 +6,7 @@ section.summary
     dt.author Author
     dd.author
       a(href="user/#{topic.authorUrl}/id/#{topic.authorID}" rel="author" title="View #{topic.author}'s profile.") #{topic.author}
-  if topic.replies
-    dl.content-stats
-      dt Replies
-      dd #{topic.repliesFormatted}
+  dl.content-stats
+    dt Replies
+    dd #{topic.repliesFormatted}
   include ../partials/pagination

@@ -32,10 +32,6 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       dd.author {
         margin: 0;
-
-        a {
-          text-decoration: none;
-        }
       }
       dd.date {
         margin-left: 0;
@@ -45,7 +41,7 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       position: absolute;
       right: 0;
       bottom: 5.6vw;
-      max-width: 42vw;
+      max-width: 43vw;
       margin: 0;
       font-size: 75%;
       line-height: 1.3;
@@ -122,16 +118,38 @@ body[data-controller="private-topics"][data-view="private-topics"] {
     article.topic {
       padding: 3vw 0;
 
-      h3 {
+      h3,
+      &.has-replies h3 {
         min-height: 0;
         margin-bottom: 2vw;
-        margin-left: 4vw;
+        margin-left: 3vw;
       }
       & > a.avatar {
-        margin-right: 2vw;
+        margin: 0 2vw 0 3vw;
       }
       dl.byline {
+        margin-top: 0.5vw;
+        width: 30vw;
         font-size: 100%;
+      }
+      p.last-post {
+        position: relative;
+        float: left;
+        width: 28vw;
+        max-width: none;
+        margin-top: 2vw;
+        bottom: initial;
+        font-size: 85%;
+        line-height: 1.6;
+
+        a.avatar {
+          width: 6vw;
+          height: 6vw;
+        }
+        a:nth-child(2) {
+          display: block;
+          width: auto;
+        }
       }
 
       &.announcement {
@@ -139,6 +157,16 @@ body[data-controller="private-topics"][data-view="private-topics"] {
           margin-left: 3vw;
         }
       }
+
+      &.has-replies {
+        &:not(.announcement) {
+          &::before {
+            width: 19vw;
+            height: 13vw;
+          }
+        }
+      }
+
     }
 
   }

@@ -76,8 +76,13 @@ body[data-controller="announcement"] {
   }
 
   section.form.quick-reply {
+    margin-top: 8vw;
+
     form {
       padding-top: 0;
+    }
+    h2 {
+      margin-bottom: 0;
     }
     li.post-content {
       margin-top: 0;
@@ -89,13 +94,34 @@ body[data-controller="announcement"] {
     }
     textarea {
       margin-top: 0;
+      border-radius: 0 0 1vw 1vw;
     }
   }
 
   @media only screen and (min-width: 600px) {
 
-    section.summary h1 {
-      padding-bottom: 3vw;
+    section.summary {
+      h1 {
+        margin-left: 17vw;
+        margin-right: 17vw;
+        padding-bottom: 0vw;
+      }
+      a.avatar {
+        margin-left: 3vw;
+        position: absolute;
+        top: 4.5vw;
+        left: 0;
+        width: 14vw;
+        height: 14vw;
+      }
+      dl.byline {
+        margin: 0.5vw 4vw 0 20vw;
+        font-size: 110%;
+        flex: 1 1 100%;
+      }
+      nav.pagination {
+        margin-top: 4vw;
+      }
     }
 
   }

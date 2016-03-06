@@ -180,10 +180,15 @@ html.cssanimations.csstransforms span.loading-indicator {
 
 a {
   color: #A5B2D9;
+  text-decoration: none;
 }
 
 p {
   color: rgb(230, 230, 230);
+
+  a {
+    text-decoration: underline;
+  }
 }
 
 a.home {
@@ -219,7 +224,6 @@ body > header {
         display: block;
         padding: 1vw;
         color: rgb(204, 216, 255);
-        text-decoration: none;
       }
     }
   }
@@ -392,7 +396,6 @@ body {
       a {
         display: block;
         padding: 5vw;
-        text-decoration: none;
       }
     }
   }
@@ -460,7 +463,6 @@ nav.breadcrumbs {
 
   a {
     color: rgb(145,157,191);
-    text-decoration: none;
   }
 }
 
@@ -664,16 +666,15 @@ section {
   &.form {
     margin: 4vw 2vw;
 
-    &.quick-reply {
-      margin-top: 8vw;
-    }
-
     h2 {
       margin-bottom: 2vw;
     }
   }
 
   &.preview {
+    h2 {
+      margin: 0 2vw;
+    }
     article {
       padding: 4vw 0;
       border-bottom: 1px solid;
@@ -712,8 +713,8 @@ body[data-controller="announcement"] {
       content: '';
       display: block;
       float: right;
-      width: 27vw;
-      height: 23vw;
+      width: 30vw;
+      height: 30vw;
     }
     & > p {
       &:nth-child(2) {
@@ -726,7 +727,7 @@ body[data-controller="announcement"] {
     }
     dl.content-stats {
       position: absolute;
-      top: 0;
+      top: 3vw;
       right: 4vw;
     }
   }
@@ -771,7 +772,6 @@ nav.pagination {
     display: block;
     padding: 4vw 5vw;
     line-height: 1;
-    text-decoration: none;
   }
 }
 
@@ -809,7 +809,6 @@ a.content-stats {
   position: absolute;
   top: 4vw;
   right: 4vw;
-  text-decoration: none;
 }
 dl.content-stats {
   flex: 0 0 22vw;
@@ -864,9 +863,6 @@ dl.content-stats {
 p.last-post {
   font-size: 85%;
 
-  a {
-    text-decoration: none;
-  }
   a.avatar {
     display: inline-block;
     vertical-align: middle;
@@ -914,12 +910,6 @@ article {
     }
   }
 
-  h3 {
-    a {
-      text-decoration: none;
-    }
-  }
-
   img {
     max-width: 100%;
     height: auto;
@@ -947,8 +937,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   padding: 2vw 4vw;
   font-family: $titleFont;
-  color: #E6E6E6;
-  text-shadow: 2px 2px 0 rgb(31, 33, 40);
+  color: hsl(0, 0%, 85%);
 
   span.page {
     display: inline-block;
@@ -994,10 +983,10 @@ footer {
   section.copyright {
     margin-top: 10vw;
     font-size: 85%;
-    @include color(14%, 60%);
 
     p {
       margin: 4vw;
+      @include color(14%, 60%);
 
       &:last-child {
         margin-bottom: 0;
@@ -1325,7 +1314,7 @@ a.avatar {
   dl.content-stats {
     dt {
       &:first-child {
-        font-size: 115%;
+        font-size: 105%;
       }
     }
     dd {
@@ -1337,11 +1326,15 @@ a.avatar {
 
   article {
     dl.content-stats {
+      width: 14vw;
+      height: 14vw;
+      padding: 4vw 1.5vw 2vw;
+
       dt:first-child {
-        font-size: 95%;
+        font-size: 85%;
       }
       dd:nth-child(n+2) {
-        font-size: 105%;
+        font-size: 90%;
       }
     }
   }
@@ -1355,7 +1348,7 @@ a.avatar {
     section.summary {
       &::before {
         width: 28vw;
-        height: 24vw;
+        height: 28vw;
       }
     }
   }
@@ -1369,7 +1362,7 @@ a.avatar {
 @media only screen and (min-width: 500px) {
 
   article {
-    padding: 4vw 0;
+    padding: 3vw 0;
   }
 
 }
@@ -1432,7 +1425,6 @@ a.avatar {
             a {
               display: block;
               padding: 0.5vw 1.5vw;
-              text-decoration: none;
 
               &:hover {
                 @include background-color(14%, 27%);
@@ -1534,7 +1526,7 @@ a.avatar {
   }
 
   h2 {
-    padding: 2vw 3vw 1.6vw;
+    padding: 3vw 3vw 2.6vw;
     font-size: 145%;
     text-transform: none;
     text-align: left;
@@ -1636,8 +1628,8 @@ a.avatar {
 
       nav.actions {
         position: absolute;
-        top: 0;
-        right: 0;
+        top: 1vw;
+        right: 1vw;
       }
     }
   }
@@ -1674,18 +1666,13 @@ a.avatar {
   }
 
   dl.content-stats {
-    width: 16vw;
-    height: 16vw;
-    padding-top: 5vw;
+    width: 14vw;
+    height: 14vw;
+    padding: 4vw 1.5vw 2vw;
 
     dt {
       &:first-child {
         font-size: 125%;
-      }
-    }
-    dd {
-      &:nth-child(n+2) {
-        font-size: 160%;
       }
     }
   }
@@ -1717,6 +1704,11 @@ a.avatar {
         font-size: 120%;
       }
     }
+  }
+
+  a.content-stats {
+    top: 3vw;
+    right: 3vw;
   }
 
   form {
