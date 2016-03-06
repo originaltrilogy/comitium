@@ -488,6 +488,14 @@ section {
 
     & > p {
       color: hsla(0,0%,80%,1);
+
+      &:nth-child(2) {
+        margin-top: 0;
+      }
+      &:nth-child(n-1) {
+        margin-bottom: 0;
+        padding-bottom: 4vw;
+      }
     }
 
     // Hide primary actions on small devices
@@ -664,7 +672,7 @@ section {
   }
 
   &.form {
-    margin: 4vw 2vw;
+    margin: 4vw;
 
     h2 {
       margin-bottom: 2vw;
@@ -703,11 +711,11 @@ body[data-breadcrumbs="false"] {
 }
 
 // Discussion, discussions, and topic view summaries
-body[data-controller="discussions"],
-body[data-controller="discussion"],
-body[data-controller="topic"],
-body[data-controller="announcements"],
-body[data-controller="announcement"] {
+body[data-controller="discussions"][data-view="discussions"],
+body[data-controller="discussion"][data-view="discussion"],
+body[data-controller="topic"][data-view="topic"],
+body[data-controller="announcements"][data-view="announcements"],
+body[data-controller="announcement"][data-view="announcement"] {
   section.summary {
     &::before {
       content: '';
@@ -715,15 +723,6 @@ body[data-controller="announcement"] {
       float: right;
       width: 30vw;
       height: 30vw;
-    }
-    & > p {
-      &:nth-child(2) {
-        margin-top: 0;
-      }
-      &:nth-child(n-1) {
-        margin-bottom: 0;
-        padding-bottom: 4vw;
-      }
     }
     dl.content-stats {
       position: absolute;
@@ -959,7 +958,7 @@ h3, h4, h5, h6 {
 }
 
 a.to-the-top {
-  @include button('medium', 'lightGhost');
+  @include button('large', 'lightGhost');
   width: 50vw;
   margin: 10vw auto;
 }
@@ -1009,7 +1008,7 @@ form {
   padding: 6vw 0;
 
   label {
-    font-family: $titleFont;
+    font-family: $demiboldFont;
     font-size: 120%;
     line-height: 1;
     color: white;
@@ -1027,9 +1026,9 @@ form {
     padding: 4vw;
     font-size: 130%;
     word-wrap: normal;
-    // @include inner-border(14%, 24%);
+    border: 1px solid hsl(226, 13%, 49%);
     border-radius: 1vw;
-    @include background-color(13%, 40%);
+    background: hsl(225, 13%, 35%);
   }
 
   select {
@@ -1039,7 +1038,7 @@ form {
   textarea {
     font-family: monospace;
     font-size: 90%;
-    padding: 4vw 5vw;
+    padding: 3vw;
 
     &[name="content"] {
       height: 50vh;
@@ -1067,7 +1066,7 @@ form {
         width: 10vw;
         height: 10vw;
         line-height: 10vw;
-        font-size: 150%;
+        font-size: 130%;
         text-align: center;
         @include color(100%, 90%);
       }
@@ -1080,8 +1079,8 @@ form {
     &:checked {
       &::after {
         position: absolute;
-        top: 1.5vw;
-        left: 1.5vw;
+        top: 1.2vw;
+        left: 1.2vw;
         display: block;
         width: 7vw;
         height: 7vw;
@@ -1095,7 +1094,7 @@ form {
     margin: 0;
 
     & > li {
-      margin: 1vw 4vw 9vw;
+      margin: 1vw 0 9vw;
       list-style: none;
 
       &:last-child {
@@ -1123,9 +1122,6 @@ form {
         margin-right: 0;
         margin-left: 0;
 
-        label {
-          margin: 0 4vw;
-        }
         p.label-note {
           margin-right: 4vw;
           margin-left: 4vw;
@@ -1178,7 +1174,7 @@ form {
 
     & > li {
       display: block;
-      margin: 0 4vw 4vw;
+      margin-bottom: 4vw;
 
       input[type="submit"] {
         box-shadow: none;

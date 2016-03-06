@@ -89,7 +89,7 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       dd.author {
         a {
           display: inline-block;
-          max-width: 32vw;
+          max-width: 25vw;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
@@ -129,7 +129,7 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       dl.byline {
         margin-top: 0.5vw;
-        width: 30vw;
+        width: 26vw;
         font-size: 100%;
       }
       p.last-post {
