@@ -721,12 +721,12 @@ body[data-controller="announcement"][data-view="announcement"] {
       content: '';
       display: block;
       float: right;
-      width: 30vw;
-      height: 30vw;
+      width: 28vw;
+      height: 26vw;
     }
     dl.content-stats {
       position: absolute;
-      top: 3vw;
+      top: 2vw;
       right: 4vw;
     }
   }
@@ -862,6 +862,9 @@ dl.content-stats {
 p.last-post {
   font-size: 85%;
 
+  a {
+    text-decoration: none;
+  }
   a.avatar {
     display: inline-block;
     vertical-align: middle;
@@ -870,10 +873,11 @@ p.last-post {
 }
 
 article {
-  // Use px for consistent spacing (vw varies)
-  margin: 2px 0;
+  margin: 2vw 0;
   padding: 5vw 0;
   background-color: rgb(50,55,66);
+  border-radius: 0.8vw;
+  overflow: hidden;
 
   &:last-child {
     border-bottom: none;
@@ -936,6 +940,7 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   padding: 2vw 4vw;
   font-family: $titleFont;
+  line-height: 1.3;
   color: hsl(0, 0%, 85%);
 
   span.page {
@@ -1004,8 +1009,7 @@ footer {
 /////////////////////////
 
 form {
-  margin: 0 auto;
-  padding: 6vw 0;
+  margin: 6vw auto;
 
   label {
     font-family: $demiboldFont;
@@ -1040,8 +1044,11 @@ form {
     font-size: 90%;
     padding: 3vw;
 
+    &[name="title"] {
+      height: 18vw;
+    }
     &[name="content"] {
-      height: 50vh;
+      height: 74vw;
     }
   }
 
@@ -1079,8 +1086,8 @@ form {
     &:checked {
       &::after {
         position: absolute;
-        top: 1.2vw;
-        left: 1.2vw;
+        top: 1.25vw;
+        left: 1.25vw;
         display: block;
         width: 7vw;
         height: 7vw;
@@ -1201,7 +1208,7 @@ nav.actions {
     position: absolute;
     top: 0;
     width: 4vw;
-    height: 20vw;
+    height: 14vw;
     z-index: 101;
   }
 
@@ -1249,11 +1256,12 @@ a.avatar {
   margin: 0;
   width: 12vw;
   height: 12vw;
+  border-radius: 0.8vw;
+  overflow: hidden;
 
   img {
     width: 100%;
     height: 100%;
-    border-radius: 8%;
   }
 }
 
@@ -1351,6 +1359,16 @@ a.avatar {
 
   p.last-post {
     font-size: 100%;
+  }
+
+  form {
+    input[type="checkbox"] {
+      &:checked {
+        &::after {
+          font-size: 160%;
+        }
+      }
+    }
   }
 
 }
@@ -1587,6 +1605,9 @@ a.avatar {
         }
       }
     }
+    &.form {
+      margin: 3vw;
+    }
     &.summary {
       padding: 4vw 0;
 
@@ -1621,21 +1642,29 @@ a.avatar {
     &.topics {
       position: relative;
       margin: 0 3vw 4vw;
+    }
+  }
 
-      nav.actions {
-        position: absolute;
-        top: 1vw;
-        right: 1vw;
+  body[data-controller="discussion"] {
+    section {
+      &.category,
+      &.announcements,
+      &.topics {
+        nav.actions {
+          position: absolute;
+          top: 1vw;
+          right: 1vw;
+        }
       }
     }
   }
 
   // Discussion, discussions, and topic view summaries
-  body[data-controller="discussions"],
-  body[data-controller="discussion"],
-  body[data-controller="topic"],
-  body[data-controller="announcements"],
-  body[data-controller="announcement"] {
+  body[data-controller="discussions"][data-view="discussions"],
+  body[data-controller="discussion"][data-view="discussion"],
+  body[data-controller="topic"][data-view="topic"],
+  body[data-controller="announcements"][data-view="announcements"],
+  body[data-controller="announcement"][data-view="announcement"] {
     section.summary {
       display: flex;
       flex-wrap: wrap;
@@ -1682,6 +1711,9 @@ a.avatar {
   }
 
   article {
+    margin: 1vw 0;
+    border-radius: 0.4vw;
+
     & > * {
       margin-right: 3vw;
       margin-left: 3vw;
@@ -1721,7 +1753,15 @@ a.avatar {
       border-radius: 0.5vw;
     }
     textarea {
-      padding: 4vw 5vw;
+      padding: 2vw 3vw;
+      font-size: 100%;
+
+      &[name="title"] {
+        height: 11vw;
+      }
+      &[name="content"] {
+        height: 44vw;
+      }
     }
     input[type="checkbox"],
     input[type="radio"] {
@@ -1738,8 +1778,8 @@ a.avatar {
     input[type="radio"] {
       &:checked {
         &::after {
-          top: 1vw;
-          left: 1vw;
+          top: 0.8vw;
+          left: 0.8vw;
           width: 4vw;
           height: 4vw;
         }
@@ -1747,7 +1787,7 @@ a.avatar {
     }
     ul.data {
       & > li {
-        margin: 1vw 20vw 6vw;
+        margin: 1vw 16vw 6vw;
 
         &.select {
           &::after {
@@ -1764,7 +1804,9 @@ a.avatar {
           min-height: 6vw;
 
           &:last-child {
+            margin-left: 24vw;
             margin-bottom: 4vw;
+            margin-right: 24vw;
           }
 
           label {
@@ -1777,8 +1819,8 @@ a.avatar {
       padding: 2vw 0;
 
       & > li {
-        margin-left: 20vw;
-        margin-right: 20vw;
+        margin-left: 24vw;
+        margin-right: 24vw;
 
         input[type="submit"],
         a {
@@ -1824,6 +1866,7 @@ a.avatar {
 
   a.to-the-top {
     width: 24vw;
+    line-height: 4;
   }
 
   footer {
