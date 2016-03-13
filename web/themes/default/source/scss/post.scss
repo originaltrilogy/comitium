@@ -177,6 +177,46 @@ article.post {
 }
 
 
+@media only screen and (min-width: 600px) {
+  article.post {
+    header {
+      a.avatar {
+        flex: 0 0 8vw;
+      }
+      dl {
+        margin-left: 3vw;
+      }
+      dd.time {
+        flex: 0 0 26vw;
+
+        time {
+          width: 22vw;
+        }
+      }
+    }
+    nav.actions {
+      &::before,
+      &::after {
+        display: none;
+      }
+
+      ul {
+        padding-right: 2vw;
+        justify-content: flex-end;
+      }
+
+      li {
+        margin-right: 0;
+
+        &:nth-child(n+2) a {
+          border-left: none;
+        }
+      }
+    }
+  }
+}
+
+
 @media only screen and (min-width: 720px) {
 
   article.post {

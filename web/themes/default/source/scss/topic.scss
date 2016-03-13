@@ -26,6 +26,14 @@ body[data-controller="announcement"] {
       dd {
         display: inline-block;
         margin-left: 0;
+
+        &.date {
+          color: hsl(0,0%,67%);
+
+          &::before {
+            content: ' – ';
+          }
+        }
       }
     }
   }
@@ -37,28 +45,8 @@ body[data-controller="announcement"] {
     }
     article.post:first-child {
       header {
-        padding: 0;
-        background: none;
-
-        a.avatar,
-        dd.author {
-          position: absolute;
-          left: -100vw;
-        }
-
-        dl {
-          margin: 8vw 4vw 4vw;
-
-          dd.time {
-            flex: 1 1 auto;
-            text-align: center;
-            color: #ACACAC;
-
-            time {
-              width: auto;
-            }
-          }
-        }
+        position: absolute;
+        left: -100vw;
       }
     }
   }
@@ -71,7 +59,7 @@ body[data-controller="announcement"] {
       }
     }
     nav.topic.actions {
-      margin: 4vw 0 6vw;
+      margin: 4vw 2vw 6vw;
     }
   }
 
@@ -79,6 +67,7 @@ body[data-controller="announcement"] {
     margin-top: 8vw;
 
     form {
+      margin-top: 0;
       padding-top: 0;
     }
     h2 {
@@ -96,6 +85,20 @@ body[data-controller="announcement"] {
       margin-top: 0;
       border-radius: 0 0 1vw 1vw;
     }
+  }
+
+  @media only screen and (min-width: 600px) {
+
+    nav.topic.actions {
+      ul {
+        li {
+          &:first-child a {
+            border-left: none;
+          }
+        }
+      }
+    }
+
   }
 
   @media only screen and (min-width: 720px) {
@@ -120,8 +123,8 @@ body[data-controller="announcement"] {
   }
 
   // Topic and announcement views (excludes start, move, etc.)
-  &[data-view="topic"],
-  &[data-view="announcement"] {
+  &[data-view="topic"][data-page="1"],
+  &[data-view="announcement"][data-page="1"] {
 
     @media only screen and (min-width: 600px) {
 
@@ -146,6 +149,21 @@ body[data-controller="announcement"] {
         }
         nav.pagination {
           margin-top: 4vw;
+        }
+      }
+
+    }
+
+  }
+  &[data-view="topic"]:not([data-page="1"]),
+  &[data-view="announcement"]:not([data-page="1"]) {
+
+    @media only screen and (min-width: 600px) {
+
+      section.summary {
+        h1 {
+          flex: 0 1 auto;
+          margin-right: 0;
         }
       }
 

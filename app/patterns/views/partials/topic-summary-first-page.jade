@@ -6,6 +6,9 @@ section.summary
     dt.author Author
     dd.author
       a(href="user/#{topic.authorUrl}/id/#{topic.authorID}" rel="author" title="View #{topic.author}'s profile.") #{topic.author}
+    dt.date Date
+    dd.date
+      time #{topic.createdFormatted}
   dl.content-stats
     dt Replies
     dd #{topic.repliesFormatted}

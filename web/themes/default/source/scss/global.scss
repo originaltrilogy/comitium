@@ -181,6 +181,10 @@ html.cssanimations.csstransforms span.loading-indicator {
 a {
   color: #A5B2D9;
   text-decoration: none;
+
+  &[rel="author"] {
+    font-family: $semiboldFont;
+  }
 }
 
 p {
@@ -189,6 +193,11 @@ p {
   a {
     text-decoration: underline;
   }
+}
+
+time {
+  font-family: $lightFont;
+  color: rgb(191,191,191);
 }
 
 a.home {
@@ -487,7 +496,8 @@ section {
     background-image: linear-gradient(to bottom, #2B2E38 0%, #323742 60%, #3B404E 100%);
 
     & > p {
-      color: hsla(0,0%,80%,1);
+      font-family: $lightFont;
+      color: rgb(191,191,191);
 
       &:nth-child(2) {
         margin-top: 0;
@@ -1208,7 +1218,7 @@ nav.actions {
     position: absolute;
     top: 0;
     width: 4vw;
-    height: 14vw;
+    height: 16vw;
     z-index: 101;
   }
 
@@ -1286,6 +1296,16 @@ a.avatar {
       }
       dd:nth-child(n+2) {
         font-size: 90%;
+      }
+    }
+  }
+
+  // Keep the byline on topic pages from breaking
+  body[data-controller="topic"][data-view="topic"],
+  body[data-controller="announcement"][data-view="announcement"] {
+    section.summary {
+      &::before {
+        height: 19vw;
       }
     }
   }
@@ -1369,6 +1389,11 @@ a.avatar {
         }
       }
     }
+  }
+
+  a.to-the-top {
+    @include button('medium', 'ghostLight');
+    width: 36vw;
   }
 
 }
@@ -1612,9 +1637,7 @@ a.avatar {
       padding: 4vw 0;
 
       p {
-        font-family: $lightFont;
         font-size: 2.6vw;
-        color: rgb(191,191,191);
 
         &:last-child {
           padding-bottom: 2vw;
@@ -1684,7 +1707,7 @@ a.avatar {
         }
       }
       dl.content-stats {
-        top: 4vw;
+        top: 4.5vw;
         right: 3vw;
       }
     }
@@ -1706,7 +1729,7 @@ a.avatar {
     margin: 2vw 1vw 0;
 
     a {
-      padding: 2vw 3vw;
+      padding: 1.5vw 2.5vw;
     }
   }
 
@@ -1831,12 +1854,34 @@ a.avatar {
   }
 
   nav.actions {
+    &::before,
+    &::after {
+      display: none;
+    }
+
     ul {
+      display: flex;
+      justify-content: center;
       padding: 2vw 4vw;
       overflow-x: auto;
 
       & > li {
-        margin: 0 1vw;
+        margin: 0;
+
+        a {
+          border-left: 1px solid #3B404E;
+        }
+
+        &:first-child a {
+          border-radius: 0.4vw 0 0 0.4vw;
+        }
+        &:last-child a {
+          border-radius: 0 0.4vw 0.4vw 0;
+        }
+
+        a {
+          border-radius: 0;
+        }
       }
     }
 
@@ -1848,10 +1893,7 @@ a.avatar {
   a.avatar {
     width: 8vw;
     height: 8vw;
-
-    img {
-      border-radius: 4%;
-    }
+    border-radius: 0.4vw;
   }
 
   p.last-post {
@@ -2043,10 +2085,6 @@ a.avatar {
 
     ul {
       padding: 1.5rem 4rem;
-
-      & > li {
-        margin: 0 0.6rem;
-      }
     }
   }
 

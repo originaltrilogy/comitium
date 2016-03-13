@@ -53,7 +53,8 @@ section.topics
             a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
           dt.date Date
           dd.date
-            = topic.postDateFormatted
+            time
+              = topic.postDateFormatted
         if topic.replies
           a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
             dl.content-stats
