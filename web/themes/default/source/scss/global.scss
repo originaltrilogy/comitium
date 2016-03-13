@@ -213,6 +213,7 @@ a.home {
 body > header {
   display: flex;
   width: 100%;
+  font-family: $lightFont;
   background-color: #272A33;
   border-bottom: 1px solid #1F2128;
 
@@ -225,6 +226,10 @@ body > header {
   nav {
     ul {
       text-align: center;
+
+      &.content {
+        text-transform: uppercase;
+      }
     }
     li {
       margin: 0 1vw 1vw;
@@ -593,6 +598,7 @@ section {
     }
   }
 
+  &.news,
   &.category,
   &.announcements,
   &.topics {
@@ -724,7 +730,8 @@ body[data-breadcrumbs="false"] {
 body[data-controller="discussions"][data-view="discussions"],
 body[data-controller="discussion"][data-view="discussion"],
 body[data-controller="topic"][data-view="topic"],
-body[data-controller="announcements"][data-view="announcements"],
+body[data-controller="topic"][data-view="private-topic"],
+// body[data-controller="announcements"][data-view="announcements"],
 body[data-controller="announcement"][data-view="announcement"] {
   section.summary {
     &::before {
@@ -1456,28 +1463,11 @@ a.avatar {
         ul {
           flex: 1 1 auto;
 
-          li {
-            margin: 0 0.5vw;
-            float: left;
-            text-align: center;
-
-            a {
-              display: block;
-              padding: 0.5vw 1.5vw;
-
-              &:hover {
-                @include background-color(14%, 27%);
-              }
-            }
-          }
           &.account {
             margin-right: 1.4vw;
             text-align: right;
 
             li {
-              display: inline-block;
-              float: none;
-
               &.sign-in a {
                 @include button('small', 'lightGhost');
               }
@@ -1488,6 +1478,20 @@ a.avatar {
                   @include button('small');
                 }
               }
+            }
+          }
+        }
+        li {
+          margin: 0 0.5vw;
+          display: inline-block;
+          text-align: center;
+
+          a {
+            display: block;
+            padding: 0.5vw 1.5vw;
+
+            &:hover {
+              @include background-color(14%, 27%);
             }
           }
         }
@@ -1632,6 +1636,10 @@ a.avatar {
     }
     &.form {
       margin: 3vw;
+
+      &.post li.subscribe {
+        margin-left: 24vw;
+      }
     }
     &.summary {
       padding: 4vw 0;
@@ -1660,6 +1668,7 @@ a.avatar {
         display: inline;
       }
     }
+    &.news,
     &.category,
     &.announcements,
     &.topics {
@@ -1686,7 +1695,8 @@ a.avatar {
   body[data-controller="discussions"][data-view="discussions"],
   body[data-controller="discussion"][data-view="discussion"],
   body[data-controller="topic"][data-view="topic"],
-  body[data-controller="announcements"][data-view="announcements"],
+  body[data-controller="topic"][data-view="private-topic"],
+  // body[data-controller="announcements"][data-view="announcements"],
   body[data-controller="announcement"][data-view="announcement"] {
     section.summary {
       display: flex;
@@ -1694,7 +1704,6 @@ a.avatar {
 
       h1 {
         flex: 0 1 81vw;
-        margin-right: 16vw;
       }
       &::before {
         display: none;
@@ -1827,13 +1836,7 @@ a.avatar {
           min-height: 6vw;
 
           &:last-child {
-            margin-left: 24vw;
             margin-bottom: 4vw;
-            margin-right: 24vw;
-          }
-
-          label {
-            max-width: 50vw;
           }
         }
       }
@@ -1940,7 +1943,7 @@ a.avatar {
     font-size: 62.5%;
   }
   body {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
   dl, ol, ul {
     margin: 3rem 0 3rem 8rem;
@@ -1963,18 +1966,19 @@ a.avatar {
   body {
     & > header {
       display: flex;
+      font-size: 1.2rem;
 
       a.home {
-        width: 13.2rem;
-        margin: 1.2rem;
+        width: 10.8rem;
+        margin: 0.8rem 1.2rem;
         padding: 0;
       }
       section.status {
-        top: 1rem;
-        right: 1rem;
+        top: 0.5rem;
+        right: 0.5rem;
 
         a.private-topics {
-          right: 6rem;
+          right: 5rem;
           width: 4rem;
           height: 4rem;
           padding-top: 4rem;
@@ -1982,14 +1986,14 @@ a.avatar {
           &::before {
             width: 4rem;
             height: 4rem;
-            font-size: 3rem;
+            font-size: 2.5rem;
             line-height: 4rem;
           }
         }
         a.account {
-          width: 4.2rem;
-          height: 4.2rem;
-          padding-left: 4.2rem;
+          width: 3.8rem;
+          height: 3.8rem;
+          padding-left: 3.8rem;
         }
       }
       nav {
@@ -1998,7 +2002,7 @@ a.avatar {
           max-width: 25rem;
         }
         li {
-          margin: 0 0.5rem;
+          margin: 0;
 
           a {
             padding: 0.5rem 1rem;
@@ -2018,6 +2022,14 @@ a.avatar {
             text-align: left;
           }
         }
+      }
+    }
+  }
+
+  body.floating-header {
+    main {
+      &::before {
+        height: 50px;
       }
     }
   }
@@ -2044,8 +2056,8 @@ a.avatar {
   }
 
   h1 {
-    padding: 0 4rem 2rem;
-    font-size: 150%;
+    padding: 0 1.8rem 0.6rem;
+    font-size: 2.4rem;
   }
 
   h2 {
@@ -2064,9 +2076,12 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding: 2rem 4rem 0;
+    padding: 1.8rem 1.8rem 0;
+    font-size: initial;
 
     li {
+      margin-top: 0;
+
       &::after {
         padding: 0 1rem 0 2rem;
       }
@@ -2126,10 +2141,14 @@ a.avatar {
       }
     }
     &.summary {
-      padding: 4rem 0 2rem;
+      padding: 2.6rem 0 4.6rem;
 
-      p:last-child {
-        margin-bottom: 3rem;
+      p {
+        font-size: 1.6rem;
+
+        &:last-child {
+          margin-bottom: 3rem;
+        }
       }
     }
     &.notice {
@@ -2152,8 +2171,25 @@ a.avatar {
       }
     }
     & > p {
-      margin-right: 4rem;
-      margin-left: 4rem;
+      margin-right: 1.8rem;
+      margin-left: 1.8rem;
+    }
+  }
+
+  // Discussion, discussions, and topic view summaries
+  body[data-controller="discussions"][data-view="discussions"],
+  body[data-controller="discussion"][data-view="discussion"],
+  body[data-controller="topic"][data-view="topic"],
+  body[data-controller="topic"][data-view="private-topic"],
+  // body[data-controller="announcements"][data-view="announcements"],
+  body[data-controller="announcement"][data-view="announcement"] {
+    section.summary {
+      h1 {
+        flex: 0 1 60rem;
+      }
+      & > p {
+        flex: 0 1 56rem;
+      }
     }
   }
 

@@ -30,7 +30,7 @@ section.posts
 include ../partials/previous-and-next
 
 if userCanReply
-  section.form.quick-reply
+  section.form.post.quick-reply
     h2 Quick reply
     form#quick-reply-form(action="topic/id/#{url.id}/action/replyForm" method="post" novalidate)
       ul.data
@@ -45,8 +45,8 @@ if userCanReply
 
       ul.actions
         li.secondary.preview
-          input(name="formAction" type="submit" value="Preview")
+          input(name="formAction" type="submit" value="Preview post")
         li.primary.reply
-          input(name="formAction" type="submit" value="Post your reply")
+          input(name="formAction" type="submit" value="Submit your reply")
         //- li.tertiary.draft
         //-   input(name="formAction" type="submit" value="Save as draft")

@@ -1,8 +1,7 @@
 section.summary
   h1 Private Topics
   p These topics are visible only to you and the other topic participants.
-
-include ../partials/pagination
+  include ../partials/pagination
 
 section.topics
   nav.discussion.actions
@@ -15,7 +14,7 @@ section.topics
     each topic in topics
       article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
         h3
-          a(href="topic/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
+          a(href="topic/id/#{topic.id}") !{topic.titleHtml}
         a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
           img(src="avatars/#{topic.topicStarterID}.jpg")
         dl.byline
@@ -26,7 +25,7 @@ section.topics
           dd.date
             = topic.postDateFormatted
         if topic.replies
-          a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
+          a.content-stats(href="topic/id/#{topic.id}")
             dl.content-stats
               dt.replies Replies
               dd.replies

@@ -71,7 +71,8 @@ body[data-controller="announcement"] {
       padding-top: 0;
     }
     h2 {
-      margin-bottom: 0;
+      position: absolute;
+      left: -100vw;
     }
     li.post-content {
       margin-top: 0;
@@ -83,7 +84,6 @@ body[data-controller="announcement"] {
     }
     textarea {
       margin-top: 0;
-      border-radius: 0 0 1vw 1vw;
     }
   }
 
@@ -124,6 +124,7 @@ body[data-controller="announcement"] {
 
   // Topic and announcement views (excludes start, move, etc.)
   &[data-view="topic"][data-page="1"],
+  &[data-view="private-topic"][data-page="1"],
   &[data-view="announcement"][data-page="1"] {
 
     @media only screen and (min-width: 600px) {
@@ -148,7 +149,7 @@ body[data-controller="announcement"] {
           flex: 1 1 100%;
         }
         nav.pagination {
-          margin-top: 4vw;
+          padding-top: 4vw;
         }
       }
 
@@ -156,6 +157,7 @@ body[data-controller="announcement"] {
 
   }
   &[data-view="topic"]:not([data-page="1"]),
+  &[data-view="private-topic"]:not([data-page="1"]),
   &[data-view="announcement"]:not([data-page="1"]) {
 
     @media only screen and (min-width: 600px) {

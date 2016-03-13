@@ -14,7 +14,7 @@ if edit && edit.message
   section.notice.error
     p !{edit.message}
 
-section.form.post-edit
+section.form.post.post-edit
   form#post-edit-form(action="post/id/#{url.id}/action/editForm" method="post" novalidate)
     input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
     ul.data
@@ -26,10 +26,10 @@ section.form.post-edit
         label(for="post-edit-reason")
           | Reason for editing
         textarea(id="post-edit-reason" name="reason") #{form.reason}
-  
+
     ul.actions
       li.secondary.preview
-        input(name="formAction" type="submit" value="Preview")
+        input(name="formAction" type="submit" value="Preview post")
       li.primary.edit
         input(name="formAction" type="submit" value="Save changes")
       //- li.tertiary.draft
