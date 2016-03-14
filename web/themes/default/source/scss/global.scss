@@ -2061,7 +2061,12 @@ a.avatar {
   }
 
   h2 {
-    padding: 5rem 4rem;
+    padding: 1.2rem 1.8rem;
+    font-size: 1.8rem;
+  }
+
+  h3 {
+    font-size: 14px;
   }
 
   main {
@@ -2086,6 +2091,11 @@ a.avatar {
         padding: 0 1rem 0 2rem;
       }
     }
+  }
+
+  dl.content-stats {
+    width: 9.6rem;
+    height: 9.6rem;
   }
 
   nav.actions {
@@ -2141,7 +2151,7 @@ a.avatar {
       }
     }
     &.summary {
-      padding: 2.6rem 0 4.6rem;
+      padding: 2.6rem 0 3.2rem;
 
       p {
         font-size: 1.6rem;
@@ -2170,6 +2180,12 @@ a.avatar {
         left: 6rem;
       }
     }
+    &.news,
+    &.category,
+    &.announcements,
+    &.topics {
+      margin: 0 1.8rem 3.6rem;
+    }
     & > p {
       margin-right: 1.8rem;
       margin-left: 1.8rem;
@@ -2190,14 +2206,26 @@ a.avatar {
       & > p {
         flex: 0 1 56rem;
       }
+      dl.content-stats {
+        top: 2rem;
+        right: 1.8rem;
+      }
     }
   }
 
   article {
-    padding: 3rem 0;
+    margin: 2px 0;
+    padding: 1.8rem 0;
+    border-radius: 4px;
 
     & > * {
-      margin: 0 4rem;
+      margin: 0 1.8rem;
+    }
+
+    dl.content-stats {
+      width: 8rem;
+      height: 8rem;
+      padding: 2.4rem 0.8rem;
     }
   }
 
