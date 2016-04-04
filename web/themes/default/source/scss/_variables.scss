@@ -65,7 +65,7 @@ $gNoUpdates: '\eac4';
     border-radius: 0.4vw;
   }
   @media only screen and (min-width: 720px) {
-    border-radius: 0.4rem;
+    border-radius: 0.3rem;
   }
 
   @if $size == 'large' {
@@ -105,8 +105,8 @@ $gNoUpdates: '\eac4';
       padding: 0 2vw;
     }
     @media only screen and (min-width: 720px) {
-      line-height: 4rem;
-      padding: 0 2rem;
+      line-height: 3rem;
+      padding: 0 1rem;
     }
   }
 

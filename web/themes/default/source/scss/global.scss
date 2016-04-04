@@ -91,9 +91,10 @@
 body {
   position: relative;
   font-family: $defaultFont;
-  // text-rendering: optimizeLegibility;
+  text-rendering: optimizeLegibility;
   color: white;
-  background: #2b2e38;
+  background: hsla(226,13%,20%,1);
+  overflow-x: hidden;
 
   &.transitioning {
     main {
@@ -228,6 +229,7 @@ body > header {
       text-align: center;
 
       &.content {
+        text-align: left;
         text-transform: uppercase;
       }
     }
@@ -321,7 +323,7 @@ body {
   // Hide the current page indicator when the header is floating
   &.floating-header-active > header,
   &.floating-header-hidden > header {
-    background: rgba(39,42,51,0.85);
+    background: rgba(39,42,51,0.9);
 
     nav ul.content li.discussions a::after {
       display: none;
@@ -987,7 +989,6 @@ a.to-the-top {
 
 footer {
   padding-bottom: 4vw;
-  @include background-color(14%, 19%);
   border-top: 1px solid;
   @include border-color(14%, 10%);
 
@@ -1007,14 +1008,14 @@ footer {
 
     p {
       margin: 4vw;
-      @include color(14%, 60%);
+      color: hsla(225,14%,50%,1);
 
       &:last-child {
         margin-bottom: 0;
       }
     }
     a {
-      @include color(14%, 60%);
+      color: hsla(225,14%,50%,1);
     }
   }
 }
@@ -1471,18 +1472,14 @@ a.avatar {
               &.sign-in a {
                 @include button('small', 'lightGhost');
               }
-              &.register {
-                margin-right: 0;
-
-                a {
-                  @include button('small');
-                }
+              &.register a {
+                @include button('small');
               }
             }
           }
         }
         li {
-          margin: 0 0.5vw;
+          margin: 0 .2vw;
           display: inline-block;
           text-align: center;
 
@@ -1515,11 +1512,11 @@ a.avatar {
           nav {
             ul.account {
               position: absolute;
-              top: 9vw;
-              right: -50%;
+              top: 10.5vw;
+              right: -50vw;
               margin: 0;
               padding: 1vw 0;
-              min-width: 20vw;
+              min-width: 24vw;
               border-radius: 0.3rem;
               text-align: center;
               @include background-color(14%, 25%);
@@ -1711,7 +1708,7 @@ a.avatar {
       & > p {
         flex: 0 1 75vw;
 
-        &:nth-child(n-1) {
+        &:last-of-type {
           padding-bottom: 2vw;
         }
       }
@@ -1998,12 +1995,20 @@ a.avatar {
       }
       nav {
         ul.account {
-          margin-right: 1.2rem;
+          margin-right: 1rem;
           max-width: 25rem;
+
+          li.sign-in a,
+          li.register a {
+            font-size: 100%;
+          }
         }
         li {
-          margin: 0;
+          margin: 0 0.4rem;
 
+          &.register {
+            margin: 0;
+          }
           a {
             padding: 0.5rem 1rem;
 
@@ -2071,13 +2076,20 @@ a.avatar {
 
   main {
     max-width: 960px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 2rem;
+    box-shadow: 0 0 4px hsla(222,13%,13%,1);
   }
 
   a.avatar {
     width: 10rem;
     height: 10rem;
+  }
+
+  p.last-post a.avatar {
+    width: 5rem;
+    height: 5rem;
+    margin-right: 1.4rem;
+    float: left;
   }
 
   nav.breadcrumbs {
@@ -2096,6 +2108,7 @@ a.avatar {
   dl.content-stats {
     width: 9.6rem;
     height: 9.6rem;
+    padding: 3rem 1rem 2rem;
   }
 
   nav.actions {
@@ -2205,6 +2218,10 @@ a.avatar {
       }
       & > p {
         flex: 0 1 56rem;
+
+        &:last-of-type {
+          padding-bottom: 2rem;
+        }
       }
       dl.content-stats {
         top: 2rem;
@@ -2216,7 +2233,7 @@ a.avatar {
   article {
     margin: 2px 0;
     padding: 1.8rem 0;
-    border-radius: 4px;
+    border-radius: 0;
 
     & > * {
       margin: 0 1.8rem;
@@ -2227,6 +2244,11 @@ a.avatar {
       height: 8rem;
       padding: 2.4rem 0.8rem;
     }
+  }
+
+  a.content-stats {
+    top: 2rem;
+    right: 2rem;
   }
 
   form {
@@ -2348,7 +2370,10 @@ a.avatar {
   }
 
   footer {
+    max-width: 960px;
+    margin: 0 auto;
     padding-bottom: 4rem;
+    border: none;
 
     a.home {
       width: 30rem;
@@ -2363,7 +2388,7 @@ a.avatar {
     section.copyright {
       margin: 10rem auto 0;
       width: 100%;
-      font-size: 75%;
+      font-size: 90%;
 
       p {
         margin: 2rem 4rem;
@@ -2371,4 +2396,11 @@ a.avatar {
     }
   }
 
+}
+
+@media only screen and (min-width: 960px) {
+  body > header {
+    border: none;
+    box-shadow: 0px 0px 8px hsla(226,13%,12%,1);
+  }
 }

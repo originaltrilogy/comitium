@@ -177,6 +177,9 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       article {
         padding: 2rem 0;
       }
+      h3 {
+        margin-left: 4rem;
+      }
     }
 
     section.announcements,
@@ -188,41 +191,37 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
     }
 
-    article.topic {
-      padding: 3rem 0;
-      min-height: 16rem;
+    section.topics {
+      article.topic {
+        padding: 3rem 0;
+        min-height: 16rem;
 
-      h3 {
-        margin: 0 4rem 0 17rem;
-      }
-      dd.author {
-        margin-top: 1.5rem;
-        margin-left: 17rem;
-      }
-      dd.date {
-        margin-top: 1.5rem;
-        margin-left: 4rem;
-      }
-      dd.replies {
-        padding-top: 1.5rem;
-        margin-left: 17rem;
-      }
-      dt.last-post {
-        right: 15rem;
-        bottom: 3rem;
-      }
-      dd.last-post {
-        right: 4rem;
-        bottom: 3rem;
-      }
-      a.avatar {
-        top: 3.4rem;
-        left: 4rem;
-      }
-
-      &.announcement {
         h3 {
+          margin: 0 4rem 0 17rem;
+        }
+        dd.author {
+          margin-top: 1.5rem;
+          margin-left: 17rem;
+        }
+        dd.date {
+          margin-top: 1.5rem;
           margin-left: 4rem;
+        }
+        dd.replies {
+          padding-top: 1.5rem;
+          margin-left: 17rem;
+        }
+        dt.last-post {
+          right: 15rem;
+          bottom: 3rem;
+        }
+        dd.last-post {
+          right: 4rem;
+          bottom: 3rem;
+        }
+        a.avatar {
+          top: 3.4rem;
+          left: 4rem;
         }
       }
     }

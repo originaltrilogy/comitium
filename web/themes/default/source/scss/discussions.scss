@@ -11,10 +11,6 @@ body[data-controller="discussions"] {
         padding: 3vw 0;
       }
     }
-    p.description {
-      margin-top: 2vw;
-      margin-bottom: 4vw;
-    }
     section.categories {
       article {
         position: relative;
@@ -27,6 +23,10 @@ body[data-controller="discussions"] {
           height: 19vw;
         }
       }
+    }
+    p.description {
+      margin-top: 2vw;
+      margin-bottom: 4vw;
     }
 
     @media only screen and (min-width: 400px) {
@@ -68,9 +68,6 @@ body[data-controller="discussions"] {
           padding: 2vw 0;
         }
       }
-      p.description {
-        margin-bottom: 3vw;
-      }
       section.categories {
         article {
           &::before {
@@ -78,6 +75,9 @@ body[data-controller="discussions"] {
             height: 16vw;
           }
         }
+      }
+      p.description {
+        margin-bottom: 3vw;
       }
       p.last-post {
         margin-top: 2vw;
@@ -90,23 +90,62 @@ body[data-controller="discussions"] {
           padding: 1.2rem 0;
         }
       }
-      p.description {
-        margin: 0.8rem 1.8rem;
-      }
-      ul.stats {
-        margin-top: 2rem;
-        width: 46rem;
+      section.categories {
+        article {
+          min-height: 11.2rem;
 
-        li {
-          width: 20rem;
-
-          &:first-child {
-            margin-right: 4rem;
+          &::before {
+            display: none;
           }
         }
+        h3 {
+          width: 50%;
+        }
       }
-      .last-post {
-        margin-top: 2rem;
+      p.description {
+        width: 50%;
+        margin: 0.8rem 1.8rem 0;
+      }
+      a.content-stats {
+        top: 1.6rem;
+        right: 1.6rem;
+      }
+      p.last-post {
+        margin: 0;
+        position: absolute;
+        top: 3.25rem;
+        left: 56%;
+        font-size: 90%;
+
+        a:nth-child(2) {
+          display: block;
+          width: 20rem;
+          margin-top: 0.6rem;
+        }
+      }
+    }
+
+    @media only screen and (min-width: 768px) {
+      h3 {
+        width: 54%;
+      }
+      p.description {
+        width: 54%;
+      }
+      p.last-post {
+        left: 60%;
+      }
+    }
+
+    @media only screen and (min-width: 960px) {
+      h3 {
+        width: 60%;
+      }
+      p.description {
+        width: 60%;
+      }
+      p.last-post {
+        left: 66%;
       }
     }
   }
