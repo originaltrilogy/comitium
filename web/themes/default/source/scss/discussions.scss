@@ -126,26 +126,30 @@ body[data-controller="discussions"] {
     }
 
     @media only screen and (min-width: 768px) {
-      h3 {
-        width: 54%;
-      }
-      p.description {
-        width: 54%;
-      }
-      p.last-post {
-        left: 60%;
+      section.topics {
+        h3 {
+          width: 54%;
+        }
+        p.description {
+          width: 54%;
+        }
+        p.last-post {
+          left: 60%;
+        }
       }
     }
 
     @media only screen and (min-width: 960px) {
-      h3 {
-        width: 60%;
-      }
-      p.description {
-        width: 60%;
-      }
-      p.last-post {
-        left: 66%;
+      section.topics {
+        h3 {
+          width: 60%;
+        }
+        p.description {
+          width: 60%;
+        }
+        p.last-post {
+          left: 66%;
+        }
       }
     }
   }

@@ -1217,7 +1217,7 @@ nav.actions {
   margin-left: 0;
   margin-right: 0;
   overflow: hidden;
-  background: #272a33;
+  background: hsl(225, 13%, 18%);
 
   &::before,
   &::after {
@@ -1674,6 +1674,10 @@ a.avatar {
     }
   }
 
+  nav.actions {
+    background: none;
+  }
+
   body[data-controller="discussion"] {
     section {
       &.category,
@@ -1873,10 +1877,12 @@ a.avatar {
         }
 
         &:first-child a {
-          border-radius: 0.4vw 0 0 0.4vw;
+          border-top-left-radius: 0.4vw;
+          border-bottom-left-radius: 0.4vw;
         }
         &:last-child a {
-          border-radius: 0 0.4vw 0.4vw 0;
+          border-top-right-radius: 0.4vw;
+          border-bottom-right-radius: 0.4vw;
         }
 
         a {

@@ -122,7 +122,6 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       &.has-replies h3 {
         min-height: 0;
         margin-bottom: 2vw;
-        margin-left: 3vw;
       }
       & > a.avatar {
         margin: 0 2vw 0 3vw;
@@ -152,12 +151,6 @@ body[data-controller="private-topics"][data-view="private-topics"] {
         }
       }
 
-      &.announcement {
-        h3 {
-          margin-left: 3vw;
-        }
-      }
-
       &.has-replies {
         &:not(.announcement) {
           &::before {
@@ -176,9 +169,6 @@ body[data-controller="private-topics"][data-view="private-topics"] {
     section.announcements {
       article {
         padding: 2rem 0;
-      }
-      h3 {
-        margin-left: 4rem;
       }
     }
 
@@ -277,7 +267,7 @@ body[data-controller="discussion"][data-view="discussion"] {
 
     section.announcements {
       article {
-        padding: 2rem 0;
+        padding: 1.2rem 0;
       }
     }
 
