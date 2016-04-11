@@ -8,55 +8,27 @@ body[data-controller="discussions"] {
     section.announcements {
       article {
         margin: 2px 0;
-        padding: 3vw 0;
+        padding: 3vw 4vw;
       }
     }
     section.categories {
       article {
-        position: relative;
+        section.description {
+          flex: 0 0 68vw;
+          margin-right: 4vw;
 
-        &::before {
-          content: '';
-          display: block;
-          float: right;
-          width: 24vw;
-          height: 19vw;
-        }
-      }
-    }
-    p.description {
-      margin-top: 2vw;
-      margin-bottom: 4vw;
-    }
-
-    @media only screen and (min-width: 400px) {
-      dl.details {
-        dt.last-post {
-          right: 16vw;
-          bottom: 9vw;
-        }
-        dd.last-post {
-          right: 16vw;
-
-          a.avatar {
-            top: -3vw;
-            right: -16vw;
+          p {
+            margin: 2vw 0 4vw;
           }
         }
       }
     }
 
-    @media only screen and (min-width: 500px) {
-      ul.stats {
-        width: 46vw;
-        margin-right: 0;
-
-        li {
-          display: inline-block;
-          width: 20vw;
-
-          &:first-child {
-            margin-right: 4vw;
+    @media only screen and (min-width: 400px) {
+      section.categories {
+        article {
+          section.description {
+            flex: 0 0 70vw;
           }
         }
       }
@@ -65,14 +37,13 @@ body[data-controller="discussions"] {
     @media only screen and (min-width: 600px) {
       section.announcements {
         article {
-          padding: 2vw 0;
+          padding: 2vw 3vw;
         }
       }
       section.categories {
         article {
-          &::before {
-            width: 19vw;
-            height: 16vw;
+          section.description {
+            flex: 0 0 71vw;
           }
         }
       }
@@ -80,41 +51,35 @@ body[data-controller="discussions"] {
         margin-bottom: 3vw;
       }
       p.last-post {
-        margin-top: 2vw;
+        margin: 0;
       }
     }
 
     @media only screen and (min-width: 720px) {
       section.announcements {
         article {
-          padding: 1.2rem 0;
+          padding: 1.2rem 1.8rem;
         }
       }
       section.categories {
         article {
-          min-height: 11.2rem;
+          section.description {
+            flex: 1 0 50%;
+            order: 1;
+            align-self: flex-start;
+            margin-right: 4rem;
 
-          &::before {
-            display: none;
+            p {
+              margin: 1.2rem 0 0;
+            }
           }
         }
-        h3 {
-          width: 50%;
-        }
-      }
-      p.description {
-        width: 50%;
-        margin: 0.8rem 1.8rem 0;
-      }
-      a.content-stats {
-        top: 1.6rem;
-        right: 1.6rem;
       }
       p.last-post {
-        margin: 0;
-        position: absolute;
-        top: 3.25rem;
-        left: 56%;
+        flex: 0 0 30%;
+        order: 2;
+        align-self: flex-start;
+        margin-top: 1.6rem;
         font-size: 90%;
 
         a:nth-child(2) {
@@ -123,33 +88,15 @@ body[data-controller="discussions"] {
           margin-top: 0.6rem;
         }
       }
-    }
-
-    @media only screen and (min-width: 768px) {
-      section.topics {
-        h3 {
-          width: 54%;
-        }
-        p.description {
-          width: 54%;
-        }
-        p.last-post {
-          left: 60%;
-        }
+      a.content-stats {
+        order: 3;
+        align-self: flex-start;
       }
     }
 
     @media only screen and (min-width: 960px) {
-      section.topics {
-        h3 {
-          width: 60%;
-        }
-        p.description {
-          width: 60%;
-        }
-        p.last-post {
-          left: 66%;
-        }
+      p.last-post {
+        flex: 0 0 26%;
       }
     }
   }

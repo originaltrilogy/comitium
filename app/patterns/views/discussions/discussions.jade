@@ -16,10 +16,11 @@ section.categories
       h2 #{category.categoryTitle}
       each discussion in category.discussions
         article(class="discussion #{ discussion.unread ? 'unread' : ''}" data-discussion-id="#{discussion.discussionID}")
-          h3
-            a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
-          if discussion.discussionDescription
-            p.description !{discussion.discussionDescription}
+          section.description
+            h3
+              a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
+            if discussion.discussionDescription
+              p !{discussion.discussionDescription}
           a.content-stats(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}")
             dl.content-stats
               dt.topics Topics

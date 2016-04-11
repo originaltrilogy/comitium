@@ -11,19 +11,24 @@ body[data-controller="private-topics"][data-view="private-topics"] {
     color: white;
   }
   article.topic {
-    position: relative;
-    overflow: hidden;
-
     h3 {
+      flex: 0 0 68vw;
+      order: 1;
+      margin-right: 4vw;
       display: flex;
       align-items: center;
       margin-bottom: 4vw;
     }
 
+    section.author {
+      flex: 0 0 46vw;
+      order: 3;
+      display: flex;
+    }
     dl.byline {
-      margin: 0 4vw 0 0;
-      float: left;
+      margin: 0 0 0 3vw;
       font-size: 85%;
+      line-height: 1.4;
 
       dt.author,
       dt.date {
@@ -32,17 +37,23 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       dd.author {
         margin: 0;
+        width: 30vw;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        color: #a5b2d9;
       }
       dd.date {
         margin-left: 0;
       }
     }
+    a.content-stats {
+      order: 2;
+    }
     p.last-post {
-      position: absolute;
-      right: 0;
-      bottom: 5.6vw;
-      max-width: 43vw;
-      margin: 0;
+      flex: 0 0 42vw;
+      order: 4;
+      align-self: flex-end;
       font-size: 75%;
       line-height: 1.3;
 
@@ -54,15 +65,11 @@ body[data-controller="private-topics"][data-view="private-topics"] {
       }
       a:nth-child(2) {
         display: inline-block;
-        width: 30vw;
+        width: 32vw;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
       }
-    }
-    & > a.avatar {
-      margin: 0 3vw 0 4vw;
-      float: left;
     }
 
     &.announcement {
@@ -72,42 +79,37 @@ body[data-controller="private-topics"][data-view="private-topics"] {
         padding: 0;
       }
     }
+  }
 
-    &.has-replies {
-      &:not(.announcement) {
-        &::before {
-          content: '';
-          display: block;
-          float: right;
-          width: 24vw;
-          height: 19vw;
+  @media only screen and (min-width: 375px) {
+
+    article.topic {
+      section.author {
+        flex: 0 0 49vw;
+      }
+      dl.byline {
+        line-height: 1.8;
+
+        dd.author {
+          width: 32vw;
         }
       }
-      h3 {
-        min-height: 12vw;
-      }
-      dd.author {
-        a {
-          display: inline-block;
-          max-width: 25vw;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          line-height: 1.3;
+      p.last-post {
+        flex: 0 0 39vw;
+
+        a:nth-child(2) {
+          width: 28vw;
         }
       }
     }
+
   }
 
   @media only screen and (min-width: 400px) {
 
     article.topic {
-      p.last-post {
-        max-width: 38vw;
-
-        a:nth-child(2) {
-          width: 26vw;
-        }
+      h3 {
+        flex: 0 0 70vw;
       }
     }
 
@@ -116,12 +118,11 @@ body[data-controller="private-topics"][data-view="private-topics"] {
   @media only screen and (min-width: 600px) {
 
     article.topic {
-      padding: 3vw 0;
-
       h3,
       &.has-replies h3 {
+        flex: 0 0 72vw;
+        margin: 0 3vw 2vw 0;
         min-height: 0;
-        margin-bottom: 2vw;
       }
       & > a.avatar {
         margin: 0 2vw 0 3vw;
@@ -183,7 +184,7 @@ body[data-controller="private-topics"][data-view="private-topics"] {
 
     section.topics {
       article.topic {
-        padding: 3rem 0;
+        padding: 1.8rem 0;
         min-height: 16rem;
 
         h3 {
@@ -227,7 +228,7 @@ body[data-controller="discussion"][data-view="discussion"] {
   section.announcements {
     article {
       margin: 2px 0;
-      padding: 3vw 0;
+      padding: 3vw 4vw;
     }
   }
   nav.actions {
@@ -240,7 +241,7 @@ body[data-controller="discussion"][data-view="discussion"] {
 
     section.announcements {
       article {
-        padding: 2vw 0;
+        padding: 2vw 3vw;
       }
     }
 
@@ -267,7 +268,7 @@ body[data-controller="discussion"][data-view="discussion"] {
 
     section.announcements {
       article {
-        padding: 1.2rem 0;
+        padding: 1.2rem 1.8rem;
       }
     }
 

@@ -822,12 +822,6 @@ nav.previous-and-next {
 }
 
 // Topic counts for forums, post counts for topics
-a.content-stats {
-  margin: 0;
-  position: absolute;
-  top: 4vw;
-  right: 4vw;
-}
 dl.content-stats {
   flex: 0 0 22vw;
   display: flex;
@@ -879,6 +873,7 @@ dl.content-stats {
 }
 
 p.last-post {
+  margin: 0;
   font-size: 85%;
 
   a {
@@ -892,11 +887,12 @@ p.last-post {
 }
 
 article {
+  display: flex;
+  flex-wrap: wrap;
   margin: 2vw 0;
-  padding: 5vw 0;
+  padding: 5vw 4vw;
   background-color: rgb(50,55,66);
   border-radius: 0.8vw;
-  overflow: hidden;
 
   &:last-child {
     border-bottom: none;
@@ -923,13 +919,8 @@ article {
     background: rgb(68,74,89);
   }
 
-  & > * {
-    margin-right: 4vw;
-    margin-left: 4vw;
-
-    &:last-child {
+  & > *:last-child {
       margin-bottom: 0;
-    }
   }
 
   img {
@@ -1406,14 +1397,6 @@ a.avatar {
 
 }
 
-@media only screen and (min-width: 500px) {
-
-  article {
-    padding: 3vw 0;
-  }
-
-}
-
 
 // Screens wider than 600px
 @media only screen and (min-width: 600px) {
@@ -1739,18 +1722,13 @@ a.avatar {
     margin: 2vw 1vw 0;
 
     a {
-      padding: 1.5vw 2.5vw;
+      padding: 2vw 2.6vw 1.8vw;
     }
   }
 
   article {
     margin: 1vw 0;
-    border-radius: 0.4vw;
-
-    & > * {
-      margin-right: 3vw;
-      margin-left: 3vw;
-    }
+    padding: 3vw;
 
     dl.content-stats {
       width: 13vw;
@@ -1765,11 +1743,6 @@ a.avatar {
         font-size: 120%;
       }
     }
-  }
-
-  a.content-stats {
-    top: 3vw;
-    right: 3vw;
   }
 
   form {
@@ -2089,6 +2062,7 @@ a.avatar {
   a.avatar {
     width: 10rem;
     height: 10rem;
+    border-radius: 0.3rem;
   }
 
   p.last-post a.avatar {
@@ -2128,7 +2102,24 @@ a.avatar {
     }
 
     ul {
-      padding: 1.5rem 4rem;
+      padding: 0;
+
+      & > li {
+        &:first-child a {
+          border-top-left-radius: 0.2rem;
+          border-bottom-left-radius: 0.2rem;
+        }
+        &:last-child a {
+          border-top-right-radius: 0.2rem;
+          border-bottom-right-radius: 0.2rem;
+        }
+      }
+
+      a {
+        line-height: 1;
+        padding: 1.4rem 1.4rem 1.2rem;
+        font-size: 100%;
+      }
     }
   }
 
@@ -2179,6 +2170,13 @@ a.avatar {
           margin-bottom: 3rem;
         }
       }
+
+      nav.actions {
+        display: flex;
+        justify-content: flex-end;
+        flex: 1 1 auto;
+        margin: 2rem 1.8rem 0;
+      }
     }
     &.notice {
       padding: 3rem 4rem 3rem 11rem;
@@ -2204,6 +2202,10 @@ a.avatar {
     &.announcements,
     &.topics {
       margin: 0 1.8rem 3.6rem;
+
+      nav.actions {
+        display: none;
+      }
     }
     & > p {
       margin-right: 1.8rem;
@@ -2220,10 +2222,12 @@ a.avatar {
   body[data-controller="announcement"][data-view="announcement"] {
     section.summary {
       h1 {
-        flex: 0 1 60rem;
+        flex: 0 1 auto;
+        margin-right: 14rem;
       }
       & > p {
-        flex: 0 1 56rem;
+        flex: 0 1 auto;
+        margin-right: 14rem;
 
         &:last-of-type {
           padding-bottom: 2rem;
@@ -2236,25 +2240,28 @@ a.avatar {
     }
   }
 
-  article {
-    margin: 2px 0;
-    padding: 1.8rem 0;
-    border-radius: 0;
+  nav.pagination {
+    flex: 1 1 auto;
+    margin: 2rem 1rem 0 1.8rem;
+    justify-content: flex-start;
+    align-items: flex-start;
 
-    & > * {
-      margin: 0 1.8rem;
+    a {
+      padding: 1.2rem 1.8rem;
     }
+  }
+
+  article {
+    align-items: center;
+    margin: 2px 0;
+    padding: 1.8rem;
+    border-radius: 0;
 
     dl.content-stats {
       width: 8rem;
       height: 8rem;
       padding: 2.4rem 0.8rem;
     }
-  }
-
-  a.content-stats {
-    top: 2rem;
-    right: 2rem;
   }
 
   form {
@@ -2407,6 +2414,6 @@ a.avatar {
 @media only screen and (min-width: 960px) {
   body > header {
     border: none;
-    box-shadow: 0px 0px 8px hsla(226,13%,12%,1);
+    box-shadow: 0 0 8px hsla(226,13%,12%,1);
   }
 }
