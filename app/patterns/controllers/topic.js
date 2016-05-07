@@ -278,7 +278,7 @@ function startForm(params, context, emitter) {
           url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
-            case 'Preview':
+            case 'Preview post':
               emitter.emit('ready', {
                 view: 'start',
                 content: {
@@ -477,7 +477,7 @@ function startAnnouncementForm(params, context, emitter) {
           url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
-            case 'Preview':
+            case 'Preview post':
               emitter.emit('ready', {
                 view: 'start-announcement',
                 content: {
@@ -703,7 +703,7 @@ function startPrivateForm(params, context, emitter) {
           url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
-            case 'Preview':
+            case 'Preview post':
               emitter.emit('ready', {
                 view: 'start-private',
                 content: {
@@ -939,7 +939,7 @@ function replyForm(params, context, emitter) {
           parsedContent = app.toolbox.markdown.content(params.form.content);
 
           switch ( params.form.formAction ) {
-            case 'Preview':
+            case 'Preview post':
               emitter.emit('ready', {
                 view: 'reply',
                 content: {
