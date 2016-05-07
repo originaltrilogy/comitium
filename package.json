@@ -13,19 +13,20 @@
   },
   "main": "index",
   "scripts": {
-    "start": "node ./app/start.js"
+    "start-dev": "node ./app/start-dev.js",
+    "start-prod": "node ./app/start-prod.js"
   },
   "dependencies": {
     "bcrypt": "~0.8.5",
     "citizen": "~0.7.0",
-    "gm": "^1.18.1",
-    "markdown-it": "~4.4.0",
+    "gm": "^1.22.0",
+    "markdown-it": "~6.0.1",
     "markdown-it-emoji": "~1.1.0",
-    "moment": "~2.10.6",
-    "moment-timezone": "~0.4.0",
-    "nodemailer": "~1.4.0",
+    "moment": "~2.13.0",
+    "moment-timezone": "~0.5.4",
+    "nodemailer": "~2.3.2",
     "numeral": "~1.5.3",
-    "pg": "~4.4.1",
+    "pg": "~4.5.5",
     "slug": "~0.9.1"
   },
   "devDependencies": {
