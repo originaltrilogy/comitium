@@ -182,10 +182,6 @@ html.cssanimations.csstransforms span.loading-indicator {
 a {
   color: #A5B2D9;
   text-decoration: none;
-
-  &[rel="author"] {
-    font-family: $semiboldFont;
-  }
 }
 
 p {
@@ -887,6 +883,7 @@ p.last-post {
 }
 
 article {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   margin: 1px 0;
@@ -2058,14 +2055,14 @@ a.avatar {
   }
 
   a.avatar {
-    width: 10rem;
-    height: 10rem;
+    width: 5.4rem;
+    height: 5.4rem;
     border-radius: 0.3rem;
   }
 
   p.last-post a.avatar {
-    width: 5rem;
-    height: 5rem;
+    width: 4.8rem;
+    height: 4.8rem;
     margin-right: 1.4rem;
     float: left;
   }
@@ -2220,11 +2217,9 @@ a.avatar {
   body[data-controller="announcement"][data-view="announcement"] {
     section.summary {
       h1 {
-        flex: 0 0 86vw;
         max-width: 82rem;
       }
       & > p {
-        flex: 0 0 86vw;
         max-width: 82rem;
 
         &:last-of-type {
@@ -2254,6 +2249,13 @@ a.avatar {
     margin: 2px 0;
     padding: 1.8rem;
     border-radius: 0;
+
+    &.unread,
+    &.updated {
+      &::after {
+        width: 0.4rem;
+      }
+    }
 
     dl.content-stats {
       width: 8rem;

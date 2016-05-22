@@ -43,19 +43,20 @@ section.topics
   if topics
     each topic in topics
       article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
-        h3
-          a(href="topic/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
-        section.author
-          a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
-            img(src="avatars/#{topic.topicStarterID}.jpg")
-          dl.byline
-            dt.author Author
-            dd.author
-              a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
-            dt.date Date
-            dd.date
-              time
-                = topic.postDateFormatted
+        section.description
+          h3
+            a(href="topic/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
+          section.author
+            a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
+              img(src="avatars/#{topic.topicStarterID}.jpg")
+            dl.byline
+              dt.author Author
+              dd.author
+                a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+              dt.date Date
+              dd.date
+                time
+                  = topic.postDateFormatted
         if topic.replies
           a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
             dl.content-stats

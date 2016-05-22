@@ -63,11 +63,12 @@ body[data-controller="discussions"] {
       }
       section.categories {
         article {
+          flex-wrap: nowrap;
+
           section.description {
-            flex: 1 0 50%;
+            flex: 1 1 auto;
             order: 1;
-            align-self: flex-start;
-            margin-right: 4rem;
+            margin-right: 3.2rem;
 
             p {
               margin: 1.2rem 0 0;
@@ -76,10 +77,8 @@ body[data-controller="discussions"] {
         }
       }
       p.last-post {
-        flex: 0 0 30%;
+        flex: 0 0 20rem;
         order: 2;
-        align-self: flex-start;
-        margin-top: 1.6rem;
         font-size: 90%;
 
         a:nth-child(2) {
@@ -89,8 +88,8 @@ body[data-controller="discussions"] {
         }
       }
       a.content-stats {
+        flex: 0 0 8rem;
         order: 3;
-        align-self: flex-start;
       }
     }
 
