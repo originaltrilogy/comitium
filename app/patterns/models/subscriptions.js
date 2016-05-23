@@ -13,8 +13,8 @@ module.exports = {
 
 function stats(userID, emitter) {
   // See if this user's private topic stats are already cached
-  var cacheKey = 'models-private-topics-stats',
-      scope = 'private-topics-' + userID,
+  var cacheKey = 'models-subscriptions-stats',
+      scope = 'subscriptions-' + userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -29,7 +29,7 @@ function stats(userID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select count("topicID") as "topics" from "topicInvitations" where "userID" = $1;',
+              'select count("topicID") as "topics" from "topicSubscriptions" where "userID" = $1;',
               [ userID ],
               function (err, result) {
                 done();
@@ -68,8 +68,8 @@ function stats(userID, emitter) {
 
 function unread(args, emitter) {
   // See if this user's unread private topics are already cached
-  var cacheKey = 'private-topics-unread',
-      scope = 'private-topics-' + args.userID,
+  var cacheKey = 'models-subscriptions-unread',
+      scope = 'subscriptions-' + args.userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -84,8 +84,8 @@ function unread(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query({
-                name: 'private_topics_unread',
-                text: 'select p."topicID" from posts p join "topicInvitations" ti on ti."userID" = $1 and p."topicID" = ti."topicID" and p.id = ( select id from posts where "topicID" = ti."topicID" and "userID" <> $1 order by created desc limit 1 ) left join "topicViews" tv on ti."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
+                name: 'subscriptions_unread',
+                text: 'select p."topicID" from posts p join "topicSubscriptions" ts on ts."userID" = $1 and p."topicID" = ts."topicID" and p.id = ( select id from posts where "topicID" = ts."topicID" and "userID" <> $1 order by created desc limit 1 ) left join "topicViews" tv on ts."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
                 values: [ args.userID ]
               }, function (err, result) {
                 done();
@@ -130,7 +130,7 @@ function topics(args, emitter) {
   var start = args.start || 0,
       end = args.end || 25,
       cacheKey = 'topics-' + start + '-' + end,
-      scope = 'private-topics-' + args.userID,
+      scope = 'subscriptions-' + args.userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -147,14 +147,14 @@ function topics(args, emitter) {
             client.query(
               'select t.id, t."sticky", t."replies", t."titleHtml", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
-              'join "topicInvitations" ti on ti."userID" = $1 ' +
-              'join posts p on p."topicID" = ti."topicID" ' +
+              'join "topicSubscriptions" ts on ts."userID" = $1 ' +
+              'join posts p on p."topicID" = ts."topicID" ' +
               'and p."id" = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +
               'join users u on u.id = p."userID" ' +
-              'join posts p2 on p2."topicID" = ti."topicID" ' +
+              'join posts p2 on p2."topicID" = ts."topicID" ' +
               'and p2."id" = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
               'join users u2 on u2.id = p2."userID" ' +
-              'and t.draft = false and t.private = true ' +
+              'and t.draft = false ' +
               'order by p2.created desc ' +
               'limit $2 offset $3;',
               [ args.userID, end - start, start ],

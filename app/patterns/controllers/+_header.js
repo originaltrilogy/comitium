@@ -16,7 +16,12 @@ function handler(params, context, emitter) {
     });
   } else {
     app.listen({
-        updates: function (emitter) {
+        unreadTopics: function (emitter) {
+          app.models.subscriptions.unread({
+            userID: params.session.userID
+          }, emitter);
+        },
+        unreadPrivateTopics: function (emitter) {
           app.models['private-topics'].unread({
             userID: params.session.userID
           }, emitter);
@@ -25,7 +30,10 @@ function handler(params, context, emitter) {
         if ( output.listen.success ) {
           emitter.emit('ready', {
             content: {
-              updates: output.updates,
+              unread: {
+                topics: output.unreadTopics,
+                privateTopics: output.unreadPrivateTopics
+              },
               logo: app.resources.images.logo
             }
           });

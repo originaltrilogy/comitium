@@ -1,0 +1,28 @@
+article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
+  section.description
+    h3
+      a(href="announcement/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
+    section.author
+      a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
+        img(src="avatars/#{topic.topicStarterID}.jpg")
+      dl.byline
+        dt.author Author
+        dd.author
+          a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+        dt.date Date
+        dd.date
+          time
+            = topic.postDateFormatted
+  if topic.replies
+    a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
+      dl.content-stats
+        dt.replies Replies
+        dd.replies
+          = topic.repliesFormatted
+    p.last-post
+      a.avatar(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+        img(src="avatars/#{topic.lastPostAuthorID}.jpg")
+      a(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+        = topic.lastPostAuthor
+      |  replied
+      time #{topic.lastPostCreatedFormatted}

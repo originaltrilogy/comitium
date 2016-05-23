@@ -1108,7 +1108,7 @@ function subscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicSubscribe({
+      app.toolbox.access.topicView({
         topicID: params.url.id,
         user: params.session
       }, emitter);
@@ -1152,7 +1152,7 @@ function unsubscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicSubscribe({
+      app.toolbox.access.topicView({
         topicID: params.url.id,
         user: params.session
       }, emitter);

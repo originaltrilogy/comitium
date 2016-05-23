@@ -1,0 +1,14 @@
+section.summary
+  h1 Topic Subscriptions
+  p This is a list of topics you're following, sorted by most recent activity.
+
+include ../partials/pagination
+
+section.topics
+  if topics
+    each topic in topics
+      include ../partials/topic
+  else
+    p You're not subscribed to any topics.
+
+include ../partials/pagination

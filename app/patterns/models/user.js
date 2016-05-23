@@ -1188,8 +1188,8 @@ function updateSettings(args, emitter) {
     } else {
 
       client.query(
-        'update "users" set "signature" = $1, "signatureHtml" = $2, "timezone" = $3, "theme" = $4, "privateTopicEmailNotification" = $5 where "id" = $6;',
-        [ args.signature, args.signatureHtml, args.timezone, args.theme, args.privateTopicEmailNotification, args.userID ],
+        'update "users" set "signature" = $1, "signatureHtml" = $2, "timezone" = $3, "theme" = $4, "subscriptionEmailNotification" = $5, "privateTopicEmailNotification" = $6 where "id" = $7;',
+        [ args.signature, args.signatureHtml, args.timezone, args.theme, args.subscriptionEmailNotification, args.privateTopicEmailNotification, args.userID ],
         function (err, result) {
           done();
           if ( err ) {

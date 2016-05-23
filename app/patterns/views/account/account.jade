@@ -45,6 +45,9 @@ section.form.general#general
             else
               option(selected)
                 = theme.name
+      li.subscription-notification.checkbox
+        input#subscription-email-notification(name="subscriptionEmailNotification" type="checkbox" value="true" checked=form.subscriptionEmailNotification)
+        label(for="subscription-email-notification") Send me an e-mail when a topic I'm subscribed to receives an update
       li.private-topic-notification.checkbox
         input#private-topic-email-notification(name="privateTopicEmailNotification" type="checkbox" value="true" checked=form.privateTopicEmailNotification)
         label(for="private-topic-email-notification") Send me an e-mail when I'm invited to participate in a private topic

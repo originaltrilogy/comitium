@@ -1,4 +1,4 @@
-// private topics controller
+// subscriptions controller
 
 'use strict';
 
@@ -11,7 +11,7 @@ function handler(params, context, emitter) {
 
   app.listen({
     access: function (emitter) {
-      app.toolbox.access.privateTopicsView({
+      app.toolbox.access.subscriptionsView({
         user: params.session
       }, emitter);
     }
@@ -22,12 +22,12 @@ function handler(params, context, emitter) {
 
         app.listen({
           stats: function (emitter) {
-            app.models['private-topics'].stats(params.session.userID, emitter);
+            app.models.subscriptions.stats(params.session.userID, emitter);
           },
           topics: function (emitter) {
             var start = ( params.url.page - 1 ) * 25,
                 end = start + 25;
-            app.models['private-topics'].topics({
+            app.models.subscriptions.topics({
               userID: params.session.userID,
               start: start,
               end: end
@@ -71,9 +71,13 @@ function handler(params, context, emitter) {
                 }
 
                 content = {
-                  breadcrumbs: app.models['private-topics'].breadcrumbs(),
-                  pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, stats.topics),
-                  previousAndNext: app.toolbox.helpers.previousAndNext('private-topics', params.url.page, stats.topics)
+                  breadcrumbs: {
+                    a: {
+                      name: 'Home',
+                      url: app.config.comitium.basePath
+                    }
+                  },
+                  pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, stats.topics)
                 };
 
                 if ( topics && app.size(topics) ) {
