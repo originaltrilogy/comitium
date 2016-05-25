@@ -1,4 +1,4 @@
-// private topics model
+// subscriptions model
 
 'use strict';
 
