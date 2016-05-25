@@ -198,6 +198,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
       article.topic {
         flex-wrap: nowrap;
         justify-content: space-between;
+        min-height: 10rem;
 
         section.description {
           position: relative;
@@ -205,16 +206,20 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
           margin-right: 3.2rem;
         }
         h3 {
-          margin: 0 0 0 6.8rem;
+          margin: 0 0 0 7.8rem;
         }
         section.author {
           flex-basis: 44%;
-          margin-left: 6.8rem;
+          margin-left: 7.8rem;
+          font-size: 90%;
 
           a.avatar {
             position: absolute;
-            top: -0.4rem;
+            top: 0;
+            right: 0;
+            bottom: 0;
             left: 0;
+            margin: auto 0; // Centered vertically
           }
         }
         dl.byline {
@@ -253,7 +258,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
           }
         }
         a.content-stats {
-          flex: 0 0 8rem;
+          flex: 0 0 6.4rem;
           order: 3;
         }
       }

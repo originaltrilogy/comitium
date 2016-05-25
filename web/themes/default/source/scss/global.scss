@@ -1262,7 +1262,7 @@ a.avatar {
   margin: 0;
   width: 12vw;
   height: 12vw;
-  border-radius: 0.8vw;
+  border-radius: 50%;
   overflow: hidden;
 
   img {
@@ -1352,9 +1352,6 @@ a.avatar {
 
       dt:first-child {
         font-size: 85%;
-      }
-      dd:nth-child(n+2) {
-        font-size: 90%;
       }
     }
   }
@@ -1732,11 +1729,11 @@ a.avatar {
       padding: 3.5vw 1vw 1.5vw;
 
       dt:first-child {
-        font-size: 105%;
+        font-size: 100%;
       }
 
       dd:nth-child(n+2) {
-        font-size: 120%;
+        font-size: 105%;
       }
     }
   }
@@ -1868,7 +1865,6 @@ a.avatar {
   a.avatar {
     width: 8vw;
     height: 8vw;
-    border-radius: 0.4vw;
   }
 
   p.last-post {
@@ -2056,9 +2052,8 @@ a.avatar {
   }
 
   a.avatar {
-    width: 5.4rem;
-    height: 5.4rem;
-    border-radius: 0.3rem;
+    width: 6.4rem;
+    height: 6.4rem;
   }
 
   p.last-post a.avatar {
@@ -2259,9 +2254,9 @@ a.avatar {
     }
 
     dl.content-stats {
-      width: 8rem;
-      height: 8rem;
-      padding: 2.4rem 0.8rem;
+      width: 6.4rem;
+      height: 6.4rem;
+      padding: 1.6rem .4rem;
     }
   }
 
