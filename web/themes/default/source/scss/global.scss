@@ -84,6 +84,42 @@
        url('../fonts/open-sans/opensans-bolditalic-webfont.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Archivo Narrow Regular';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/archivo/archivo-narrow-regular-webfont.woff2') format('woff2'),
+       url('../fonts/archivo/archivo-narrow-regular-webfont.woff') format('woff'),
+       url('../fonts/archivo/archivo-narrow-regular-webfont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Archivo Narrow Bold';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/archivo/archivo-narrow-bold-webfont.woff2') format('woff2'),
+       url('../fonts/archivo/archivo-narrow-bold-webfont.woff') format('woff'),
+       url('../fonts/archivo/archivo-narrow-bold-webfont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Archivo Narrow Italic';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/archivo/archivo-narrow-italic-webfont.woff2') format('woff2'),
+       url('../fonts/archivo/archivo-narrow-italic-webfont.woff') format('woff'),
+       url('../fonts/archivo/archivo-narrow-italic-webfont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Archivo Narrow Bold Italic';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/archivo/archivo-narrow-bold-italic-webfont.woff2') format('woff2'),
+       url('../fonts/archivo/archivo-narrow-bold-italic-webfont.woff') format('woff'),
+       url('../fonts/archivo/archivo-narrow-bold-italic-webfont.ttf') format('truetype');
+}
+
 
 /////////////////////////
 ////  global styles  ////
@@ -190,6 +226,7 @@ p {
 
   a {
     text-decoration: underline;
+    word-break: break-word;
   }
 }
 
@@ -605,7 +642,7 @@ section {
   }
 
   &.content {
-    margin: 6vw 0 8vw;
+    margin: 4vw 0;
     padding: 0 4vw;
     line-height: 1.6;
     background: none;
@@ -613,6 +650,13 @@ section {
     & > * {
       margin-left: 0;
       margin-right: 0;
+
+      &:first-child {
+        margin-top: 0;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
     h1 {
       padding: 0;
@@ -1586,10 +1630,6 @@ a.avatar {
   }
 
   section {
-    p {
-      margin-right: 3vw;
-      margin-left: 3vw;
-    }
     &.content {
       & > img,
       * > img {
@@ -1645,14 +1685,11 @@ a.avatar {
     &.news,
     &.category,
     &.announcements,
-    &.topics {
+    &.topics,
+    &.posts {
       position: relative;
-      margin: 0 3vw 4vw;
+      margin: 0 2vw 4vw;
     }
-  }
-
-  nav.actions {
-    background: none;
   }
 
   body[data-controller="discussion"] {
@@ -2077,9 +2114,9 @@ a.avatar {
   }
 
   dl.content-stats {
-    width: 9.6rem;
-    height: 9.6rem;
-    padding: 3rem 1rem 2rem;
+    width: 8.8rem;
+    height: 8.8rem;
+    padding: 2.6rem 0.8rem 0.8rem;
   }
 
   nav.actions {
@@ -2116,8 +2153,8 @@ a.avatar {
 
   section {
     &.content {
-      margin: 5rem 0;
-      padding: 0 4rem;
+      margin: 2.6rem 0;
+      padding: 0 2.6rem;
 
       h1 {
         margin-top: 6rem;
@@ -2167,6 +2204,7 @@ a.avatar {
         justify-content: flex-end;
         flex: 1 1 auto;
         margin: 2rem 1.8rem 0;
+        background: none;
       }
     }
     &.notice {
@@ -2191,7 +2229,8 @@ a.avatar {
     &.news,
     &.category,
     &.announcements,
-    &.topics {
+    &.topics,
+    &.posts {
       margin: 0 1.8rem 3.6rem;
 
       nav.actions {
@@ -2242,7 +2281,7 @@ a.avatar {
 
   article {
     align-items: center;
-    margin: 2px 0;
+    margin: 1px 0;
     padding: 1.8rem;
     border-radius: 0;
 
@@ -2385,7 +2424,7 @@ a.avatar {
     border: none;
 
     a.home {
-      width: 30rem;
+      width: 24rem;
       margin: 8rem auto 6rem;
     }
     section.stats {

@@ -6,13 +6,14 @@ section.summary
     dt Topics
     dd #{discussion.topicsFormatted}
   include ../partials/pagination
-  nav.actions
-    ul
-      li.new-topic
-        a(href="topic/action/start/id/#{discussion.id}") Start a new topic
-      if session.moderateDiscussions
-        li.new-announcement
-          a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
+  if discussion.id !== 1
+    nav.actions
+      ul
+        li.new-topic
+          a(href="topic/action/start/id/#{discussion.id}") Start a new topic
+        if session.moderateDiscussions
+          li.new-announcement
+            a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
 
 if announcements
   section.announcements

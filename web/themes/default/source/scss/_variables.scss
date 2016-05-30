@@ -3,9 +3,9 @@
 /////////////////////////
 $version: '0.1';
 $defaultFont: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
-$titleFont: AvenirNextCondensed-DemiBold, 'Open Sans Semibold', $defaultFont;
+$titleFont: AvenirNextCondensed-DemiBold, 'Archivo Narrow Bold', 'Open Sans Semibold', $defaultFont;
 $subtitleFont: AvenirNextCondensed-Medium, $titleFont;
-$italicTitleFont: AvenirNext-Italic, 'Open Sans Italic', $defaultFont;
+$italicTitleFont: AvenirNext-Italic, 'Archivo Narrow Italic', 'Open Sans Italic', $defaultFont;
 $boldFont: 'Open Sans Bold';
 $semiboldFont: 'Open Sans Semibold';
 $demiboldFont: AvenirNext-DemiBold, $semiboldFont;
@@ -91,8 +91,8 @@ $gNoUpdates: '\eac4';
       padding: 0 3vw;
     }
     @media only screen and (min-width: 720px) {
-      line-height: 6rem;
-      padding: 0 3rem;
+      line-height: 4rem;
+      padding: 0 2rem;
     }
 
   } @else if $size == 'small' {

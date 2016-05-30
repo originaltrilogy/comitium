@@ -40,7 +40,8 @@ function handler(params, context, emitter) {
           }
         };
 
-        if ( params.url.page === 1 ) {
+        // Intentional double-equals for string casting
+        if ( params.url.page == 1 ) {
           models.announcements = function (emitter) {
             app.models.discussion.announcements(params.url.id, emitter);
           };

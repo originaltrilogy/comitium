@@ -44,10 +44,10 @@ body[data-controller="post"] {
 // Global post styles
 article.post {
   padding: 0;
-  margin: 0 2vw 2vw;
   border-bottom: none;
 
   header {
+    flex: 0 0 100%;
     display: flex;
     margin: 0;
     padding: 2vw;
@@ -77,26 +77,23 @@ article.post {
         line-height: 1.2;
       }
       &.time {
-        flex: 0 0 38vw;
+        flex: 0 0 26vw;
         font-size: 85%;
         text-align: right;
         color: #acacac;
-
-        time {
-          display: block;
-          width: 23vw;
-        }
       }
     }
   }
 
   p.edited {
+    flex: 0 0 96vw;
     font-size: 80%;
     font-family: $italicFont;
     text-align: right;
   }
 
   section.signature {
+    flex: 0 0 100%;
     margin: 0;
     padding: 3vw;
     text-align: right;
@@ -134,6 +131,7 @@ article.post {
   }
 
   nav.actions {
+    flex-basis: 100%;
     background: none;
 
     &::before {
@@ -162,15 +160,13 @@ article.post {
   article.post {
     header {
       a.avatar {
-        flex: 0 0 10vw;
+        flex-basis: 10vw;
       }
       dd.author {
-        flex: 0 0 57vw;
+        flex-basis: 57vw;
       }
       dd.time {
-        time {
-          width: 20vw;
-        }
+        flex-basis: 24vw;
       }
     }
   }
@@ -179,6 +175,8 @@ article.post {
 
 @media only screen and (min-width: 600px) {
   article.post {
+    margin-bottom: 3vw;
+
     header {
       a.avatar {
         flex: 0 0 8vw;
@@ -186,13 +184,16 @@ article.post {
       dl {
         margin-left: 3vw;
       }
-      dd.time {
-        flex: 0 0 26vw;
-
-        time {
-          width: 22vw;
-        }
+      dd.author {
+        flex-basis: 66vw;
       }
+      dd.time {
+        flex-basis: 14vw;
+      }
+    }
+    p.edited {
+      flex-basis: 92vw;
+      margin: 2vw;
     }
     nav.actions {
       &::before,

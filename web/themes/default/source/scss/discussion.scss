@@ -99,7 +99,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         }
       }
       p.last-post {
-        width: 38vw;
+        width: 40vw;
 
         a:nth-child(2) {
           width: 28vw;
@@ -115,6 +115,9 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
       h3 {
         min-height: 14vw;
         margin-bottom: 2vw;
+      }
+      section.description {
+        flex-basis: 74vw;
       }
       dl.byline {
         dd.author {
@@ -158,6 +161,11 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         font-size: 85%;
         line-height: 1.6;
 
+        a.avatar {
+          width: 6vw;
+          height: 6vw;
+          margin-right: 1.6vw;
+        }
         a:nth-child(2) {
           display: block;
           width: auto;
@@ -255,6 +263,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
           a:nth-child(2) {
             display: block;
             margin-top: 0.6rem;
+            max-width: 12rem;
           }
         }
         a.content-stats {
