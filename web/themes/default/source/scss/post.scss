@@ -156,6 +156,19 @@ article.post {
   }
 }
 
+@media only screen and (min-width: 375px) {
+  article.post {
+    header {
+      dd.author {
+        flex-basis: 54vw;
+      }
+      dd.time {
+        flex-basis: 24vw;
+      }
+    }
+  }
+}
+
 @media only screen and (min-width: 400px) {
   article.post {
     header {
@@ -163,10 +176,10 @@ article.post {
         flex-basis: 10vw;
       }
       dd.author {
-        flex-basis: 57vw;
+        flex-basis: 60vw;
       }
       dd.time {
-        flex-basis: 24vw;
+        flex-basis: 20vw;
       }
     }
   }
@@ -225,25 +238,59 @@ article.post {
 @media only screen and (min-width: 720px) {
 
   article.post {
-    header {
-      min-height: 14vw;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    min-height: 14.4rem;
+    margin-bottom: 1.6rem;
 
+    header {
+      position: static;
+      flex-basis: 6.4rem;
+      min-height: 14.4rem;
+      padding: 1.6rem;
+      background: none;
+
+      a.avatar {
+        flex-basis: 6.4rem;
+      }
       dl {
-        padding: 3vw 0;
+        position: absolute;
+        justify-content: space-between;
+        width: 100%;
+        margin: 0;
+        padding: 0 0 0 9.6rem;
+        top: 2.4rem;
+        left: 0;
+        overflow: visible;
       }
-      dt {
-        min-width: 18vw;
+      dd.author {
+        flex-basis: auto;
       }
-      dd {
-        margin-left: 18vw;
+      dd.time {
+        flex-basis: auto;
+        width: 7.2rem;
+        position: absolute;
+        top: 6.4rem;
+        left: 1.2rem;
+        text-align: center;
+
+        time {
+          color: hsla(0,0%,60%,1);
+        }
       }
     }
 
+    section.content {
+      flex: 1 1 0%;
+      padding: 3.2rem 2.8rem 0 0;
+    }
+
     section.signature {
-      padding: 3vw 4vw;
+      flex: 1 0 100%;
+      padding: 1.6rem;
 
       & > * {
-        margin-bottom: 3vw;
+        margin-bottom: 1.6rem;
       }
     }
 
@@ -254,29 +301,16 @@ article.post {
     }
   }
 
+  body[data-page="1"] article.post:first-of-type section.content:nth-child(2) {
+    padding: 0 2.8rem;
+  }
+
 }
 
 
 @media only screen and (min-width: 960px) {
 
   article.post {
-    header {
-      min-height: 10rem;
-
-      a.avatar {
-        left: 4rem;
-      }
-      dl {
-        margin: 0;
-        padding: 2.4rem 0;
-      }
-      dt {
-        min-width: 17rem;
-      }
-      dd {
-        margin-left: 17rem;
-      }
-    }
     nav.actions {
       ul {
         padding: 2rem;

@@ -59,7 +59,7 @@ body[data-controller="discussions"] {
       section.announcements {
         article {
           margin: 1px 0;
-          padding: 1.2rem 1.8rem;
+          padding: 1.2rem 1.6rem;
         }
       }
       section.categories {
@@ -91,12 +91,6 @@ body[data-controller="discussions"] {
       a.content-stats {
         flex: 0 0 6.4rem;
         order: 3;
-      }
-    }
-
-    @media only screen and (min-width: 960px) {
-      p.last-post {
-        flex: 0 0 26%;
       }
     }
   }

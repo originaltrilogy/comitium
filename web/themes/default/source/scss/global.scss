@@ -1447,7 +1447,7 @@ a.avatar {
       flex-wrap: wrap;
 
       a.home {
-        margin: 0 1.8vw;
+        margin: 0 1.6vw;
         padding: 1.4vw 0;
         width: 18.4vw;
       }
@@ -1753,7 +1753,7 @@ a.avatar {
     margin: 2vw 1vw 0;
 
     a {
-      padding: 2vw 2.6vw 1.8vw;
+      padding: 2vw 2.6vw 1.6vw;
     }
   }
 
@@ -1964,7 +1964,7 @@ a.avatar {
     margin-left: 34rem;
   }
   p {
-    margin: 3rem 0;
+    margin: 2.4rem 0;
   }
 
 
@@ -2069,13 +2069,13 @@ a.avatar {
   }
 
   h1 {
-    padding: 0 1.8rem 0.6rem;
+    padding: 0 1.6rem 0.6rem;
     font-size: 2.4rem;
   }
 
   h2 {
-    padding: 1.2rem 1.8rem;
-    font-size: 1.8rem;
+    padding: 1.2rem 1.6rem;
+    font-size: 1.6rem;
   }
 
   h3 {
@@ -2101,7 +2101,7 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding: 1.8rem 1.8rem 0;
+    padding: 1.6rem 1.6rem 0;
     font-size: initial;
 
     li {
@@ -2173,7 +2173,7 @@ a.avatar {
       }
       blockquote {
         margin: 4rem 0;
-        padding: 4rem;
+        padding: 2.4rem;
 
         & > blockquote {
           margin: 0;
@@ -2203,7 +2203,7 @@ a.avatar {
         display: flex;
         justify-content: flex-end;
         flex: 1 1 auto;
-        margin: 2rem 1.8rem 0;
+        margin: 2rem 1.6rem 0;
         background: none;
       }
     }
@@ -2231,15 +2231,15 @@ a.avatar {
     &.announcements,
     &.topics,
     &.posts {
-      margin: 0 1.8rem 3.6rem;
+      margin: 0 1.6rem 3.6rem;
 
       nav.actions {
         display: none;
       }
     }
     & > p {
-      margin-right: 1.8rem;
-      margin-left: 1.8rem;
+      margin-right: 1.6rem;
+      margin-left: 1.6rem;
     }
   }
 
@@ -2263,26 +2263,26 @@ a.avatar {
       }
       dl.content-stats {
         top: 2rem;
-        right: 1.8rem;
+        right: 1.6rem;
       }
     }
   }
 
   nav.pagination {
     flex: 1 1 auto;
-    margin: 2rem 1rem 0 1.8rem;
+    margin: 2rem 1rem 0 1.6rem;
     justify-content: flex-start;
     align-items: flex-start;
 
     a {
-      padding: 1.2rem 1.8rem;
+      padding: 1.2rem 1.6rem;
     }
   }
 
   article {
     align-items: center;
     margin: 1px 0;
-    padding: 1.8rem;
+    padding: 1.6rem;
     border-radius: 0;
 
     &.unread,
