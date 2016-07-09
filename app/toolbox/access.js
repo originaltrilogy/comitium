@@ -18,6 +18,7 @@ module.exports = {
   topicMove: topicMove,
   topicMoveForm: topicMoveForm,
   topicReply: topicReply,
+  topicSubscribe: topicSubscribe,
   topicTrash: topicTrash,
   topicView: topicView,
   signInRedirect: signInRedirect,
@@ -617,6 +618,35 @@ function topicReply(args, emitter) {
       emitter.emit('error', output.listen);
     }
 
+  });
+
+}
+
+
+
+function topicSubscribe(args, emitter) {
+
+	app.listen('waterfall', {
+    userIsLoggedIn: function (emitter) {
+      if ( args.user.userID ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(app.extend(args, { emit: 'end' }), emitter);
+      }
+    },
+    topicView: function (previous, emitter) {
+      topicView(args, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.topicView === true ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(args, emitter);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
   });
 
 }
