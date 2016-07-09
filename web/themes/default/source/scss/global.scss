@@ -634,13 +634,6 @@ section {
     }
   }
 
-  &.news,
-  &.category,
-  &.announcements,
-  &.topics {
-    margin: 0 auto 4vw;
-  }
-
   &.content {
     margin: 4vw 0;
     padding: 0 4vw;
@@ -933,7 +926,7 @@ article {
   flex-wrap: wrap;
   margin: 1px 0;
   padding: 5vw 4vw;
-  background-color: rgb(50,55,66);
+  border-bottom: 1px solid hsl(221, 14%, 23%);
 
   &:last-child {
     border-bottom: none;
@@ -1006,7 +999,7 @@ h2 {
   font-family: $subtitleFont;
   text-align: center;
   color: #ACACAC;
-  background-color: hsl(225, 13%, 18%);
+  background-color: hsl(225, 13%, 22%);
 }
 
 h3, h4, h5, h6 {
@@ -1249,7 +1242,7 @@ nav.actions {
   margin-left: 0;
   margin-right: 0;
   overflow: hidden;
-  background: hsl(225, 13%, 18%);
+  background: hsl(227, 13%, 22%);
 
   &::before,
   &::after {
@@ -1306,6 +1299,7 @@ a.avatar {
   margin: 0;
   width: 12vw;
   height: 12vw;
+  border: 1px solid hsla(221,14%,18%,1);
   border-radius: 50%;
   overflow: hidden;
 
@@ -1581,7 +1575,7 @@ a.avatar {
   }
 
   h1 {
-    padding: 1vw 3vw;
+    padding: 1vw 4vw;
     font-size: 4vw;
     line-height: 1.2;
   }
@@ -1590,7 +1584,6 @@ a.avatar {
     padding: 3vw 3vw 2.6vw;
     font-size: 145%;
     text-transform: none;
-    text-align: left;
   }
 
   h3 {
@@ -1688,7 +1681,6 @@ a.avatar {
     &.topics,
     &.posts {
       position: relative;
-      margin: 0 2vw 4vw;
     }
   }
 
@@ -2074,8 +2066,8 @@ a.avatar {
   }
 
   h2 {
-    padding: 1.2rem 1.6rem;
-    font-size: 1.6rem;
+    padding: 2.4rem;
+    font-size: 2rem;
   }
 
   h3 {
@@ -2231,9 +2223,7 @@ a.avatar {
     &.announcements,
     &.topics,
     &.posts {
-      margin: 0 1.6rem 3.6rem;
-
-      nav.actions {
+      nav.actions:first-child {
         display: none;
       }
     }
@@ -2282,7 +2272,7 @@ a.avatar {
   article {
     align-items: center;
     margin: 1px 0;
-    padding: 1.6rem;
+    padding: 1.6rem 2.4rem;
     border-radius: 0;
 
     &.unread,

@@ -285,6 +285,11 @@ article.post {
       padding: 3.2rem 2.8rem 0 0;
     }
 
+    p.edited {
+      margin: 0 2.8rem 0.8rem;
+      flex: 1 1 100%;
+    }
+
     section.signature {
       flex: 1 0 100%;
       padding: 1.6rem;
@@ -296,37 +301,24 @@ article.post {
 
     nav.actions {
       ul {
-        padding: 4vw;
+        padding: 1.6rem;
+      }
+      &::before,
+      &::after {
+        width: 1.6rem;
+      }
+    }
+    section.signature {
+      padding: 1.6rem;
+
+      & > * {
+        margin-bottom: 2.4rem;
       }
     }
   }
 
   body[data-page="1"] article.post:first-of-type section.content:nth-child(2) {
     padding: 0 2.8rem;
-  }
-
-}
-
-
-@media only screen and (min-width: 960px) {
-
-  article.post {
-    nav.actions {
-      ul {
-        padding: 2rem;
-      }
-      &::before,
-      &::after {
-        width: 2rem;
-      }
-    }
-    section.signature {
-      padding: 2rem;
-
-      & > * {
-        margin-bottom: 2.5rem;
-      }
-    }
   }
 
 }
