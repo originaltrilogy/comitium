@@ -14,7 +14,7 @@ $boldItalicFont: 'Open Sans Bold Italic';
 $lightFont: 'Open Sans Light';
 $lightTitleFont: AvenirNext-Regular, 'Open Sans Light';
 $buttonFont: AvenirNext-Regular, $defaultFont;
-$hue: 225;
+$hue: 227;
 
 // Icons
 $gBanned:   '\ed64';
@@ -35,20 +35,20 @@ $gNoUpdates: '\eac4';
 //        Mixins       //
 /////////////////////////
 
-@mixin color($saturation, $lightness) {
-	color: hsl($hue, $saturation, $lightness);
+@mixin color($saturation, $lightness, $alpha: 1) {
+	color: hsla($hue, $saturation, $lightness, $alpha);
 }
 
-@mixin border-color($saturation, $lightness) {
-	border-color: hsl($hue, $saturation, $lightness);
+@mixin border-color($saturation, $lightness, $alpha: 1) {
+	border-color: hsla($hue, $saturation, $lightness, $alpha);
 }
 
-@mixin inner-border($saturation, $lightness, $size: 1px) {
-  box-shadow: 0 0 0 $size hsl($hue, $saturation, $lightness) inset;
+@mixin inner-border($saturation, $lightness, $alpha: 1, $size: 1px) {
+  box-shadow: 0 0 0 $size hsla($hue, $saturation, $lightness, $alpha) inset;
 }
 
-@mixin background-color($saturation, $lightness) {
-	background-color: hsl($hue, $saturation, $lightness);
+@mixin background-color($saturation, $lightness, $alpha: 1) {
+	background-color: hsla($hue, $saturation, $lightness, $alpha);
 }
 
 @mixin button($size: 'large', $color: 'light') {
@@ -136,6 +136,12 @@ $gNoUpdates: '\eac4';
       @include inner-border(14%, 25%, 1px);
     }
   }
+}
+
+@mixin debutton {
+	text-transform: initial;
+	background: none;
+	@include color(41%,75%);
 }
 
 @mixin icon ($content) {

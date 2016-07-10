@@ -7,8 +7,13 @@ body[data-controller="discussions"] {
   &[data-view="discussions"] {
     section.announcements {
       article {
-        margin: 2px 0;
         padding: 3vw 4vw;
+
+        &:last-child {
+          &::after {
+            display: none;
+          }
+        }
       }
     }
     section.categories {
@@ -58,14 +63,23 @@ body[data-controller="discussions"] {
     @media only screen and (min-width: 720px) {
       section.announcements {
         article {
-          margin: 1px 0;
-          padding: 1.2rem 1.6rem;
+          padding: 1.2rem 2.4rem;
+
+          &:last-child {
+            padding-bottom: 3.2rem;
+          }
         }
       }
       section.categories {
         article {
           flex-wrap: nowrap;
 
+          &:first-of-type {
+            padding-top: 3.2rem;
+          }
+          &:last-child {
+            padding-bottom: 3.2rem;
+          }
           section.description {
             flex: 1 1 auto;
             order: 1;

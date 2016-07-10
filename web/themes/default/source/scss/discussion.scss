@@ -79,7 +79,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     &.announcement {
       h3 {
         min-height: 0;
-        margin-bottom: 0;
+        margin: 0;
         padding: 0;
       }
     }
@@ -140,7 +140,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     article.topic {
       h3,
       &.has-replies h3 {
-        margin: 0 3vw 2vw 0;
+        margin: 0 0 2vw 0;
         min-height: 0;
       }
       & > a.avatar {
@@ -172,12 +172,9 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         }
       }
 
-      &.has-replies {
-        &:not(.announcement) {
-          &::before {
-            width: 19vw;
-            height: 13vw;
-          }
+      &.announcement {
+        &::after {
+          margin: 0;
         }
       }
 
@@ -196,16 +193,11 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     section.announcements,
     section.topics {
       nav.actions {
-        ul {
-          padding: 2rem 4rem;
-        }
+        display: none;
       }
     }
 
     section.topics {
-      nav.actions {
-        display: none;
-      }
       article.topic {
         flex-wrap: nowrap;
         justify-content: space-between;
@@ -287,6 +279,17 @@ body[data-controller="discussion"][data-view="discussion"] {
   section.announcements {
     article {
       padding: 3vw 4vw;
+
+      &::after {
+          margin-top: 3vw;
+      }
+      &:last-child {
+        padding-bottom: 3vw;
+
+        &::after {
+          display: none;
+        }
+      }
     }
   }
   nav.actions {
@@ -326,7 +329,7 @@ body[data-controller="discussion"][data-view="discussion"] {
 
     section.announcements {
       article {
-        padding: 1.2rem 1.6rem;
+        padding: 1.2rem 2.4rem;
       }
     }
 

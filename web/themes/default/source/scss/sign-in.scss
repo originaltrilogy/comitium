@@ -1,0 +1,17 @@
+//////////////////////////////
+//      sign in styles      //
+//////////////////////////////
+
+body[data-controller="sign-in"] {
+    form {
+        ul.actions {
+            & > li {
+                &.secondary {
+                    a {
+                        @include debutton;
+                    }
+                }
+            }
+        }
+    }
+}

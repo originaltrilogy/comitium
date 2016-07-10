@@ -101,7 +101,7 @@ article.post {
     color: #D2D2D2;
     line-height: 1.6;
     overflow: auto;
-    background: hsl(221, 14%, 31%);
+    @include background-color(14%, 28%);
 
     & > * {
       float: right;
@@ -154,6 +154,10 @@ article.post {
       @include button('small', 'dark');
     }
   }
+
+  &::after {
+    display: none;
+  }
 }
 
 @media only screen and (min-width: 375px) {
@@ -188,8 +192,6 @@ article.post {
 
 @media only screen and (min-width: 600px) {
   article.post {
-    margin-bottom: 3vw;
-
     header {
       a.avatar {
         flex: 0 0 8vw;

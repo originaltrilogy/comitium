@@ -982,7 +982,8 @@ CF.global = ( function (Modernizr, CF) {
           menuIcon;
 
       body.className = 'floating-header';
-      main.style.paddingTop = header.getBoundingClientRect().height + 'px';
+      // Weird artifact in Chrome causes the padding to be an extra pixel too tall, so subtract 1px
+      main.style.paddingTop = ( header.getBoundingClientRect().height - 1 ) + 'px';
 
       window.addEventListener('scroll', function (e) {
         if ( bodyOffset > body.getBoundingClientRect().top && Math.abs(body.getBoundingClientRect().top) > header.getBoundingClientRect().height && !methods.hasClass(body, 'floating-header-hidden') ) {

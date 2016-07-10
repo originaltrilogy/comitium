@@ -129,7 +129,7 @@ body {
   font-family: $defaultFont;
   text-rendering: optimizeLegibility;
   color: white;
-  background: hsla(226,13%,20%,1);
+  @include background-color(14%, 20%);
   overflow-x: hidden;
 
   &.transitioning {
@@ -178,7 +178,7 @@ body {
   &[data-controller="account"] nav li.account a,
   &[data-controller="about"] nav li.about a,
   &[data-controller="help"] nav li.help a {
-    background: rgb(58, 62, 75);
+    @include background-color(14%, 26%);
   }
 }
 
@@ -217,7 +217,7 @@ html.cssanimations.csstransforms span.loading-indicator {
 }
 
 a {
-  color: #A5B2D9;
+  @include color(41%,75%);
   text-decoration: none;
 }
 
@@ -249,8 +249,9 @@ body > header {
   display: flex;
   width: 100%;
   font-family: $lightFont;
-  background-color: #272A33;
-  border-bottom: 1px solid #1F2128;
+  @include background-color(14%, 18%);
+  border: 1px solid;
+  @include border-color(14%, 14%);
 
   a.home {
     width: 32vw;
@@ -352,12 +353,12 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    background: #2B2E38;
+    @include background-color(14%, 19%);
   }
   // Hide the current page indicator when the header is floating
   &.floating-header-active > header,
   &.floating-header-hidden > header {
-    background: rgba(39,42,51,0.9);
+    @include background-color(14%, 18%, 0.9);
 
     nav ul.content li.discussions a::after {
       display: none;
@@ -401,7 +402,7 @@ body {
     position: fixed;
     z-index: 1001;
     font-size: 125%;
-    background: rgb(39, 42, 51);
+    @include background-color(14%, 18%);
 
     &.left {
       top: 0;
@@ -457,7 +458,7 @@ body {
     width: 0;
     height: 0;
     z-index: 1000;
-    background: rgba(0,0,0,0.5);
+    @include background-color(0%, 0%, 0.5);
     opacity: 0;
     transition: opacity 0.4s;
   }
@@ -483,7 +484,7 @@ nav.breadcrumbs {
   padding: 4vw 4vw 0;
   font-family: $italicTitleFont;
   text-transform: uppercase;
-  background: #2B2E38;
+  @include background-color(14%, 19%);
 
   li {
     display: inline-block;
@@ -519,7 +520,7 @@ nav.breadcrumbs {
 main {
   clear: both;
   overflow: hidden;
-  background: rgb(59, 64, 78);
+  @include background-color(14%, 27%);
 
   & > h1:first-child {
     margin-top: 5vw;
@@ -534,7 +535,9 @@ main {
 section {
   &.summary {
     position: relative;
-    background-image: linear-gradient(to bottom, #2B2E38 0%, #323742 60%, #3B404E 100%);
+    overflow: hidden;
+    padding-bottom: 4vw;
+    background-image: linear-gradient(180deg, hsla(227,13%,19%,1) 0, hsla(227,14%,23%,1) 60%, hsla(227,14%,27%,1));
 
     & > p {
       font-family: $lightFont;
@@ -724,7 +727,9 @@ section {
   }
 
   &.form {
-    margin: 4vw;
+    & > form {
+      margin: 6vw 4vw;
+    }
 
     h2 {
       margin-bottom: 2vw;
@@ -738,7 +743,7 @@ section {
     article {
       padding: 4vw 0;
       border-bottom: 1px solid;
-      @include border-color(14%, 25%);
+      @include border-color(14%, 18%);
 
       h3.title {
         font-family: $titleFont;
@@ -825,6 +830,10 @@ nav.pagination {
     padding: 4vw 5vw;
     line-height: 1;
   }
+}
+
+section.summary nav.pagination {
+  margin-bottom: 0;
 }
 
 nav.previous-and-next {
@@ -924,33 +933,40 @@ article {
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  margin: 1px 0;
   padding: 5vw 4vw;
-  border-bottom: 1px solid hsl(221, 14%, 23%);
+  @include background-color(14%, 24%);
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 4vw;
+    height: 1px;
+    width: calc(100% - 8vw);
+    @include background-color(14%, 20%);
+  }
 
   &:last-child {
-    border-bottom: none;
+    &::after {
+      display: none;
+    }
   }
 
   &.unread,
   &.updated {
     position: relative;
 
-    &::after {
+    &::before {
       content: '';
       display: block;
       width: 1vw;
-      height: 100%;
+      height: 84%;
       position: absolute;
-      top: 0;
+      top: 8%;
       left: 0;
       @include background-color(100%, 90%);
     }
-  }
-
-  &.view-all {
-    text-align: center;
-    background: rgb(68,74,89);
   }
 
   & > *:last-child {
@@ -999,7 +1015,7 @@ h2 {
   font-family: $subtitleFont;
   text-align: center;
   color: #ACACAC;
-  background-color: hsl(225, 13%, 22%);
+  @include background-color(14%, 20%);
 }
 
 h3, h4, h5, h6 {
@@ -1073,9 +1089,17 @@ form {
     padding: 4vw;
     font-size: 130%;
     word-wrap: normal;
-    border: 1px solid hsl(226, 13%, 49%);
+    border: 1px solid;
+    @include border-color(14%, 30%);
     border-radius: 1vw;
-    background: hsl(225, 13%, 35%);
+    @include background-color(14%, 32%);
+    transition: border-color 0.5s, background-color 0.5s;
+
+    &:focus {
+      outline: none;
+      @include border-color(14%, 60%);
+      @include background-color(14%, 38%);
+    }
   }
 
   select {
@@ -1168,15 +1192,6 @@ form {
           font-size: 6vw;
         }
       }
-      &.textarea {
-        margin-right: 0;
-        margin-left: 0;
-
-        p.label-note {
-          margin-right: 4vw;
-          margin-left: 4vw;
-        }
-      }
       &.checkbox,
       &.radio {
         position: relative;
@@ -1242,7 +1257,7 @@ nav.actions {
   margin-left: 0;
   margin-right: 0;
   overflow: hidden;
-  background: hsl(227, 13%, 22%);
+  @include background-color(14%, 20%);
 
   &::before,
   &::after {
@@ -1257,11 +1272,11 @@ nav.actions {
 
   &::before {
     left: 0;
-    background-image: linear-gradient(to right, hsl(225,13%,18%), hsla(225,13%,18%,0));
+    background-image: linear-gradient(to right, hsl(227,14%,20%), hsla(227,14%,20%,0));
   }
   &::after {
     right: 0;
-    background-image: linear-gradient(to left, hsl(225,13%,18%), hsla(225,13%,18%,0));
+    background-image: linear-gradient(to left, hsl(227,14%,20%), hsla(227,14%,20%,0));
   }
 
   ul {
@@ -1339,7 +1354,7 @@ a.avatar {
   body[data-controller="announcement"][data-view="announcement"] {
     section.summary {
       &::before {
-        height: 19vw;
+        height: 26vw;
       }
     }
   }
@@ -2271,12 +2286,14 @@ a.avatar {
 
   article {
     align-items: center;
-    margin: 1px 0;
     padding: 1.6rem 2.4rem;
     border-radius: 0;
 
     &.unread,
     &.updated {
+      &::before {
+        width: 0.6rem;
+      }
       &::after {
         width: 0.4rem;
       }
@@ -2286,6 +2303,11 @@ a.avatar {
       width: 6.4rem;
       height: 6.4rem;
       padding: 1.6rem .4rem;
+    }
+
+    &::after {
+      left: 2.4rem;
+      width: calc(100% - 4.8rem);
     }
   }
 

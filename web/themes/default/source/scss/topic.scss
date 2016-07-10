@@ -16,7 +16,7 @@ body[data-controller="announcement"] {
     }
     dl.byline {
       display: inline-block;
-      margin: 0 4vw 0 2vw;
+      margin: 0 0 0 2vw;
       vertical-align: middle;
 
       dt {
@@ -40,10 +40,9 @@ body[data-controller="announcement"] {
 
   // First page
   &[data-page="1"] {
-    nav.topic.actions {
-      margin-top: 4vw;
-    }
     article.post:first-of-type {
+      background: none;
+
       header {
         position: absolute;
         left: -100vw;
@@ -256,4 +255,21 @@ body[data-controller="topic"][data-view="private-topic"] {
     }
   }
 
+}
+
+
+// topic reply
+
+body[data-controller="topic"][data-view="reply"] {
+  form {
+      ul.actions {
+          & > li {
+              &.cancel {
+                  a {
+                      @include debutton;
+                  }
+              }
+          }
+      }
+  }
 }
