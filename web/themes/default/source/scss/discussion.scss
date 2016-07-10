@@ -112,12 +112,12 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   @media only screen and (min-width: 400px) {
 
     article.topic {
+      section.description {
+        flex-basis: 74vw;
+      }
       h3 {
         min-height: 14vw;
         margin-bottom: 2vw;
-      }
-      section.description {
-        flex-basis: 78vw;
       }
       dl.byline {
         dd.author {
@@ -138,6 +138,9 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   @media only screen and (min-width: 600px) {
 
     article.topic {
+      section.description {
+        flex-basis: 78vw;
+      }
       h3,
       &.has-replies h3 {
         margin: 0 0 2vw 0;
@@ -282,13 +285,6 @@ body[data-controller="discussion"][data-view="discussion"] {
 
       &::after {
           margin-top: 3vw;
-      }
-      &:last-child {
-        padding-bottom: 3vw;
-
-        &::after {
-          display: none;
-        }
       }
     }
   }

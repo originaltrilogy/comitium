@@ -75,10 +75,7 @@ body[data-controller="discussions"] {
           flex-wrap: nowrap;
 
           &:first-of-type {
-            padding-top: 3.2rem;
-          }
-          &:last-child {
-            padding-bottom: 3.2rem;
+            margin-top: 1.2rem;
           }
           section.description {
             flex: 1 1 auto;

@@ -248,7 +248,6 @@ a.home {
 body > header {
   display: flex;
   width: 100%;
-  font-family: $lightFont;
   @include background-color(14%, 18%);
   border: 1px solid;
   @include border-color(14%, 14%);
@@ -754,6 +753,14 @@ section {
     }
   }
 
+  &.news,
+  &.category,
+  &.announcements,
+  &.topics,
+  &.posts {
+    @include background-color(14%, 24%);
+  }
+
   & > p {
     margin-right: 4vw;
     margin-left: 4vw;
@@ -934,7 +941,6 @@ article {
   display: flex;
   flex-wrap: wrap;
   padding: 5vw 4vw;
-  @include background-color(14%, 24%);
 
   &::after {
     content: '';
@@ -961,9 +967,9 @@ article {
       content: '';
       display: block;
       width: 1vw;
-      height: 84%;
+      height: calc(100% - 1px);
       position: absolute;
-      top: 8%;
+      top: 0;
       left: 0;
       @include background-color(100%, 90%);
     }
@@ -1596,7 +1602,7 @@ a.avatar {
   }
 
   h2 {
-    padding: 3vw 3vw 2.6vw;
+    padding: 3.2vw;
     font-size: 145%;
     text-transform: none;
   }
@@ -1706,7 +1712,7 @@ a.avatar {
       &.topics {
         nav.actions {
           position: absolute;
-          top: 1vw;
+          top: 1.6vw;
           right: 1vw;
         }
       }
@@ -2092,7 +2098,9 @@ a.avatar {
   main {
     max-width: 960px;
     margin: 0 auto 2rem;
-    box-shadow: 0 0 6px hsla(222,13%,13%,1);
+    // box-shadow: 0 0 6px hsla(222,13%,13%,1);
+    border: 1px solid;
+    @include border-color(14%, 16%);
   }
 
   a.avatar {
@@ -2118,6 +2126,10 @@ a.avatar {
         padding: 0 1rem 0 2rem;
       }
     }
+  }
+
+  nav.previous-and-next {
+    margin: 3.2rem auto;
   }
 
   dl.content-stats {
@@ -2238,6 +2250,8 @@ a.avatar {
     &.announcements,
     &.topics,
     &.posts {
+      padding-bottom: 1.2rem;
+
       nav.actions:first-child {
         display: none;
       }
@@ -2293,9 +2307,6 @@ a.avatar {
     &.updated {
       &::before {
         width: 0.6rem;
-      }
-      &::after {
-        width: 0.4rem;
       }
     }
 
@@ -2425,8 +2436,9 @@ a.avatar {
   }
 
   a.to-the-top {
-    width: 20rem;
-    margin: 10rem auto;
+    // width: 20rem;
+    // margin: 10rem auto;
+    display: none;
   }
 
   footer {
