@@ -2,7 +2,8 @@ section.summary
   h1 #{discussion.title}
   if discussion.description
     p !{discussion.description}
-  include ../partials/pagination
+  nav
+    include ../partials/pagination
 
 section.topics
   //- Remove this logic and put it back above li.new-announcement after the subscribe functionality is working

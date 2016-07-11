@@ -58,7 +58,7 @@ $gNoUpdates: '\eac4';
   display: block;
   border-radius: 0.6vw;
   border: none;
-	@include titleFont(normal, 300);
+	@include bodyFont(normal, 300);
 	line-height: 1;
   text-align: center;
   text-decoration: none;
