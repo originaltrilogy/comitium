@@ -20,8 +20,8 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-h1 { font-size: 160%; }
-h2 { font-size: 140%; }
+h1 { font-size: 140%; }
+h2 { font-size: 120%; }
 h3 { font-size: 110%; }
 h4, h5, h6 { font-size: 100%; }
 
@@ -42,7 +42,7 @@ dt {
   float: left;
   clear: left;
   min-width: 34vw;
-  font-family: $boldFont;
+  @include bodyFont(normal, 600);
 
   &::after {
     content: ':';
@@ -89,22 +89,20 @@ textarea {
 
 b,
 strong {
-  font-weight: normal;
-  font-family: $boldFont;
+  @include bodyFont(normal, 600);
 
   i,
   em {
-    font-family: $boldItalicFont;
+    @include bodyFont(italic, 600);
   }
 }
 
 i,
 em {
-  font-family: $italicFont;
-  font-style: normal;
+  @include bodyFont(italic, 400);
 
   b,
   strong {
-    font-family: $boldItalicFont;
+    @include bodyFont(normal, 600);
   }
 }

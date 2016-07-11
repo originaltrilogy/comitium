@@ -88,7 +88,7 @@ article.post {
   p.edited {
     flex: 0 0 96vw;
     font-size: 80%;
-    font-family: $italicFont;
+    @include bodyFont(italic);
     text-align: right;
   }
 
@@ -320,7 +320,7 @@ article.post {
   }
 
   body[data-page="1"] article.post:first-of-type section.content:nth-child(2) {
-    padding: 0 2.8rem;
+    padding: 0 3.6rem;
   }
 
 }

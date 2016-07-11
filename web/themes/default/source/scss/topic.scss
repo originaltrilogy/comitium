@@ -7,7 +7,7 @@ body[data-controller="announcement"] {
 
   section.summary {
     h1 {
-      padding-bottom: 3vw;
+      padding-bottom: 4vw;
     }
     a.avatar {
       display: inline-block;
@@ -131,9 +131,9 @@ body[data-controller="announcement"] {
       section.summary {
         h1 {
           flex-basis: 66vw;
-          margin-left: 17vw;
+          margin-left: 16vw;
           padding-bottom: 0;
-          min-height: 10.4vw;
+          padding-top: 2vw;
         }
         a.avatar {
           margin: 0;
@@ -148,9 +148,6 @@ body[data-controller="announcement"] {
           font-size: 110%;
           flex: 1 1 100%;
         }
-        nav.pagination {
-          padding-top: 4vw;
-        }
       }
 
     }
@@ -160,12 +157,12 @@ body[data-controller="announcement"] {
       section.summary {
         h1 {
           flex: 1 1 54rem;
-          min-height: 4.8rem;
+          min-height: 4rem;
           padding: 0;
           margin: 0 12.4rem 0 10.8rem;
         }
         a.avatar {
-          top: 2.8rem;
+          top: 2.4rem;
           left: 1.6rem;
           width: 7.2rem;
           height: 7.2rem;
@@ -173,13 +170,6 @@ body[data-controller="announcement"] {
         dl.byline {
           margin: 0.4rem 12.4rem 0 10.8rem;
         }
-        nav.pagination {
-          padding: 0;
-        }
-      }
-      nav.pagination,
-      nav.topic.actions {
-        margin-top: 3.6rem;
       }
 
     }

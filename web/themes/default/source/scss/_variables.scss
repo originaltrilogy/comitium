@@ -1,19 +1,8 @@
 /////////////////////////
 //       Variables     //
 /////////////////////////
-$version: '0.1';
-$defaultFont: "Open Sans Regular", "Helvetica Neue", Helvetica, Geneva, Verdana, Arial, sans-serif;
-$titleFont: AvenirNextCondensed-DemiBold, 'Archivo Narrow Bold', 'Open Sans Semibold', $defaultFont;
-$subtitleFont: AvenirNextCondensed-Medium, $titleFont;
-$italicTitleFont: AvenirNext-Italic, 'Archivo Narrow Italic', 'Open Sans Italic', $defaultFont;
-$boldFont: 'Open Sans Bold';
-$semiboldFont: 'Open Sans Semibold';
-$demiboldFont: AvenirNext-DemiBold, $semiboldFont;
-$italicFont: 'Open Sans Italic';
-$boldItalicFont: 'Open Sans Bold Italic';
-$lightFont: 'Open Sans Light';
-$lightTitleFont: AvenirNext-Regular, 'Open Sans Light';
-$buttonFont: AvenirNext-Regular, $defaultFont;
+
+// Colors
 $hue: 227;
 
 // Icons
@@ -35,6 +24,20 @@ $gNoUpdates: '\eac4';
 //        Mixins       //
 /////////////////////////
 
+@mixin bodyFont($style: normal, $weight: 400) {
+	font-family: 'Open Sans', 'sans serif';
+	font-style: $style;
+	font-weight: $weight;
+  text-rendering: optimizeLegibility;
+}
+
+@mixin titleFont($style: normal, $weight: 400) {
+	font-family: 'Oswald', 'Open Sans', 'sans serif';
+	font-style: $style;
+	font-weight: $weight;
+  text-rendering: optimizeLegibility;
+}
+
 @mixin color($saturation, $lightness, $alpha: 1) {
 	color: hsla($hue, $saturation, $lightness, $alpha);
 }
@@ -55,10 +58,10 @@ $gNoUpdates: '\eac4';
   display: block;
   border-radius: 0.6vw;
   border: none;
-	font-family: $buttonFont;
+	@include titleFont(normal, 300);
+	line-height: 1;
   text-align: center;
   text-decoration: none;
-  text-transform: uppercase;
   cursor: pointer;
 
   @media only screen and (min-width: 600px) {
@@ -69,44 +72,41 @@ $gNoUpdates: '\eac4';
   }
 
   @if $size == 'large' {
-  	line-height: 16vw;
-	  padding: 0 5vw;
-	  font-size: 110%;
+	  padding: 4vw;
+	  font-size: 120%;
 
-    @media only screen and (min-width: 600px) {
-      line-height: 12vw;
-    }
+    // @media only screen and (min-width: 600px) {
+    //   line-height: 12vw;
+    // }
     @media only screen and (min-width: 720px) {
-      line-height: 12rem;
+      // line-height: 12rem;
       padding: 0 5rem;
     }
 
   } @else if $size == 'medium' {
-  	line-height: 8.5vw;
-	  padding: 1vw 4vw 0.8vw;
-	  font-size: 100%;
+	  padding: 3vw;
+	  font-size: 110%;
 
-    @media only screen and (min-width: 600px) {
-      line-height: 6vw;
-      padding: 0 3vw;
-    }
+    // @media only screen and (min-width: 600px) {
+    //   line-height: 6vw;
+    //   padding: 0 3vw;
+    // }
     @media only screen and (min-width: 720px) {
-      line-height: 4rem;
+      // line-height: 4rem;
       padding: 0 2rem;
     }
 
   } @else if $size == 'small' {
-    line-height: 7.6vw;
-	  padding: 0.4vw 3vw 0;
-    font-size: 90%;
+	  padding: 2vw;
+    font-size: 100%;
 
-    @media only screen and (min-width: 600px) {
-      line-height: 5vw;
-      padding: 0 2vw;
-    }
+    // @media only screen and (min-width: 600px) {
+    //   line-height: 5vw;
+    //   padding: 0 2vw;
+    // }
     @media only screen and (min-width: 720px) {
-      line-height: 3rem;
-      padding: 0 1rem;
+      // line-height: 3rem;
+      padding: 1.2rem;
     }
   }
 

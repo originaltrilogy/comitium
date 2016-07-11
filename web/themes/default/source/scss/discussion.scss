@@ -137,6 +137,13 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
   @media only screen and (min-width: 600px) {
 
+    section.announcements,
+    section.topics {
+      nav.actions {
+        display: none;
+      }
+    }
+
     article.topic {
       section.description {
         flex-basis: 78vw;
@@ -190,13 +197,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     section.announcements {
       article {
         padding: 2rem 0;
-      }
-    }
-
-    section.announcements,
-    section.topics {
-      nav.actions {
-        display: none;
       }
     }
 
