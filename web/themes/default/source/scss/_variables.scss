@@ -75,11 +75,7 @@ $gNoUpdates: '\eac4';
 	  padding: 4vw;
 	  font-size: 120%;
 
-    // @media only screen and (min-width: 600px) {
-    //   line-height: 12vw;
-    // }
     @media only screen and (min-width: 720px) {
-      // line-height: 12rem;
       padding: 0 5rem;
     }
 
@@ -87,12 +83,7 @@ $gNoUpdates: '\eac4';
 	  padding: 3vw;
 	  font-size: 110%;
 
-    // @media only screen and (min-width: 600px) {
-    //   line-height: 6vw;
-    //   padding: 0 3vw;
-    // }
     @media only screen and (min-width: 720px) {
-      // line-height: 4rem;
       padding: 0 2rem;
     }
 
@@ -100,12 +91,7 @@ $gNoUpdates: '\eac4';
 	  padding: 2vw;
     font-size: 100%;
 
-    // @media only screen and (min-width: 600px) {
-    //   line-height: 5vw;
-    //   padding: 0 2vw;
-    // }
     @media only screen and (min-width: 720px) {
-      // line-height: 3rem;
       padding: 1.2rem;
     }
   }
