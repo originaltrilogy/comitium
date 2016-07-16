@@ -54,8 +54,10 @@ $gNoUpdates: '\eac4';
 	background-color: hsla($hue, $saturation, $lightness, $alpha);
 }
 
-@mixin button($size: 'large', $color: 'light') {
+@mixin button($color: light, $size: 100%, $padding: 2.5vw 3.5vw) {
   display: block;
+	padding: $padding;
+	font-size: $size;
   border-radius: 0.6vw;
   border: none;
 	@include bodyFont(normal, 300);
@@ -69,31 +71,6 @@ $gNoUpdates: '\eac4';
   }
   @media only screen and (min-width: 720px) {
     border-radius: 0.3rem;
-  }
-
-  @if $size == 'large' {
-	  padding: 4vw;
-	  font-size: 120%;
-
-    @media only screen and (min-width: 720px) {
-      padding: 0 5rem;
-    }
-
-  } @else if $size == 'medium' {
-	  padding: 3vw;
-	  font-size: 110%;
-
-    @media only screen and (min-width: 720px) {
-      padding: 0 2rem;
-    }
-
-  } @else if $size == 'small' {
-	  padding: 2vw;
-    font-size: 100%;
-
-    @media only screen and (min-width: 720px) {
-      padding: 1.2rem;
-    }
   }
 
   @if $color == 'light' {

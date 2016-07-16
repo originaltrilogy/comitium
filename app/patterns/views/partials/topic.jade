@@ -15,8 +15,12 @@ article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? '
             = topic.postDateFormatted
   if topic.replies
     a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
-      dl.content-stats
-        dt.replies Replies
+      dl.content-stats(data-replies="#{topic.replies}")
+        dt.replies
+          if topic.replies != 1
+            | Replies
+          else
+            | Reply
         dd.replies
           = topic.repliesFormatted
     p.last-post

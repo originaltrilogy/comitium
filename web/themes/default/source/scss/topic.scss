@@ -41,7 +41,7 @@ body[data-controller="announcement"] {
   // First page
   &[data-page="1"] {
     article.post:first-of-type {
-      background: none;
+      background: hsl(227,14%,26%);
 
       header {
         position: absolute;
@@ -245,21 +245,4 @@ body[data-controller="topic"][data-view="private-topic"] {
     }
   }
 
-}
-
-
-// topic reply
-
-body[data-controller="topic"][data-view="reply"] {
-  form {
-      ul.actions {
-          & > li {
-              &.cancel {
-                  a {
-                      @include debutton;
-                  }
-              }
-          }
-      }
-  }
 }
