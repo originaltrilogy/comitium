@@ -10,8 +10,7 @@ body[data-view="user"] {
       width: 40vw;
       height: 40vw;
       border-radius: 8%;
-      border: 1vw solid;
-      @include border-color(14%, 22%);
+      border: 1vw solid hsl(227,14%,22%);
     }
 
     h1 {

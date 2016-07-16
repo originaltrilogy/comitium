@@ -44,7 +44,6 @@ body[data-controller="post"] {
 // Global post styles
 article.post {
   padding: 0;
-  border-bottom: none;
 
   header {
     flex: 0 0 100%;
@@ -101,7 +100,7 @@ article.post {
     color: #D2D2D2;
     line-height: 1.6;
     overflow: auto;
-    @include background-color(14%, 28%);
+    background-color: hsl(227,14%, 27%);
 
     & > * {
       float: right;
@@ -135,10 +134,10 @@ article.post {
     background: none;
 
     &::before {
-      background-image: linear-gradient(to right, #323843, hsla(219, 15%, 23%, 0));
+      background-image: linear-gradient(to right, hsl(227,14%,24%), hsla(227,14%,24%,0));
     }
     &::after {
-      background-image: linear-gradient(to left, #323843, hsla(219, 15%, 23%, 0));
+      background-image: linear-gradient(to left, hsl(227,14%,24%), hsla(227,14%,24%,0));
     }
     ul {
       text-align: right;
@@ -216,7 +215,6 @@ article.post {
       }
 
       ul {
-        padding-right: 2vw;
         justify-content: flex-end;
       }
 
@@ -229,7 +227,7 @@ article.post {
       }
 
       a {
-        padding: 2vw 3vw;
+        padding: 1.6vw 2vw;
         border-radius: 0;
       }
     }
@@ -304,6 +302,9 @@ article.post {
     nav.actions {
       ul {
         padding: 1.6rem;
+      }
+      a {
+        padding: 1rem 1.2rem;
       }
       &::before,
       &::after {

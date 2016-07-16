@@ -2,9 +2,6 @@
 //       Variables     //
 /////////////////////////
 
-// Colors
-$hue: 227;
-
 // Icons
 $gBanned:   '\ed64';
 $gChecked:  '\ed6c';
@@ -38,32 +35,17 @@ $gNoUpdates: '\eac4';
   text-rendering: optimizeLegibility;
 }
 
-@mixin color($saturation, $lightness, $alpha: 1) {
-	color: hsla($hue, $saturation, $lightness, $alpha);
-}
-
-@mixin border-color($saturation, $lightness, $alpha: 1) {
-	border-color: hsla($hue, $saturation, $lightness, $alpha);
-}
-
-@mixin inner-border($saturation, $lightness, $alpha: 1, $size: 1px) {
-  box-shadow: 0 0 0 $size hsla($hue, $saturation, $lightness, $alpha) inset;
-}
-
-@mixin background-color($saturation, $lightness, $alpha: 1) {
-	background-color: hsla($hue, $saturation, $lightness, $alpha);
-}
-
-@mixin button($color: light, $size: 100%, $padding: 2.5vw 3.5vw) {
+@mixin button($color: light, $size: 90%, $padding: 2.5vw 3.5vw) {
   display: block;
 	padding: $padding;
 	font-size: $size;
   border-radius: 0.6vw;
   border: none;
-	@include bodyFont(normal, 300);
+	@include bodyFont();
 	line-height: 1;
   text-align: center;
   text-decoration: none;
+	text-transform: uppercase;
   cursor: pointer;
 
   @media only screen and (min-width: 600px) {
@@ -81,22 +63,22 @@ $gNoUpdates: '\eac4';
 		background-image: linear-gradient(to bottom, #2F323D 0%, #272A33 98%);
 		border: 1px solid #474F66;
   } @else if $color == 'lightGhost' {
-    @include color(100%, 90%);
-    @include inner-border(100%, 90%, 0.4vw);
+    color: hsl(227,100%,90%);
+		box-shadow: 0 0 0 0.4vw hsl(227,100%,90%) inset;
     @media only screen and (min-width: 600px) {
-      @include inner-border(100%, 90%, 0.2vw);
+			box-shadow: 0 0 0 0.2vw hsl(227,100%,90%) inset;
     }
     @media only screen and (min-width: 720px) {
-      @include inner-border(100%, 90%, 1px);
+			box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
     }
   } @else if $color == 'darkGhost' {
-    @include color(14%, 25%);
-    @include inner-border(14%, 25%, 0.4vw);
+    color: hsl(227,14%,25%);
+		box-shadow: 0 0 0 0.4vw hsl(227,14%,25%) inset;
     @media only screen and (min-width: 600px) {
-      @include inner-border(14%, 25%, 0.2vw);
+			box-shadow: 0 0 0 0.2vw hsl(227,14%,25%) inset;
     }
     @media only screen and (min-width: 720px) {
-      @include inner-border(14%, 25%, 1px);
+			box-shadow: 0 0 0 1px hsl(227,14%,25%) inset;
     }
   }
 }
@@ -104,7 +86,7 @@ $gNoUpdates: '\eac4';
 @mixin debutton {
 	text-transform: initial;
 	background: none;
-	@include color(41%,75%);
+	color: hsl(227,41%,75%);
 }
 
 @mixin icon ($content) {

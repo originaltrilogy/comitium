@@ -31,7 +31,7 @@ body {
   position: relative;
   @include bodyFont;
   color: white;
-  @include background-color(14%, 16%);
+  background-color: hsl(227,14%, 16%);
   overflow-x: hidden;
 
   &.transitioning {
@@ -80,7 +80,7 @@ body {
   &[data-controller="account"] nav li.account a,
   &[data-controller="about"] nav li.about a,
   &[data-controller="help"] nav li.help a {
-    @include background-color(14%, 26%);
+    background-color: hsl(227,14%, 26%);
   }
 }
 
@@ -119,13 +119,12 @@ html.cssanimations.csstransforms span.loading-indicator {
 }
 
 a {
-  @include color(41%,75%);
+  color: hsl(227,41%,80%);
   text-decoration: none;
 }
 
 p {
   color: rgb(230, 230, 230);
-  font-weight: 300;
 
   a {
     text-decoration: underline;
@@ -151,9 +150,8 @@ a.home {
 body > header {
   display: flex;
   width: 100%;
-  @include background-color(14%, 18%);
-  border: 1px solid;
-  @include border-color(14%, 14%);
+  background-color: hsl(227,14%, 18%);
+  border: 1px solid hsl(227,14%,14%);
 
   a.home {
     width: 32vw;
@@ -204,7 +202,7 @@ body > header {
 
       &::before {
         @include icon($gNoUpdates);
-        @include color(100%, 90%);
+        color: hsl(227,100%,90%);
         position: absolute;
         top: 0;
         left: 0;
@@ -253,12 +251,12 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    @include background-color(14%, 19%);
+    background-color: hsl(227,14%, 19%);
   }
   // Hide the current page indicator when the header is floating
   &.floating-header-active > header,
   &.floating-header-hidden > header {
-    @include background-color(14%, 18%, 0.9);
+    background-color: hsla(227,14%,18%,0.9);
 
     nav ul.content li.discussions a::after {
       display: none;
@@ -292,7 +290,7 @@ body {
       position: absolute;
       top: 1.8vw;
       left: 2vw;
-      font-size: 120%;
+      font-size: 4.5vw;
     }
   }
 
@@ -300,7 +298,7 @@ body {
     position: fixed;
     z-index: 1001;
     font-size: 125%;
-    @include background-color(14%, 18%);
+    background-color: hsl(227,14%, 18%);
 
     &.left {
       top: 0;
@@ -356,7 +354,7 @@ body {
     width: 0;
     height: 0;
     z-index: 1000;
-    @include background-color(0%, 0%, 0.5);
+    background-color: hsla(227,1%,0%,0.5);
     opacity: 0;
     transition: opacity 0.4s;
   }
@@ -381,7 +379,7 @@ body {
 nav.breadcrumbs {
   padding: 4vw 4vw 0;
   @include titleFont(normal, 300);
-  @include background-color(14%, 19%);
+  background-color: hsl(227,14%, 19%);
 
   li {
     display: inline-block;
@@ -417,7 +415,7 @@ nav.breadcrumbs {
 main {
   clear: both;
   overflow: hidden;
-  @include background-color(14%, 27%);
+  background-color: hsl(227,14%, 27%);
 
   & > h1:first-child {
     margin-top: 5vw;
@@ -467,11 +465,11 @@ section {
     padding: 4vw 4vw 4vw 14vw;
     position: relative;
     clear: both;
-    @include background-color(14%, 19%);
+    background-color: hsl(227,14%, 19%);
 
     &::before {
       @include icon($gNotice);
-      @include color(100%, 90%);
+      color: hsl(227,100%,90%);
       position: absolute;
       top: 4vw;
       left: 4vw;
@@ -603,12 +601,11 @@ section {
       overflow: hidden;
       font-size: 90%;
       color: #d2d2d2;
-      @include background-color(14%, 20%);
+      background-color: hsl(227,14%, 20%);
 
       & > blockquote {
         font-size: 100%;
-        border: 1px solid;
-        @include border-color(14%, 22%);
+        border: 1px solid hsl(227,14%,22%);
       }
 
       *:first-child {
@@ -623,7 +620,7 @@ section {
         padding: 2vw 4vw 3vw;
         margin-left: -4vw;
         margin-top: -4vw;
-        @include background-color(14%, 22%);
+        background-color: hsl(227,14%, 22%);
       }
       dl, ol, ul {
         margin-left: 8vw;
@@ -647,8 +644,7 @@ section {
     }
     article {
       padding: 4vw 0;
-      border-bottom: 1px solid;
-      @include border-color(14%, 18%);
+      border-bottom: 1px solid hsl(227,14%,18%);
 
       h3.title {
         @include titleFont;
@@ -662,8 +658,9 @@ section {
   &.news,
   &.category,
   &.announcements,
-  &.topics {
-    @include background-color(14%, 24%);
+  &.topics,
+  &.posts {
+    background-color: hsl(227,14%, 24%);
   }
 
   & > p {
@@ -718,9 +715,10 @@ nav.pagination {
     flex: 0 0 auto;
     margin: 0 1.5vw;
 
-    &.current {
+    &.current,
+    &:hover {
       a {
-        @include color(41%, 13%);
+        color: hsl(227,41%,13%);
         background-image: linear-gradient(180deg, hsl(227,13%,68%) 0, hsl(223,13%,40%) 98%);
       }
     }
@@ -834,7 +832,7 @@ article {
     left: 4vw;
     height: 1px;
     width: calc(100% - 8vw);
-    @include background-color(14%, 20%);
+    background-color: hsl(227,14%, 20%);
   }
 
   &:last-child {
@@ -855,7 +853,7 @@ article {
       position: absolute;
       top: 0;
       left: 0;
-      @include background-color(100%, 90%);
+      background-color: hsl(227,100%, 90%);
     }
   }
 
@@ -899,7 +897,7 @@ h2 {
   @include titleFont();
   text-align: center;
   color: hsla(0,0%,75%,1);
-  @include background-color(14%, 20%);
+  background-color: hsl(227,14%, 20%);
 }
 
 h3, h4, h5, h6 {
@@ -914,8 +912,7 @@ a.to-the-top {
 
 footer {
   padding-bottom: 4vw;
-  border-top: 1px solid;
-  @include border-color(14%, 10%);
+  border-top: 1px solid hsl(227,14%,10%);
 
   a.home {
     width: 50vw;
@@ -973,16 +970,15 @@ form {
     padding: 4vw;
     font-size: 130%;
     word-wrap: normal;
-    border: 1px solid;
-    @include border-color(14%, 30%);
+    border: 1px solid hsl(227,14%,30%);
     border-radius: 1vw;
-    @include background-color(14%, 32%);
+    background-color: hsl(227,14%,32%);
     transition: border-color 0.5s, background-color 0.5s;
 
     &:focus {
       outline: none;
-      @include border-color(14%, 60%);
-      @include background-color(14%, 38%);
+      border-color: hsl(227,14%,60%);
+      background-color: hsl(227,14%,38%);
     }
   }
 
@@ -1026,7 +1022,7 @@ form {
         line-height: 10vw;
         font-size: 130%;
         text-align: center;
-        @include color(100%, 90%);
+        color: hsl(227,100%,90%);
       }
     }
   }
@@ -1042,7 +1038,7 @@ form {
         display: block;
         width: 7vw;
         height: 7vw;
-        @include background-color(100%, 90%);
+        background-color: hsl(227,100%, 90%);
         border-radius: 50%;
         content: '';
       }
@@ -1146,7 +1142,7 @@ nav.actions {
   margin-left: 0;
   margin-right: 0;
   overflow: hidden;
-  @include background-color(14%, 20%);
+  background-color: hsl(227,14%, 20%);
 
   &::before,
   &::after {
@@ -1401,7 +1397,7 @@ a.avatar {
             padding: 0.5vw 1.5vw;
 
             &:hover {
-              @include background-color(14%, 27%);
+              background-color: hsl(227,14%, 27%);
             }
           }
         }
@@ -1430,9 +1426,8 @@ a.avatar {
               margin: 0;
               border-radius: 0.3rem;
               text-align: center;
-              @include background-color(14%, 25%);
-              border: 1px solid;
-              @include border-color(14%, 21%);
+              background-color: hsl(227,14%, 25%);
+              border: 1px solid hsl(227,14%,21%);
               z-index: 4;
 
               &.active {
@@ -1448,10 +1443,10 @@ a.avatar {
                 position: absolute;
                 top: -2vw;
                 right: 1vw;
-                @include background-color(14%, 25%);
+                background-color: hsl(227,14%,25%);
                 border-top: 1px solid;
                 border-left: 1px solid;
-                @include border-color(14%, 21%);
+                border-color: hsl(227,14%,21%);
                 z-index: 1;
               }
 
@@ -1556,11 +1551,11 @@ a.avatar {
 
         nav.pagination,
         nav.actions {
-          margin-top: 4vw;
+          margin: 6vw 2vw 0;
 
           a {
             font-size: 100%;
-            padding: 2vw 3vw;
+            padding: 1.6vw 2.4vw;
           }
         }
         nav.pagination li {
@@ -1571,7 +1566,6 @@ a.avatar {
         display: flex;
         justify-content: center;
         flex: 0 0 auto;
-        margin: 0 4vw;
         background: none;
       }
     }
@@ -1608,8 +1602,9 @@ a.avatar {
   body[data-controller="discussions"][data-view="discussions"],
   body[data-controller="discussion"][data-view="discussion"],
   body[data-controller="topic"][data-view="topic"],
+  body[data-controller="private-topics"][data-view="private-topics"],
   body[data-controller="topic"][data-view="private-topic"],
-  // body[data-controller="announcements"][data-view="announcements"],
+  body[data-controller="announcements"][data-view="announcements"],
   body[data-controller="announcement"][data-view="announcement"] {
     section.summary {
       display: flex;
@@ -1911,7 +1906,7 @@ a.avatar {
             padding: 0.5rem 1rem;
 
             &:hover {
-              @include background-color(14%, 27%);
+              background-color: hsl(227,14%, 27%);
             }
           }
         }
@@ -1984,9 +1979,6 @@ a.avatar {
   main {
     max-width: 960px;
     margin: 0 auto 2rem;
-    border: 1px solid;
-    @include border-color(14%, 16%);
-    border-radius: 3px;
   }
 
   a.avatar {
@@ -2094,7 +2086,7 @@ a.avatar {
       & > nav {
         nav.pagination,
         nav.actions {
-          margin-top: 2.4rem;
+          margin: 4rem 2.4rem 0;
 
           a {
             padding: 1.2rem 1.6rem;
@@ -2103,9 +2095,6 @@ a.avatar {
         nav.pagination li {
           margin: 0 0.4rem;
         }
-      }
-      nav.actions {
-        margin: 0 2.4rem;
       }
     }
     &.notice {
@@ -2137,6 +2126,7 @@ a.avatar {
   body[data-controller="discussions"][data-view="discussions"],
   body[data-controller="discussion"][data-view="discussion"],
   body[data-controller="topic"][data-view="topic"],
+  body[data-controller="private-topics"][data-view="private-topics"],
   body[data-controller="topic"][data-view="private-topic"],
   body[data-controller="subscriptions"][data-view="subscriptions"],
   body[data-controller="announcements"][data-view="announcements"],
@@ -2336,5 +2326,9 @@ a.avatar {
   body > header {
     border: none;
     box-shadow: 0 0 8px hsla(226,13%,12%,1);
+  }
+  main {
+    border: 1px solid hsl(227,14%,16%);
+    border-radius: 3px;
   }
 }

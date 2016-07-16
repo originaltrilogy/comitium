@@ -52,8 +52,8 @@ module.exports = function (grunt) {
           inline: false
         },
         processors: [
-          require('autoprefixer')({ browsers: 'ie 9, last 2 versions' }), // add vendor prefixes
-          require('cssnano')() // minify the result
+          require('autoprefixer')({ browsers: 'last 2 versions' }), // add vendor prefixes
+          require('cssnano')({ safe: true }) // minify the result
         ]
       },
       debug: {

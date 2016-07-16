@@ -41,8 +41,6 @@ body[data-controller="announcement"] {
   // First page
   &[data-page="1"] {
     article.post:first-of-type {
-      background: hsl(227,14%,26%);
-
       header {
         position: absolute;
         left: -100vw;
@@ -88,6 +86,20 @@ body[data-controller="announcement"] {
 
   @media only screen and (min-width: 600px) {
 
+    // First page
+    &[data-page="1"] {
+      article.post:first-of-type {
+        padding: 0;
+        background: hsl(227,14%,26%);
+
+        section.content {
+          background: none;
+        }
+        nav.actions {
+          background: none;
+        }
+      }
+    }
     nav.topic.actions {
       ul {
         li {
@@ -95,6 +107,27 @@ body[data-controller="announcement"] {
             border-left: none;
           }
         }
+      }
+    }
+    section.posts {
+      background-color: hsl(227,14%,29%);
+    }
+    article.post {
+      padding: 3vw;
+
+      header {
+        padding: 0;
+        background: none;
+      }
+      section.content {
+        margin: 2vw 0 0;
+        padding: 3vw;
+        background-color: hsl(227,14%,23%);
+      }
+      nav.actions {
+        margin: 0;
+        padding: 2vw;
+        background-color: hsl(227,14%,23%);
       }
     }
 

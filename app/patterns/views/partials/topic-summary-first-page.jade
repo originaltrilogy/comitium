@@ -10,7 +10,11 @@ section.summary
     dd.date
       time #{topic.createdFormatted}
   dl.content-stats
-    dt Replies
+    dt
+      if topic.replies != 1
+        | Replies
+      else
+        | Reply
     dd #{topic.repliesFormatted}
   nav
     include pagination
