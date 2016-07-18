@@ -629,9 +629,8 @@ section {
   }
 
   &.form {
-    & > form {
-      margin: 6vw 4vw;
-    }
+    margin: 6vw auto;
+    padding: 3vw;
 
     h2 {
       margin-bottom: 2vw;
@@ -949,16 +948,16 @@ footer {
 /////////////////////////
 
 form {
-  margin: 6vw auto;
-
   label {
     @include titleFont(normal, 500);
+    margin-bottom: 2vw;
     font-size: 120%;
     line-height: 1;
     color: white;
   }
   p.label-note {
-    margin: 1vw 0 0;
+    margin: 1vw 0 2vw;
+    font-size: 90%;
     color: #CDCDCD;
     line-height: 1.5;
   }
@@ -966,7 +965,6 @@ form {
   select,
   textarea {
     width: 100%;
-    margin-top: 2vw;
     padding: 4vw;
     font-size: 130%;
     word-wrap: normal;
@@ -1526,6 +1524,7 @@ a.avatar {
       }
       blockquote {
         margin: 4vw 0;
+        padding: 3vw;
 
         dl, ol, ul {
           margin-left: 6vw;
@@ -1533,10 +1532,8 @@ a.avatar {
       }
     }
     &.form {
-      margin: 3vw;
-
       &.post li.subscribe {
-        margin-left: 24vw;
+        float: left;
       }
     }
     &.summary {
@@ -1621,7 +1618,7 @@ a.avatar {
         flex: 0 1 74vw;
       }
       dl.content-stats {
-        top: 2vw;
+        top: 4.5vw;
         right: 4vw;
       }
     }
@@ -1666,11 +1663,16 @@ a.avatar {
       margin-left: 20vw;
       margin-right: 20vw;
     }
-
+    label {
+      margin-bottom: 1vw;
+    }
+    p.label-note {
+      margin-bottom: 1vw;
+    }
     input,
     select,
     textarea {
-      margin-top: 1vw;
+      margin: 0;
       padding: 2vw;
       border-radius: 0.5vw;
     }
@@ -1709,7 +1711,7 @@ a.avatar {
     }
     ul.data {
       & > li {
-        margin: 1vw 16vw 6vw;
+        margin: 1vw 0 6vw;
 
         &.select {
           &::after {
@@ -1732,15 +1734,18 @@ a.avatar {
       }
     }
     ul.actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 2vw 0;
 
       & > li {
-        margin-left: 24vw;
-        margin-right: 24vw;
+        flex: 0 1 auto;
+        margin: 0 2vw;
 
         input[type="submit"],
         a {
-          line-height: 10vw;
+          padding: 2vw 3vw;
         }
       }
     }
@@ -1994,7 +1999,7 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding: 1.6rem 2.4rem 0;
+    padding: 2.4rem 2.4rem 0;
     font-size: 1.6rem;
 
     li {
@@ -2140,7 +2145,7 @@ a.avatar {
         margin-right: 13.6rem;
       }
       dl.content-stats {
-        top: 1.6rem;
+        top: 2rem;
         right: 2.4rem;
       }
     }

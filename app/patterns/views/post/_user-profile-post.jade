@@ -10,7 +10,7 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
       dd.time
         time
           = post.createdFormatted
-  section.content
+  section.content.post
     != post.html
   if post.editorID
     p.edited

@@ -89,10 +89,19 @@ body[data-controller="announcement"] {
     // First page
     &[data-page="1"] {
       article.post:first-of-type {
+        margin: 0;
         padding: 0;
         background: hsl(227,14%,26%);
 
         section.content {
+          margin: 0;
+          background: none;
+
+          &::before {
+            display: none;
+          }
+        }
+        p.edited {
           background: none;
         }
         nav.actions {
@@ -100,6 +109,15 @@ body[data-controller="announcement"] {
         }
       }
     }
+
+    // Subsequent pages
+    &:not([data-page="1"]) {
+      nav.pagination,
+      nav.topic.actions {
+        margin: 0 2vw;
+      }
+    }
+
     nav.topic.actions {
       ul {
         li {
@@ -113,21 +131,102 @@ body[data-controller="announcement"] {
       background-color: hsl(227,14%,29%);
     }
     article.post {
-      padding: 3vw;
+      margin: 2vw 0;
+      padding: 2vw;
 
       header {
         padding: 0;
         background: none;
+
+        dl {
+          align-items: flex-start;
+          justify-content: space-between;
+          margin-left: 2vw;
+        }
+        dd.author {
+          flex: 1 1 auto;
+          font-size: 85%;
+          line-height: 1.5;
+        }
+        dd.time {
+          flex: 1 1 auto;
+        }
       }
-      section.content {
-        margin: 2vw 0 0;
+      section.content.post {
+        position: relative;
+        margin: -4.5vw 0 0 10vw;
         padding: 3vw;
+        border-top-right-radius: 0.5vw;
+        border-top-left-radius: 0.5vw;
+        background-color: hsl(227,14%,23%);
+
+        &::before {
+          content: '';
+          display: block;
+          width: 2vw;
+          height: 2vw;
+          transform: rotate(45deg);
+          position: absolute;
+          top: 1vw;
+          left: -1vw;
+          background-color: #323643;
+        }
+      }
+      p.edited {
+        flex: 1 1 100%;
+        margin: 0 0 0 10vw;
+        padding: 2vw 2vw 0;
         background-color: hsl(227,14%,23%);
       }
       nav.actions {
-        margin: 0;
+        margin: 0 0 0 10vw;
         padding: 2vw;
         background-color: hsl(227,14%,23%);
+      }
+      &[data-signature="false"] {
+        nav.actions {
+          border-bottom-right-radius: 0.5vw;
+          border-bottom-left-radius: 0.5vw;
+        }
+      }
+      section.content.signature {
+        margin-left: 10vw;
+        padding: 2vw;
+        background-color: hsl(227,15%,26%);
+      }
+      &[data-signature="true"] {
+        section.content.signature {
+          border-bottom-right-radius: 0.5vw;
+          border-bottom-left-radius: 0.5vw;
+        }
+      }
+    }
+    section.quick-reply {
+      overflow: hidden;
+
+      form {
+        ul.data {
+          > li {
+            margin-bottom: 2vw;
+          }
+        }
+        ul.actions {
+          width: 65vw;
+          justify-content: flex-end;
+          float: left;
+          padding: 0;
+
+          :last-child {
+            margin-right: 0;
+          }
+        }
+      }
+      li.subscribe {
+        margin: 0;
+
+        label {
+          max-width: 20vw;
+        }
       }
     }
 
@@ -138,17 +237,26 @@ body[data-controller="announcement"] {
     section.summary h1 {
       padding-bottom: 4rem;
     }
-    section {
-      &.form.quick-reply {
-        ul.data {
-          li.subscribe {
-            float: left;
-            margin: 2rem 0 0 4rem;
-          }
+    article.post {
+      margin: 1.6rem 0;
+      padding: 1.6rem;
+
+      section.content.post {
+        margin: -2.4rem 0 0 9.6rem;
+        padding: 2.4rem;
+        border-top-right-radius: 4px;
+        border-top-left-radius: 4px;
+      }
+    }
+    section.form.quick-reply {
+      ul.data {
+        li.subscribe {
+          float: left;
+          margin: 2rem 0 0 4rem;
         }
-        ul.actions {
-          padding: 0;
-        }
+      }
+      ul.actions {
+        padding: 0;
       }
     }
 
@@ -213,14 +321,20 @@ body[data-controller="announcement"] {
   &[data-view="announcement"]:not([data-page="1"]) {
 
     @media only screen and (min-width: 600px) {
-
       section.summary {
         h1 {
           flex: 0 1 auto;
           margin-right: 0;
         }
       }
+    }
 
+    @media only screen and (min-width: 720px) {
+      section.summary {
+        h1 {
+          padding-bottom: 2.4rem;
+        }
+      }
     }
 
   }

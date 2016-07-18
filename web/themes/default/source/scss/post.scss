@@ -92,27 +92,25 @@ article.post {
   }
 
   section.signature {
-    flex: 0 0 100%;
     margin: 0;
     padding: 3vw;
     text-align: right;
     font-size: 85%;
-    color: #D2D2D2;
+    color: hsl(0,0%,70%);
     line-height: 1.6;
     overflow: auto;
-    background-color: hsl(227,14%, 27%);
 
-    & > * {
+    > * {
       float: right;
       clear: right;
       margin: 0 0 4vw;
       max-width: 92vw;
     }
 
-    & > *:first-child {
+    > *:first-child {
       padding-top: 0;
     }
-    & > *:last-child {
+    > *:last-child {
       margin-bottom: 0;
       padding-bottom: 0;
     }
@@ -126,6 +124,10 @@ article.post {
       & > *:last-child {
         margin-bottom: 0;
       }
+    }
+
+    p {
+      color: hsl(0,0%,80%);
     }
   }
 
