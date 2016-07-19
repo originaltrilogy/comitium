@@ -180,7 +180,7 @@ body > header {
   }
 
   a.sign-in {
-    @include button('small', 'lightGhost');
+    @include button(lightGhost, $padding: 2vw 3vw);
     position: absolute;
     top: 3vw;
     right: 2.5vw;
@@ -1377,10 +1377,10 @@ a.avatar {
 
             li {
               &.sign-in a {
-                @include button('small', 'lightGhost');
+                @include button(lightGhost, $size: 100%, $padding: 1.5vw);
               }
               &.register a {
-                @include button('small');
+                @include button($size: 100%, $padding: 1.5vw);
               }
             }
           }
@@ -1898,7 +1898,7 @@ a.avatar {
 
           li.sign-in a,
           li.register a {
-            font-size: 100%;
+            padding: 1.2rem 1.6rem;
           }
         }
         li {
