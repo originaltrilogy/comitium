@@ -251,6 +251,11 @@ function editForm(params, context, emitter) {
           parsedReason = app.toolbox.markdown.inline(params.form.reason);
 
           switch ( params.form.formAction ) {
+            default:
+              emitter.emit('error', {
+                message: 'No valid form action received'
+              });
+              break;
             case 'Preview':
               emitter.emit('ready', {
                 content: {

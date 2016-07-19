@@ -278,6 +278,11 @@ function startForm(params, context, emitter) {
           url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
+            default:
+              emitter.emit('error', {
+                message: 'No valid form action received'
+              });
+              break;
             case 'Preview post':
               emitter.emit('ready', {
                 view: 'start',
@@ -477,6 +482,11 @@ function startAnnouncementForm(params, context, emitter) {
           url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
+            default:
+              emitter.emit('error', {
+                message: 'No valid form action received'
+              });
+              break;
             case 'Preview post':
               emitter.emit('ready', {
                 view: 'start-announcement',
@@ -703,6 +713,11 @@ function startPrivateForm(params, context, emitter) {
           url = url.length ? url : 'untitled';
 
           switch ( params.form.formAction ) {
+            default:
+              emitter.emit('error', {
+                message: 'No valid form action received'
+              });
+              break;
             case 'Preview post':
               emitter.emit('ready', {
                 view: 'start-private',
@@ -939,6 +954,11 @@ function replyForm(params, context, emitter) {
           parsedContent = app.toolbox.markdown.content(params.form.content);
 
           switch ( params.form.formAction ) {
+            default:
+              emitter.emit('error', {
+                message: 'No valid form action received'
+              });
+              break;
             case 'Preview post':
               emitter.emit('ready', {
                 view: 'reply',
@@ -952,7 +972,7 @@ function replyForm(params, context, emitter) {
               });
               break;
             case 'Save as draft':
-            case 'Post your reply':
+            case 'Submit your reply':
               if ( params.form.formAction === 'Save as draft' ) {
                 draft = true;
               }
