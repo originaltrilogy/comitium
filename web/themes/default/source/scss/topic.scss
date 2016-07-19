@@ -299,11 +299,13 @@ body[data-controller="announcement"] {
         }
         dd.author {
           flex: 1 1 auto;
+          padding-left: 0.5vw;
           font-size: 85%;
           line-height: 1.5;
         }
         dd.time {
           flex: 1 1 auto;
+          padding-right: 0.5vw;
         }
       }
       section.content.post {
@@ -509,7 +511,7 @@ body[data-controller="announcement"] {
         h1 {
           flex-basis: 64vw;
           margin-left: 18vw;
-          padding: 2vw 3vw 0;
+          padding: 3vw 3vw 0;
         }
         a.avatar {
           margin: 0;

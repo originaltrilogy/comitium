@@ -1529,6 +1529,11 @@ a.avatar {
         dl, ol, ul {
           margin-left: 6vw;
         }
+        p > a:first-child[href^="post/"] {
+        width: 120%;
+        padding: 2vw 4vw 1vw;
+        margin-left: -5vw;
+      }
       }
     }
     &.form {
@@ -2076,9 +2081,9 @@ a.avatar {
           margin: 1.6rem 0;
         }
         p > a:first-child[href^="post/"] {
-          padding: 2rem 4rem;
+          padding: 2rem 3.2rem 1.2rem;
           margin-left: -4rem;
-          margin-top: -4rem;
+          margin-top: -3rem;
         }
         dl, ol, ul {
           margin-left: 4rem;
