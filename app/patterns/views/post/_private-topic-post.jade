@@ -19,8 +19,8 @@ article.post(id="#{post.id}" data-post-id="#{post.id}" data-signature="#{ post.a
   nav.actions
     ul
       if !topic.lockedByID
-        li.reply
-          a(href="topic/action/reply/id/#{url.id}") Reply
+        //- li.reply
+        //-   a(href="topic/action/reply/id/#{url.id}") Reply
         li.quote
           a(href="topic/action/reply/id/#{url.id}/quote/#{post.id}") Quote
       if ( session.username === post.author && !post.lockedByID && !topic.lockedByID ) || session.moderateDiscussions

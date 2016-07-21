@@ -380,10 +380,10 @@ nav.breadcrumbs {
   padding: 4vw 4vw 0;
   @include titleFont(normal, 300);
   background-color: hsl(227,14%, 19%);
+  font-size: 110%;
 
   li {
     display: inline-block;
-    margin-bottom: 1vw;
     position: absolute;
     left: -100vw;
 
@@ -400,7 +400,7 @@ nav.breadcrumbs {
       a {
         display: inline-block;
         max-width: 86vw;
-        overflow: hidden;
+        overflow-x: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
       }
@@ -447,11 +447,7 @@ section {
     }
 
     & > nav {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      margin-top: 4vw;
+      display: none;
     }
 
     // Hide primary actions on small devices
@@ -461,7 +457,6 @@ section {
   }
 
   &.notice {
-    margin: 4vw 0;
     padding: 4vw 4vw 4vw 14vw;
     position: relative;
     clear: both;
@@ -601,11 +596,11 @@ section {
       overflow: hidden;
       font-size: 90%;
       color: #d2d2d2;
-      background-color: hsl(227,14%, 20%);
+      background-color: hsl(227,14%,21%);
 
-      & > blockquote {
+      > blockquote {
         font-size: 100%;
-        border: 1px solid hsl(227,14%,22%);
+        border: 1px solid hsl(227,14%,19%);
       }
 
       *:first-child {
@@ -620,7 +615,7 @@ section {
         padding: 2vw 4vw 3vw;
         margin-left: -4vw;
         margin-top: -4vw;
-        background-color: hsl(227,14%, 22%);
+        background-color: hsl(227,14%,19%);
       }
       dl, ol, ul {
         margin-left: 8vw;
@@ -714,8 +709,7 @@ nav.pagination {
     flex: 0 0 auto;
     margin: 0 1.5vw;
 
-    &.current,
-    &:hover {
+    &.current {
       a {
         color: hsl(227,41%,13%);
         background-image: linear-gradient(180deg, hsl(227,13%,68%) 0, hsl(223,13%,40%) 98%);
@@ -1208,7 +1202,7 @@ a.avatar {
 }
 
 
-// Screens wider than 350px
+// Screens wider than 375px
 @media only screen and (min-width: 375px) {
 
   body {
@@ -1471,12 +1465,8 @@ a.avatar {
 
   h2 {
     padding: 3.2vw;
-    font-size: 145%;
+    font-size: 130%;
     text-transform: none;
-  }
-
-  h3 {
-    font-size: 115%;
   }
 
   p {
@@ -1548,7 +1538,11 @@ a.avatar {
         font-size: 2.6vw;
       }
       > nav {
+        display: flex;
         flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
         margin: 0;
 
         nav.pagination,
@@ -1574,11 +1568,14 @@ a.avatar {
     &.notice {
       &::before {
         top: 3vw;
+        font-size: 5vw;
       }
       &.locked::before {
         left: 6vw;
       }
-
+      p {
+        margin-bottom: 3vw;
+      }
       p.why {
         display: inline-block;
         margin-top: 0;
@@ -1652,7 +1649,6 @@ a.avatar {
       dt:first-child {
         font-size: 100%;
       }
-
       dd:nth-child(n+2) {
         font-size: 105%;
       }
@@ -1844,7 +1840,10 @@ a.avatar {
     font-size: 62.5%;
   }
   body {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+  }
+  h3 {
+    font-size: 110%;
   }
   dl, ol, ul {
     margin: 3rem 0 3rem 8rem;
@@ -1979,11 +1978,7 @@ a.avatar {
 
   h2 {
     padding: 2.4rem;
-    font-size: 2rem;
-  }
-
-  h3 {
-    font-size: 1.4rem;
+    font-size: 145%;
   }
 
   main {
@@ -2102,7 +2097,8 @@ a.avatar {
           margin: 4rem 2.4rem 0;
 
           a {
-            padding: 1.2rem 1.6rem;
+            padding: 1rem 1.4rem;
+            font-size: 91%;
           }
         }
         nav.pagination li {
@@ -2111,7 +2107,7 @@ a.avatar {
       }
     }
     &.notice {
-      padding: 3rem 4rem 3rem 11rem;
+      padding: 2.4rem 3.6rem 2.4rem 9.6rem;
 
       &.success {
         padding-left: 4rem;
@@ -2123,10 +2119,13 @@ a.avatar {
       &::before {
         top: 2rem;
         left: 4rem;
-        font-size: 4rem;
+        font-size: 3.2rem;
       }
       &.locked::before {
-        left: 6rem;
+        left: 4.8rem;
+      }
+      p {
+        margin-bottom: 1.6rem;
       }
     }
     & > p {
@@ -2161,7 +2160,7 @@ a.avatar {
 
   article {
     align-items: center;
-    padding: 1.6rem 2.4rem;
+    padding: 1.4rem 2.4rem;
     border-radius: 0;
 
     &.unread,
@@ -2175,6 +2174,13 @@ a.avatar {
       width: 6.4rem;
       height: 6.4rem;
       padding: 1.6rem .4rem;
+
+      dt:first-child {
+        font-size: 110%;
+      }
+      dd:nth-child(n+2) {
+        font-size: 120%;
+      }
     }
 
     &::after {

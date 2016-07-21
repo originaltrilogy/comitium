@@ -449,6 +449,7 @@ body[data-controller="announcement"] {
         padding: 2rem;
         border-top-right-radius: 4px;
         border-top-left-radius: 4px;
+        font-size: 110%;
 
         &::before {
           width: 1.8rem;
@@ -465,7 +466,8 @@ body[data-controller="announcement"] {
         padding: 1.2rem;
 
         a {
-          padding: 1rem 1.2rem;
+          padding: 0.8rem 1rem;
+          font-size: 85%;
         }
       }
       section.content.signature {
@@ -553,6 +555,9 @@ body[data-controller="announcement"] {
         margin-bottom: 3.6rem;
 
         section.content.post {
+          // Matches the width of replies
+          max-width: 83.4rem;
+          margin: 0 auto;
           padding: 2.4rem 4.8rem;
         }
       }

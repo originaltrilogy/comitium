@@ -23,7 +23,7 @@ body[data-controller="discussions"] {
           margin-right: 4vw;
 
           p {
-            margin: 2vw 0 4vw;
+            margin: 1vw 0 4vw;
           }
         }
       }
@@ -74,7 +74,7 @@ body[data-controller="discussions"] {
           flex-wrap: nowrap;
 
           &:first-of-type {
-            margin-top: 1.2rem;
+            margin-top: 0.8rem;
           }
           section.description {
             flex: 1 1 auto;
@@ -82,7 +82,7 @@ body[data-controller="discussions"] {
             margin-right: 3.2rem;
 
             p {
-              margin: 1.2rem 0 0;
+              margin: 0.6rem 0 0;
             }
           }
         }
