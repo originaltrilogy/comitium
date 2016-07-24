@@ -459,7 +459,7 @@ section {
     padding: 4vw 4vw 4vw 14vw;
     position: relative;
     clear: both;
-    background-color: hsl(227,14%, 19%);
+    background-color: hsl(227,13%,23%);
 
     &::before {
       @include icon($gNotice);

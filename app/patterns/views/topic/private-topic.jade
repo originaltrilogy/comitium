@@ -11,18 +11,8 @@ section.notice.private
         a(href="user/#{user.username}/id/#{user.id}")
           = user.username
 
-nav.topic.actions
-  ul
-    li.reply
-      a(href="#{route.pathname}/action/reply") Reply
-    if !userIsSubscribed
-      li.subscribe
-        a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when people reply to this topic.") Subscribe
-    else
-      li.unsubscribe
-        a(href="#{route.pathname}/action/unsubscribe" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
-
 section.posts
+  include ../partials/topic-actions
   if posts
     each post in posts
       include ../post/_private-topic-post
