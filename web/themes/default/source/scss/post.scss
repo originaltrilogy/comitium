@@ -101,4 +101,18 @@ article.post {
     }
   }
 
+  @media only screen and (min-width: 720px) {
+    p.edited {
+      display: none;
+    }
+    nav.actions {
+      padding: 1.2rem;
+
+      a {
+        padding: 0.8rem 1rem;
+        font-size: 85%;
+      }
+    }
+  }
+
 }

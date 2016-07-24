@@ -35,7 +35,7 @@ $gNoUpdates: '\eac4';
   text-rendering: optimizeLegibility;
 }
 
-@mixin button($color: light, $size: 90%, $padding: 2.5vw 3.5vw) {
+@mixin button($color: light, $size: 91%, $padding: 2.5vw 3.5vw) {
   display: block;
 	padding: $padding;
 	font-size: $size;

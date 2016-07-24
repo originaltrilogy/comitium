@@ -10,14 +10,15 @@ body[data-view="user"] {
       width: 40vw;
       height: 40vw;
     }
-
     h1 {
       padding: 2vw 4vw 6vw;
       text-align: center;
     }
-
     section.notice {
       margin-bottom: 6vw;
+    }
+    nav.actions {
+      display: block;
     }
   }
 
@@ -28,10 +29,20 @@ body[data-view="user"] {
   article.post {
     padding: 5vw 0 0;
 
-    header {
-      display: block;
-      padding: 2vw 0;
+    &:first-of-type {
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 4vw;
+        height: 1px;
+        width: calc(100% - 8vw);
+        background-color: hsl(227,14%, 20%);
+      }
+    }
 
+    header {
       dl {
         display: block;
         margin-bottom: 0;
@@ -50,7 +61,7 @@ body[data-view="user"] {
 
           time {
             display: inline;
-            width: auto;
+            font-weight: 400;
           }
         }
       }
@@ -91,9 +102,10 @@ body[data-view="user"] {
       }
     }
     article.post {
-      padding-top: 0;
+      padding-top: 2vw;
 
       nav.actions {
+        padding-right: 3vw;
         background: none;
       }
     }
@@ -103,17 +115,21 @@ body[data-view="user"] {
   @media only screen and (min-width: 720px) {
 
     section.summary {
-      padding: 5rem 0;
+      padding: 4rem 0;
 
       a.avatar {
         width: 16rem;
         height: 16rem;
+        float: left;
+        margin-left: 2.4rem;
       }
       h1 {
-        padding: 2.4rem 0 3.2rem;
+        margin-left: 20.8rem;
+        padding: 1.2rem 0;
+        text-align: left;
       }
       dl {
-        width: 32rem;
+        margin-left: 20.8rem;
       }
       dt {
         width: 12rem;
@@ -121,9 +137,16 @@ body[data-view="user"] {
       dd {
         margin-left: 12rem;
       }
+      nav.actions {
+        margin-left: 0;
+      }
     }
-    nav.pagination li {
-      margin: 0 0.4rem;
+    nav.pagination {
+      margin: 2.4rem auto;
+
+      li {
+        margin: 0 0.4rem;
+      }
 
       a {
         padding: 1rem 1.4rem;
@@ -131,14 +154,27 @@ body[data-view="user"] {
       }
     }
     article.post {
+      padding-top: 1.6rem;
+
+      &:first-of-type {
+        &::before {
+          left: 2.4rem;
+          width: calc(100% - 4.8rem);
+        }
+      }
       header {
+        dl {
+          margin: 0 0 0 2.6rem;
+        }
         dt {
-          min-width: 12rem;
-          text-indent: 4rem;
+          width: 5.6rem;
         }
         dd {
-          margin-left: 12rem;
+          margin-left: 5.6rem;
         }
+      }
+      nav.actions {
+        padding-right: 2.4rem;
       }
     }
 
