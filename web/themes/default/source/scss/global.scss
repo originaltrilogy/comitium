@@ -379,6 +379,7 @@ body {
 nav.breadcrumbs {
   padding: 4vw 4vw 0;
   @include titleFont(normal, 300);
+  color: rgb(145,157,191);
   background-color: hsl(227,14%, 19%);
   font-size: 110%;
 
@@ -1482,7 +1483,7 @@ a.avatar {
 
       &::after {
         content: '>';
-        padding: 0 1vw 0 2vw;
+        padding: 0 0.7vw 0 1.2vw;
       }
       &:last-child {
         &::before {
@@ -2002,7 +2003,7 @@ a.avatar {
       margin-top: 0;
 
       &::after {
-        padding: 0 1rem 0 2rem;
+        padding: 0 0.7rem 0 1.2rem;
       }
     }
   }

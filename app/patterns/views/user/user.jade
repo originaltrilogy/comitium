@@ -37,12 +37,26 @@ section.summary
           li.unban
             a(href="user/action/liftBan/id/#{user.id}") Lift ban
 
-if moderateUser && ipHistory
-  section.ip-history
-    h2 IP History
-    ul
-      each log in ipHistory
-        li #{log.ip}
+if moderateUser
+  section.user-logs
+    h2 User Logs
+    section.ip-history
+      if ipHistory
+        p IP addresses associated with this user (most recent first):
+        ul
+          each log in ipHistory
+            li #{log.ip}
+      else
+        p No IP addresses associated with this user
+    section.ip-matches
+      p Users with at least one matching IP:
+      if usersWithMatchingIPs.length
+        ul
+          each user in usersWithMatchingIPs
+            li
+              a(href="user/#{user.url}/id/#{user.id}") #{user.username}
+      else
+        p No matching users
 
 section.posts
   if posts

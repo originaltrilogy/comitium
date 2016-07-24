@@ -672,7 +672,7 @@ function ipHistory(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select distinct "ip" from "userLogs" where "userID" = $1 order by "ip" asc;',
+        'select "ip" from "userLogs" where "userID" = $1 group by "ip" order by "ip" asc;',
         [ args.userID ],
         function (err, result) {
           done();
@@ -1052,7 +1052,7 @@ function matchingIPs(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select * from users where id in ( select "userID" from "userLogs" where ip in ( select distinct ip from "userLogs" where "userID" = ' + args.userID +  ' ) ) order by username asc;',
+        'select * from users where id in ( select "userID" from "userLogs" where ip in ( select distinct ip from "userLogs" where "userID" = $1 ) ) order by username asc;',
         [ args.userID ],
         function (err, result) {
           done();

@@ -40,14 +40,23 @@ function handler(params, context, emitter) {
         });
       }
     },
-    ipHistory: function (previous, emitter) {
-      if ( params.session.moderateUsers ) {
-        app.models.user.ipHistory({
-          userID: params.url.id
-        }, emitter);
+    // Only call the remaining methods if the current user is a moderator
+    moderateUser: function (previous, emitter) {
+      if ( previous.user.id !== params.session.userID && params.session.moderateUsers ) {
+        emitter.emit('ready', true);
       } else {
-        emitter.emit('ready', false);
+        emitter.emit('end');
       }
+    },
+    ipHistory: function (previous, emitter) {
+      app.models.user.ipHistory({
+        userID: params.url.id
+      }, emitter);
+    },
+    usersWithMatchingIPs: function (previous, emitter) {
+      app.models.user.matchingIPs({
+        userID: params.url.id
+      }, emitter);
     }
   }, function (output) {
     if ( output.listen.success ) {
@@ -55,10 +64,11 @@ function handler(params, context, emitter) {
         content: {
           talkPrivately: params.session.talkPrivately && output.user.id !== params.session.userID,
           editProfile: output.user.id === params.session.userID,
-          moderateUser: output.user.id !== params.session.userID && params.session.moderateUsers,
+          moderateUser: output.moderateUser,
           user: output.user,
           posts: output.posts,
           ipHistory: output.ipHistory,
+          usersWithMatchingIPs: output.usersWithMatchingIPs,
           pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
         }
       });

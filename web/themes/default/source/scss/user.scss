@@ -92,6 +92,19 @@ body[data-view="user"] {
         margin-left: 24vw;
       }
     }
+    section.user-logs {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-around;
+
+      h2 {
+        flex: 0 0 100%;
+      }
+      section {
+        flex: 0 0 50%;
+      }
+    }
     nav.pagination {
       li {
         margin: 0 1vw;
