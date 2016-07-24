@@ -756,6 +756,7 @@ function trashForm(params, context, emitter) {
                 postID: post.id,
                 topicID: post.topicID,
                 discussionID: post.discussionID,
+                authorID: post.userID,
                 deletedByID: params.session.userID,
                 deleteReason: parsedReason
               }, emitter);
