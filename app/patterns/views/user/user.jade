@@ -1,50 +1,48 @@
 section.summary
-  img(src="avatars/#{user.id}.jpg")
+  a.avatar(href="user/#{user.username}/id/#{user.id}")
+    img(src="avatars/#{user.id}.jpg")
   h1 #{user.username}
-
   if user.group === "Banned Users"
     section.notice.banned
       p This user has been banned.
-
   dl
     dt User Group
     dd #{user.group}
-    
+
     dt Join date
     dd #{user.joinedFormatted}
-    
+
     dt Last activity
     dd #{user.lastActivityFormatted}
-    
+
     dt Posts
     dd #{user.postCount}
-    
+
     if user.website && user.website.length
       dt Web Site
       dd
         a(href="#{user.website}") #{user.website}
-
-nav.actions
-  ul
-    li.private-topic
-      a(href="topic/action/startPrivate/invitee/#{user.id}") Start a private topic
-    if editProfile
-      li.edit
-        a(href="account") Edit profile
-    if moderateUser
-      if user.group !== "Banned Users"
-        li.ban
-          a(href="user/action/ban/id/#{user.id}") Ban this user
-      else
-        li.unban
-          a(href="user/action/liftBan/id/#{user.id}") Lift ban
+  nav.actions
+    ul
+      li.private-topic
+        a(href="topic/action/startPrivate/invitee/#{user.id}") Start a private topic
+      if editProfile
+        li.edit
+          a(href="account") Edit profile
+      if moderateUser
+        if user.group !== "Banned Users"
+          li.ban
+            a(href="user/action/ban/id/#{user.id}") Ban this user
+        else
+          li.unban
+            a(href="user/action/liftBan/id/#{user.id}") Lift ban
 
 if moderateUser && ipHistory
   section.ip-history
     h2 IP History
     ul
       each log in ipHistory
-        li #{log.ip}  
+        li #{log.ip}
 
 section.posts
   if posts

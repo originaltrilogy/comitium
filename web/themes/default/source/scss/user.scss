@@ -5,12 +5,10 @@
 body[data-view="user"] {
 
   section.summary {
-    img {
+    a.avatar {
       margin: 4vw auto;
       width: 40vw;
       height: 40vw;
-      border-radius: 8%;
-      border: 1vw solid hsl(227,14%,22%);
     }
 
     h1 {
@@ -23,21 +21,28 @@ body[data-view="user"] {
     }
   }
 
+  nav.pagination {
+    margin: 4vw auto;
+  }
+
   article.post {
+    padding: 5vw 0 0;
+
     header {
       display: block;
       padding: 2vw 0;
 
       dl {
         display: block;
+        margin-bottom: 0;
       }
       dt {
         position: relative;
         left: 0;
-        min-width: 16vw;
+        width: 18vw;
       }
       dd {
-        margin-left: 16vw;
+        margin-left: 18vw;
 
         &.time {
           font-size: 100%;
@@ -52,54 +57,45 @@ body[data-view="user"] {
     }
   }
 
-  // article.post {
-  //   header {
-  //     min-height: 0;
-  //
-  //     dt {
-  //       min-width: 16vw;
-  //       text-indent: 0;
-  //
-  //       &.time {
-  //         font-size: 100%;
-  //       }
-  //     }
-  //     dd {
-  //       margin-left: 16vw;
-  //
-  //       &.time {
-  //         font-size: 100%;
-  //       }
-  //     }
-  //   }
-  // }
-
   @media only screen and (min-width: 600px) {
 
     section.summary {
-      img {
-        float: left;
-        margin: 4vw;
-        width: 30vw;
-        height: 30vw;
-        border-width: 0.6vw;
+      a.avatar {
+        width: 16vw;
+        height: 16vw;
+        margin: 0 auto;
       }
-
       h1 {
-        padding-top: 7vw;
-        text-align: left;
+        flex: 1 0 50%;
+        padding-top: 4vw;
       }
-
+      dl {
+        display: block;
+        width: 50%;
+        margin: 0 auto;
+      }
       dt {
-        min-width: 24vw;
+        width: 24vw;
       }
       dd {
         margin-left: 24vw;
       }
     }
+    nav.pagination {
+      li {
+        margin: 0 1vw;
+      }
+      a {
+        font-size: 100%;
+        padding: 1.6vw 2.4vw;
+      }
+    }
+    article.post {
+      padding-top: 0;
 
-    nav.actions {
-      clear: both;
+      nav.actions {
+        background: none;
+      }
     }
 
   }
@@ -108,25 +104,30 @@ body[data-view="user"] {
 
     section.summary {
       padding: 5rem 0;
-      min-height: 30rem;
 
-      img {
-        margin: 0 4rem;
-        width: 20rem;
-        height: 20rem;
-        border-width: 0.4rem;
+      a.avatar {
+        width: 16rem;
+        height: 16rem;
       }
       h1 {
-        padding: 2rem 4rem 0;
+        padding: 2.4rem 0 3.2rem;
       }
       dl {
-        margin-bottom: 0;
+        width: 32rem;
       }
       dt {
-        min-width: 16rem;
+        width: 12rem;
       }
       dd {
-        margin-left: 16rem;
+        margin-left: 12rem;
+      }
+    }
+    nav.pagination li {
+      margin: 0 0.4rem;
+
+      a {
+        padding: 1rem 1.4rem;
+        font-size: 91%;
       }
     }
     article.post {

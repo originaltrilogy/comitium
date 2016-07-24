@@ -39,3 +39,66 @@ body[data-controller="post"] {
   }
 
 }
+
+
+// Global post styles
+article.post {
+  p.edited {
+    flex: 0 0 96vw;
+    margin: 0;
+    font-size: 80%;
+    @include bodyFont(italic);
+    text-align: right;
+  }
+  nav.actions {
+    flex-basis: 100%;
+    background: none;
+
+    &::before {
+      background-image: linear-gradient(to right, hsl(227,14%,24%), hsla(227,14%,24%,0));
+    }
+    &::after {
+      background-image: linear-gradient(to left, hsl(227,14%,24%), hsla(227,14%,24%,0));
+    }
+    ul {
+      text-align: right;
+    }
+    li {
+      margin-right: 0.6vw;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    a {
+      @include button(dark);
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    nav.actions {
+      padding: 2vw;
+
+      &::before,
+      &::after {
+        display: none;
+      }
+      ul {
+        justify-content: flex-end;
+      }
+      li {
+        margin-right: 0;
+
+        &:nth-child(n+2) a {
+          border-left: none;
+        }
+      }
+
+      a {
+        padding: 1.6vw 2vw;
+        border-radius: 0;
+      }
+    }
+  }
+
+}

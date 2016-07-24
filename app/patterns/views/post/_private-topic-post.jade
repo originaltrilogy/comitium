@@ -1,7 +1,7 @@
 article.post(id="#{post.id}" data-post-id="#{post.id}" data-signature="#{ post.authorSignature ? 'true' : 'false' }")
   header
     a.avatar(href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
-      img(src="#{config.comitium.staticAssetUrl}avatars/#{post.authorID}.jpg")
+      img(src="avatars/#{post.authorID}.jpg")
     dl
       dt.author Author
       dd.author

@@ -41,7 +41,7 @@ dl {
 dt {
   float: left;
   clear: left;
-  min-width: 34vw;
+  width: 34vw;
   @include bodyFont(normal, 600);
 
   &::after {
