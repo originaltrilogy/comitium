@@ -638,18 +638,16 @@ section {
   }
 
   &.preview {
-    h2 {
-      margin: 0 2vw;
-    }
     article {
       padding: 4vw 0;
       border-bottom: 1px solid hsl(227,14%,18%);
 
       h3.title {
         @include titleFont;
+        margin: 4vw;
       }
       section.content {
-        margin-bottom: 0;
+        margin-bottom: 4vw !important;
       }
     }
   }
@@ -2121,6 +2119,17 @@ a.avatar {
       }
       p {
         margin-bottom: 1.6rem;
+      }
+    }
+    &.preview {
+      article {
+        h3.title {
+          margin: 2.4rem;
+        }
+        section.content {
+          margin: 2.4rem !important;
+          padding: 0;
+        }
       }
     }
     &.form {
