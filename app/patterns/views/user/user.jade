@@ -47,16 +47,16 @@ if moderateUser
           each log in ipHistory
             li #{log.ip}
       else
-        p No IP addresses associated with this user
+        p There are no IP addresses associated with this user.
     section.ip-matches
-      p Users with at least one matching IP:
       if usersWithMatchingIPs.length
+        p Users with at least one matching IP:
         ul
           each user in usersWithMatchingIPs
             li
               a(href="user/#{user.url}/id/#{user.id}") #{user.username}
       else
-        p No matching users
+        p No other users have matching IPs.
 
 section.posts
   if posts
