@@ -207,7 +207,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
         section.description {
           position: relative;
-          flex: 1 1 auto;
+          flex: 0 1 62rem;
           margin-right: 3.2rem;
         }
         h3 {
@@ -324,6 +324,7 @@ body[data-controller="discussion"][data-view="discussion"] {
 
     section.announcements {
       article {
+        min-height: 0;
         padding: 1.2rem 2.4rem;
       }
     }

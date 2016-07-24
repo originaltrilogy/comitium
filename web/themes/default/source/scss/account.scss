@@ -4,7 +4,7 @@
 
 body[data-controller="account"] {
 
-  section.form.avatar {
+  section.avatar {
     a.avatar {
       float: left;
       margin: 5vw 4vw 4vw;
@@ -20,15 +20,6 @@ body[data-controller="account"] {
       ul.data {
         & > li {
           &.textarea {
-            margin-right: 20vw;
-            margin-left: 20vw;
-
-            label {
-              margin: 0;
-            }
-            p.label-note {
-              margin: 1vw 0 0;
-            }
             textarea {
               padding: 2vw 3vw;
             }
@@ -36,7 +27,7 @@ body[data-controller="account"] {
         }
       }
     }
-    section.form.avatar {
+    section.avatar {
       a.avatar {
         margin-left: 20vw;
       }
@@ -56,15 +47,6 @@ body[data-controller="account"] {
       ul.data {
         & > li {
           &.textarea {
-            margin-right: 26rem;
-            margin-left: 26rem;
-
-            label {
-              margin: 0;
-            }
-            p.label-note {
-              margin: 1rem 0 0;
-            }
             textarea {
               padding: 2rem;
             }
@@ -72,13 +54,15 @@ body[data-controller="account"] {
         }
       }
     }
-    section.form.avatar {
+    li.signature {
+      margin-top: 3.2rem;
+    }
+    section.avatar {
       a.avatar {
-        margin: 5rem 2rem 4rem 26rem;
+        margin: 3.2rem 1.6rem 4rem 2.4rem;
       }
       & > p {
-        margin-top: 6.5rem;
-        margin-right: 26rem;
+        margin: 5.6rem;
       }
     }
   }

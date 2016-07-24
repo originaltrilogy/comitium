@@ -9,8 +9,10 @@ article.post(id="#{post.id}" data-post-id="#{post.id}" data-signature="#{ post.a
           = post.author
       dt.time Time
       dd.time
-        time
-          = post.createdFormatted
+        if !post.editorID
+          time #{post.createdFormatted}
+        else
+          time #{post.createdFormatted} <span class="edited">— <a href="post/id/#{post.id}">Edited #{post.modifiedFormatted}</a></span>
   section.content.post
     != post.html
   if post.editorID

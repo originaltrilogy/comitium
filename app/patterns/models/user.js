@@ -26,6 +26,7 @@ module.exports = {
   passwordResetDelete: passwordResetDelete,
   posts: posts,
   profile: profile,
+  matchingIPs: matchingIPs,
   topicViewTimes: topicViewTimes,
   urlExists: urlExists,
   updateEmail: updateEmail,
@@ -936,7 +937,7 @@ function posts(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select p."id", p."topicID", p."html", p."created", p."editorID", p."lockedByID", p."lockReason", t."titleHtml" as "topicTitle", t."url" as "topicUrl", u."username" as "author", u."url" as "authorUrl" ' +
+              'select p."id", p."topicID", p."html", p."created", p."modified", p."editorID", p."lockedByID", p."lockReason", t."titleHtml" as "topicTitle", t."url" as "topicUrl", u."username" as "author", u."url" as "authorUrl" ' +
               'from posts p ' +
               'join topics t on p."topicID" = t."id" ' +
               'join users u on p."userID" = u.id ' +
@@ -968,7 +969,7 @@ function posts(args, emitter) {
             for ( var property in output.posts[i] ) {
               if ( output.posts[i].hasOwnProperty(property) ) {
                 subset[i][property] = output.posts[i][property];
-                if ( property === 'created' ) {
+                if ( property === 'created' || property === 'modified' ) {
                   subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY h:mm A');
                 }
               }
@@ -1045,7 +1046,30 @@ function profile(args, emitter) {
   });
 }
 
-
+function matchingIPs(args, emitter) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select * from users where id in ( select "userID" from "userLogs" where ip in ( select distinct ip from "userLogs" where "userID" = ' + args.userID +  ' ) ) order by username asc;',
+        [ args.userID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', result.rows);
+            } else {
+              emitter.emit('ready', false);
+            }
+          }
+        }
+      );
+    }
+  });
+}
 
 function topicViewTimes(args, emitter) {
   app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {

@@ -605,7 +605,7 @@ function posts(args, emitter) {
           } else {
             client.query({
               name: 'topicPosts',
-              text: 'select p."id", p."html", p."created", p."editorID", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
+              text: 'select p."id", p."html", p."created", p."modified", p."editorID", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
               'from posts p ' +
               'join users u on p."userID" = u.id ' +
               'where p."topicID" = $1 and p.draft = false ' +
@@ -634,7 +634,7 @@ function posts(args, emitter) {
             for ( var property in output.posts[i] ) {
               if ( output.posts[i].hasOwnProperty(property) ) {
                 subset[i][property] = output.posts[i][property];
-                if ( property === 'created' ) {
+                if ( property === 'created' || property === 'modified' ) {
                   subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY h:mm A');
                 }
               }
