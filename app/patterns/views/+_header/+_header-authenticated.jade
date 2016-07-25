@@ -29,7 +29,7 @@ header(class="authenticated #{ updates ? 'updates' : '' }")
       li.sign-out
         a(href="sign-out") Sign Out
   section.status
-    if updates
+    if unread.privateTopics
       a.private-topics.updates(href="private-topics" title="You have unread private topics.") Private Topics
     else
       a.private-topics(href="private-topics" title="You have no private topic updates.") Private Topics
