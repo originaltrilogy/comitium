@@ -56,13 +56,13 @@ body[data-controller="announcement"] {
 
   // Subsequent pages
   &:not([data-page="1"]) {
+    article.post:first-of-type {
+      padding-top: 4vw;
+    }
     section.summary {
       &::before {
         display: none;
       }
-    }
-    nav.topic.actions {
-      margin: 4vw 0 2vw;
     }
   }
 
@@ -233,14 +233,6 @@ body[data-controller="announcement"] {
         nav.actions {
           background: none;
         }
-      }
-    }
-
-    // Subsequent pages
-    &:not([data-page="1"]) {
-      nav.pagination,
-      nav.topic.actions {
-        margin: 0 2vw;
       }
     }
 
@@ -524,14 +516,6 @@ body[data-controller="announcement"] {
         h1 {
           flex: 0 1 auto;
           margin-right: 0;
-        }
-      }
-    }
-
-    @media only screen and (min-width: 720px) {
-      section.summary {
-        h1 {
-          padding-bottom: 2.4rem;
         }
       }
     }
