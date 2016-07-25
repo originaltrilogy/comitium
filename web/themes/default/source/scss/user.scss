@@ -91,6 +91,9 @@ body[data-view="user"] {
       dd {
         margin-left: 24vw;
       }
+      section.notice {
+        margin: 4vw 0;
+      }
     }
     section.user-logs {
       display: flex;
@@ -149,6 +152,9 @@ body[data-view="user"] {
       }
       dd {
         margin-left: 12rem;
+      }
+      section.notice {
+        margin: 2.4rem 0;
       }
       nav.actions {
         margin-left: 0;

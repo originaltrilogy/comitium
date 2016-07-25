@@ -2,9 +2,6 @@ section.summary
   a.avatar(href="user/#{user.username}/id/#{user.id}")
     img(src="avatars/#{user.id}.jpg")
   h1 #{user.username}
-  if user.group === "Banned Users"
-    section.notice.banned
-      p This user has been banned.
   dl
     dt User Group
     dd #{user.group}
@@ -22,6 +19,9 @@ section.summary
       dt Web Site
       dd
         a(href="#{user.website}") #{user.website}
+  if user.group === "Banned Users"
+    section.notice.banned
+      p This user has been banned.
   nav.actions
     ul
       li.private-topic
