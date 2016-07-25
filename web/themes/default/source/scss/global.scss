@@ -956,7 +956,6 @@ form {
   textarea {
     width: 100%;
     padding: 4vw;
-    font-size: 130%;
     word-wrap: normal;
     border: 1px solid hsl(227,14%,30%);
     border-radius: 1vw;
@@ -976,7 +975,6 @@ form {
 
   textarea {
     font-family: monospace;
-    font-size: 90%;
     padding: 3vw;
 
     &[name="title"] {
@@ -1674,7 +1672,6 @@ a.avatar {
     }
     textarea {
       padding: 2vw 3vw;
-      font-size: 100%;
 
       &[name="title"] {
         height: 11vw;
@@ -2218,7 +2215,6 @@ a.avatar {
     textarea {
       padding: 0.8rem 1.2rem;
       border-radius: 0.4rem;
-      font-size: 120%;
     }
     textarea {
       padding: 2rem 2.4rem;
