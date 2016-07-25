@@ -670,7 +670,7 @@ body[data-controller="discussions"][data-view="discussions"],
 body[data-controller="discussion"][data-view="discussion"],
 body[data-controller="topic"][data-view="topic"],
 body[data-controller="topic"][data-view="private-topic"],
-// body[data-controller="announcements"][data-view="announcements"],
+body[data-controller="announcements"][data-view="announcements"],
 body[data-controller="announcement"][data-view="announcement"] {
   section.summary {
     &::before {

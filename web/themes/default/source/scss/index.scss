@@ -3,11 +3,21 @@
 ///////////////////
 
 body[data-view="index"] {
+  article {
+    display: block;
+  }
   time {
     display: block;
-    margin: 4vw auto 8vw;
+    margin: 0 auto 4vw;
     font-size: 85%;
     text-align: center;
     color: #acacac;
+  }
+
+  @media only screen and (min-width: 720px) {
+    time {
+      margin: 1.6rem auto 3.2rem;
+      font-size: 100%;
+    }
   }
 }
