@@ -256,7 +256,7 @@ function editForm(params, context, emitter) {
                 message: 'No valid form action received'
               });
               break;
-            case 'Preview':
+            case 'Preview post':
               emitter.emit('ready', {
                 content: {
                   preview: {
