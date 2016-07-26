@@ -26,7 +26,7 @@
     "moment-timezone": "~0.5.4",
     "nodemailer": "~2.3.2",
     "numeral": "~1.5.3",
-    "pg": "~4.5.5",
+    "pg": "~6.0.3",
     "slug": "~0.9.1"
   },
   "devDependencies": {
