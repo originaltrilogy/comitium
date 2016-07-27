@@ -77,7 +77,8 @@ function handler(params, context, emitter) {
                       url: app.config.comitium.basePath
                     }
                   },
-                  pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, stats.topics)
+                  pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, stats.topics),
+                  previousAndNext: app.toolbox.helpers.previousAndNext('subscriptions', params.url.page, stats.topics),
                 };
 
                 if ( topics && app.size(topics) ) {

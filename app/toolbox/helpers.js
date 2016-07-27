@@ -173,7 +173,8 @@ function previousAndNext(baseUrl, currentPage, itemCount) {
         currentPage: parseInt(currentPage, 10),
         lastPage: Math.ceil( parseInt(itemCount, 10) / 25 ),
         pages: {}
-      };
+      },
+      output = false;
 
   if ( pagination.currentPage > 1 ) {
     pagination.pages.previous = {
@@ -181,6 +182,7 @@ function previousAndNext(baseUrl, currentPage, itemCount) {
       url: baseUrl + '/page/' + ( pagination.currentPage - 1 ),
       text: 'Previous page (' + ( pagination.currentPage - 1 ).toString() + ')'
     };
+    output = true;
   }
 
   if ( pagination.currentPage !== pagination.lastPage ) {
@@ -189,7 +191,12 @@ function previousAndNext(baseUrl, currentPage, itemCount) {
       url: baseUrl + '/page/' + ( pagination.currentPage + 1 ),
       text: 'Next page (' + ( pagination.currentPage + 1 ).toString() + ')'
     };
+    output = true;
   }
 
-  return pagination;
+  if ( output ) {
+    return pagination;
+  } else {
+    return false;
+  }
 }
