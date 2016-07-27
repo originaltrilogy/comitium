@@ -17,11 +17,9 @@ section.form.post-lock
       li.notify.checkbox
         input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
         label(for="notify") Notify the author
-  
+
     ul.actions
       li.primary.report
         input(name="formAction" type="submit" value="Lock this post")
-      li.secondary.cancel
-        a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
 
 != include.post

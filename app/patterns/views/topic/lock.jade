@@ -18,9 +18,7 @@ section.form.topic-lock
       li.notify.checkbox
         input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
         label(for="notify") Notify members following this topic
-  
+
     ul.actions
       li.primary.report
         input(name="formAction" type="submit" value="Lock this topic")
-      li.secondary.cancel
-        a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back

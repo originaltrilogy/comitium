@@ -14,11 +14,9 @@ section.form.post-report
         label(for="reason")
           | Why are you reporting this post?
         textarea#reason(name="reason" rows="4" required) #{form.reason}
-  
+
     ul.actions
       li.primary.report
         input(name="formAction" type="submit" value="Send report")
-      li.secondary.cancel
-        a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
 
 != include.post
