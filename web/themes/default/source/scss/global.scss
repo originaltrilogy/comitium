@@ -824,12 +824,6 @@ article {
     background-color: hsl(227,14%, 20%);
   }
 
-  &:last-child {
-    &::after {
-      display: none;
-    }
-  }
-
   &.unread,
   &.updated {
     position: relative;

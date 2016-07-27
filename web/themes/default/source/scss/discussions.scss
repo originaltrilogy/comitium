@@ -18,6 +18,11 @@ body[data-controller="discussions"] {
     }
     section.categories {
       article {
+        &:last-child {
+          &::after {
+            display: none;
+          }
+        }
         section.description {
           flex: 0 0 72vw;
           margin-right: 4vw;
