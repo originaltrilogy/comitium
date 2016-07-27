@@ -2164,6 +2164,18 @@ a.avatar {
     }
   }
 
+  body[data-controller="private-topics"][data-view="private-topics"],
+  body[data-controller="subscriptions"][data-view="subscriptions"],
+  body[data-controller="announcements"][data-view="announcements"] {
+    section.summary {
+      h1,
+      & > p {
+        flex-basis: 100%;
+        margin-right: 0;
+      }
+    }
+  }
+
   article {
     align-items: center;
     min-height: 9.2rem;
