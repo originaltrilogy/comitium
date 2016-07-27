@@ -1,6 +1,6 @@
 {
   "name": "comitium",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Forum software for Node.js",
   "author": {
     "name": "Jay Sylvester",
@@ -17,14 +17,14 @@
     "start-prod": "node ./app/start-prod.js"
   },
   "dependencies": {
-    "bcrypt": "~0.8.5",
+    "bcrypt": "~0.8.7",
     "citizen": "~0.7.0",
-    "gm": "^1.22.0",
+    "gm": "~1.22.0",
     "markdown-it": "~7.0.0",
-    "markdown-it-emoji": "~1.1.0",
-    "moment": "~2.13.0",
+    "markdown-it-emoji": "~1.2.0",
+    "moment": "~2.14.1",
     "moment-timezone": "~0.5.4",
-    "nodemailer": "~2.3.2",
+    "nodemailer": "~2.5.0",
     "numeral": "~1.5.3",
     "pg": "~6.0.3",
     "slug": "~0.9.1"
