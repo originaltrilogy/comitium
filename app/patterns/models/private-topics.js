@@ -217,6 +217,10 @@ function breadcrumbs() {
     a: {
       name: 'Home',
       url: app.config.comitium.basePath
+    },
+    b: {
+      name: 'Discussion Categories',
+      url: 'discussions'
     }
   };
 }
