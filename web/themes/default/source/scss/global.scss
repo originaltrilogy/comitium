@@ -591,13 +591,12 @@ section {
     }
 
     blockquote {
-      margin: 4vw 0 6vw;
-      padding: 4vw;
+      margin: 4vw 2vw;
+      padding: 0 4vw;
       overflow: hidden;
       font-size: 90%;
       color: #d2d2d2;
-      border: 1px dotted hsl(227,15%,29%);
-      border-radius: 1vw;
+      border-left: 2px solid hsl(227,15%,50%);
 
       > blockquote {
         font-size: 100%;
@@ -609,13 +608,8 @@ section {
       *:last-child {
         margin-bottom: 0;
       }
-      p > a:first-child[href^="post/"] {
-        display: block;
-        width: 120%;
-        padding: 2vw 4vw 3vw;
-        margin-left: -4vw;
-        margin-top: -4vw;
-        background-color: hsl(227,14%,18%);
+      p {
+        margin: 2vw 0;
       }
       dl, ol, ul {
         margin-left: 8vw;
@@ -1136,11 +1130,11 @@ nav.actions {
 
   &::before {
     left: 0;
-    background-image: linear-gradient(to right, hsl(227,14%,20%), hsla(227,14%,20%,0));
+    background-image: linear-gradient(to right, hsl(227,13%,16%), hsla(227,13%,16%,0));
   }
   &::after {
     right: 0;
-    background-image: linear-gradient(to left, hsl(227,14%,20%), hsla(227,14%,20%,0));
+    background-image: linear-gradient(to left, hsl(227,13%,16%), hsla(227,13%,16%,0));
   }
 
   ul {
@@ -1175,6 +1169,7 @@ nav.actions {
 // Avatars
 a.avatar {
   display: block;
+  position: relative;
   margin: 0;
   width: 12vw;
   height: 12vw;
@@ -1185,6 +1180,27 @@ a.avatar {
   img {
     width: 100%;
     height: 100%;
+  }
+}
+
+.banned {
+  a.avatar {
+    border: 1vw solid hsl(0,80%,50%);
+
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 5vw;
+      left: -0.5vw;
+      width: 11vw;
+      height: 1vw;
+      transform: rotate(45deg);
+      background: hsl(0,80%,50%);
+    }
+  }
+  a[rel="author"] {
+    text-decoration: line-through;
   }
 }
 
@@ -1495,18 +1511,12 @@ a.avatar {
         margin-left: 6vw;
       }
       blockquote {
-        margin: 4vw 0;
-        padding: 3vw;
-        border-radius: 0.5vw;
+        margin: 3vw 1vw;
+        padding: 0 2vw;
 
         dl, ol, ul {
           margin-left: 6vw;
         }
-        p > a:first-child[href^="post/"] {
-        width: 120%;
-        padding: 2vw 4vw 1vw;
-        margin-left: -5vw;
-      }
       }
     }
     &.form {
@@ -2047,20 +2057,11 @@ a.avatar {
         margin: 3rem 4rem;
       }
       blockquote {
-        margin: 2.4rem 0;
-        padding: 2rem;
-        border-radius: 4px;
+        margin: 2.4rem 1.2rem;
+        padding: 0 1.6rem;
 
-        & > blockquote {
-          margin: 0;
-        }
         p {
           margin: 1.6rem 0;
-        }
-        p > a:first-child[href^="post/"] {
-          padding: 2rem 3.2rem 1.2rem;
-          margin-left: -4rem;
-          margin-top: -3rem;
         }
         dl, ol, ul {
           margin-left: 4rem;

@@ -43,6 +43,8 @@ body[data-controller="post"] {
 
 // Global post styles
 article.post {
+  background-color: hsl(227,15%,20%);
+
   p.edited {
     flex: 0 0 96vw;
     margin: 0;
@@ -55,10 +57,10 @@ article.post {
     background: none;
 
     &::before {
-      background-image: linear-gradient(to right, hsl(227,14%,24%), hsla(227,14%,24%,0));
+      background-image: linear-gradient(to right, hsl(227,15%,20%), hsla(227,15%,20%,0));
     }
     &::after {
-      background-image: linear-gradient(to left, hsl(227,14%,24%), hsla(227,14%,24%,0));
+      background-image: linear-gradient(to left, hsl(227,15%,20%), hsla(227,15%,20%,0));
     }
     ul {
       text-align: right;
