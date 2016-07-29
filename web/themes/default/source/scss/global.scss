@@ -582,7 +582,6 @@ section {
       // Legacy OT.com emoticons
       &[src^="i/expressions/"] {
         display: inline;
-        width: auto;
         vertical-align: middle;
       }
     }
@@ -597,11 +596,11 @@ section {
       overflow: hidden;
       font-size: 90%;
       color: #d2d2d2;
-      background-color: hsl(227,14%,18%);
+      border: 1px dotted hsl(227,15%,29%);
+      border-radius: 1vw;
 
       > blockquote {
         font-size: 100%;
-        border: 1px solid hsl(227,14%,16%);
       }
 
       *:first-child {
@@ -616,7 +615,7 @@ section {
         padding: 2vw 4vw 3vw;
         margin-left: -4vw;
         margin-top: -4vw;
-        background-color: hsl(227,14%,17%);
+        background-color: hsl(227,14%,18%);
       }
       dl, ol, ul {
         margin-left: 8vw;
@@ -1122,7 +1121,7 @@ nav.actions {
   margin-left: 0;
   margin-right: 0;
   overflow: hidden;
-  background-color: hsl(227,14%, 20%);
+  background: hsl(227,13%,16%);
 
   &::before,
   &::after {
@@ -1457,11 +1456,6 @@ a.avatar {
     text-transform: none;
   }
 
-  p {
-    margin-top: 4vw;
-    margin-bottom: 4vw;
-  }
-
   nav.breadcrumbs {
     padding: 2vw 4vw 0;
     font-size: 2.4vw;
@@ -1503,6 +1497,7 @@ a.avatar {
       blockquote {
         margin: 4vw 0;
         padding: 3vw;
+        border-radius: 0.5vw;
 
         dl, ol, ul {
           margin-left: 6vw;
@@ -2054,6 +2049,7 @@ a.avatar {
       blockquote {
         margin: 2.4rem 0;
         padding: 2rem;
+        border-radius: 4px;
 
         & > blockquote {
           margin: 0;

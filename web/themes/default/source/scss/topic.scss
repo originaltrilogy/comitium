@@ -68,6 +68,7 @@ body[data-controller="announcement"] {
 
   article.post {
     padding: 0;
+    background-color: hsl(227,15%,20%);
 
     header {
       flex: 0 0 100%;
@@ -76,7 +77,7 @@ body[data-controller="announcement"] {
       padding: 2vw;
       position: relative;
       text-align: left;
-      background: hsl(225, 13%, 18%);
+      background: hsl(227,13%,16%);
 
       a.avatar {
         flex: 0 0 12vw;
@@ -119,7 +120,7 @@ body[data-controller="announcement"] {
       color: hsl(0,0%,70%);
       line-height: 1.6;
       overflow: auto;
-      background-color: hsl(227,15%,27%);
+      background-color: hsl(227,15%,22%);
 
       > * {
         float: right;
@@ -247,6 +248,7 @@ body[data-controller="announcement"] {
     }
     article.post {
       padding: 2vw;
+      background: none;
 
       header {
         padding: 0;
@@ -282,7 +284,7 @@ body[data-controller="announcement"] {
         padding: 3vw;
         border-top-right-radius: 0.5vw;
         border-top-left-radius: 0.5vw;
-        background-color: hsla(227,15%,20%,1);
+        background-color: hsl(227,15%,20%);
 
         &::before {
           content: '';
@@ -312,7 +314,6 @@ body[data-controller="announcement"] {
       section.content.signature {
         margin-left: 10vw;
         padding: 2vw;
-        background-color: hsl(227,15%,22%);
 
         > * {
           margin: 0 0 1.6rem;
