@@ -571,7 +571,6 @@ section {
       padding: 0;
       @include bodyFont(italic);
     }
-
     & > img,
     * > img {
       width: 100%;
@@ -585,27 +584,57 @@ section {
         vertical-align: middle;
       }
     }
-
     dl, ol, ul {
       margin-left: 8vw;
     }
-
     blockquote {
-      margin: 4vw 2vw;
-      padding: 0 4vw;
+      position: relative;
       overflow: hidden;
       font-size: 90%;
       color: #d2d2d2;
-      border-left: 2px solid hsl(227,15%,50%);
+      margin: 4vw;
+      padding: 3vw 4vw;
+      background-color: hsl(227,15%,22%);
+      border-top: 1px solid hsl(227,15%,40%);
+      border-bottom: 1px solid hsl(227,15%,40%);
 
-      > blockquote {
+      > blockquote,
+      > blockquote > blockquote,
+      > blockquote > blockquote > blockquote,
+      > blockquote > blockquote > blockquote > blockquote,
+      > blockquote > blockquote > blockquote > blockquote > blockquote,
+      > blockquote > blockquote > blockquote > blockquote > blockquote > blockquote {
+        display: none;
         font-size: 100%;
       }
-
+      &.expanded {
+        > blockquote,
+        > blockquote > blockquote,
+        > blockquote > blockquote > blockquote,
+        > blockquote > blockquote > blockquote > blockquote,
+        > blockquote > blockquote > blockquote > blockquote > blockquote,
+        > blockquote > blockquote > blockquote > blockquote > blockquote > blockquote {
+          display: block;
+        }
+      }
+      a.expand {
+        @include button('lightGhost');
+        position: absolute;
+        top: 2vw;
+        right: 1.6vw;
+        padding: 1.5vw 2.5vw;
+        font-size: 80%;
+      }
+      &:first-child {
+        margin-top: 0.8rem;
+      }
       *:first-child {
         margin-top: 0;
       }
       *:last-child {
+        margin-bottom: 0;
+      }
+      &.nested *:nth-child(n-1) {
         margin-bottom: 0;
       }
       p {
@@ -1511,9 +1540,14 @@ a.avatar {
         margin-left: 6vw;
       }
       blockquote {
-        margin: 3vw 1vw;
-        padding: 0 2vw;
+        margin: 3vw;
+        padding: 2vw 2.5vw;
 
+        a.expand {
+          top: 1.2vw;
+          right: 1vw;
+          padding: 1vw 1.5vw;
+        }
         dl, ol, ul {
           margin-left: 6vw;
         }
@@ -2057,9 +2091,15 @@ a.avatar {
         margin: 3rem 4rem;
       }
       blockquote {
-        margin: 2.4rem 1.2rem;
-        padding: 0 1.6rem;
+        margin: 1.6rem;
+        padding: 1.6rem;
 
+        a.expand {
+          top: 0.8rem;
+          right: 0.7rem;
+          padding: 0.8rem 1.2rem;
+          font-size: 90%;
+        }
         p {
           margin: 1.6rem 0;
         }

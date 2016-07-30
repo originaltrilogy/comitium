@@ -74,22 +74,10 @@ $gNoUpdates: '\eac4';
     }
   } @else if $color == 'lightGhost' {
     color: hsl(227,100%,90%);
-		box-shadow: 0 0 0 0.4vw hsl(227,100%,90%) inset;
-    @media only screen and (min-width: 600px) {
-			box-shadow: 0 0 0 0.2vw hsl(227,100%,90%) inset;
-    }
-    @media only screen and (min-width: 720px) {
-			box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
-    }
+		box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
   } @else if $color == 'darkGhost' {
     color: hsl(227,14%,25%);
-		box-shadow: 0 0 0 0.4vw hsl(227,14%,25%) inset;
-    @media only screen and (min-width: 600px) {
-			box-shadow: 0 0 0 0.2vw hsl(227,14%,25%) inset;
-    }
-    @media only screen and (min-width: 720px) {
-			box-shadow: 0 0 0 1px hsl(227,14%,25%) inset;
-    }
+		box-shadow: 0 0 0 1px hsl(227,14%,25%) inset;
   }
 }
 

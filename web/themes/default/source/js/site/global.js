@@ -83,6 +83,29 @@ CF.global = ( function (Modernizr, CF) {
       // methods.bindInternalLinks();
     },
 
+    collapseQuotes: function () {
+      var quotes = document.body.querySelectorAll('section.content > blockquote'),
+          bindButton = function (quote) {
+            var expandButton = document.createElement('a');
+
+            expandButton.setAttribute('href', '#');
+            expandButton.classList.add('expand');
+            expandButton.innerHTML = 'Expand';
+            expandButton.addEventListener('click', function (e) {
+              e.preventDefault();
+              quote.classList.toggle('expanded');
+            });
+            quote.classList.add('nested');
+            quote.appendChild(expandButton);
+          };
+
+      for ( var i = 0; i < quotes.length; i++ ) {
+        if ( quotes[i].querySelector('blockquote') ) {
+          bindButton(quotes[i]);
+        }
+      }
+    },
+
     menu: function (args) {
       var body = document.querySelector('body'),
           menu,
@@ -401,6 +424,7 @@ CF.global = ( function (Modernizr, CF) {
 
   //  Public methods
   return {
+    collapseQuotes: methods.collapseQuotes,
     init: methods.init,
     menu: methods.menu,
     hasClass: methods.hasClass,

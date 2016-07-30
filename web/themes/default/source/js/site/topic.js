@@ -39,6 +39,7 @@ CF.topic = ( function (Modernizr, CF) {
   methods = {
 
 		init: function () {
+      CF.global.collapseQuotes();
       // methods.postContent();
 		},
 
