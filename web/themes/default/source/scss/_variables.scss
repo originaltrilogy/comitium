@@ -21,6 +21,15 @@ $gNoUpdates: '\eac4';
 //        Mixins       //
 /////////////////////////
 
+// Preserve original color values
+@function hsl($h, $s, $l) {
+  @return unquote('hsl(#{$h}, #{$s}, #{$l})');
+}
+
+@function hsla($h, $s, $l, $a) {
+  @return unquote('hsla(#{$h}, #{$s}, #{$l}, #{$a})');
+}
+
 @mixin bodyFont($style: normal, $weight: 400) {
 	font-family: 'Open Sans', 'sans serif';
 	font-style: $style;
