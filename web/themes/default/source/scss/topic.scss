@@ -44,6 +44,12 @@ body[data-controller="announcement"] {
     }
   }
 
+  section.posts {
+    > nav.actions {
+      border-bottom: 2px solid hsl(227,14%,26%);
+    }
+  }
+
   // First page
   &[data-page="1"] {
     article.post:first-of-type {

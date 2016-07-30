@@ -598,6 +598,9 @@ section {
       border-top: 1px solid hsl(227,15%,40%);
       border-bottom: 1px solid hsl(227,15%,40%);
 
+      &:first-child {
+        margin-top: 1vw;
+      }
       > blockquote,
       > blockquote > blockquote,
       > blockquote > blockquote > blockquote,
@@ -617,6 +620,14 @@ section {
           display: block;
         }
       }
+      &.nested {
+        > blockquote:first-child {
+          margin-top: 7.5vw;
+        }
+        *:nth-child(n-1) {
+          margin-bottom: 0;
+        }
+      }
       a.expand {
         @include button('lightGhost');
         position: absolute;
@@ -625,16 +636,10 @@ section {
         padding: 1.5vw 2.5vw;
         font-size: 80%;
       }
-      &:first-child {
-        margin-top: 0.8rem;
-      }
       *:first-child {
         margin-top: 0;
       }
       *:last-child {
-        margin-bottom: 0;
-      }
-      &.nested *:nth-child(n-1) {
         margin-bottom: 0;
       }
       p {
@@ -902,7 +907,7 @@ h2 {
   @include titleFont();
   text-align: center;
   color: hsla(0,0%,75%,1);
-  background-color: hsl(227,14%, 20%);
+  background-color: hsl(227,14%,20%);
 }
 
 h3, h4, h5, h6 {
@@ -1144,7 +1149,7 @@ nav.actions {
   margin-left: 0;
   margin-right: 0;
   overflow: hidden;
-  background: hsl(227,13%,16%);
+  background: hsl(227,14%,20%);
 
   &::before,
   &::after {
@@ -1159,11 +1164,11 @@ nav.actions {
 
   &::before {
     left: 0;
-    background-image: linear-gradient(to right, hsl(227,13%,16%), hsla(227,13%,16%,0));
+    background-image: linear-gradient(to right, hsl(227,14%,20%), hsla(227,14%,20%,0));
   }
   &::after {
     right: 0;
-    background-image: linear-gradient(to left, hsl(227,13%,16%), hsla(227,13%,16%,0));
+    background-image: linear-gradient(to left, hsl(227,14%,20%), hsla(227,14%,20%,0));
   }
 
   ul {
@@ -1543,6 +1548,11 @@ a.avatar {
         margin: 3vw;
         padding: 2vw 2.5vw;
 
+        &.nested {
+          > blockquote:first-child {
+            margin-top: 4vw;
+          }
+        }
         a.expand {
           top: 1.2vw;
           right: 1vw;
@@ -2094,6 +2104,11 @@ a.avatar {
         margin: 1.6rem;
         padding: 1.6rem;
 
+        &.nested {
+          > blockquote:first-child {
+            margin-top: 2.8rem;
+          }
+        }
         a.expand {
           top: 0.8rem;
           right: 0.7rem;
