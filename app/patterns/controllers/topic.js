@@ -677,11 +677,14 @@ function startPrivate(params, context, emitter) {
 
 
 function startPrivateForm(params, context, emitter) {
-  var inviteesArray = [];
+  var inviteesList = '',
+      inviteesArray = [];
 
   if ( params.request.method === 'POST' ) {
-    if ( params.form.invitees.length ) {
-      inviteesArray = params.form.invitees.split(',');
+    inviteesList = params.form.invitees.replace(/(^[,\s]+)|([,\s]+$)/g, '');
+
+    if ( inviteesList.length ) {
+      inviteesArray = inviteesList.split(',');
 
       for ( var i = 0; i < inviteesArray.length; i += 1 ) {
         inviteesArray[i] = inviteesArray[i].trim();
