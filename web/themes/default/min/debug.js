@@ -1064,6 +1064,11 @@ CF.global = ( function (Modernizr, CF) {
             expandButton.addEventListener('click', function (e) {
               e.preventDefault();
               quote.classList.toggle('expanded');
+              if ( expandButton.innerHTML === 'Expand' ) {
+                expandButton.innerHTML = 'Collapse';
+              } else {
+                expandButton.innerHTML = 'Expand';
+              }
             });
             quote.classList.add('nested');
             quote.appendChild(expandButton);
