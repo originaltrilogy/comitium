@@ -18,11 +18,6 @@ body[data-controller="discussions"] {
     }
     section.categories {
       article {
-        &:last-child {
-          &::after {
-            display: none;
-          }
-        }
         section.description {
           flex: 0 0 72vw;
           margin-right: 4vw;
@@ -81,6 +76,11 @@ body[data-controller="discussions"] {
 
           &:first-of-type {
             margin-top: 0.8rem;
+          }
+          &:last-child {
+            &::after {
+              display: none;
+            }
           }
           section.description {
             flex: 1 1 auto;

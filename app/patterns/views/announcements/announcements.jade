@@ -4,17 +4,17 @@ section.summary
     p !{discussion.description}
   nav
     include ../partials/pagination
+    //- Remove this logic and put it back above li.new-announcement after the subscribe functionality is working
+    if session.moderateDiscussions
+      nav.actions
+        ul
+          //- if session.moderateDiscussions
+          li.new-announcement
+            a(href="topic/action/startAnnouncement") Make an announcement
+          //- li.subscribe
+          //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
 
 section.topics
-  //- Remove this logic and put it back above li.new-announcement after the subscribe functionality is working
-  if session.moderateDiscussions
-    nav.actions
-      ul
-        //- if session.moderateDiscussions
-        li.new-announcement
-          a(href="topic/action/startAnnouncement") Make an announcement
-        //- li.subscribe
-        //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
   if topics
     each topic in topics
       include ../partials/announcement

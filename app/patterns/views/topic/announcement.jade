@@ -14,7 +14,6 @@ if topic.lockedByID
       p.reason !{topic.lockReason}
 
 section.posts
-  include ../partials/topic-actions
   if posts
     each post in posts
       include ../post/_topic-post

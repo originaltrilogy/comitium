@@ -56,12 +56,6 @@ article.post {
     flex-basis: 100%;
     background: none;
 
-    &::before {
-      background-image: linear-gradient(to right, hsl(227,15%,20%), hsla(227,15%,20%,0));
-    }
-    &::after {
-      background-image: linear-gradient(to left, hsl(227,15%,20%), hsla(227,15%,20%,0));
-    }
     ul {
       text-align: right;
     }

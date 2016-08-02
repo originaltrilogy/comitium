@@ -5,6 +5,8 @@
 body[data-view="user"] {
 
   section.summary {
+    padding-bottom: 0;
+
     a.avatar {
       margin: 4vw auto;
       width: 40vw;
@@ -15,10 +17,18 @@ body[data-view="user"] {
       text-align: center;
     }
     section.notice {
-      margin-bottom: 6vw;
+      margin-bottom: 4vw;
+    }
+    dt {
+      width: 44vw;
+      text-align: right;
+    }
+    dd {
+      width: 44vw;
+      margin-left: 48vw;
     }
     nav.actions {
-      display: block;
+      margin-top: 0;
     }
   }
 
@@ -27,22 +37,16 @@ body[data-view="user"] {
   }
 
   article.post {
-    padding: 5vw 0 0;
+    padding: 0;
 
-    &:first-of-type {
-      &::before {
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 4vw;
-        height: 1px;
-        width: calc(100% - 8vw);
-        background-color: hsl(227,14%, 20%);
-      }
+    &::after {
+      display: none;
     }
-
     header {
+      flex: 0 0 100%;
+      padding: 2vw 0;
+      background: hsl(227,13%,16%);
+
       dl {
         display: block;
         margin-bottom: 0;
@@ -80,18 +84,7 @@ body[data-view="user"] {
         flex: 1 0 50%;
         padding-top: 4vw;
       }
-      dl {
-        display: block;
-        width: 50%;
-        margin: 0 auto;
-      }
-      dt {
-        width: 24vw;
-      }
-      dd {
-        margin-left: 24vw;
-      }
-      section.notice {
+      nav.actions {
         margin: 4vw 0;
       }
     }
@@ -118,8 +111,6 @@ body[data-view="user"] {
       }
     }
     article.post {
-      padding-top: 2vw;
-
       nav.actions {
         padding-right: 3vw;
         background: none;
@@ -134,30 +125,28 @@ body[data-view="user"] {
       padding: 4rem 0;
 
       a.avatar {
-        width: 16rem;
-        height: 16rem;
-        float: left;
-        margin-left: 2.4rem;
+        width: 12rem;
+        height: 12rem;
       }
       h1 {
-        margin-left: 20.8rem;
         padding: 1.2rem 0;
-        text-align: left;
       }
       dl {
-        margin-left: 20.8rem;
+        margin: 2.4rem 0 3.2rem;
       }
       dt {
-        width: 12rem;
+        width: 50%;
+        padding-right: 0.8rem;
       }
       dd {
-        margin-left: 12rem;
+        width: 50%;
+        padding-left: 2.4rem;
       }
       section.notice {
         margin: 2.4rem 0;
       }
       nav.actions {
-        margin-left: 0;
+        margin: 2.4rem 0 0;
       }
     }
     nav.pagination {
@@ -173,8 +162,6 @@ body[data-view="user"] {
       }
     }
     article.post {
-      padding-top: 1.6rem;
-
       &:first-of-type {
         &::before {
           left: 2.4rem;
@@ -182,8 +169,10 @@ body[data-view="user"] {
         }
       }
       header {
+        padding: 1.6rem 0;
+
         dl {
-          margin: 0 0 0 2.6rem;
+          margin: 0 2.4rem;
         }
         dt {
           width: 5.6rem;

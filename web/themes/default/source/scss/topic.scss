@@ -44,18 +44,17 @@ body[data-controller="announcement"] {
     }
   }
 
-  section.posts {
-    > nav.actions {
-      border-bottom: 2px solid hsl(227,14%,26%);
-    }
-  }
-
   // First page
-  &[data-page="1"] {
+  &[data-page="1"][data-action="handler"] {
     article.post:first-of-type {
+      background: hsl(227,14%,26%);
+
       header {
         position: absolute;
         left: -100vw;
+      }
+      section.content {
+        background: none;
       }
     }
   }
@@ -187,6 +186,12 @@ body[data-controller="announcement"] {
     }
   }
 
+  section.preview {
+    h2 {
+      border-bottom: 1px solid hsl(227,14%,30%);
+    }
+  }
+
   @media only screen and (min-width: 375px) {
     article.post {
       header {
@@ -223,11 +228,9 @@ body[data-controller="announcement"] {
       article.post:first-of-type {
         margin: 0 0 4vw;
         padding: 0;
-        background: hsl(227,14%,26%);
 
         section.content {
           margin: 0;
-          background: none;
 
           &::before {
             display: none;

@@ -1560,3 +1560,21 @@ CF.topic = ( function (Modernizr, CF) {
 
 // For now, the announcement library is the same as the topic library
 CF.announcement = CF.topic;
+
+CF.user = ( function (Modernizr, CF) {
+  'use strict';
+
+  var methods = {
+
+      init: function () {
+        CF.global.collapseQuotes();
+      }
+
+    };
+
+  //  Public methods
+  return {
+    init: methods.init
+  };
+
+})(Modernizr, CF);

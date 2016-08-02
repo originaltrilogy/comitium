@@ -12,6 +12,8 @@ section.summary
         ul
           li.new-topic
             a(href="topic/action/start/id/#{discussion.id}") Start a new topic
+          //- li.subscribe
+          //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
           if session.moderateDiscussions
             li.new-announcement
               a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
@@ -19,11 +21,6 @@ section.summary
 if announcements
   section.announcements
     h2 Announcements
-    if session.moderateDiscussions
-      nav.actions
-        ul
-          li.new-announcement
-            a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
     each topic in announcements
       article(class="topic announcement #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
         h3
@@ -31,17 +28,6 @@ if announcements
 
 section.topics
   h2 Topics
-  if discussion.id !== 1
-    nav.actions
-      ul
-        li.new-topic
-          a(href="topic/action/start/id/#{discussion.id}") Start a new topic
-        if !announcements && session.moderateDiscussions
-          li.new-announcement
-            a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
-        //- li.subscribe
-        //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
-
   if topics
     each topic in topics
       include ../partials/topic
