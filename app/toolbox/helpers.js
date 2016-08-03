@@ -87,13 +87,12 @@ function paginate(baseUrl, currentPage, itemCount) {
   // First page
   pagination.pages[1] = {
     number: 1,
-    // The first page's URL has no pagination added
-    url: baseUrl,
+    url: baseUrl + '/page/1',
     text: 'Page 1',
     isCurrentPage: pagination.currentPage === 1
   };
 
-  if ( pagination.currentPage <= 3 ) {
+  if ( pagination.currentPage <= 5 ) {
     for ( var i = 2; i <= pagination.lastPage; i++ ) {
       pagination.pages[i] = {
         number: i,
