@@ -64,7 +64,7 @@ function handler(params, context, emitter) {
     }
   }, function (output) {
     var topic = output.topic,
-        page, pageParameter, type, url;
+        page, type, url;
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
