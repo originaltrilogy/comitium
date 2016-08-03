@@ -64,7 +64,7 @@ function handler(params, context, emitter) {
     }
   }, function (output) {
     var topic = output.topic,
-        page, type, url;
+        page, pageParameter, type, url;
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
@@ -994,7 +994,7 @@ function replyForm(params, context, emitter) {
                 }
               }, function (output) {
                 var page = Math.ceil( ( topic.replies + 2 ) / 25 ),
-                    pageParameter = page !== 1 ? '/page/' + page : '',
+                    pageParameter = page === 1 ? '' : '/page/' + page,
                     controller = topic.discussionID === 2 ? 'announcement' : 'topic',
                     urlTitle = topic.private ? '' : '/' + topic.url,
                     replyUrl = params.route.parsed.protocol + app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '#' + output.reply.id,
