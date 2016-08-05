@@ -291,6 +291,12 @@ function insert(args, emitter) {
       reason: 'requiredFieldsEmpty',
       message: 'All fields are required.'
     });
+  } else if ( title.length > 120 ) {
+    emitter.emit('ready', {
+      success: false,
+      reason: 'titleLength',
+      message: 'Topic titles can\'t be longer than 120 characters.'
+    });
   } else {
 
     app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
