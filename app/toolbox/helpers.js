@@ -82,10 +82,11 @@ function paginate(baseUrl, currentPage, itemCount) {
         currentPage: parseInt(currentPage, 10),
         lastPage: Math.ceil( parseInt(itemCount, 10) / 25 ),
         pages: {}
-      };
+      },
+      i;
 
   if ( pagination.lastPage <= 5 ) {
-    for ( var i = 1; i <= pagination.lastPage; i++ ) {
+    for ( i = 1; i <= pagination.lastPage; i++ ) {
       pagination.pages[i] = {
         number: i,
         url: baseUrl + '/page/' + i,
@@ -111,33 +112,26 @@ function paginate(baseUrl, currentPage, itemCount) {
     };
 
     // Middle pages
+    var from, to;
+
     if ( pagination.currentPage <= 3 ) {
-      for ( var i = 2; i <= 4; i++ ) {
-        pagination.pages[i] = {
-          number: i,
-          url: baseUrl + '/page/' + i,
-          text: i.toString(),
-          isCurrentPage: i === pagination.currentPage
-        };
-      }
+      from = 2;
+      to = 4;
     } else if ( pagination.currentPage >= pagination.lastPage - 2 ) {
-      for ( var i = pagination.lastPage - 3; i <= pagination.lastPage - 1; i++ ) {
-        pagination.pages[i] = {
-          number: i,
-          url: baseUrl + '/page/' + i,
-          text: i.toString(),
-          isCurrentPage: i === pagination.currentPage
-        };
-      }
+      from = pagination.lastPage - 3;
+      to = pagination.lastPage - 1;
     } else {
-      for ( var i = pagination.currentPage - 1; i <= pagination.currentPage + 1; i++ ) {
-        pagination.pages[i] = {
-          number: i,
-          url: baseUrl + '/page/' + i,
-          text: i.toString(),
-          isCurrentPage: i === pagination.currentPage
-        };
-      }
+      from = pagination.currentPage - 1;
+      to = pagination.currentPage + 1;
+    }
+
+    for ( i = from; i <= to; i++ ) {
+      pagination.pages[i] = {
+        number: i,
+        url: baseUrl + '/page/' + i,
+        text: i.toString(),
+        isCurrentPage: i === pagination.currentPage
+      };
     }
   }
 
