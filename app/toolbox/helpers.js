@@ -84,81 +84,123 @@ function paginate(baseUrl, currentPage, itemCount) {
         pages: {}
       };
 
-  // First page
-  pagination.pages[1] = {
-    number: 1,
-    url: baseUrl + '/page/1',
-    text: 'Page 1',
-    isCurrentPage: pagination.currentPage === 1
-  };
-
-  if ( pagination.currentPage <= 5 ) {
-    for ( var i = 2; i <= pagination.lastPage; i++ ) {
+  if ( pagination.lastPage <= 5 ) {
+    for ( var i = 1; i <= pagination.lastPage; i++ ) {
       pagination.pages[i] = {
         number: i,
         url: baseUrl + '/page/' + i,
-        text: i.toString(),
-        isCurrentPage: i === pagination.currentPage
-      };
-
-      if ( i === 4 && pagination.lastPage > 4 ) {
-        break;
-      }
-    }
-
-    if ( pagination.lastPage > 4 ) {
-      pagination.pages.lastPage = {
-        number: pagination.lastPage,
-        url: baseUrl + '/page/' + pagination.lastPage,
-        text: pagination.lastPage.toString(),
-        isCurrentPage: pagination.currentPage === pagination.lastPage
-      };
-    }
-  } else if ( pagination.lastPage > 5 && pagination.currentPage >= pagination.lastPage - 2 ) {
-    for ( var i = pagination.lastPage - 3; i <= pagination.lastPage; i++ ) {
-      pagination.pages[i] = {
-        number: i,
-        url: baseUrl + '/page/' + i,
-        text: i.toString(),
+        text: i === 1 ? 'Page 1' : i.toString(),
         isCurrentPage: i === pagination.currentPage
       };
     }
   } else {
-    // Previous page
-    pagination.previousPage = pagination.currentPage - 1;
-    pagination.pages[pagination.previousPage] = {
-      number: pagination.previousPage,
-      url: baseUrl + '/page/' + pagination.previousPage,
-      text: pagination.previousPage.toString(),
-      isCurrentPage: false
+    // First page
+    pagination.pages[1] = {
+      number: 1,
+      url: baseUrl + '/page/1',
+      text: 'Page 1',
+      isCurrentPage: pagination.currentPage === 1
     };
-
-    // Current page
-    pagination.pages[pagination.currentPage] = {
-      number: pagination.currentPage,
-      url: baseUrl + '/page/' + pagination.currentPage,
-      text: pagination.currentPage.toString(),
-      isCurrentPage: true
-    };
-
-    // Next page
-    pagination.nextPage = pagination.currentPage + 1;
-    if ( pagination.nextPage < pagination.lastPage ) {
-      pagination.pages[pagination.nextPage] = {
-        number: pagination.nextPage,
-        url: baseUrl + '/page/' + pagination.nextPage,
-        text: pagination.nextPage.toString(),
-        isCurrentPage: false
-      };
-    }
 
     // Last page
     pagination.pages[pagination.lastPage] = {
       number: pagination.lastPage,
       url: baseUrl + '/page/' + pagination.lastPage,
-      text: pagination.lastPage.toString(),
-      isCurrentPage: false
+      text: pagination.lastPage,
+      isCurrentPage: pagination.currentPage === pagination.lastPage
     };
+
+    // Middle pages
+    if ( pagination.currentPage <= 3 ) {
+      for ( var i = 2; i <= 4; i++ ) {
+        pagination.pages[i] = {
+          number: i,
+          url: baseUrl + '/page/' + i,
+          text: i.toString(),
+          isCurrentPage: i === pagination.currentPage
+        };
+      }
+    } else if ( pagination.currentPage >= pagination.lastPage - 2 ) {
+      for ( var i = pagination.lastPage - 3; i <= pagination.lastPage - 1; i++ ) {
+        pagination.pages[i] = {
+          number: i,
+          url: baseUrl + '/page/' + i,
+          text: i.toString(),
+          isCurrentPage: i === pagination.currentPage
+        };
+      }
+    } else {
+      for ( var i = pagination.currentPage - 1; i <= pagination.currentPage + 1; i++ ) {
+        pagination.pages[i] = {
+          number: i,
+          url: baseUrl + '/page/' + i,
+          text: i.toString(),
+          isCurrentPage: i === pagination.currentPage
+        };
+      }
+    }
+
+    // Middle pages
+    // if ( pagination.currentPage === 5 ) {
+    //   if ( pagination.lastPage === 6 ) {
+    //     for ( var i = 3; i <= 5; i++ ) {
+    //       pagination.pages[i] = {
+    //         number: i,
+    //         url: baseUrl + '/page/' + i,
+    //         text: i === 1 ? 'Page 1' : i.toString(),
+    //         isCurrentPage: i === pagination.currentPage
+    //       };
+    //     }
+    //   } else {
+    //     for ( var i = 4; i <= 6; i++ ) {
+    //       pagination.pages[i] = {
+    //         number: i,
+    //         url: baseUrl + '/page/' + i,
+    //         text: i === 1 ? 'Page 1' : i.toString(),
+    //         isCurrentPage: i === pagination.currentPage
+    //       };
+    //     }
+    //   }
+    // } else {
+    //   if ( pagination.currentPage <= 2 ) {
+    //     for ( var i = 2; i <= 4; i++ ) {
+    //       pagination.pages[i] = {
+    //         number: i,
+    //         url: baseUrl + '/page/' + i,
+    //         text: i.toString(),
+    //         isCurrentPage: i === pagination.currentPage
+    //       };
+    //     }
+    //   } else if ( pagination.currentPage === pagination.lastPage ) {
+    //     for ( var i = pagination.currentPage - 3; i <= pagination.currentPage; i++ ) {
+    //       pagination.pages[i] = {
+    //         number: i,
+    //         url: baseUrl + '/page/' + i,
+    //         text: i.toString(),
+    //         isCurrentPage: i === pagination.currentPage
+    //       };
+    //     }
+    //   } else if ( pagination.currentPage === pagination.lastPage - 1 ) {
+    //     for ( var i = pagination.currentPage - 2; i <= pagination.currentPage; i++ ) {
+    //       pagination.pages[i] = {
+    //         number: i,
+    //         url: baseUrl + '/page/' + i,
+    //         text: i.toString(),
+    //         isCurrentPage: i === pagination.currentPage
+    //       };
+    //     }
+    //   } else {
+    //     for ( var i = pagination.currentPage - 1; i <= pagination.currentPage + 1; i++ ) {
+    //       pagination.pages[i] = {
+    //         number: i,
+    //         url: baseUrl + '/page/' + i,
+    //         text: i.toString(),
+    //         isCurrentPage: i === pagination.currentPage
+    //       };
+    //     }
+    //   }
+
+    // }
   }
 
   return pagination;
