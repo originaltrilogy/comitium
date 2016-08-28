@@ -139,68 +139,6 @@ function paginate(baseUrl, currentPage, itemCount) {
         };
       }
     }
-
-    // Middle pages
-    // if ( pagination.currentPage === 5 ) {
-    //   if ( pagination.lastPage === 6 ) {
-    //     for ( var i = 3; i <= 5; i++ ) {
-    //       pagination.pages[i] = {
-    //         number: i,
-    //         url: baseUrl + '/page/' + i,
-    //         text: i === 1 ? 'Page 1' : i.toString(),
-    //         isCurrentPage: i === pagination.currentPage
-    //       };
-    //     }
-    //   } else {
-    //     for ( var i = 4; i <= 6; i++ ) {
-    //       pagination.pages[i] = {
-    //         number: i,
-    //         url: baseUrl + '/page/' + i,
-    //         text: i === 1 ? 'Page 1' : i.toString(),
-    //         isCurrentPage: i === pagination.currentPage
-    //       };
-    //     }
-    //   }
-    // } else {
-    //   if ( pagination.currentPage <= 2 ) {
-    //     for ( var i = 2; i <= 4; i++ ) {
-    //       pagination.pages[i] = {
-    //         number: i,
-    //         url: baseUrl + '/page/' + i,
-    //         text: i.toString(),
-    //         isCurrentPage: i === pagination.currentPage
-    //       };
-    //     }
-    //   } else if ( pagination.currentPage === pagination.lastPage ) {
-    //     for ( var i = pagination.currentPage - 3; i <= pagination.currentPage; i++ ) {
-    //       pagination.pages[i] = {
-    //         number: i,
-    //         url: baseUrl + '/page/' + i,
-    //         text: i.toString(),
-    //         isCurrentPage: i === pagination.currentPage
-    //       };
-    //     }
-    //   } else if ( pagination.currentPage === pagination.lastPage - 1 ) {
-    //     for ( var i = pagination.currentPage - 2; i <= pagination.currentPage; i++ ) {
-    //       pagination.pages[i] = {
-    //         number: i,
-    //         url: baseUrl + '/page/' + i,
-    //         text: i.toString(),
-    //         isCurrentPage: i === pagination.currentPage
-    //       };
-    //     }
-    //   } else {
-    //     for ( var i = pagination.currentPage - 1; i <= pagination.currentPage + 1; i++ ) {
-    //       pagination.pages[i] = {
-    //         number: i,
-    //         url: baseUrl + '/page/' + i,
-    //         text: i.toString(),
-    //         isCurrentPage: i === pagination.currentPage
-    //       };
-    //     }
-    //   }
-
-    // }
   }
 
   return pagination;
