@@ -21,7 +21,7 @@
 ////      fonts      ////
 /////////////////////////
 
-@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,700|Oswald:300,400';
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,700|Titillium+Web:400,600';
 
 
 /////////////////////////
@@ -792,7 +792,7 @@ dl.content-stats {
       float: none;
       width: auto;
       order: 2;
-      @include titleFont(normal, 300);
+      @include titleFont($weight: 300);
       line-height: 1.5;
       text-transform: lowercase;
 
@@ -809,7 +809,7 @@ dl.content-stats {
     &:nth-child(n+2) {
       margin: 0;
       order: 1;
-      @include titleFont(normal, 500);
+      @include titleFont();
       line-height: 1;
     }
     &:nth-child(n+4) {
@@ -2257,9 +2257,6 @@ a.avatar {
       height: 6.4rem;
       padding: 1.6rem .4rem;
 
-      dt:first-child {
-        font-size: 110%;
-      }
       dd:nth-child(n+2) {
         font-size: 120%;
       }

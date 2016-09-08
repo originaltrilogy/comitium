@@ -37,8 +37,8 @@ $gNoUpdates: '\eac4';
   text-rendering: optimizeLegibility;
 }
 
-@mixin titleFont($style: normal, $weight: 400) {
-	font-family: 'Oswald', 'Open Sans', 'sans serif';
+@mixin titleFont($style: normal, $weight: 600) {
+	font-family: 'Titillium Web', 'Open Sans', 'sans serif';
 	font-style: $style;
 	font-weight: $weight;
   text-rendering: optimizeLegibility;
