@@ -1,9 +1,10 @@
-section.summary
-  h1 Discussion Categories
-  p Welcome to the Original Trilogy forums! Talk about Star Wars fan preservations and fan edits, or just hang out in our Off Topic section.
-  dl.content-stats
-    dt Topics
-    dd #{topicCount}
+header
+  section.summary
+    h1 Discussion Categories
+    p Welcome to the Original Trilogy forums! Talk about Star Wars fan preservations and fan edits, or just hang out in our Off Topic section.
+    dl.content-stats
+      dt Topics
+      dd #{topicCount}
 
 if include && include.announcements
   section.announcements
@@ -35,5 +36,5 @@ section.categories
                 img(src="avatars/#{discussion.lastPostAuthorID}.jpg")
               a(href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
                 = discussion.lastPostAuthor
-              |  posted 
+              |  posted
               time #{discussion.lastPostCreatedFormatted}

@@ -12,13 +12,11 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     color: white;
   }
   section.announcements {
-    article.topic {
-      &:last-child {
-        &::after {
-          display: none;
-        }
-      }
-    }
+    margin-bottom: 8vw;
+  }
+  section.topics {
+    margin-top: 4vw;
+    padding: 0 4vw;
   }
   article.topic {
     section.description {
@@ -64,7 +62,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     }
     p.last-post {
       position: absolute;
-      right: 4vw;
+      right: 0;
       bottom: 5vw;
       width: 42vw;
       font-size: 75%;
@@ -287,11 +285,14 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 body[data-controller="discussion"][data-view="discussion"] {
 
   section.announcements {
-    article {
-      padding: 3vw 4vw;
+    padding: 2vw 4vw;
+    background: hsl(227,14%,22%);
 
-      &::after {
-          margin-top: 3vw;
+    article {
+      padding: 2vw 0;
+
+      &:last-child {
+        border-bottom: none;
       }
     }
   }

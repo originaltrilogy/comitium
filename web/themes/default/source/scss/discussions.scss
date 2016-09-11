@@ -6,17 +6,23 @@ body[data-controller="discussions"] {
 
   &[data-view="discussions"] {
     section.announcements {
+      padding: 2vw 4vw;
+      background: hsl(227,14%,22%);
+
       article {
-        padding: 3vw 4vw;
+        padding: 2vw 0;
 
         &:last-child {
-          &::after {
-            display: none;
-          }
+          border-bottom: none;
         }
       }
     }
     section.categories {
+      padding: 0 4vw;
+    }
+    section.category {
+      margin: 8vw 0;
+
       article {
         section.description {
           flex: 0 0 72vw;
@@ -42,13 +48,13 @@ body[data-controller="discussions"] {
     @media only screen and (min-width: 600px) {
       section.announcements {
         article {
-          padding: 2vw 3vw;
+          padding: 1.5vw 0;
         }
       }
       section.categories {
         article {
           section.description {
-            flex: 0 0 78vw;
+            flex: 0 0 76vw;
           }
         }
       }
@@ -62,26 +68,28 @@ body[data-controller="discussions"] {
 
     @media only screen and (min-width: 720px) {
       section.announcements {
+        padding: 1.2rem 2.4rem;
+
+        & > * {
+          max-width: 96rem;
+          margin-left: auto;
+          margin-right: auto;
+        }
         article {
           min-height: 0;
-          padding: 1.2rem 2.4rem;
+          padding: 0.8rem 0;
         }
       }
       section.categories {
+        padding: 0 2.4rem;
+
         section.category {
-          padding-bottom: 2.4rem;
+          max-width: 96rem;
+          margin: 2.4rem auto 6.4rem;
         }
         article {
           flex-wrap: nowrap;
 
-          &:first-of-type {
-            margin-top: 0.8rem;
-          }
-          &:last-child {
-            &::after {
-              display: none;
-            }
-          }
           section.description {
             flex: 1 1 auto;
             order: 1;
