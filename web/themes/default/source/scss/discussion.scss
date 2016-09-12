@@ -11,9 +11,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     margin: 4vw 4vw 6vw;
     color: white;
   }
-  section.announcements {
-    margin-bottom: 8vw;
-  }
   section.topics {
     margin-top: 4vw;
     padding: 0 4vw;
@@ -153,7 +150,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
     article.topic {
       section.description {
-        flex-basis: 78vw;
+        flex-basis: 76vw;
       }
       h3,
       &.has-replies h3 {
@@ -202,12 +199,25 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   @media only screen and (min-width: 720px) {
 
     section.announcements {
+      & > * {
+        max-width: 96rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
       article {
-        padding: 2rem 0;
+        min-height: 0;
+        padding: 0.8rem 0;
       }
     }
 
     section.topics {
+      margin-top: 2.4rem;
+      padding: 0 2.4rem;
+
+      > * {
+        max-width: 96rem;
+        margin: auto;
+      }
       article.topic {
         flex-wrap: nowrap;
 
@@ -285,15 +295,11 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 body[data-controller="discussion"][data-view="discussion"] {
 
   section.announcements {
-    padding: 2vw 4vw;
+    padding: 2vw 4vw 6vw;
     background: hsl(227,14%,22%);
 
     article {
       padding: 2vw 0;
-
-      &:last-child {
-        border-bottom: none;
-      }
     }
   }
 
@@ -301,7 +307,7 @@ body[data-controller="discussion"][data-view="discussion"] {
 
     section.announcements {
       article {
-        padding: 2vw 3vw;
+        padding: 1.5vw 0;
       }
     }
 
@@ -327,9 +333,11 @@ body[data-controller="discussion"][data-view="discussion"] {
   @media only screen and (min-width: 720px) {
 
     section.announcements {
+      padding: 0.4rem 2.4rem 2.4rem;
+
       article {
         min-height: 0;
-        padding: 1.2rem 2.4rem;
+        padding: 0.8rem 0;
       }
     }
 

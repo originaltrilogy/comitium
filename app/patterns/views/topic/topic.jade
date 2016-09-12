@@ -1,7 +1,8 @@
-if !url.page || url.page === '1'
-  include ../partials/topic-summary-first-page
-else
-  include ../partials/topic-summary
+header
+  if !url.page || url.page === '1'
+    include ../partials/topic-summary-first-page
+  else
+    include ../partials/topic-summary
 
 if topic.lockedByID
   section.notice.locked

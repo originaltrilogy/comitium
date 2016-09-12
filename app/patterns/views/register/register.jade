@@ -1,6 +1,7 @@
-section.summary
-  h1 Register with OT.com
-  p Create an account and we'll send your activation e-mail right away.
+header
+  section.summary
+    h1 Register with OT.com
+    p Create an account and we'll send your activation e-mail right away.
 
 if register && register.message
   section.notice.error
@@ -25,7 +26,7 @@ section.form.sign-up
         li.tos.checkbox.required
           input#tos(name="tos" type="checkbox" value="true" checked=form.tos required)
           label(for="tos") I have read and agree to the forum <a href="terms-of-service.html">Terms of Service</a>.
-    
+
       ul.actions
         li.primary
           input(name="formAction" type="submit" value="Register")
