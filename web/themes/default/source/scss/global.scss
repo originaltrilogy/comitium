@@ -729,6 +729,12 @@ nav.pagination {
     flex: 0 0 auto;
     margin: 0 1.5vw;
 
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
     &.current {
       a {
         color: hsl(227,41%,13%);
@@ -1469,6 +1475,10 @@ a.avatar {
     }
   }
 
+  nav.pagination li {
+    margin: 0 1vw;
+  }
+
   section {
     &.content {
       & > img,
@@ -1526,9 +1536,6 @@ a.avatar {
           font-size: 100%;
           padding: 1.6vw 2.4vw;
         }
-      }
-      nav.pagination li {
-        margin: 0 1vw;
       }
       nav.actions {
         display: flex;
@@ -1952,10 +1959,6 @@ a.avatar {
     text-align: initial;
   }
 
-  main {
-    margin: 0 0 2rem;
-  }
-
   a.avatar {
     width: 6.4rem;
     height: 6.4rem;
@@ -2034,6 +2037,10 @@ a.avatar {
     }
   }
 
+  nav.pagination li {
+    margin: 0 0.4rem;
+  }
+
   section {
     &.content {
       margin: 2.6rem 0;
@@ -2086,6 +2093,16 @@ a.avatar {
       p {
         font-size: 1.6rem;
       }
+      > nav {
+        justify-content: space-between;
+
+        nav.pagination {
+          margin-left: 0;
+        }
+        nav.actions {
+          margin-right: 0;
+        }
+      }
       nav.pagination,
       nav.actions {
         margin: 3.2rem 2.4rem 0;
@@ -2094,9 +2111,6 @@ a.avatar {
           padding: 1rem 1.4rem;
           font-size: 91%;
         }
-      }
-      nav.pagination li {
-        margin: 0 0.4rem;
       }
     }
     &.notice {
@@ -2161,7 +2175,7 @@ a.avatar {
       h1,
       & > p {
         flex-basis: auto;
-        margin-right: 13.6rem;
+        margin-right: 12rem;
       }
       p {
         min-height: 0;
@@ -2326,6 +2340,17 @@ a.avatar {
   }
 
   nav.previous-and-next {
+    li {
+      &:first-child {
+        margin-right: 1.6rem;
+      }
+      &:last-child {
+        margin-left: 1.6rem;
+      }
+      &:only-child {
+        margin: 0;
+      }
+    }
     a {
       padding: 1.2rem 1.6rem;
     }
@@ -2336,7 +2361,7 @@ a.avatar {
   }
 
   footer {
-    padding-bottom: 4rem;
+    padding: 4rem;
     border: none;
 
     a.home {
@@ -2353,9 +2378,10 @@ a.avatar {
       }
     }
     section.copyright {
-      max-width: 96rem;
+      max-width: 60rem;
       margin: 10rem auto 0;
       font-size: 90%;
+      text-align: center;
 
       p {
         margin: 2rem 0;

@@ -8,7 +8,6 @@ body[data-controller="announcement"] {
   section.summary {
     a.avatar {
       display: inline-block;
-      margin-left: 4vw;
       vertical-align: middle;
     }
     dl.byline {
@@ -23,6 +22,11 @@ body[data-controller="announcement"] {
       dd {
         display: inline-block;
         margin-left: 0;
+        max-width: 32vw;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        color: hsl(227,41%,80%);
 
         &.date {
           color: hsl(0,0%,67%);
@@ -47,7 +51,7 @@ body[data-controller="announcement"] {
   // First page
   &[data-page="1"][data-action="handler"] {
     article.post:first-of-type {
-      background: hsl(227,14%,26%);
+      background: hsl(227,14%,22%);
 
       header {
         position: absolute;
@@ -125,7 +129,7 @@ body[data-controller="announcement"] {
       color: hsl(0,0%,70%);
       line-height: 1.6;
       overflow: auto;
-      background-color: hsl(227,15%,22%);
+      background-color: hsl(227,14%,19%);
 
       > * {
         float: right;
@@ -293,7 +297,7 @@ body[data-controller="announcement"] {
         padding: 3vw;
         border-top-right-radius: 0.5vw;
         border-top-left-radius: 0.5vw;
-        background-color: hsl(227,15%,20%);
+        background-color: hsl(227,14%,18%);
 
         &::before {
           content: '';
@@ -304,7 +308,7 @@ body[data-controller="announcement"] {
           position: absolute;
           top: 0.7vw;
           left: -1vw;
-          background-color: hsla(227,15%,20%,1);
+          background-color: hsl(227,14%,18%);
         }
       }
       p.edited {
@@ -312,7 +316,7 @@ body[data-controller="announcement"] {
       }
       nav.actions {
         margin: 0 0 0 10vw;
-        background-color: hsla(227,15%,20%,1);
+        background-color: hsl(227,14%,18%);
       }
       &[data-signature="false"] {
         nav.actions {
@@ -377,6 +381,8 @@ body[data-controller="announcement"] {
   @media only screen and (min-width: 720px) {
 
     article.post {
+      max-width: 78.8rem;
+      margin: auto;
       padding: 1.6rem;
 
       header {
@@ -463,19 +469,19 @@ body[data-controller="announcement"] {
       section.summary {
         h1 {
           flex-basis: 64vw;
-          margin-left: 18vw;
+          margin-left: 14vw;
           padding: 3vw 3vw 0;
         }
         a.avatar {
           margin: 0;
           position: absolute;
           top: 4.5vw;
-          left: 4vw;
+          left: 0;
           width: 14vw;
           height: 14vw;
         }
         dl.byline {
-          margin: 0.5vw 4vw 0 21vw;
+          margin: 0.5vw 4vw 0 17vw;
           font-size: 110%;
           flex: 1 1 100%;
         }
@@ -490,26 +496,26 @@ body[data-controller="announcement"] {
           flex: 1 1 54rem;
           min-height: 4.4rem;
           padding: 0;
-          margin: 0.8rem 12.8rem 0;
+          margin: 1.6rem 12.8rem 0 10.8rem;
         }
         a.avatar {
           top: 2rem;
-          left: 2.4rem;
           width: 8.8rem;
           height: 8.8rem;
         }
         dl.byline {
-          margin: 0.4rem 12.8rem 0;
+          margin: 0.4rem 12.8rem 0 10.8rem;
         }
       }
       article.post:first-of-type {
+        max-width: none;
         margin-bottom: 3.6rem;
 
         section.content.post {
           // Matches the width of replies
-          max-width: 83.4rem;
+          max-width: 64rem;
           margin: 0 auto;
-          padding: 2.4rem 4.8rem;
+          padding: 4.8rem 0;
         }
       }
 
