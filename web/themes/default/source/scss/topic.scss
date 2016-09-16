@@ -243,6 +243,7 @@ body[data-controller="announcement"] {
         }
         section.content.post {
           padding: 4vw;
+          border: none;
         }
         nav.actions {
           background: none;
@@ -295,9 +296,12 @@ body[data-controller="announcement"] {
         position: relative;
         margin: -4.5vw 0 0 10vw;
         padding: 3vw;
+        background-color: hsl(227,14%,18%);
+        border-top: 1px solid hsl(227,14%,23%);
+        border-right: 1px solid hsl(227,14%,23%);
+        border-left: 1px solid hsl(227,14%,23%);
         border-top-right-radius: 0.5vw;
         border-top-left-radius: 0.5vw;
-        background-color: hsl(227,14%,18%);
 
         &::before {
           content: '';
@@ -306,9 +310,11 @@ body[data-controller="announcement"] {
           height: 2vw;
           transform: rotate(45deg);
           position: absolute;
-          top: 0.7vw;
+          top: 0.4vw;
           left: -1vw;
           background-color: hsl(227,14%,18%);
+          border-bottom: 1px solid hsl(227,14%,23%);
+          border-left: 1px solid hsl(227,14%,23%);
         }
       }
       p.edited {
@@ -317,9 +323,12 @@ body[data-controller="announcement"] {
       nav.actions {
         margin: 0 0 0 10vw;
         background-color: hsl(227,14%,18%);
+        border-right: 1px solid hsl(227,14%,23%);
+        border-left: 1px solid hsl(227,14%,23%);
       }
       &[data-signature="false"] {
         nav.actions {
+          border-bottom: 1px solid hsl(227,14%,23%);
           border-bottom-right-radius: 0.5vw;
           border-bottom-left-radius: 0.5vw;
         }
@@ -327,6 +336,9 @@ body[data-controller="announcement"] {
       section.content.signature {
         margin-left: 10vw;
         padding: 2vw;
+        border-right: 1px solid hsl(227,14%,23%);
+        border-bottom: 1px solid hsl(227,14%,23%);
+        border-left: 1px solid hsl(227,14%,23%);
 
         > * {
           margin: 0 0 1.6rem;
@@ -381,7 +393,7 @@ body[data-controller="announcement"] {
   @media only screen and (min-width: 720px) {
 
     article.post {
-      max-width: 78.8rem;
+      max-width: 86.8rem;
       margin: auto;
       padding: 1.6rem;
 
@@ -404,7 +416,7 @@ body[data-controller="announcement"] {
         }
       }
       section.content.post {
-        margin: -5rem 0 0 9.2rem;
+        margin: -4.8rem 0 0 9.2rem;
         padding: 2rem;
         border-top-right-radius: 4px;
         border-top-left-radius: 4px;
@@ -412,8 +424,8 @@ body[data-controller="announcement"] {
         &::before {
           width: 1.8rem;
           height: 1.8rem;
-          top: 0.5rem;
-          left: -0.8rem;
+          top: 0.3rem;
+          left: -0.9rem;
         }
       }
       nav.actions {
@@ -513,7 +525,7 @@ body[data-controller="announcement"] {
 
         section.content.post {
           // Matches the width of replies
-          max-width: 64rem;
+          max-width: 72rem;
           margin: 0 auto;
           padding: 4.8rem 0;
         }

@@ -151,7 +151,7 @@ body > header {
   display: flex;
   width: 100%;
   background-color: hsl(227,14%, 18%);
-  border: 1px solid hsl(227,14%,14%);
+  border-bottom: 1px solid hsl(227,14%,14%);
 
   a.home {
     width: 32vw;
@@ -914,7 +914,8 @@ a.to-the-top {
 
 footer {
   padding: 4vw;
-  background: hsl(227,14%,22%);
+  background-color: hsl(227,14%, 18%);
+  border-top: 1px solid hsl(227,14%,14%);
 
   a.home {
     width: 50vw;
@@ -1590,7 +1591,7 @@ a.avatar {
       padding: 2vw 0 4vw;
 
       h1 {
-        flex: 0 0 82vw;
+        flex: 0 0 74vw;
       }
       &::before {
         display: none;
@@ -2096,10 +2097,10 @@ a.avatar {
       > nav {
         justify-content: space-between;
 
-        nav.pagination {
+        nav:first-child {
           margin-left: 0;
         }
-        nav.actions {
+        nav:last-child {
           margin-right: 0;
         }
       }
@@ -2174,11 +2175,11 @@ a.avatar {
 
       h1,
       & > p {
-        flex-basis: auto;
-        margin-right: 12rem;
+        flex-basis: 100%;
+        padding-right: 12rem;
       }
       p {
-        min-height: 0;
+        min-height: 4.2rem;
       }
       dl.content-stats {
         top: 2rem;
@@ -2362,7 +2363,6 @@ a.avatar {
 
   footer {
     padding: 4rem;
-    border: none;
 
     a.home {
       width: 24rem;
