@@ -1,6 +1,6 @@
-article(id="#{post.id}" class="post #{ post.authorGroupID === 6 ? 'banned' : '' }" data-post-id="#{post.id}" data-signature="#{ post.authorSignature ? 'true' : 'false' }")
+article(id="#{post.id}" class="post" data-post-id="#{post.id}" data-signature="#{ post.authorSignature ? 'true' : 'false' }")
   header
-    a.avatar(href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
+    a(class="avatar #{ post.authorGroupID === 6 ? 'banned' : '' }" href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
       img(src="avatars/#{post.authorID}.jpg")
     dl
       dt.author Author

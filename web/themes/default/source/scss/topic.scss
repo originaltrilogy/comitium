@@ -583,6 +583,7 @@ body[data-controller="topic"][data-view="private-topic"] {
         }
       }
       &:last-child {
+        position: relative;
         margin-left: 0;
 
         &::before {
@@ -592,6 +593,7 @@ body[data-controller="topic"][data-view="private-topic"] {
           content: '.';
           // Prevents the period from becoming a widow on the next line
           position: absolute;
+          top: 0;
         }
       }
 

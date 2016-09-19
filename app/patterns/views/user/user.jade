@@ -1,6 +1,6 @@
 header
   section.summary
-    a.avatar(href="user/#{user.username}/id/#{user.id}")
+    a(class="avatar #{ user.groupID === 6 ? 'banned' : '' }" href="user/#{user.username}/id/#{user.id}")
       img(src="avatars/#{user.id}.jpg")
     h1 #{user.username}
     if user.group === "Banned Users"

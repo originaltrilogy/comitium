@@ -458,18 +458,20 @@ section {
   }
 
   &.notice {
-    padding: 4vw 4vw 4vw 14vw;
+    padding: 4vw;
     position: relative;
-    clear: both;
-    background-color: hsl(227,13%,23%);
+    text-align: center;
+    background-color: hsl(227,14%,18%);
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: hsl(227,14%,40%);
 
     &::before {
       @include icon($gNotice);
+      display: block;
+      margin-bottom: 2vw;
       color: hsl(227,100%,90%);
-      position: absolute;
-      top: 4vw;
-      left: 4vw;
-      font-size: 6vw;
+      font-size: 10vw;
     }
 
     & > * {
@@ -481,6 +483,7 @@ section {
     &.locked,
     &.banned {
       background: hsl(0,40%,50%);
+      border: none;
 
       &::before,
       a {
@@ -659,7 +662,7 @@ section {
 
   &.form {
     margin: 6vw auto;
-    padding: 0 3vw;
+    padding: 0 4vw;
 
     h2 {
       margin-bottom: 2vw;
@@ -685,7 +688,7 @@ section {
 // If the page doesn't have breadcrumbs...
 body[data-breadcrumbs="false"] {
   section.summary {
-    padding: 3vw 4vw 5vw;
+    padding: 3vw 0 5vw;
   }
 }
 
@@ -1187,24 +1190,33 @@ a.avatar {
     width: 100%;
     height: 100%;
   }
+
+  &.banned {
+    border: none;
+
+    img {
+      position: relative;
+      z-index: 1;
+      // Helps mask image artifacts from the avatar peeking outside the edges
+      border-radius: 50%;
+      padding: 2px;
+    }
+    &::before {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      background-image: url(/themes/default/images/buster.svg);
+      background-size: cover;
+    }
+  }
 }
 
 .banned {
-  a.avatar {
-    border: 1vw solid hsl(0,80%,50%);
-
-    &::after {
-      content: '';
-      display: block;
-      position: absolute;
-      top: 3.5vw;
-      left: -3vw;
-      width: 14vw;
-      height: 1vw;
-      transform: rotate(45deg);
-      background: hsl(0,80%,50%);
-    }
-  }
   a[rel="author"] {
     text-decoration: line-through;
   }
@@ -1547,7 +1559,9 @@ a.avatar {
     }
     &.notice {
       &::before {
-        top: 3vw;
+        display: inline;
+        vertical-align: middle;
+        margin-right: 2vw;
         font-size: 5vw;
       }
       &.locked::before {
@@ -1584,7 +1598,8 @@ a.avatar {
   body[data-controller="private-topics"][data-view="private-topics"],
   body[data-controller="topic"][data-view="private-topic"],
   body[data-controller="announcements"][data-view="announcements"],
-  body[data-controller="announcement"][data-view="announcement"] {
+  body[data-controller="announcement"][data-view="announcement"],
+  body[data-controller="subscriptions"][data-view="subscriptions"] {
     section.summary {
       display: flex;
       flex-wrap: wrap;
@@ -1762,10 +1777,8 @@ a.avatar {
   a.avatar {
     width: 8vw;
     height: 8vw;
-  }
 
-  .banned {
-    a.avatar {
+    &.banned {
       border-width: 0.5vw;
 
       &::after {
@@ -1925,7 +1938,7 @@ a.avatar {
         &.authenticated {
           nav {
             ul.account {
-              top: 6rem;
+              top: 7rem;
               border-radius: 0.3rem;
 
               &.active {
@@ -1963,10 +1976,8 @@ a.avatar {
   a.avatar {
     width: 6.4rem;
     height: 6.4rem;
-  }
 
-  .banned {
-    a.avatar {
+    &.banned {
       border-width: 0.4rem;
 
       &::after {
@@ -2115,7 +2126,7 @@ a.avatar {
       }
     }
     &.notice {
-      padding: 2.4rem 3.6rem 2.4rem 9.6rem;
+      padding: 2.4rem;
 
       &.success {
         padding-left: 4rem;
@@ -2125,8 +2136,7 @@ a.avatar {
         }
       }
       &::before {
-        top: 2rem;
-        left: 4rem;
+        margin-right: 1.6rem;
         font-size: 3.2rem;
       }
       &.locked::before {
@@ -2193,8 +2203,10 @@ a.avatar {
     section.summary {
       h1,
       & > p {
-        flex-basis: 100%;
-        margin-right: 0;
+        padding-right: 0;
+      }
+      p {
+        min-height: 0;
       }
     }
   }
