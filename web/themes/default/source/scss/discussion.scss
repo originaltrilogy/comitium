@@ -201,8 +201,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     section.announcements {
       & > * {
         max-width: 96rem;
-        margin-left: auto;
-        margin-right: auto;
+        margin: auto;
       }
       article {
         min-height: 0;

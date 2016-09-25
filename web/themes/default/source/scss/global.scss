@@ -383,6 +383,9 @@ nav.breadcrumbs {
   background-color: hsl(227,14%, 19%);
   font-size: 110%;
 
+  ul {
+    line-height: 1.4;
+  }
   li {
     display: inline-block;
     position: absolute;
@@ -661,8 +664,7 @@ section {
   }
 
   &.form {
-    margin: 6vw auto;
-    padding: 0 4vw;
+    margin: 6vw 4vw;
 
     h2 {
       margin-bottom: 2vw;
@@ -1528,7 +1530,7 @@ a.avatar {
       }
     }
     &.summary {
-      padding: 4vw 0;
+      padding-top: 2vw;
 
       p {
         font-size: 2.6vw;
@@ -1603,7 +1605,6 @@ a.avatar {
     section.summary {
       display: flex;
       flex-wrap: wrap;
-      padding: 2vw 0 4vw;
 
       h1 {
         flex: 0 0 74vw;
@@ -2100,7 +2101,8 @@ a.avatar {
       }
     }
     &.summary {
-      padding: 2.6rem 0 3.2rem;
+      margin: auto 2.4rem;
+      padding: 1.2rem 0 2.4rem;
 
       p {
         font-size: 1.6rem;
@@ -2158,8 +2160,8 @@ a.avatar {
       }
     }
     &.form {
-      margin: 3.2rem auto;
-      padding: 0 2.4rem;
+      max-width: 96rem;
+      margin: 2.4rem;
     }
   }
 
@@ -2180,9 +2182,6 @@ a.avatar {
   body[data-controller="announcements"][data-view="announcements"],
   body[data-controller="announcement"][data-view="announcement"] {
     section.summary {
-      margin: auto 2.4rem;
-      padding: 1.2rem 0 2.4rem;
-
       h1,
       & > p {
         flex-basis: 100%;
@@ -2405,19 +2404,14 @@ a.avatar {
 
 @media only screen and (min-width: 1008px) {
 
-  // Discussion, discussions, and topic view summaries
-  body[data-controller="discussions"][data-view="discussions"],
-  body[data-controller="discussion"][data-view="discussion"],
-  body[data-controller="topic"][data-view="topic"],
-  body[data-controller="private-topics"][data-view="private-topics"],
-  body[data-controller="topic"][data-view="private-topic"],
-  body[data-controller="subscriptions"][data-view="subscriptions"],
-  body[data-controller="announcements"][data-view="announcements"],
-  body[data-controller="announcement"][data-view="announcement"] {
-    section.summary {
-      max-width: 96rem;
-      margin: auto;
-    }
+  section.summary {
+    max-width: 96rem;
+    margin: auto;
+  }
+
+  section.form {
+    max-width: 96rem;
+    margin: 2.4rem auto;
   }
 
 }
