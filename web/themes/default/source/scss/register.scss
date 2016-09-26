@@ -1,0 +1,21 @@
+////////////////////////
+//  register pattern  //
+////////////////////////
+
+@media only screen and (min-width: 600px) {
+  body[data-controller="register"] {
+    section.form {
+      max-width: 32rem;
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+}
+
+@media only screen and (min-width: 720px) {
+  body[data-controller="register"] {
+    section.form {
+      margin: 4.8rem auto 2.4rem;
+    }
+  }
+}

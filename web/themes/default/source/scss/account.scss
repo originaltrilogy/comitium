@@ -16,6 +16,11 @@ body[data-controller="account"] {
 
   @media only screen and (min-width: 600px) {
 
+    section.form {
+      max-width: 32rem;
+      margin-right: auto;
+      margin-left: auto;
+    }
     form {
       ul.data {
         & > li {
@@ -43,6 +48,9 @@ body[data-controller="account"] {
 
   @media only screen and (min-width: 720px) {
 
+    section.form {
+      margin: 4.8rem auto 2.4rem;
+    }
     form {
       ul.data {
         & > li {

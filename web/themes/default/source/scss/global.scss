@@ -151,7 +151,7 @@ body > header {
   display: flex;
   width: 100%;
   background-color: hsl(227,14%, 18%);
-  border-bottom: 1px solid hsl(227,14%,14%);
+  box-shadow: 0 0 2vw hsl(227,13%,12%);
 
   a.home {
     width: 32vw;
@@ -1007,10 +1007,8 @@ form {
   input[type="checkbox"],
   input[type="radio"] {
     display: inline-block;
-    margin-top: 0;
     width: 10vw;
     height: 10vw;
-    vertical-align: middle;
     position: relative;
   }
 
@@ -1025,7 +1023,7 @@ form {
         width: 10vw;
         height: 10vw;
         line-height: 10vw;
-        font-size: 130%;
+        font-size: 8vw;
         text-align: center;
         color: hsl(227,100%,90%);
       }
@@ -1053,7 +1051,7 @@ form {
     margin: 0;
 
     & > li {
-      margin: 1vw 0 9vw;
+      margin: 2vw 0 8vw;
       list-style: none;
 
       &:last-child {
@@ -1079,17 +1077,16 @@ form {
       }
       &.checkbox,
       &.radio {
-        position: relative;
-        min-height: 10vw;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
 
-        &:last-child {
-          margin-bottom: 0;
+        input {
+          flex: 0 0 auto;
         }
         label {
-          display: inline-block;
-          max-width: 78vw;
-          margin: 0 0 0 2vw;
-          vertical-align: middle;
+          flex: 1 1 auto;
+          margin: 0 0 0 4vw;
           @include bodyFont;
           font-size: 100%;
           line-height: 1.4;
@@ -1293,16 +1290,6 @@ a.avatar {
 
   p.last-post {
     font-size: 100%;
-  }
-
-  form {
-    input[type="checkbox"] {
-      &:checked {
-        &::after {
-          font-size: 160%;
-        }
-      }
-    }
   }
 
   a.to-the-top {
@@ -1681,6 +1668,7 @@ a.avatar {
       &:checked::after {
         width: 6vw;
         height: 6vw;
+        font-size: 5vw;
         line-height: 6vw;
       }
     }
@@ -1696,7 +1684,7 @@ a.avatar {
     }
     ul.data {
       & > li {
-        margin: 1vw 0 6vw;
+        margin: 2vw 0 6vw;
 
         &.select {
           &::after {
@@ -1704,9 +1692,6 @@ a.avatar {
             bottom: 1vw;
             font-size: 4vw;
           }
-        }
-        &:last-child {
-          margin-bottom: 4vw;
         }
         &.checkbox,
         &.radio {
@@ -1856,9 +1841,10 @@ a.avatar {
 
 
   body {
-    & > header {
+    > header {
       display: flex;
       font-size: 1.2rem;
+      box-shadow: 0 0 8px hsl(227,13%,12%);
 
       a.home {
         width: 10.8rem;
@@ -2249,7 +2235,7 @@ a.avatar {
     select,
     textarea {
       padding: 0.8rem 1.2rem;
-      border-radius: 0.4rem;
+      border-radius: 0.3rem;
     }
     textarea {
       padding: 2rem 2.4rem;
@@ -2271,8 +2257,8 @@ a.avatar {
       &:checked::after {
         width: 2.4rem;
         height: 2.4rem;
+        font-size: 1.8rem;
         line-height: 2.4rem;
-        font-size: 100%;
       }
     }
     input[type="radio"] {
@@ -2302,7 +2288,7 @@ a.avatar {
           margin: 1.2rem 0;
 
           &:last-child {
-            margin-bottom: 4rem;
+            margin-bottom: 2.4rem;
           }
 
           label {
