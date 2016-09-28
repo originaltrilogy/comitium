@@ -151,7 +151,7 @@ body > header {
   display: flex;
   width: 100%;
   background-color: hsl(227,14%, 18%);
-  box-shadow: 0 0 2vw hsl(227,13%,12%);
+  box-shadow: 0 0 2vw hsl(227,13%,14%);
 
   a.home {
     width: 32vw;
@@ -989,7 +989,7 @@ form {
   }
 
   select {
-    padding: 3vw 4vw;
+    padding: 4vw;
   }
 
   textarea {
@@ -1071,7 +1071,7 @@ form {
           @include icon($gSelect);
           position: absolute;
           right: 2vw;
-          bottom: 2vw;
+          bottom: 2.5vw;
           font-size: 6vw;
         }
       }
@@ -1689,7 +1689,7 @@ a.avatar {
         &.select {
           &::after {
             right: 1vw;
-            bottom: 1vw;
+            bottom: 0.5vw;
             font-size: 4vw;
           }
         }
@@ -2277,8 +2277,8 @@ a.avatar {
 
         &.select {
           &::after {
-            right: 0.4rem;
-            bottom: 0.2rem;
+            right: 0;
+            bottom: 0;
             font-size: 2.4rem;
           }
         }

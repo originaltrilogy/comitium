@@ -3,6 +3,9 @@
 ///////////////////
 
 body[data-view="index"] {
+  section.news {
+    padding: 4vw;
+  }
   article {
     display: block;
   }
@@ -15,9 +18,13 @@ body[data-view="index"] {
   }
 
   @media only screen and (min-width: 720px) {
+    section.news {
+      padding: 2.4rem;
+    }
     time {
       margin: 1.6rem auto 3.2rem;
       font-size: 100%;
+      text-align: left;
     }
   }
 }

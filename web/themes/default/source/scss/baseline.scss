@@ -87,6 +87,12 @@ textarea {
   border-radius: 0;
 }
 
+input:not([type="checkbox"]),
+input:not([type="radio"]),
+select {
+  line-height: 1;
+}
+
 b,
 strong {
   @include bodyFont(normal, 600);

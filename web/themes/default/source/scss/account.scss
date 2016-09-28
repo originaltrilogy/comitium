@@ -37,7 +37,7 @@ body[data-controller="account"] {
         margin-left: 20vw;
       }
       & > p {
-        margin-top: 6.5vw;
+        margin-top: 4.5vw;
         margin-right: 20vw;
       }
       form {
@@ -48,8 +48,17 @@ body[data-controller="account"] {
 
   @media only screen and (min-width: 720px) {
 
-    section.form {
-      margin: 4.8rem auto 2.4rem;
+    section.settings {
+      display: flex;
+      align-items: flex-start;
+    }
+    section.general,
+    section.avatar {
+      flex: 0 0 32rem;
+      margin: 0 auto;
+    }
+    h2 {
+      text-align: center;
     }
     form {
       ul.data {
@@ -67,10 +76,10 @@ body[data-controller="account"] {
     }
     section.avatar {
       a.avatar {
-        margin: 3.2rem 1.6rem 4rem 2.4rem;
+        margin: 1.6rem 1.6rem 4rem 0;
       }
       & > p {
-        margin: 5.6rem;
+        margin: 1.6rem 0;
       }
     }
   }
