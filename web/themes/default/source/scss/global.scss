@@ -674,7 +674,7 @@ section {
   &.preview {
     article {
       padding: 4vw 0;
-      border-bottom: 1px solid hsl(227,14%,18%);
+      border: none;
 
       h3.title {
         @include titleFont;
@@ -1403,6 +1403,7 @@ a.avatar {
               text-align: center;
               background-color: hsl(227,14%, 25%);
               border: 1px solid hsl(227,14%,21%);
+              box-shadow: 0px 0px 10px hsl(227,13%,18%);
               z-index: 4;
 
               &.active {
@@ -2135,14 +2136,10 @@ a.avatar {
       }
     }
     &.preview {
+      padding: 0;
+
       article {
-        h3.title {
-          margin: 2.4rem;
-        }
-        section.content {
-          margin: 2.4rem !important;
-          padding: 0;
-        }
+        padding: 0;
       }
     }
     &.form {
@@ -2398,6 +2395,23 @@ a.avatar {
   section.form {
     max-width: 96rem;
     margin: 2.4rem auto;
+  }
+
+  section.preview {
+    h2 {
+      max-width: 96rem;
+      margin: auto;
+    }
+    h3.title {
+      max-width: 96rem;
+      margin: auto;
+      padding: 2.4rem;
+    }
+    section.content {
+      max-width: 96rem;
+      margin: auto;
+      padding: 0;
+    }
   }
 
 }

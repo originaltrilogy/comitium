@@ -11,8 +11,7 @@ body[data-view="index"] {
   }
   time {
     display: block;
-    margin: 0 auto 4vw;
-    font-size: 85%;
+    margin: 4vw auto 6vw;
     text-align: center;
     color: #acacac;
   }
@@ -23,8 +22,16 @@ body[data-view="index"] {
     }
     time {
       margin: 1.6rem auto 3.2rem;
-      font-size: 100%;
+      font-size: 85%;
       text-align: left;
+    }
+  }
+
+  @media only screen and (min-width: 1008px) {
+    section.news {
+      max-width: 96rem;
+      margin: auto;
+      padding: 2.4rem 0;
     }
   }
 }

@@ -2,8 +2,8 @@
 //  topic patterns  //
 //////////////////////
 
-body[data-controller="topic"],
-body[data-controller="announcement"] {
+body[data-controller="topic"][data-view="topic"],
+body[data-controller="announcement"][data-view="announcement"] {
 
   section.summary {
     a.avatar {
@@ -35,15 +35,6 @@ body[data-controller="announcement"] {
             content: ' – ';
           }
         }
-      }
-    }
-  }
-
-  &[data-action="start"],
-  &[data-action="reply"] {
-    section.summary {
-      h1 {
-        padding-bottom: 0;
       }
     }
   }
@@ -188,12 +179,6 @@ body[data-controller="announcement"] {
     }
     textarea {
       margin-top: 0;
-    }
-  }
-
-  section.preview {
-    h2 {
-      border-bottom: 1px solid hsl(227,14%,30%);
     }
   }
 

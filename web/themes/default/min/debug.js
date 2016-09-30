@@ -1460,6 +1460,23 @@ document.onreadystatechange = function () {
   }
 };
 
+CF.post = ( function (Modernizr, CF) {
+  'use strict';
+
+  var methods = {
+
+		init: function () {
+      CF.global.collapseQuotes();
+		}
+
+  };
+
+	//	Public methods
+	return {
+		init: methods.init
+	};
+
+})(Modernizr, CF);
 CF.topic = ( function (Modernizr, CF) {
   'use strict';
 
