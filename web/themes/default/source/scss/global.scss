@@ -31,7 +31,7 @@ body {
   position: relative;
   @include bodyFont;
   color: white;
-  background-color: hsl(227,14%,20%);
+  background-color: hsl(227,14%,19%);
   overflow-x: hidden;
 
   &.transitioning {
@@ -150,8 +150,8 @@ a.home {
 body > header {
   display: flex;
   width: 100%;
-  background-color: hsl(227,14%, 18%);
-  box-shadow: 0 0 2vw hsl(227,13%,14%);
+  background-color: hsl(227,14%, 17%);
+  box-shadow: 0 0 1.6vw hsl(227,13%,13%);
 
   a.home {
     width: 32vw;
@@ -242,25 +242,10 @@ body {
     transition: margin 0.3s;
     margin-top: 0;
   }
-  // So the main background color doesn't show through if the user scrolls up
-  &.floating-header main::before {
-    content: '';
-    display: block;
-    width: 100vw;
-    height: 60px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: hsl(227,14%, 19%);
-  }
   // Hide the current page indicator when the header is floating
   &.floating-header-active > header,
   &.floating-header-hidden > header {
-    background-color: hsla(227,14%,18%,0.9);
-
-    nav ul.content li.discussions a::after {
-      display: none;
-    }
+    background-color: hsla(227,14%,17%,0.9);
   }
   &.floating-header-hidden > header {
     margin-top: -80px;
@@ -421,7 +406,7 @@ main {
   overflow: hidden;
 
   > header {
-    background-image: linear-gradient(180deg, hsl(227,14%,19%) 0, hsl(227,14%,26%));
+    background-image: linear-gradient(180deg, hsl(227,14%,19%) 0, hsl(227,14%,25%));
   }
 
   & > h1:first-child {
@@ -602,7 +587,7 @@ section {
       color: #d2d2d2;
       margin: 4vw;
       padding: 3vw 4vw;
-      background-color: hsl(227,15%,22%);
+      background-color: hsl(227,16%,25%);
       border-top: 1px solid hsl(227,15%,40%);
       border-bottom: 1px solid hsl(227,15%,40%);
 
@@ -919,7 +904,7 @@ a.to-the-top {
 
 footer {
   padding: 4vw;
-  background-color: hsl(227,14%, 18%);
+  background-color: hsl(227,14%, 16%);
   border-top: 1px solid hsl(227,14%,14%);
 
   a.home {
@@ -2095,8 +2080,6 @@ a.avatar {
         font-size: 1.6rem;
       }
       > nav {
-        justify-content: space-between;
-
         nav:first-child {
           margin-left: 0;
         }
