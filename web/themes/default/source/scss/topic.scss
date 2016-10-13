@@ -368,9 +368,9 @@ body[data-controller="announcement"][data-view="announcement"] {
   @media only screen and (min-width: 720px) {
 
     article.post {
-      max-width: 90rem;
+      max-width: 94.8rem;
       margin: auto;
-      padding: 2.4rem 0;
+      padding: 2.4rem;
 
       header {
         a.avatar {
@@ -392,7 +392,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       }
       section.content.post {
         margin: -4.8rem 0 0 9.2rem;
-        padding: 2rem;
+        padding: 2rem 2.4rem;
         border-top-right-radius: 4px;
         border-top-left-radius: 4px;
 
@@ -517,6 +517,11 @@ body[data-controller="announcement"][data-view="announcement"] {
           flex: 0 1 auto;
           margin-right: 0;
         }
+      }
+    }
+    @media only screen and (min-width: 720px) {
+      article.post:first-of-type {
+        padding-top: 3.2rem;
       }
     }
 
