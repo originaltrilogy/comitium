@@ -6,18 +6,6 @@ header
     dl.content-stats
       dt Topics
       dd #{discussion.topicsFormatted}
-    nav
-      include ../partials/pagination
-      if discussion.id !== 1
-        nav.actions
-          ul
-            li.new-topic
-              a(href="topic/action/start/id/#{discussion.id}") Start a new topic
-            //- li.subscribe
-            //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
-            if session.moderateDiscussions
-              li.new-announcement
-                a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
 
 if announcements
   section.announcements
@@ -30,6 +18,18 @@ if announcements
 section.topics
   h2 Topics
   if topics
+    nav
+      include ../partials/pagination
+      if discussion.id !== 1
+        nav.actions
+          ul
+            li.new-topic
+              a(href="topic/action/start/id/#{discussion.id}") Start a new topic
+            //- li.subscribe
+            //-   a(href="#{route.pathname}/action/subscribe" title="Receive an e-mail notification when new topics are added to this discussion.") Subscribe
+            if session.moderateDiscussions
+              li.new-announcement
+                a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
     each topic in topics
       include ../partials/topic
   else

@@ -41,6 +41,16 @@ body[data-controller="announcement"][data-view="announcement"] {
 
   // First page
   &[data-page="1"][data-action="handler"] {
+    section.posts {
+      > nav {
+        padding-top: 4vw;
+        background: hsl(227,14%,22%);
+
+        nav.actions ul {
+          margin-bottom: 0;
+        }
+      }
+    }
     article.post:first-of-type {
       background: hsl(227,14%,22%);
 

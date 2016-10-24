@@ -87,6 +87,7 @@ body[data-view="user"] {
       }
       nav.actions {
         margin: 4vw 0;
+        padding-top: 4vw;
       }
     }
     section.user-logs {
@@ -123,7 +124,7 @@ body[data-view="user"] {
   @media only screen and (min-width: 720px) {
 
     section.summary {
-      padding: 4rem 0;
+      padding: 4rem 0 2.4rem;
 
       a.avatar {
         width: 12rem;
@@ -149,10 +150,14 @@ body[data-view="user"] {
       }
       nav.actions {
         margin: 2.4rem 0 0;
+        padding-top: 2.4rem;
       }
     }
+    h2 {
+      text-align: center;
+    }
     nav.pagination {
-      margin: 2.4rem auto;
+      margin: 0 auto 2.4rem;
 
       li {
         margin: 0 0.4rem;

@@ -141,13 +141,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
   @media only screen and (min-width: 600px) {
 
-    section.announcements,
-    section.topics {
-      nav.actions {
-        display: none;
-      }
-    }
-
     article.topic {
       section.description {
         flex-basis: 76vw;
@@ -281,70 +274,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         a.content-stats {
           flex: 0 0 6.4rem;
           order: 3;
-        }
-      }
-    }
-
-  }
-
-}
-
-
-
-body[data-controller="discussion"][data-view="discussion"] {
-
-  section.announcements {
-    padding: 2vw 4vw 6vw;
-    background: hsl(227,14%,22%);
-
-    article {
-      padding: 2vw 0;
-    }
-  }
-
-  @media only screen and (min-width: 600px) {
-
-    section.announcements {
-      article {
-        padding: 1.5vw 0;
-      }
-    }
-
-    section.announcements,
-    section.topics {
-      nav.actions {
-        &::after,
-        &::before {
-          display: none;
-        }
-        ul {
-          padding: 1.6vw;
-          text-align: right;
-        }
-        li {
-          margin-bottom: 0;
-        }
-      }
-    }
-
-  }
-
-  @media only screen and (min-width: 720px) {
-
-    section.announcements {
-      padding: 0.4rem 2.4rem 2.4rem;
-
-      article {
-        min-height: 0;
-        padding: 0.8rem 0;
-      }
-    }
-
-    section.announcements,
-    section.topics {
-      nav.actions {
-        ul {
-          padding: 4.4rem 4rem;
         }
       }
     }

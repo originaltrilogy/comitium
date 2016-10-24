@@ -43,7 +43,8 @@ article.post {
     background: none;
 
     ul {
-      text-align: right;
+      justify-content: flex-end;
+      margin-right: 4vw;
     }
     li {
       margin-right: 0.6vw;
