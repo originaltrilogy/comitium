@@ -26,7 +26,7 @@ module.exports = {
   passwordResetDelete: passwordResetDelete,
   posts: posts,
   profile: profile,
-  matchingIPs: matchingIPs,
+  matchingUsersByIP: matchingUsersByIP,
   topicViewTimes: topicViewTimes,
   urlExists: urlExists,
   updateEmail: updateEmail,
@@ -672,7 +672,7 @@ function ipHistory(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "ip" from "userLogs" where "userID" = $1 group by "ip" order by "ip" asc;',
+        'select min(id) as id, ip, max(time) as time from "userLogs" where "userID" = $1 group by ip order by time desc;',
         [ args.userID ],
         function (err, result) {
           done();
@@ -1046,20 +1046,23 @@ function profile(args, emitter) {
   });
 }
 
-function matchingIPs(args, emitter) {
+function matchingUsersByIP(args, emitter) {
   app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select * from users where id in ( select "userID" from "userLogs" where ip in ( select distinct ip from "userLogs" where "userID" = $1 ) ) order by username asc;',
-        [ args.userID ],
+        'select distinct u.id, u.username, u.url, ul.ip from users u join "userLogs" ul on u.id = ul."userID" where ul.ip = ( select ip from "userLogs" where id = $1 );',
+        [ args.ipID ],
         function (err, result) {
           done();
           if ( err ) {
             emitter.emit('error', err);
           } else {
             if ( result.rows.length ) {
+              result.rows.forEach( function (item, index, array) {
+                array[index].ip = array[index].ip.replace('/32', '');
+              });
               emitter.emit('ready', result.rows);
             } else {
               emitter.emit('ready', false);

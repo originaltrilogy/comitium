@@ -53,13 +53,19 @@ function handler(params, context, emitter) {
         userID: params.url.id
       }, emitter);
     },
-    usersWithMatchingIPs: function (previous, emitter) {
-      app.models.user.matchingIPs({
-        userID: params.url.id
-      }, emitter);
+    matchingUsersByIP: function (previous, emitter) {
+      if ( params.url.ipID ) {
+        app.models.user.matchingUsersByIP({
+          ipID: params.url.ipID
+        }, emitter);
+      } else {
+        emitter.emit('ready');
+      }
     }
   }, function (output) {
     if ( output.listen.success ) {
+      console.log('matchingUsersByIP: ');
+      console.log(output.matchingUsersByIP);
       emitter.emit('ready', {
         content: {
           talkPrivately: params.session.talkPrivately && output.user.id !== params.session.userID,
@@ -68,7 +74,7 @@ function handler(params, context, emitter) {
           user: output.user,
           posts: output.posts,
           ipHistory: output.ipHistory,
-          usersWithMatchingIPs: output.usersWithMatchingIPs,
+          matchingUsersByIP: output.matchingUsersByIP,
           pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
         }
       });
