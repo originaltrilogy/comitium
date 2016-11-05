@@ -33,6 +33,11 @@ body[data-view="user"] {
     }
   }
 
+  section.ip-history,
+  section.ip-matches {
+    margin: auto 4vw;
+  }
+
   nav.pagination {
     margin: 4vw auto;
   }

@@ -3,6 +3,7 @@
 //////////////////////
 
 body[data-controller="topic"][data-view="topic"],
+body[data-controller="topic"][data-view="private-topic"],
 body[data-controller="announcement"][data-view="announcement"] {
 
   section.summary {
