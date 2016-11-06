@@ -44,14 +44,20 @@ function compareHash(str, hash, emitter) {
 
 
 
-function ip(request) {
+function ip(request, includeProxies) {
   var address = request.headers['x-forwarded-for'] || request.connection.remoteAddress || request.socket.remoteAddress || ( request.connection.socket ? request.connection.socket.remoteAddress : 'undefined' );
 
   address = address.split(', ');
 
-  address.forEach( function (item, index, array) {
-    address[index] = address[index].replace('::ffff:', '');
-  });
+  // Include proxies and return as an array
+  if ( includeProxies ) {
+    address.forEach( function (item, index, array) {
+      address[index] = address[index].replace('::ffff:', '');
+    });
+  // Ignore proxies, keep only the client IP, and return as string
+  } else {
+    address = address[0].replace('::ffff:', '');
+  }
 
   return address;
 }

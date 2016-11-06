@@ -287,15 +287,13 @@ function banIP(params, context, emitter) {
       }, emitter);
     },
     banIP: function (previous, emitter) {
-      console.log('log:');
-      console.log(previous.log);
       app.models.user.banIP({
         ip: previous.log.ip,
         adminUserID: params.session.userID,
         time: app.toolbox.helpers.isoDate()
       }, emitter);
-      // End the user's session immediately
-      app.session.end('userID', params.url.userID);
+      // End all active sessions with matching IPs
+      app.session.end('ip', previous.log.ip.replace('/32', ''));
     }
   }, function (output) {
     if ( output.listen.success ) {

@@ -10,8 +10,8 @@ module.exports = {
   activityUpdate: activityUpdate,
   authenticate: authenticate,
   ban: ban,
-  liftBan: liftBan,
   banIP: banIP,
+  bannedIPs: bannedIPs,
   create: create,
   emailExists: emailExists,
   exists: exists,
@@ -20,6 +20,7 @@ module.exports = {
   ipHistory: ipHistory,
   isActivated: isActivated,
   isIgnored: isIgnored,
+  liftBan: liftBan,
   log: log,
   logByID: logByID,
   matchingUsersByIP: matchingUsersByIP,
@@ -343,8 +344,6 @@ function liftBan(args, emitter) {
 
 
 function banIP(args, emitter) {
-  console.log('banIP args:');
-  console.log(args);
   app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
@@ -366,6 +365,10 @@ function banIP(args, emitter) {
                   if ( err ) {
                     emitter.emit('error', err);
                   } else {
+                    // Clear the cached data
+                    app.cache.clear({ scope: 'logs', key: 'bannedIPs-query' });
+                    app.cache.clear({ scope: 'logs', key: 'bannedIPs-array' });
+
                     emitter.emit('ready', {
                       success: true,
                       affectedRows: result.rows
@@ -374,16 +377,63 @@ function banIP(args, emitter) {
                 }
               );
             } else {
-              emitter.emit('ready', {
-                success: true,
-                affectedRows: result.rows
-              });
+              emitter.emit('ready', result.rows);
             }
           }
         }
       );
     }
   });
+}
+
+
+
+function bannedIPs(args, emitter) {
+  var key = 'bannedIPs-' + args.structure || 'query',
+      cached = app.cache.get({ scope: 'logs', key: key }),
+      results;
+
+  // If it's cached, return the cache object
+  if ( cached ) {
+    emitter.emit('ready', cached);
+  // If it's not cached, retrieve the data and cache it
+  } else {
+    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      if ( err ) {
+        emitter.emit('error', err);
+      } else {
+        client.query(
+          'select id, ip, admin_user_id, time from banned_ip_addresses order by time asc;',
+          function (err, result) {
+            if ( err ) {
+              done();
+              emitter.emit('error', err);
+            } else {
+              if ( args.structure === 'array' ) {
+                results = [];
+                result.rows.forEach( function (item, index, array) {
+                  results[index] = item.ip.replace('/32', '');
+                });
+              } else {
+                results = result.rows;
+              }
+
+              // Cache the data for future requests
+              if ( !app.cache.exists({ scope: 'logs', key: key }) ) {
+                app.cache.set({
+                  scope: 'logs',
+                  key: key,
+                  value: results
+                });
+              }
+
+              emitter.emit('ready', results);
+            }
+          }
+        );
+      }
+    });
+  }
 }
 
 
@@ -798,67 +848,26 @@ function log(args, emitter) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
-      app.listen('waterfall', {
-        begin: function (emitter) {
-          client.query('begin', function (err) {
+      var time = app.toolbox.helpers.isoDate();
+
+      client.query(
+        'insert into "userLogs" ( "userID", "action", "ip", "time" ) values ( $1, $2, $3, $4 ) returning id;',
+        [ args.userID, args.action, args.ip, time ],
+        function (err, result) {
+          done();
+          if ( emitter ) {
             if ( err ) {
-              done();
               emitter.emit('error', err);
             } else {
-              emitter.emit('ready');
-            }
-          });
-        },
-        insertLogs: function (previous, emitter) {
-          var time = app.toolbox.helpers.isoDate(),
-              methods = {};
-
-          args.ip.forEach( function (item, index, array) {
-            methods[item] = function (emitter) {
-              client.query(
-                'insert into "userLogs" ( "userID", "action", "ip", "time" ) values ( $1, $2, $3, $4 ) returning id;',
-                [ args.userID, args.action, item, time ],
-                function (err, result) {
-                  done();
-                  if ( emitter ) {
-                    if ( err ) {
-                      emitter.emit('error', err);
-                    } else {
-                      emitter.emit('ready', {
-                        success: true
-                      });
-                    }
-                  } else {
-                    if ( err ) {
-                      throw err;
-                    }
-                  }
+              emitter.emit('ready', {
+                success: true
               });
-            };
-          });
-
-          app.listen(methods, function (output) {
-            if ( output.listen.success ) {
-              emitter.emit('ready', output);
-            } else {
-              emitter.emit('error', output.listen);
             }
-          });
-        },
-        commit: function (previous, emitter) {
-          client.query('commit', function () {
-            done();
-            emitter.emit('ready');
-          });
-        }
-      }, function (output) {
-        if ( emitter ) {
-          if ( output.listen.success ) {
-            emitter.emit('ready', output);
           } else {
-            emitter.emit('error', output.listen);
+            if ( err ) {
+              throw err;
+            }
           }
-        }
       });
     }
   });
