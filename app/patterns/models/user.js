@@ -11,6 +11,7 @@ module.exports = {
   authenticate: authenticate,
   ban: ban,
   liftBan: liftBan,
+  banIP: banIP,
   create: create,
   emailExists: emailExists,
   exists: exists,
@@ -20,13 +21,14 @@ module.exports = {
   isActivated: isActivated,
   isIgnored: isIgnored,
   log: log,
+  logByID: logByID,
+  matchingUsersByIP: matchingUsersByIP,
   metaData: metaData,
   passwordResetInsert: passwordResetInsert,
   passwordResetVerify: passwordResetVerify,
   passwordResetDelete: passwordResetDelete,
   posts: posts,
   profile: profile,
-  matchingUsersByIP: matchingUsersByIP,
   topicViewTimes: topicViewTimes,
   urlExists: urlExists,
   updateEmail: updateEmail,
@@ -319,7 +321,6 @@ function liftBan(args, emitter) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
-
       client.query(
         'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Trusted Members\' ) where "id" = $1;',
         [ args.userID ],
@@ -335,7 +336,52 @@ function liftBan(args, emitter) {
           }
         }
       );
+    }
+  });
+}
 
+
+
+function banIP(args, emitter) {
+  console.log('banIP args:');
+  console.log(args);
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select ip from banned_ip_addresses where ip = $1;',
+        [ args.ip ],
+        function (err, result) {
+          if ( err ) {
+            done();
+            emitter.emit('error', err);
+          } else {
+            if ( !result.rows.length ) {
+              client.query(
+                'insert into banned_ip_addresses ( ip, admin_user_id, time ) values ( $1, $2, $3 );',
+                [ args.ip, args.adminUserID, args.time ],
+                function (err, result) {
+                  done();
+                  if ( err ) {
+                    emitter.emit('error', err);
+                  } else {
+                    emitter.emit('ready', {
+                      success: true,
+                      affectedRows: result.rows
+                    });
+                  }
+                }
+              );
+            } else {
+              emitter.emit('ready', {
+                success: true,
+                affectedRows: result.rows
+              });
+            }
+          }
+        }
+      );
     }
   });
 }
@@ -820,6 +866,29 @@ function log(args, emitter) {
 
 
 
+function logByID(args, emitter) {
+  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select id, "userID", action, ip, time from "userLogs" where id = $1;',
+        [ args.logID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            emitter.emit('ready', result.rows[0]);
+          }
+        }
+      );
+    }
+  });
+}
+
+
+
 function metaData(args, emitter) {
   app.listen({
     info: function (emitter) {
@@ -1052,8 +1121,8 @@ function matchingUsersByIP(args, emitter) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select distinct u.id, u.username, u.url, ul.ip from users u join "userLogs" ul on u.id = ul."userID" where ul.ip = ( select ip from "userLogs" where id = $1 );',
-        [ args.ipID ],
+        'select u.id, u.username, u.url, ul.ip, max(ul.time) as time from users u join "userLogs" ul on u.id = ul."userID" where ul.ip = ( select ip from "userLogs" where id = $1 ) group by u.id, ul.ip order by time desc;',
+        [ args.logID ],
         function (err, result) {
           done();
           if ( err ) {
@@ -1062,6 +1131,7 @@ function matchingUsersByIP(args, emitter) {
             if ( result.rows.length ) {
               result.rows.forEach( function (item, index, array) {
                 array[index].ip = array[index].ip.replace('/32', '');
+                array[index].timeFormatted = app.toolbox.moment.tz(array[index].time, 'America/New_York').format('D-MMM-YYYY h:mm A')
               });
               emitter.emit('ready', result.rows);
             } else {

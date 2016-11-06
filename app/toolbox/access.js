@@ -24,7 +24,8 @@ module.exports = {
   signInRedirect: signInRedirect,
   subscriptionsView: subscriptionsView,
   userBan: userBan,
-  userEdit: userEdit
+  userEdit: userEdit,
+  userIPBan: userIPBan
 };
 
 
@@ -840,6 +841,18 @@ function userBan(args, emitter) {
 function userEdit(args, emitter) {
 
   if ( args.userID === args.user.userID || args.user.moderateUsers ) {
+    emitter.emit('ready', true);
+  } else {
+    emitter.emit('ready', false);
+  }
+
+}
+
+
+
+function userIPBan(args, emitter) {
+
+  if ( args.user.moderateUsers ) {
     emitter.emit('ready', true);
   } else {
     emitter.emit('ready', false);

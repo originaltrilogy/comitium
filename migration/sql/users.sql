@@ -90,3 +90,15 @@ create table "userLogs" (
   "time" timestamp without time zone not null,
   primary key ("id")
 );
+
+
+CREATE TABLE "banned_ip_addresses" (
+  "id" serial,
+  "ip" cidr NOT NULL,
+  "admin_user_id" integer NOT NULL,
+  "time" timestamp without time zone NOT NULL,
+  PRIMARY KEY ("id")
+);
+
+create index on "banned_ip_addresses" ( "ip" );
+create index on "banned_ip_addresses" ( "time" );

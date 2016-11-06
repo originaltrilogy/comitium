@@ -46,23 +46,29 @@ if moderateUser
         p IP addresses associated with this user (most recent first):
         ul
           each log in ipHistory
-            li(class="#{ log.id == url.ipID ? 'selected' : '' }")
-              a(href="user/#{user.url}/id/#{user.id}/ipID/#{log.id}#ip-history") #{log.ip}
+            li(class="#{ log.id == url.logID ? 'selected' : '' }")
+              a(href="user/#{user.url}/id/#{user.id}/logID/#{log.id}#ip-history") #{log.ip}
       else
         p There are no IP addresses associated with this user.
     section.ip-matches
       if matchingUsersByIP
-        p Users who match this IP address:
-        ul
+        p Users who match this IP address (starting with the most recent access via this IP):
+        table
+          thead
+            th Username
+            th Acces Time
           each user in matchingUsersByIP
-            li
-              a(href="user/#{user.url}/id/#{user.id}") #{user.username}
+            tr
+              td
+                a(href="user/#{user.url}/id/#{user.id}") #{user.username}
+              td #{user.timeFormatted}
+
         nav.actions
           ul
             li
-              a(href="ban/ipID/#{url.ipID}") Ban #{matchingUsersByIP[0].ip}
+              a(href="user/action/banIP/logID/#{url.logID}/userID/#{user.id}") Ban #{matchingUsersByIP[0].ip}
       else
-        p Select an IP address to see users who match that IP.
+        p Select an IP address to see all users who match that IP.
 
 section.posts
   if posts

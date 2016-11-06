@@ -9,7 +9,8 @@ module.exports = {
   ban: ban,
   liftBan: liftBan,
   edit: edit,
-  editForm: editForm
+  editForm: editForm,
+  banIP: banIP
 };
 
 
@@ -54,9 +55,9 @@ function handler(params, context, emitter) {
       }, emitter);
     },
     matchingUsersByIP: function (previous, emitter) {
-      if ( params.url.ipID ) {
+      if ( params.url.logID ) {
         app.models.user.matchingUsersByIP({
-          ipID: params.url.ipID
+          logID: params.url.logID
         }, emitter);
       } else {
         emitter.emit('ready');
@@ -64,8 +65,6 @@ function handler(params, context, emitter) {
     }
   }, function (output) {
     if ( output.listen.success ) {
-      console.log('matchingUsersByIP: ');
-      console.log(output.matchingUsersByIP);
       emitter.emit('ready', {
         content: {
           talkPrivately: params.session.talkPrivately && output.user.id !== params.session.userID,
@@ -254,6 +253,55 @@ function edit(params, context, emitter) {
       if ( output.access === true ) {
         emitter.emit('ready', {
           view: 'edit'
+        });
+      } else {
+        emitter.emit('ready', output.access);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+
+}
+
+
+
+function banIP(params, context, emitter) {
+
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.userIPBan({
+        user: params.session
+      }, emitter);
+    },
+    proceed: function (previous, emitter) {
+      if ( previous.access === true ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('end', false);
+      }
+    },
+    log: function (previous, emitter) {
+      app.models.user.logByID({
+        logID: params.url.logID
+      }, emitter);
+    },
+    banIP: function (previous, emitter) {
+      console.log('log:');
+      console.log(previous.log);
+      app.models.user.banIP({
+        ip: previous.log.ip,
+        adminUserID: params.session.userID,
+        time: app.toolbox.helpers.isoDate()
+      }, emitter);
+      // End the user's session immediately
+      app.session.end('userID', params.url.userID);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.access === true ) {
+        emitter.emit('ready', {
+          redirect: params.request.headers.referer
         });
       } else {
         emitter.emit('ready', output.access);
