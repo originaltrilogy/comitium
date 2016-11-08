@@ -14,6 +14,12 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   section.topics {
     margin-top: 4vw;
     padding: 0 4vw;
+
+    > nav {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
   }
   article.topic {
     section.description {
@@ -205,10 +211,17 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     section.topics {
       margin-top: 2.4rem;
       padding: 0 2.4rem;
+      position: relative;
 
       > * {
         max-width: 96rem;
         margin: auto;
+      }
+      > nav {
+        position: absolute;
+        top: 0;
+        right: 0;
+        justify-content: flex-end;
       }
       article.topic {
         flex-wrap: nowrap;

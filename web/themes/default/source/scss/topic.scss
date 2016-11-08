@@ -45,7 +45,7 @@ body[data-controller="announcement"][data-view="announcement"] {
     section.posts {
       > nav {
         padding-top: 4vw;
-        background: hsl(227,14%,22%);
+        background: hsl(227,14%,20%);
 
         nav.actions ul {
           margin-bottom: 0;
@@ -53,7 +53,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       }
     }
     article.post:first-of-type {
-      background: hsl(227,14%,22%);
+      background: hsl(227,14%,20%);
 
       header {
         position: absolute;

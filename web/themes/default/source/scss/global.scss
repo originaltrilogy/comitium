@@ -31,7 +31,7 @@ body {
   position: relative;
   @include bodyFont;
   color: white;
-  background-color: hsl(227,14%,19%);
+  background-color: hsl(227,14%,18%);
   overflow-x: hidden;
 
   &.transitioning {
@@ -150,8 +150,8 @@ a.home {
 body > header {
   display: flex;
   width: 100%;
-  background-color: hsl(227,14%, 17%);
-  box-shadow: 0 0 1.6vw hsl(227,13%,13%);
+  background-color: hsl(227,14%,16%);
+  box-shadow: 0 0 1.6vw hsl(227,0%,10%);
 
   a.home {
     width: 32vw;
@@ -245,7 +245,7 @@ body {
   // Hide the current page indicator when the header is floating
   &.floating-header-active > header,
   &.floating-header-hidden > header {
-    background-color: hsla(227,14%,17%,0.9);
+    background-color: hsla(227,14%,17%,0.95);
   }
   &.floating-header-hidden > header {
     margin-top: -80px;
@@ -365,7 +365,7 @@ nav.breadcrumbs {
   padding: 4vw 4vw 0;
   @include titleFont(normal, 300);
   color: hsl(227,23%,60%);
-  background-color: hsl(227,14%, 19%);
+  background-color: hsl(227,14%,18%);
   font-size: 110%;
 
   ul {
@@ -406,7 +406,7 @@ main {
   overflow: hidden;
 
   > header {
-    background-image: linear-gradient(180deg, hsl(227,14%,19%) 0, hsl(227,14%,25%));
+    background-image: linear-gradient(180deg, hsl(227,14%,18%) 0, hsl(227,14%,23%));
   }
 
   & > h1:first-child {
@@ -522,7 +522,7 @@ section {
 
   &.announcements {
     padding: 2vw 4vw 6vw;
-    background: hsl(227,14%,22%);
+    background: hsl(227,14%,20%);
 
     article {
       padding: 2vw 0;
@@ -712,6 +712,7 @@ nav.pagination {
   flex: 0 0 auto;
   justify-content: center;
   display: flex;
+  margin-bottom: 6vw;
 
   ul {
     display: flex;
@@ -1140,7 +1141,7 @@ nav.actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 4vw 0 0;
+    margin: 0;
     z-index: 100;
   }
 
@@ -1464,8 +1465,19 @@ a.avatar {
     }
   }
 
-  nav.pagination li {
-    margin: 0 1vw;
+  nav.pagination {
+    margin-bottom: 4vw;
+  }
+
+  nav.pagination,
+  nav.actions {
+    li {
+      margin-right: 1vw;
+      margin-left: 1vw;
+    }
+    a {
+      padding: 1.5vw 2vw;
+    }
   }
 
   section {
@@ -1534,21 +1546,6 @@ a.avatar {
           left: 0;
           background-image: linear-gradient(90deg,hsla(227,14%,50%,0),hsla(227,14%,50%,1),hsla(227,14%,50%,0));
         }
-      }
-      nav.pagination,
-      nav.actions {
-        margin: 4vw 2vw 0;
-
-        a {
-          font-size: 100%;
-          padding: 1.6vw 2.4vw;
-        }
-      }
-      nav.actions {
-        display: flex;
-        justify-content: center;
-        flex: 0 0 auto;
-        background: none;
       }
     }
     &.notice {
@@ -1737,31 +1734,10 @@ a.avatar {
       justify-content: center;
       overflow-x: auto;
       padding: 0;
-
-      & > li {
-        margin: 0;
-
-        a {
-          border-left: 1px solid #3B404E;
-        }
-
-        &:first-child a {
-          border-top-left-radius: 0.4vw !important;
-          border-bottom-left-radius: 0.4vw !important;
-        }
-        &:last-child a {
-          border-top-right-radius: 0.4vw !important;
-          border-bottom-right-radius: 0.4vw !important;
-        }
-
-        a {
-          border-radius: 0;
-        }
-      }
     }
 
     a {
-      @include button('medium');
+      @include button($padding: 1.65vw 2vw);
     }
   }
 
@@ -1849,7 +1825,7 @@ a.avatar {
     > header {
       display: flex;
       font-size: 1.2rem;
-      box-shadow: 0 0 8px hsl(227,13%,12%);
+      box-shadow: 0 0 8px hsl(227,0%,10%);
 
       a.home {
         width: 10.8rem;
@@ -2017,32 +1993,33 @@ a.avatar {
     font-size: 2.2rem;
   }
 
+  nav.pagination,
   nav.actions {
-    display: block;
-    flex: 0 1 50%;
+    li {
+      margin-right: 0.4rem;
+      margin-left: 0.4rem;
+    }
+  }
 
+  nav.actions {
     &::before,
     &::after {
       width: 4rem;
       height: 10rem;
     }
 
-    ul {
-      & > li {
-        &:first-child a {
-          border-top-left-radius: 0.3rem !important;
-          border-bottom-left-radius: 0.3rem !important;
-        }
-        &:last-child a {
-          border-top-right-radius: 0.3rem !important;
-          border-bottom-right-radius: 0.3rem !important;
-        }
-      }
+    a {
+      padding: 10px 12px;
     }
   }
 
-  nav.pagination li {
-    margin: 0 0.4rem;
+  nav.pagination {
+    li {
+      margin: 0 0.4rem;
+    }
+    a {
+      padding: 9px 12px;
+    }
   }
 
   section {
