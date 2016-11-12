@@ -211,20 +211,21 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     section.topics {
       margin-top: 2.4rem;
       padding: 0 2.4rem;
-      position: relative;
 
       > * {
         max-width: 96rem;
         margin: auto;
       }
       > nav {
-        position: absolute;
-        top: 0;
-        right: 0;
         justify-content: flex-end;
+
+        nav.actions {
+          margin-left: 32px;
+        }
       }
       article.topic {
         flex-wrap: nowrap;
+        flex: 1 0 100%;
 
         section.description {
           position: relative;

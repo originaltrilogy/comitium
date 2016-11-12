@@ -70,7 +70,7 @@ $gNoUpdates: '\eac4';
 
 		&:hover {
 			color: hsla(227,41%,83%,1);
-      background-image: linear-gradient(180deg,hsla(227,13%,34%,1) 0,hsla(227,13%,30%,1) 98%);
+      background-image: linear-gradient(180deg,hsla(227,18%,34%,1) 0,hsla(227,18%,30%,1) 98%);
     }
   } @else if $color == 'dark' {
 		color: #A5B2D9;
@@ -79,14 +79,14 @@ $gNoUpdates: '\eac4';
 
 		&:hover {
 			color: hsl(227,41%,13%);
-			background-image: linear-gradient(180deg, hsl(227,13%,68%) 0, hsl(223,13%,40%) 98%);
+			background-image: linear-gradient(180deg, hsl(227,18%,68%) 0, hsl(223,18%,40%) 98%);
     }
   } @else if $color == 'lightGhost' {
     color: hsl(227,100%,90%);
 		box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
   } @else if $color == 'darkGhost' {
-    color: hsl(227,14%,25%);
-		box-shadow: 0 0 0 1px hsl(227,14%,25%) inset;
+    color: hsl(227,18%,25%);
+		box-shadow: 0 0 0 1px hsl(227,18%,25%) inset;
   }
 }
 

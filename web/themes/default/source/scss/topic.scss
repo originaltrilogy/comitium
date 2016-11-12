@@ -45,7 +45,7 @@ body[data-controller="announcement"][data-view="announcement"] {
     section.posts {
       > nav {
         padding-top: 4vw;
-        background: hsl(227,14%,20%);
+        background: hsl(227,18%,20%);
 
         nav.actions ul {
           margin-bottom: 0;
@@ -53,7 +53,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       }
     }
     article.post:first-of-type {
-      background: hsl(227,14%,20%);
+      background: hsl(227,18%,20%);
 
       header {
         position: absolute;
@@ -88,7 +88,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       padding: 2vw;
       position: relative;
       text-align: left;
-      background: hsl(227,13%,18%);
+      background: hsl(227,18%,18%);
 
       a.avatar {
         flex: 0 0 12vw;
@@ -131,7 +131,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       color: hsl(0,0%,70%);
       line-height: 1.6;
       overflow: auto;
-      background-color: hsl(227,14%,24%);
+      background-color: hsl(227,18%,24%);
 
       > * {
         float: right;
@@ -292,7 +292,7 @@ body[data-controller="announcement"][data-view="announcement"] {
         position: relative;
         margin: -4.5vw 0 0 10vw;
         padding: 3vw;
-        background-color: hsl(227,14%,22%);
+        background-color: hsl(227,18%,22%);
         border-top-right-radius: 0.5vw;
         border-top-left-radius: 0.5vw;
 
@@ -305,7 +305,7 @@ body[data-controller="announcement"][data-view="announcement"] {
           position: absolute;
           top: 0.4vw;
           left: -1vw;
-          background-color: hsl(227,14%,22%);
+          background-color: hsl(227,18%,22%);
         }
       }
       p.edited {
@@ -313,7 +313,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       }
       nav.actions {
         margin: 0 0 0 10vw;
-        background-color: hsl(227,14%,22%);
+        background-color: hsl(227,18%,22%);
       }
       &[data-signature="false"] {
         nav.actions {
@@ -324,7 +324,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       section.content.signature {
         margin-left: 10vw;
         padding: 2vw;
-        background-color: hsl(227,14%,23%);
+        background-color: hsl(227,18%,23%);
 
         > * {
           margin: 0 0 1.6rem;
