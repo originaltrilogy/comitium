@@ -21,7 +21,7 @@ function edit(args, emitter) {
       message: 'Posts can\'t be empty.'
     });
   } else {
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -107,7 +107,7 @@ function edit(args, emitter) {
 
 
 function info(postID, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -137,7 +137,7 @@ function info(postID, emitter) {
 
 
 function lock(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -166,7 +166,7 @@ function lock(args, emitter) {
 
 
 function unlock(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -197,7 +197,7 @@ function unlock(args, emitter) {
 function saveBookmark(args, emitter) {
   app.listen({
     bookmarkExists: function (emitter) {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -228,7 +228,7 @@ function saveBookmark(args, emitter) {
     } else {
       app.listen({
         bookmarkInsert: function (emitter) {
-          app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+          app.toolbox.dbPool.connect(function (err, client, done) {
             if ( err ) {
               emitter.emit('error', err);
             } else {
@@ -267,7 +267,7 @@ function saveReport(args, emitter) {
       message: 'You have to provide a reason for the report.'
     });
   } else {
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -295,7 +295,7 @@ function saveReport(args, emitter) {
 
 
 function trash(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {

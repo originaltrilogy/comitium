@@ -20,7 +20,7 @@ function discussionPermissions(discussionID, groupID, emitter) {
   } else {
     app.listen({
       discussionPermissions: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {

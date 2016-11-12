@@ -24,7 +24,7 @@ function stats(userID, emitter) {
   } else {
     app.listen({
       stats: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -79,7 +79,7 @@ function unread(args, emitter) {
   } else {
     app.listen({
       unread: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -140,7 +140,7 @@ function topics(args, emitter) {
   } else {
     app.listen({
       topics: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {

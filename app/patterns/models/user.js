@@ -53,7 +53,7 @@ function activate(args, emitter) {
       activateUser: function (previous, emitter) {
         // If the account isn't activated, activate it
         if ( previous.userActivationStatus.userExists && !previous.userActivationStatus.activated && previous.userActivationStatus.activationCode === args.activationCode ) {
-          app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+          app.toolbox.dbPool.connect(function (err, client, done) {
             if ( err ) {
               emitter.emit('error', err);
             } else {
@@ -124,7 +124,7 @@ function activate(args, emitter) {
 
 
 function activationStatus(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -157,7 +157,7 @@ function activationStatus(args, emitter) {
 
 
 function activityUpdate(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -290,7 +290,7 @@ function authenticate(credentials, emitter) {
 
 
 function ban(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -318,7 +318,7 @@ function ban(args, emitter) {
 
 
 function liftBan(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -344,7 +344,7 @@ function liftBan(args, emitter) {
 
 
 function banIP(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -398,7 +398,7 @@ function bannedIPs(args, emitter) {
     emitter.emit('ready', cached);
   // If it's not cached, retrieve the data and cache it
   } else {
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -571,7 +571,7 @@ function create(args, emitter) {
 
 
 function emailExists(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -600,7 +600,7 @@ function emailExists(args, emitter) {
 
 
 function exists(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -649,7 +649,7 @@ function exists(args, emitter) {
 
 
 function info(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     var sql = '',
         arg = '';
 
@@ -703,7 +703,7 @@ function info(args, emitter) {
 
 function insert(args, emitter) {
 
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -763,7 +763,7 @@ function insert(args, emitter) {
 
 
 function ipHistory(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -792,7 +792,7 @@ function ipHistory(args, emitter) {
 
 
 function isActivated(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -818,7 +818,7 @@ function isActivated(args, emitter) {
 
 
 function isIgnored(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -844,7 +844,7 @@ function isIgnored(args, emitter) {
 
 
 function log(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -876,7 +876,7 @@ function log(args, emitter) {
 
 
 function logByID(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -923,7 +923,7 @@ function metaData(args, emitter) {
 function passwordResetInsert(args, emitter) {
   var verificationCode = Math.random().toString().replace('0.', '') + Math.random().toString().replace('0.', '');
 
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -948,7 +948,7 @@ function passwordResetInsert(args, emitter) {
 
 
 function passwordResetVerify(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -974,7 +974,7 @@ function passwordResetVerify(args, emitter) {
 
 
 function passwordResetDelete(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -1010,7 +1010,7 @@ function posts(args, emitter) {
   } else {
     app.listen({
       posts: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -1080,7 +1080,7 @@ function posts(args, emitter) {
 
 
 function profile(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     var sql = '',
         arg = '';
 
@@ -1125,7 +1125,7 @@ function profile(args, emitter) {
 }
 
 function matchingUsersByIP(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -1154,7 +1154,7 @@ function matchingUsersByIP(args, emitter) {
 }
 
 function topicViewTimes(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -1181,7 +1181,7 @@ function topicViewTimes(args, emitter) {
 
 
 function urlExists(user, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -1208,7 +1208,7 @@ function urlExists(user, emitter) {
 
 
 function updateEmail(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     var sql = '',
         activationCode = '';
 
@@ -1252,7 +1252,7 @@ function updatePassword(args, emitter) {
       app.toolbox.helpers.hash(args.password, emitter);
     },
     passwordUpdate: function (previous, emitter) {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1288,7 +1288,7 @@ function updatePassword(args, emitter) {
 
 
 function updateSettings(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {

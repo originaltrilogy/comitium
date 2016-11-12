@@ -24,7 +24,7 @@ function info(discussionID, emitter) {
   } else {
     app.listen({
       discussion: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -78,7 +78,7 @@ function announcements(discussionID, emitter) {
   } else {
     app.listen({
       announcements: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -163,7 +163,7 @@ function topics(args, emitter) {
   } else {
     app.listen({
       topics: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {

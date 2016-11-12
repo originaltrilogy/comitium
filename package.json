@@ -19,14 +19,14 @@
   "dependencies": {
     "bcrypt": "~0.8.7",
     "citizen": "~0.7.0",
-    "gm": "~1.22.0",
-    "markdown-it": "~7.0.0",
-    "markdown-it-emoji": "~1.2.0",
-    "moment": "~2.14.1",
-    "moment-timezone": "~0.5.4",
-    "nodemailer": "~2.5.0",
+    "gm": "~1.23.0",
+    "markdown-it": "~8.1.0",
+    "markdown-it-emoji": "~1.3.0",
+    "moment": "~2.16.0",
+    "moment-timezone": "~0.5.9",
+    "nodemailer": "~2.6.4",
     "numeral": "~1.5.3",
-    "pg": "~6.0.3",
+    "pg": "~6.1.0",
     "slug": "~0.9.1"
   },
   "devDependencies": {

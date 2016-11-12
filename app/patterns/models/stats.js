@@ -21,7 +21,7 @@ function firstPost(emitter) {
     emitter.emit('ready', cached);
   // If it's not cached, retrieve the user count and cache it
   } else {
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -61,7 +61,7 @@ function topics(emitter) {
     emitter.emit('ready', cached);
   // If it's not cached, retrieve the topic count and cache it
   } else {
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -101,7 +101,7 @@ function posts(emitter) {
     emitter.emit('ready', cached);
   // If it's not cached, retrieve the post count and cache it
   } else {
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -141,7 +141,7 @@ function users(emitter) {
     emitter.emit('ready', cached);
   // If it's not cached, retrieve the user count and cache it
   } else {
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {

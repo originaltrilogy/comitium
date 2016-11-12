@@ -37,10 +37,19 @@ app.toolbox = {
   slug: require('slug')
 };
 
-app.toolbox.pg.defaults.poolSize = 100;
-
+// Overwrite pg's default date handler to convert to GMT
 app.toolbox.pg.types.setTypeParser(1114, function (stringValue) {
   return new Date(Date.parse(stringValue + ' +0000')).toISOString();
+});
+// Create a connection pool
+app.toolbox.dbPool = new app.toolbox.pg.Pool(app.config.comitium.db);
+// Log errors in the connection pool
+app.toolbox.dbPool.on('error', function (err, client) {
+  app.log({
+    type: 'error',
+    label: 'Database pool error',
+    contents: err
+  });
 });
 
 // Static resources

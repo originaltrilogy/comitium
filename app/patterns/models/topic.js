@@ -30,7 +30,7 @@ module.exports = {
 
 
 function announcementView(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -57,7 +57,7 @@ function announcementView(args, emitter) {
 
 
 function announcementReply(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -86,7 +86,7 @@ function announcementReply(args, emitter) {
 function exists(topicID, emitter) {
   app.listen({
     exists: function (emitter) {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -142,7 +142,7 @@ function firstUnreadPost(args, emitter) {
     },
     newPosts: function (previous, emitter) {
       if ( app.toolbox.moment(previous.topic.lastPostCreated).isAfter(previous.viewTime[0].time) ) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -179,7 +179,7 @@ function firstUnreadPost(args, emitter) {
 
 
 function hasInvitee(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -205,7 +205,7 @@ function hasInvitee(args, emitter) {
 
 
 function invitees(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -239,7 +239,7 @@ function info(topicID, emitter) {
   } else {
     app.listen({
       topic: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -299,7 +299,7 @@ function insert(args, emitter) {
     });
   } else {
 
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -605,7 +605,7 @@ function posts(args, emitter) {
   } else {
     app.listen({
       posts: function (emitter) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -671,7 +671,7 @@ function posts(args, emitter) {
 
 
 function lock(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -700,7 +700,7 @@ function lock(args, emitter) {
 
 
 function unlock(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -729,11 +729,11 @@ function unlock(args, emitter) {
 
 
 function move(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -884,7 +884,7 @@ function reply(args, emitter) {
     });
   } else {
 
-    app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+    app.toolbox.dbPool.connect(function (err, client, done) {
       if ( err ) {
         emitter.emit('error', err);
       } else {
@@ -1055,7 +1055,7 @@ function reply(args, emitter) {
 function subscriptionExists(args, emitter) {
   app.listen({
     subscriptionExists: function (emitter) {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1094,7 +1094,7 @@ function subscriptionExists(args, emitter) {
 function subscribers(args, emitter) {
   app.listen({
     subscribers: function (emitter) {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1131,7 +1131,7 @@ function subscribersToUpdate(args, emitter) {
 
   app.listen({
     subscribersToUpdate: function (emitter) {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1166,7 +1166,7 @@ function subscribersToUpdate(args, emitter) {
 function subscriptionNotificationSentUpdate(args, emitter) {
   app.listen({
     subscriptionNotificationSentUpdate: function (emitter) {
-      app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
           emitter.emit('error', err);
         } else {
@@ -1209,7 +1209,7 @@ function subscribe(args, emitter) {
 
     if ( output.listen.success ) {
       if ( !output.subscriptionExists ) {
-        app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+        app.toolbox.dbPool.connect(function (err, client, done) {
           if ( err ) {
             emitter.emit('error', err);
           } else {
@@ -1244,7 +1244,7 @@ function subscribe(args, emitter) {
 
 
 function unsubscribe(args, emitter) {
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
@@ -1268,7 +1268,7 @@ function unsubscribe(args, emitter) {
 
 function viewTimeUpdate(args, emitter) {
 
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {

@@ -13,7 +13,7 @@ function mail(args, emitter) {
       replace = args.replace || {},
       regex;
 
-  app.toolbox.pg.connect(app.config.comitium.db.connectionString, function (err, client, done) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
