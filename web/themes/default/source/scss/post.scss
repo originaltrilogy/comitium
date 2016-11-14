@@ -33,13 +33,13 @@ article.post {
 
   p.edited {
     flex: 0 0 96vw;
-    margin: 0;
     font-size: 80%;
     @include bodyFont(italic);
     text-align: right;
   }
   nav.actions {
     flex-basis: 100%;
+    margin-top: 4vw;
     background: none;
 
     ul {
@@ -47,8 +47,6 @@ article.post {
       margin-right: 4vw;
     }
     li {
-      margin-right: 0.6vw;
-
       &:last-child {
         margin-right: 0;
       }
@@ -71,16 +69,10 @@ article.post {
         margin: 0;
       }
       li {
-        margin-right: 0;
-
-        &:nth-child(n+2) a {
-          border-left: none;
-        }
+        margin-bottom: 0;
       }
-
       a {
         padding: 1.6vw 2vw;
-        border-radius: 0;
       }
     }
   }

@@ -2,12 +2,12 @@ header
   section.summary
     h1 Topic Subscriptions
     p This is a list of topics you're following, sorted by most recent activity.
-    if pagination && pagination.lastPage > 1
-      nav
-        include ../partials/pagination
 
 section.topics
   if topics
+    if pagination && pagination.lastPage > 1
+      nav
+        include ../partials/pagination
     each topic in topics
       include ../partials/topic
   else

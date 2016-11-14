@@ -52,11 +52,11 @@ if moderateUser
         p There are no IP addresses associated with this user.
     section.ip-matches
       if matchingUsersByIP
-        p Users who match this IP address (starting with the most recent access via this IP):
+        p Users who match #{matchingUsersByIP[0].ip} (most recent first):
         table
           thead
             th Username
-            th Acces Time
+            th Last access via this IP
           each user in matchingUsersByIP
             tr
               td

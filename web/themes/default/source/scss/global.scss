@@ -590,7 +590,7 @@ section {
       color: #d2d2d2;
       margin: 4vw 0;
       padding: 3vw 4vw;
-      background-color: hsl(227,15%,24%);
+      background-color: hsl(227,18%,24%);
       border-left: 1px solid hsl(227,18%,50%);
 
       > blockquote,
@@ -1070,14 +1070,14 @@ form {
       &.checkbox,
       &.radio {
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         align-items: center;
 
         input {
-          flex: 0 0 auto;
+          flex: 0 0 10vw;
         }
         label {
-          flex: 1 1 auto;
+          flex: 0 0 78vw;
           margin: 0 0 0 4vw;
           @include bodyFont;
           font-size: 100%;
@@ -1090,6 +1090,7 @@ form {
 
         ul.data {
           & > li {
+            flex-wrap: nowrap;
             margin: 4vw 0;
 
             ul.checkbox,
@@ -1115,6 +1116,12 @@ form {
       display: block;
       margin-bottom: 4vw;
 
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
       &.cancel {
         a {
             @include debutton;
@@ -1160,6 +1167,28 @@ nav.actions {
     @include button(light);
   }
 }
+
+/////////////////////////
+////     tables      ////
+/////////////////////////
+
+table {
+  width: 100%;
+  margin: 4vw 0;
+  color: hsl(0,0%,85%);
+
+  th,
+  td {
+    padding: 2.5vw;
+    border: 1px solid hsl(227,18%,50%);
+  }
+
+  th {
+    font-weight: normal;
+    background: hsl(227,18%,30%);
+  }
+}
+
 
 // Avatars
 a.avatar {
@@ -1517,11 +1546,6 @@ a.avatar {
         }
       }
     }
-    &.form {
-      &.post li.subscribe {
-        float: left;
-      }
-    }
     &.summary {
       padding-top: 2vw;
 
@@ -1550,13 +1574,8 @@ a.avatar {
     }
     &.notice {
       &::before {
-        display: inline;
-        vertical-align: middle;
-        margin-right: 2vw;
+        margin-bottom: 2vw;
         font-size: 5vw;
-      }
-      &.locked::before {
-        left: 6vw;
       }
       p {
         margin-bottom: 3vw;
@@ -1569,15 +1588,11 @@ a.avatar {
         display: inline;
       }
     }
-    &.news,
-    &.category,
-    &.announcements,
-    &.topics,
-    &.posts {
-      position: relative;
-
-      nav.actions:first-child {
-        display: none;
+    &.form.post {
+      ul.data {
+        > li {
+          margin-bottom: 4vw;
+        }
       }
     }
   }
@@ -1702,6 +1717,9 @@ a.avatar {
           &:last-child {
             margin-bottom: 4vw;
           }
+          input {
+            flex: 0 0 6vw;
+          }
         }
       }
     }
@@ -1732,7 +1750,6 @@ a.avatar {
     ul {
       display: flex;
       justify-content: center;
-      overflow-x: auto;
       padding: 0;
     }
 
@@ -1938,7 +1955,6 @@ a.avatar {
   h2 {
     padding: 2.4rem 0;
     font-size: 2rem;
-    text-align: initial;
   }
 
   a.avatar {
@@ -1982,6 +1998,10 @@ a.avatar {
     }
   }
 
+  nav.pagination {
+    margin-bottom: 2.4rem;
+  }
+
   nav.previous-and-next {
     margin: 3.2rem auto;
   }
@@ -1996,8 +2016,7 @@ a.avatar {
   nav.pagination,
   nav.actions {
     li {
-      margin-right: 0.4rem;
-      margin-left: 0.4rem;
+      margin: 0 0.4rem 2.4rem;
     }
   }
 
@@ -2118,11 +2137,8 @@ a.avatar {
         }
       }
       &::before {
-        margin-right: 1.6rem;
+        margin-bottom: 2rem;
         font-size: 3.2rem;
-      }
-      &.locked::before {
-        left: 4.8rem;
       }
       p {
         margin-bottom: 1.6rem;
@@ -2280,8 +2296,11 @@ a.avatar {
           &:last-child {
             margin-bottom: 2.4rem;
           }
-
+          input {
+            flex: 0 0 2.4rem;
+          }
           label {
+            flex: 0 0 28rem;
             margin: 0 0 0 1rem;
             max-width: none;
           }
@@ -2314,7 +2333,6 @@ a.avatar {
       text-align: center;
 
       & > li {
-        display: inline-block;
         margin-left: 2rem;
         margin-right: 2rem;
 
@@ -2322,6 +2340,30 @@ a.avatar {
         input[type="submit"] {
           padding: 1rem 1.2rem;
           font-size: 91%;
+        }
+      }
+    }
+  }
+
+  section.form.post {
+    overflow: hidden;
+
+    form {
+      position: relative;
+
+      ul.data {
+        > li {
+          margin-bottom: 2rem;
+        }
+      }
+      ul.actions {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        padding: 0;
+
+        :last-child {
+          margin: 0;
         }
       }
     }
@@ -2380,6 +2422,10 @@ a.avatar {
 
 @media only screen and (min-width: 1008px) {
 
+  h2 {
+    text-align: initial;
+  }
+
   section.summary {
     max-width: 96rem;
     margin: auto;
@@ -2405,6 +2451,10 @@ a.avatar {
       margin: auto;
       padding: 0;
     }
+  }
+
+  form textarea[name="title"] {
+    height: 6rem;
   }
 
 }

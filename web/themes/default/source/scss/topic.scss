@@ -40,36 +40,32 @@ body[data-controller="announcement"][data-view="announcement"] {
     }
   }
 
+  section.posts {
+    > nav {
+      padding: 4vw 4vw 0;
+      background: hsl(227,18%,22%);
+    }
+  }
+
   // First page
   &[data-page="1"][data-action="handler"] {
     section.posts {
       > nav {
-        padding-top: 4vw;
-        background: hsl(227,18%,20%);
-
         nav.actions ul {
           margin-bottom: 0;
         }
       }
     }
     article.post:first-of-type {
-      background: hsl(227,18%,20%);
-
       header {
         position: absolute;
         left: -100vw;
-      }
-      section.content {
-        background: none;
       }
     }
   }
 
   // Subsequent pages
   &:not([data-page="1"]) {
-    article.post:first-of-type {
-      padding-top: 4vw;
-    }
     section.summary {
       &::before {
         display: none;
@@ -207,6 +203,13 @@ body[data-controller="announcement"][data-view="announcement"] {
   }
 
   @media only screen and (min-width: 400px) {
+    section.summary {
+      dl.byline {
+        dd.author {
+          max-width: 30vw;
+        }
+      }
+    }
     article.post {
       header {
         a.avatar {
@@ -242,7 +245,7 @@ body[data-controller="announcement"][data-view="announcement"] {
           border: none;
         }
         nav.actions {
-          background: none;
+          margin: 0;
         }
       }
     }
@@ -324,7 +327,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       section.content.signature {
         margin-left: 10vw;
         padding: 2vw;
-        background-color: hsl(227,18%,23%);
+        background-color: hsl(227,18%,24%);
 
         > * {
           margin: 0 0 1.6rem;
@@ -346,40 +349,31 @@ body[data-controller="announcement"][data-view="announcement"] {
         }
       }
     }
-    section.form.post {
-      overflow: hidden;
-
-      form {
-        ul.data {
-          > li {
-            margin-bottom: 4vw;
-          }
-        }
-        ul.actions {
-          justify-content: flex-end;
-          float: right;
-          padding: 0;
-
-          :last-child {
-            margin: 0;
-          }
-        }
-      }
-      li.subscribe {
-        margin: 0;
-
-        label {
-          max-width: 20vw;
-        }
-      }
-    }
 
   }
 
   @media only screen and (min-width: 720px) {
 
+    section.posts {
+      > nav {
+        display: flex;
+        justify-content: center;
+        padding: 2.4rem 2.4rem 0;
+
+        nav.pagination {
+          margin-right: 3.2rem;
+          margin-bottom: 1.6rem;
+        }
+        nav.actions {
+          li {
+            margin-bottom: 1.6rem;
+          }
+        }
+      }
+    }
     article.post {
-      max-width: 94.8rem;
+      // 96rem plus 4.8rem padding
+      max-width: 100.8rem;
       margin: auto;
       padding: 2.4rem;
 
@@ -438,17 +432,11 @@ body[data-controller="announcement"][data-view="announcement"] {
     section.form.post {
       form {
         ul.data {
-          > li {
-            margin-bottom: 2rem;
-          }
           li.subscribe {
             label {
               max-width: none;
             }
           }
-        }
-        ul.actions {
-          padding: 0;
         }
       }
     }
@@ -508,10 +496,15 @@ body[data-controller="announcement"][data-view="announcement"] {
         margin-bottom: 3.6rem;
 
         section.content.post {
-          // Matches the width of replies
-          max-width: 72rem;
           margin: 0 auto;
-          padding: 4.8rem 0;
+          padding: 4.8rem 2.4rem;
+
+          > * {
+            // Matches the width of replies
+            max-width: 72rem;
+            margin-right: auto;
+            margin-left: auto;
+          }
         }
       }
 
@@ -569,6 +562,7 @@ body[data-controller="topic"][data-view="private-topic"] {
 
         &::before {
           content: ', ';
+          color: hsl(0,0%,85%);
         }
       }
       &:last-child {
@@ -577,9 +571,11 @@ body[data-controller="topic"][data-view="private-topic"] {
 
         &::before {
           content: ' and ';
+          color: hsl(0,0%,85%);
         }
         &::after {
           content: '.';
+          color: hsl(0,0%,85%);
           // Prevents the period from becoming a widow on the next line
           position: absolute;
           top: 0;
