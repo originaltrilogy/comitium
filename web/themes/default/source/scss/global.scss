@@ -1077,7 +1077,6 @@ form {
           flex: 0 0 10vw;
         }
         label {
-          flex: 0 0 78vw;
           margin: 0 0 0 4vw;
           @include bodyFont;
           font-size: 100%;
@@ -2300,13 +2299,13 @@ a.avatar {
             flex: 0 0 2.4rem;
           }
           label {
-            flex: 0 0 28rem;
             margin: 0 0 0 1rem;
             max-width: none;
           }
         }
 
         ul.data {
+          flex-basis: 100%;
           margin: 6rem 0;
 
           ul.data {
@@ -2346,20 +2345,19 @@ a.avatar {
   }
 
   section.form.post {
-    overflow: hidden;
-
     form {
-      position: relative;
-
       ul.data {
         > li {
           margin-bottom: 2rem;
         }
+        li.subscribe {
+          float: left;
+          width: 50%;
+          margin-top: 0;
+        }
       }
       ul.actions {
-        position: absolute;
-        right: 0;
-        bottom: 0;
+        justify-content: flex-end;
         padding: 0;
 
         :last-child {

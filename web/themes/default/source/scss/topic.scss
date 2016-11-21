@@ -306,7 +306,7 @@ body[data-controller="announcement"][data-view="announcement"] {
           height: 2vw;
           transform: rotate(45deg);
           position: absolute;
-          top: 0.4vw;
+          top: 0.7vw;
           left: -1vw;
           background-color: hsl(227,18%,22%);
         }
@@ -404,7 +404,7 @@ body[data-controller="announcement"][data-view="announcement"] {
         &::before {
           width: 1.8rem;
           height: 1.8rem;
-          top: 0.3rem;
+          top: 0.6rem;
           left: -0.9rem;
         }
       }
@@ -429,15 +429,20 @@ body[data-controller="announcement"][data-view="announcement"] {
         }
       }
     }
-    section.form.post {
-      form {
-        ul.data {
-          li.subscribe {
-            label {
-              max-width: none;
+    section.form {
+      &.post {
+        form {
+          ul.data {
+            li.subscribe {
+              label {
+                max-width: none;
+              }
             }
           }
         }
+      }
+      &.quick-reply {
+        margin-top: 6.4rem;
       }
     }
 
