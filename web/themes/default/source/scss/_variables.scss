@@ -66,20 +66,20 @@ $gNoUpdates: '\eac4';
 
   @if $color == 'light' {
 		color: #373B49;
-		background-image: linear-gradient(to bottom, #D9E2FF 0%, #A3ADCC 98%);
+		background-image: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
 
 		&:hover {
 			color: hsla(227,41%,83%,1);
-      background-image: linear-gradient(180deg,hsla(227,18%,34%,1) 0,hsla(227,18%,30%,1) 98%);
+      background-image: linear-gradient(180deg,hsl(227,18%,34%) 0,hsl(227,18%,30%) 98%);
     }
   } @else if $color == 'dark' {
 		color: #A5B2D9;
-		background-image: linear-gradient(to bottom, #2F323D 0%, #272A33 98%);
+		background-image: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
 		border: 1px solid #474F66;
 
 		&:hover {
 			color: hsl(227,41%,13%);
-			background-image: linear-gradient(180deg, hsl(227,18%,68%) 0, hsl(223,18%,40%) 98%);
+			background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
     }
   } @else if $color == 'lightGhost' {
     color: hsl(227,100%,90%);

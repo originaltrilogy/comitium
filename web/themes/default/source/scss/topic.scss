@@ -325,9 +325,12 @@ body[data-controller="announcement"][data-view="announcement"] {
         }
       }
       section.content.signature {
+        border-top: 1px solid hsl(227,18%,18%);
         margin-left: 10vw;
         padding: 2vw;
         background-color: hsl(227,18%,24%);
+        border-bottom-right-radius: 0.5vw;
+        border-bottom-left-radius: 0.5vw;
 
         > * {
           margin: 0 0 1.6rem;
@@ -342,12 +345,6 @@ body[data-controller="announcement"][data-view="announcement"] {
           }
         }
       }
-      &[data-signature="true"] {
-        section.content.signature {
-          border-bottom-right-radius: 0.5vw;
-          border-bottom-left-radius: 0.5vw;
-        }
-      }
     }
 
   }
@@ -358,7 +355,7 @@ body[data-controller="announcement"][data-view="announcement"] {
       > nav {
         display: flex;
         justify-content: center;
-        padding: 2.4rem 2.4rem 0;
+        padding: 1.6rem 2.4rem 0;
 
         nav.pagination {
           margin-right: 3.2rem;
@@ -411,22 +408,18 @@ body[data-controller="announcement"][data-view="announcement"] {
       nav.actions {
         margin-left: 9.2rem;
       }
-      section.content.signature {
-        margin-left: 9.2rem;
-        padding: 1.2rem;
-        font-size: 85%;
-      }
       &[data-signature="false"] {
         nav.actions {
           border-bottom-right-radius: 4px;
           border-bottom-left-radius: 4px;
         }
       }
-      &[data-signature="true"] {
-        section.content.signature {
-          border-bottom-right-radius: 4px;
-          border-bottom-left-radius: 4px;
-        }
+      section.content.signature {
+        margin-left: 9.2rem;
+        padding: 1.2rem;
+        font-size: 85%;
+        border-bottom-right-radius: 4px;
+        border-bottom-left-radius: 4px;
       }
     }
     section.form {
