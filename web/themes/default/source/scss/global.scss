@@ -30,8 +30,6 @@
 body {
   position: relative;
   @include bodyFont;
-  color: white;
-  background-color: hsl(227,18%,18%);
   overflow-x: hidden;
 
   &.transitioning {
@@ -63,25 +61,6 @@ body {
       }
     }
   }
-
-  // Navigation highlighting
-  &[data-controller="index"] nav li.news a,
-  &[data-controller="discussions"] nav li.discussions a,
-  &[data-controller="discussion"] nav li.discussions a,
-  &[data-controller="announcements"] nav li.discussions a,
-  &[data-controller="announcement"] nav li.discussions a,
-  &[data-controller="topic"][data-view="topic"] nav li.discussions a,
-  &[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a,
-  &[data-controller="topic"][data-view="private-topic"] nav li.private-topics a,
-  &[data-controller="topic"][data-view="start-private"] nav li.private-topics a,
-  &[data-controller="private-topics"] nav li.private-topics a,
-  &[data-controller="sign-in"] nav li.sign-in a,
-  &[data-controller="register"] nav li.register a,
-  &[data-controller="account"] nav li.account a,
-  &[data-controller="about"] nav li.about a,
-  &[data-controller="help"] nav li.help a {
-    background-color: hsl(227,18%, 26%);
-  }
 }
 
 html.no-cssanimations span.loading-indicator {
@@ -102,10 +81,14 @@ html.cssanimations.csstransforms span.loading-indicator {
   text-indent: 100%;
   overflow: hidden;
   border-radius: 30px;
-  border-top: 3px solid #666;
-  border-right: 3px solid #c8c8c8;
-  border-bottom: 3px solid #666;
-  border-left: 3px solid #666;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-left-width: 1px;
+  border-left-style: solid;
   animation: loading-indicator 0.75s linear 100;
 }
 
@@ -119,13 +102,10 @@ html.cssanimations.csstransforms span.loading-indicator {
 }
 
 a {
-  color: hsl(227,41%,80%);
   text-decoration: none;
 }
 
 p {
-  color: hsl(0,0%,85%);
-
   a {
     text-decoration: underline;
     word-break: break-word;
@@ -134,7 +114,6 @@ p {
 
 time {
   @include bodyFont(normal, 300);
-  color: rgb(191,191,191);
 }
 
 a.home {
@@ -143,15 +122,12 @@ a.home {
   .logo {
     width: 100%;
     height: 100%;
-    fill: #E7E7E7;
   }
 }
 
 body > header {
   display: flex;
   width: 100%;
-  background-color: hsl(227,18%,16%);
-  box-shadow: 0 0 1.6vw hsl(227,0%,10%);
 
   a.home {
     width: 32vw;
@@ -174,7 +150,6 @@ body > header {
       a {
         display: block;
         padding: 1vw;
-        color: rgb(204, 216, 255);
       }
     }
   }
@@ -202,7 +177,6 @@ body > header {
 
       &::before {
         @include icon($gNoUpdates);
-        color: hsl(227,100%,90%);
         position: absolute;
         top: 0;
         left: 0;
@@ -242,11 +216,6 @@ body {
     transition: margin 0.3s;
     margin-top: 0;
   }
-  // Hide the current page indicator when the header is floating
-  &.floating-header-active > header,
-  &.floating-header-hidden > header {
-    background-color: hsla(227,18%,17%,0.95);
-  }
   &.floating-header-hidden > header {
     margin-top: -80px;
   }
@@ -283,7 +252,6 @@ body {
     position: fixed;
     z-index: 1001;
     font-size: 125%;
-    background-color: hsl(227,18%, 18%);
 
     &.left {
       top: 0;
@@ -339,7 +307,6 @@ body {
     width: 0;
     height: 0;
     z-index: 1000;
-    background-color: hsla(227,1%,0%,0.5);
     opacity: 0;
     transition: opacity 0.4s;
   }
@@ -364,8 +331,6 @@ body {
 nav.breadcrumbs {
   padding: 4vw 4vw 0;
   @include titleFont(normal, 300);
-  color: hsl(227,23%,60%);
-  background-color: hsl(227,18%,19%);
   font-size: 110%;
 
   ul {
@@ -395,19 +360,11 @@ nav.breadcrumbs {
       }
     }
   }
-
-  a {
-    color: hsl(227,23%,60%);
-  }
 }
 
 main {
   clear: both;
   overflow: hidden;
-
-  > header {
-    background-image: linear-gradient(180deg, hsl(227,18%,19%) 0, hsl(227,18%,25%));
-  }
 
   & > h1:first-child {
     margin-top: 5vw;
@@ -428,7 +385,6 @@ section {
 
     & > p {
       @include bodyFont(normal, 300);
-      color: rgb(191,191,191);
 
       &:first-of-type {
         margin-top: 0;
@@ -443,16 +399,15 @@ section {
     padding: 4vw;
     position: relative;
     text-align: center;
-    background-color: hsl(227,18%,18%);
-    border-top: 1px solid;
-    border-bottom: 1px solid;
-    border-color: hsl(227,18%,40%);
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
 
     &::before {
       @include icon($gNotice);
       display: block;
       margin-bottom: 2vw;
-      color: hsl(227,100%,90%);
       font-size: 10vw;
     }
 
@@ -464,7 +419,6 @@ section {
     &.error,
     &.locked,
     &.banned {
-      background: hsl(0,40%,50%);
       border: none;
 
       &::before,
@@ -522,7 +476,6 @@ section {
 
   &.announcements {
     padding: 2vw 4vw 6vw;
-    background: hsl(227,18%,20%);
 
     article {
       padding: 2vw 0;
@@ -534,7 +487,6 @@ section {
     margin: 4vw 0;
     padding: 0 4vw;
     line-height: 1.6;
-    color: hsl(0,0%,85%);
     background: none;
 
     & > * {
@@ -587,11 +539,10 @@ section {
       position: relative;
       overflow: hidden;
       font-size: 90%;
-      color: #d2d2d2;
       margin: 4vw 0;
       padding: 3vw 4vw;
-      background-color: hsl(227,18%,24%);
-      border-left: 1px solid hsl(227,18%,50%);
+      border-left-width: 1px;
+      border-left-style: solid;
 
       > blockquote,
       > blockquote > blockquote,
@@ -630,10 +581,6 @@ section {
         right: 1.6vw;
         padding: 1.5vw 2vw;
         font-size: 80%;
-
-        &:hover {
-          background: hsl(227,18%,30%);
-        }
       }
       *:first-child {
         margin-top: 0;
@@ -647,10 +594,6 @@ section {
       dl, ol, ul {
         margin-left: 8vw;
       }
-    }
-
-    &.signature blockquote {
-      background-color: hsl(227,18%,19%)
     }
   }
 
@@ -720,7 +663,6 @@ nav.pagination {
     justify-content: center;
     font-weight: 300;
     border-radius: 2px;
-    color: #A5B2D9;
   }
   li {
     flex: 0 0 auto;
@@ -731,12 +673,6 @@ nav.pagination {
     }
     &:last-child {
       margin-right: 0;
-    }
-    &.current {
-      a {
-        color: hsl(227,41%,13%);
-        background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
-      }
     }
   }
   a {
@@ -780,11 +716,11 @@ dl.content-stats {
   height: 18vw;
   margin: 0;
   padding: 4.5vw 2vw 2vw;
-  border: 1px solid #747D99;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 50%;
   font-size: 4vw;
   text-align: center;
-  color: #CDCDCD;
 
   dt {
     &::after {
@@ -841,10 +777,12 @@ article {
   display: flex;
   flex-wrap: wrap;
   padding: 4vw 0;
-  border-top: 1px solid hsl(227,18%,25%);
+  border-top-width: 1px;
+  border-top-style: solid;
 
   &:last-child {
-    border-bottom: 1px solid hsl(227,18%,25%);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
   }
 
   &.unread,
@@ -859,7 +797,6 @@ article {
       position: absolute;
       top: 0;
       left: -4vw;
-      background-color: hsl(227,100%, 90%);
     }
   }
 
@@ -882,7 +819,6 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   padding: 2vw 0;
   @include titleFont;
-  color: hsl(0, 0%, 85%);
 
   span.page {
     display: inline-block;
@@ -896,7 +832,6 @@ h2 {
   @include titleFont($weight: 400);
   text-align: center;
   text-transform: uppercase;
-  color: hsl(0,0%,80%);
 }
 
 h3, h4, h5, h6 {
@@ -911,8 +846,8 @@ a.to-the-top {
 
 footer {
   padding: 4vw;
-  background-color: hsl(227,18%, 16%);
-  border-top: 1px solid hsl(227,18%,14%);
+  border-top-width: 1px;
+  border-top-style: solid;
 
   a.home {
     width: 50vw;
@@ -930,14 +865,10 @@ footer {
 
     p {
       margin: 4vw 0;
-      color: hsl(225,18%,60%);
 
       &:last-child {
         margin-bottom: 0;
       }
-    }
-    a {
-      color: hsl(225,18%,60%);
     }
   }
 }
@@ -954,12 +885,10 @@ form {
     margin-bottom: 2vw;
     font-size: 120%;
     line-height: 1;
-    color: white;
   }
   p.label-note {
     margin: 1vw 0 2vw;
     font-size: 90%;
-    color: #CDCDCD;
     line-height: 1.5;
   }
   input,
@@ -968,15 +897,13 @@ form {
     width: 100%;
     padding: 4vw;
     word-wrap: normal;
-    border: 1px solid hsl(227,18%,30%);
+    border-width: 1px;
+    border-style: solid;
     border-radius: 1vw;
-    background-color: hsl(227,18%,32%);
     transition: border-color 0.5s, background-color 0.5s;
 
     &:focus {
       outline: none;
-      border-color: hsla(227,18%,55%,1);
-      background-color: hsla(227,18%,34%,1);
     }
   }
 
@@ -1017,7 +944,6 @@ form {
         line-height: 10vw;
         font-size: 8vw;
         text-align: center;
-        color: hsl(227,100%,90%);
       }
     }
   }
@@ -1033,7 +959,6 @@ form {
         display: block;
         width: 7vw;
         height: 7vw;
-        background-color: hsl(227,100%, 90%);
         border-radius: 50%;
         content: '';
       }
@@ -1063,14 +988,13 @@ form {
           @include icon($gSelect);
           position: absolute;
           right: 2vw;
-          bottom: 2.5vw;
+          bottom: 2vw;
           font-size: 6vw;
         }
       }
       &.checkbox,
       &.radio {
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
 
         input {
@@ -1174,17 +1098,16 @@ nav.actions {
 table {
   width: 100%;
   margin: 4vw 0;
-  color: hsl(0,0%,85%);
 
   th,
   td {
     padding: 2.5vw;
-    border: 1px solid hsl(227,18%,50%);
+    border-width: 1px;
+    border-style: solid;
   }
 
   th {
     font-weight: normal;
-    background: hsl(227,18%,30%);
   }
 }
 
@@ -1196,7 +1119,8 @@ a.avatar {
   margin: 0;
   width: 12vw;
   height: 12vw;
-  border: 1px solid hsla(221,18%,18%,1);
+  border-width: 1px;
+  border-style: solid;
   border-radius: 50%;
   overflow: hidden;
 
@@ -1385,10 +1309,6 @@ a.avatar {
           a {
             display: block;
             padding: 0.5vw 1.5vw;
-
-            &:hover {
-              background-color: hsl(227,18%, 27%);
-            }
           }
         }
       }
@@ -1416,9 +1336,8 @@ a.avatar {
               margin: 0;
               border-radius: 0.3rem;
               text-align: center;
-              background-color: hsl(227,18%, 25%);
-              border: 1px solid hsl(227,18%,21%);
-              box-shadow: 0 2px 6px hsl(227,18%,16%);
+              border-width: 1px;
+              border-style: solid;
               z-index: 4;
 
               &.active {
@@ -1434,10 +1353,10 @@ a.avatar {
                 position: absolute;
                 top: -2vw;
                 right: 1vw;
-                background-color: hsl(227,18%,25%);
-                border-top: 1px solid;
-                border-left: 1px solid;
-                border-color: hsl(227,18%,21%);
+                border-top-width: 1px;
+                border-left-width: 1px;
+                border-top-style: solid;
+                border-left-style: solid;
                 z-index: 1;
               }
 
@@ -1567,7 +1486,6 @@ a.avatar {
           position: absolute;
           top: 0;
           left: 0;
-          background-image: linear-gradient(90deg,hsla(227,18%,50%,0),hsla(227,18%,50%,1),hsla(227,18%,50%,0));
         }
       }
     }
@@ -1704,8 +1622,8 @@ a.avatar {
 
         &.select {
           &::after {
-            right: 1vw;
-            bottom: 0.5vw;
+            right: 0.5vw;
+            bottom: 0;
             font-size: 4vw;
           }
         }
@@ -1841,7 +1759,6 @@ a.avatar {
     > header {
       display: flex;
       font-size: 1.2rem;
-      box-shadow: 0 0 8px hsl(227,0%,10%);
 
       a.home {
         width: 10.8rem;
@@ -1888,10 +1805,6 @@ a.avatar {
           }
           a {
             padding: 0.5rem 1rem;
-
-            &:hover {
-              background-color: hsl(227,18%, 27%);
-            }
           }
         }
       }
@@ -2283,8 +2196,9 @@ a.avatar {
         &.select {
           &::after {
             right: 0;
-            bottom: 0;
+            bottom: .4rem;
             font-size: 2.4rem;
+            line-height: 2.4rem;
           }
         }
         &.checkbox,

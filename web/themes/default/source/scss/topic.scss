@@ -27,11 +27,8 @@ body[data-controller="announcement"][data-view="announcement"] {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        color: hsl(227,41%,80%);
 
         &.date {
-          color: hsl(0,0%,67%);
-
           &::before {
             content: ' – ';
           }
@@ -43,7 +40,6 @@ body[data-controller="announcement"][data-view="announcement"] {
   section.posts {
     > nav {
       padding: 4vw 4vw 0;
-      background: hsl(227,18%,22%);
     }
   }
 
@@ -84,7 +80,6 @@ body[data-controller="announcement"][data-view="announcement"] {
       padding: 2vw;
       position: relative;
       text-align: left;
-      background: hsl(227,18%,18%);
 
       a.avatar {
         flex: 0 0 12vw;
@@ -111,7 +106,6 @@ body[data-controller="announcement"][data-view="announcement"] {
           flex: 0 0 26vw;
           font-size: 85%;
           text-align: right;
-          color: #acacac;
 
           span.edited {
             display: none;
@@ -124,10 +118,8 @@ body[data-controller="announcement"][data-view="announcement"] {
       padding: 3vw;
       text-align: right;
       font-size: 80%;
-      color: hsl(0,0%,70%);
       line-height: 1.6;
       overflow: auto;
-      background-color: hsl(227,18%,24%);
 
       > * {
         float: right;
@@ -153,10 +145,6 @@ body[data-controller="announcement"][data-view="announcement"] {
         > *:last-child {
           margin-bottom: 0;
         }
-      }
-
-      p {
-        color: hsl(0,0%,80%);
       }
     }
 
@@ -295,7 +283,6 @@ body[data-controller="announcement"][data-view="announcement"] {
         position: relative;
         margin: -4.5vw 0 0 10vw;
         padding: 3vw;
-        background-color: hsl(227,18%,22%);
         border-top-right-radius: 0.5vw;
         border-top-left-radius: 0.5vw;
 
@@ -308,7 +295,6 @@ body[data-controller="announcement"][data-view="announcement"] {
           position: absolute;
           top: 0.7vw;
           left: -1vw;
-          background-color: hsl(227,18%,22%);
         }
       }
       p.edited {
@@ -316,7 +302,6 @@ body[data-controller="announcement"][data-view="announcement"] {
       }
       nav.actions {
         margin: 0 0 0 10vw;
-        background-color: hsl(227,18%,22%);
       }
       &[data-signature="false"] {
         nav.actions {
@@ -325,10 +310,10 @@ body[data-controller="announcement"][data-view="announcement"] {
         }
       }
       section.content.signature {
-        border-top: 1px solid hsl(227,18%,18%);
+        border-top-width: 1px;
+        border-top-style: solid;
         margin-left: 10vw;
         padding: 2vw;
-        background-color: hsl(227,18%,24%);
         border-bottom-right-radius: 0.5vw;
         border-bottom-left-radius: 0.5vw;
 
@@ -560,7 +545,6 @@ body[data-controller="topic"][data-view="private-topic"] {
 
         &::before {
           content: ', ';
-          color: hsl(0,0%,85%);
         }
       }
       &:last-child {
@@ -569,11 +553,9 @@ body[data-controller="topic"][data-view="private-topic"] {
 
         &::before {
           content: ' and ';
-          color: hsl(0,0%,85%);
         }
         &::after {
           content: '.';
-          color: hsl(0,0%,85%);
           // Prevents the period from becoming a widow on the next line
           position: absolute;
           top: 0;
@@ -587,4 +569,18 @@ body[data-controller="topic"][data-view="private-topic"] {
     }
   }
 
+}
+
+body[data-controller="topic"][data-view="start-announcement"] {
+  section.form.topic-write {
+    ul.data {
+      li.discussions {
+        ul.data {
+          li.radio:nth-child(3) {
+            flex-wrap: wrap;
+          }
+        }
+      }
+    }
+  }
 }

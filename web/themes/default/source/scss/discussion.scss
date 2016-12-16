@@ -9,7 +9,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
   main > p {
     margin: 4vw 4vw 6vw;
-    color: white;
   }
   section.topics {
     margin-top: 4vw;
@@ -56,7 +55,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        color: #a5b2d9;
       }
       dd.date {
         margin-left: 0;
@@ -262,7 +260,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
           &::before {
             content: ' – ';
-            color: #bfbfbf;
           }
         }
         p.last-post {
