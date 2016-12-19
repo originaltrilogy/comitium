@@ -263,15 +263,9 @@ body > header {
   }
 }
 
-// Floating header (see global.js init() for associated scripts)
-body {
-  // Hide the current page indicator when the header is floating
-  &.floating-header-active > header,
-  &.floating-header-hidden > header {
-    background-color: hsla(227,18%,17%,0.95);
-  }
+main {
+	background-image: linear-gradient(180deg, hsl(227,18%,19%) 0, hsl(227,18%,19%) 100px, hsl(227,18%,18%) 101px);
 }
-
 
 // The menu button and sliding nav are used on mobile only. Much easier to limit
 // here than to overwrite within the 600px media query later.
@@ -368,7 +362,7 @@ nav.pagination {
 
 // Topic counts for forums, post counts for topics
 dl.content-stats {
-  border-color: hsl(225, 15%, 53%);
+  border-color: hsl(0, 15%, 53%);
   color: hsl(0, 0%, 80%);
 }
 
@@ -397,10 +391,10 @@ footer {
 
   section.copyright {
     p {
-      color: hsl(225,18%,60%);
+      color: hsl(0,18%,60%);
     }
     a {
-      color: hsl(225,18%,60%);
+      color: hsl(0,18%,60%);
     }
   }
 }

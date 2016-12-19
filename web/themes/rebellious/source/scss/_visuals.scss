@@ -65,34 +65,34 @@ $gNoUpdates: '\eac4';
 
   @if $color == 'light' {
 		color: #373B49;
-		background-image: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
+		background-image: linear-gradient(180deg,hsl(0,75%,90%),hsl(0,40%,75%) 98%);
 
 		&:hover {
 			color: hsla(227,41%,83%,1);
-      background-image: linear-gradient(180deg,hsl(227,18%,34%) 0,hsl(227,18%,30%) 98%);
+      background-image: linear-gradient(180deg,hsl(0,18%,34%) 0,hsl(0,18%,30%) 98%);
     }
   } @else if $color == 'dark' {
 		color: #A5B2D9;
-		background-image: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
+		background-image: linear-gradient(180deg, hsl(0,18%,22%) 0%, hsl(0,18%,16%) 98%);
 		border: 1px solid #474F66;
 
 		&:hover {
-			color: hsl(227,41%,13%);
-			background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
+			color: hsl(0,41%,13%);
+			background-image: linear-gradient(180deg,hsl(0,64%,86%),hsl(0,32%,68%) 98%);
     }
   } @else if $color == 'lightGhost' {
-    color: hsl(227,100%,90%);
-		box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
+    color: hsl(0,100%,90%);
+		box-shadow: 0 0 0 1px hsl(0,100%,90%) inset;
   } @else if $color == 'darkGhost' {
-    color: hsl(227,18%,25%);
-		box-shadow: 0 0 0 1px hsl(227,18%,25%) inset;
+    color: hsl(0,18%,25%);
+		box-shadow: 0 0 0 1px hsl(0,18%,25%) inset;
   }
 }
 
 @mixin debutton {
 	text-transform: initial;
 	background: none;
-	color: hsl(227,41%,75%);
+	color: hsl(0,41%,75%);
 }
 
 @mixin icon ($content) {
@@ -195,7 +195,7 @@ $gNoUpdates: '\eac4';
 body {
   @include bodyFont;
   color: white;
-  background-color: hsl(0, 0%, 98%);
+  background-color: hsl(0, 0%, 96%);
 
   // Navigation highlighting
   &[data-controller="index"] nav li.news a,
@@ -212,8 +212,9 @@ body {
   &[data-controller="register"] nav li.register a,
   &[data-controller="account"] nav li.account a,
   &[data-controller="about"] nav li.about a,
-  &[data-controller="help"] nav li.help a {
-    background-color: hsl(23, 100%, 32%);
+  &[data-controller="help"] nav li.help a,
+	> header nav li a:hover {
+    background-color: hsl(0, 70%, 35%);
   }
 }
 
@@ -225,7 +226,7 @@ html.cssanimations.csstransforms span.loading-indicator {
 }
 
 a {
-  color: hsl(23, 100%, 32%);
+  color: hsl(0, 90%, 40%);
 }
 
 p {
@@ -244,9 +245,9 @@ a.home {
 
 body > header {
   // background-color: hsl(23, 100%, 36%);
-	background-color: hsl(8, 100%, 30%);
 	// box-shadow: 0 0 1.6vw hsl(23, 100%, 26%);
-	box-shadow: 0 0 1.6vw hsl(8, 100%, 20%);
+	background-color: hsl(0, 80%, 26%);
+  box-shadow: 0 0 1.6vw hsl(0, 80%, 18%);
 
   nav {
     li {
@@ -259,20 +260,14 @@ body > header {
   section.status {
     a.private-topics {
       &::before {
-        color: hsl(227,100%,90%);
+        color: hsl(0, 0%, 100%);
       }
     }
   }
 }
 
-// Floating header (see global.js init() for associated scripts)
-body {
-  // Hide the current page indicator when the header is floating
-  &.floating-header-active > header,
-  &.floating-header-hidden > header {
-    // background-color: hsla(23, 100%, 37%, 0.95);
-		background-color: hsl(8, 100%, 30%);
-  }
+main {
+	background-image: linear-gradient(180deg, hsl(0, 80%, 30%) 0, hsl(0, 80%, 30%) 100px, hsl(0, 0%, 96%) 101px);
 }
 
 
@@ -280,7 +275,14 @@ body {
 // here than to overwrite within the 600px media query later.
 @media only screen and (max-width: 599px) {
   .slide-menu {
-    background-color: hsl(227,18%, 18%);
+    background-color: hsl(0, 80%, 26%);
+		box-shadow: 0 0 1.6vw hsl(0, 80%, 18%);
+
+		li {
+			a {
+				color: hsl(0, 0%, 100%);
+			}
+		}
   }
 
   .menu-shadow {
@@ -289,19 +291,19 @@ body {
 }
 
 nav.breadcrumbs {
-  color: hsl(23, 100%, 75%);
+  color: hsl(0, 25%, 65%);
   // background-color: hsl(23, 90%, 40%);
-	background-color: hsl(8, 90%, 34%);
+	background-color: hsl(0, 80%, 30%);
 
   a {
-    color: hsl(23, 100%, 75%);
+    color: hsl(0, 25%, 65%);
   }
 }
 
 main {
   > header {
     // background-image: linear-gradient(180deg, hsl(23, 90%, 40%) 0, hsl(23, 90%, 50%));
-		background-image: linear-gradient(180deg, hsl(8, 90%, 34%) 0, hsl(8, 90%, 45%));
+		background-image: linear-gradient(180deg, hsl(0, 80%, 30%) 0, hsl(0, 80%, 40%));
   }
 }
 
@@ -311,16 +313,16 @@ section {
       color: hsl(0, 0%, 100%);
     }
 		dl.content-stats {
-			color: hsl(23, 100%, 95%);
+			color: hsl(0, 100%, 95%);
 		}
   }
 
   &.notice {
-    background-color: hsl(227,18%,18%);
-    border-color: hsl(227,18%,40%);
+    background-color: hsl(0,18%,18%);
+    border-color: hsl(0,18%,40%);
 
     &::before {
-      color: hsl(227,100%,90%);
+      color: hsl(0,100%,90%);
     }
 
     &.error,
@@ -336,7 +338,7 @@ section {
   }
 
   &.announcements {
-    background: hsl(0, 0%, 94%);
+    background: hsl(0, 0%, 92%);
   }
 
   &.content {
@@ -344,18 +346,18 @@ section {
 
     blockquote {
       color: #d2d2d2;
-      background-color: hsl(227,18%,24%);
-      border-color: hsl(227,18%,50%);
+      background-color: hsl(0,18%,24%);
+      border-color: hsl(0,18%,50%);
 
       a.expand {
         &:hover {
-          background: hsl(227,18%,30%);
+          background: hsl(0,18%,30%);
         }
       }
     }
 
     &.signature blockquote {
-      background-color: hsl(227,18%,19%)
+      background-color: hsl(0,18%,19%)
     }
   }
 }
@@ -367,8 +369,8 @@ nav.pagination {
   li {
     &.current {
       a {
-        color: hsl(227,41%,13%);
-        background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
+        color: hsl(0,41%,13%);
+        background-image: linear-gradient(180deg,hsl(0,64%,86%),hsl(0,32%,68%) 98%);
       }
     }
   }
@@ -376,17 +378,17 @@ nav.pagination {
 
 // Topic counts for forums, post counts for topics
 dl.content-stats {
-  border-color: hsl(23, 100%, 75%);
-  color: hsl(23, 100%, 40%);
+  border-color: hsl(0, 25%, 65%);
+  color: hsl(0, 100%, 40%);
 }
 
 article {
-  border-color: hsl(0, 0%, 90%);
+  border-color: hsl(0, 0%, 86%);
 
   &.unread,
   &.updated {
     &::before {
-      background-color: hsl(227,100%, 90%);
+      background-color: hsl(0,100%, 90%);
     }
   }
 }
@@ -396,19 +398,19 @@ h1 {
 }
 
 h2 {
-  color: hsl(0,0%,40%);
+  color: hsl(0,0%,34%);
 }
 
 footer {
-  background-color: hsl(227,18%, 16%);
-  border-color: hsl(227,18%,14%);
+  background-color: hsl(0, 80%, 26%);
+  border-color: hsl(0, 80%, 75%);
 
   section.copyright {
     p {
-      color: hsl(225,18%,60%);
+      color: hsl(0,18%,60%);
     }
     a {
-      color: hsl(225,18%,60%);
+      color: hsl(0,18%,60%);
     }
   }
 }
@@ -429,8 +431,8 @@ form {
   input,
   select,
   textarea {
-    border-color: hsl(227,18%,30%);
-    background-color: hsl(227,18%,32%);
+    border-color: hsl(0,18%,30%);
+    background-color: hsl(0,18%,32%);
 
     &:focus {
       outline: none;
@@ -442,7 +444,7 @@ form {
   input[type="checkbox"] {
     &:checked {
       &::after {
-        color: hsl(227,100%,90%);
+        color: hsl(0,100%,90%);
       }
     }
   }
@@ -450,7 +452,7 @@ form {
   input[type="radio"] {
     &:checked {
       &::after {
-        background-color: hsl(227,100%, 90%);
+        background-color: hsl(0,100%, 90%);
       }
     }
   }
@@ -466,38 +468,21 @@ table {
 
   th,
   td {
-    border-color: hsl(227,18%,50%);
+    border-color: hsl(0,18%,50%);
   }
 
   th {
-    background: hsl(227,18%,30%);
+    background: hsl(0,18%,30%);
   }
 }
 
 // Avatars
 a.avatar {
-  border-color: hsla(221,18%,18%,1);
+  border: none !important;
 }
 
 // Screens wider than 600px
 @media only screen and (min-width: 600px) {
-
-  body {
-    font-size: 2.2vw;
-
-    & > header {
-      nav {
-        li {
-          a {
-            &:hover {
-              background-color: hsl(0, 90%, 26%);
-            }
-          }
-        }
-      }
-    }
-
-  }
 
   html.js {
     body {
@@ -505,13 +490,13 @@ a.avatar {
         &.authenticated {
           nav {
             ul.account {
-              background-color: hsl(227,18%, 25%);
-              border-color: hsl(227,18%,21%);
-              box-shadow: 0 2px 6px hsl(227,18%,16%);
+              background-color: hsl(0,18%, 25%);
+              border-color: hsl(0,18%,21%);
+              box-shadow: 0 2px 6px hsl(0,18%,16%);
 
               &::after {
-                background-color: hsl(227,18%,25%);
-                border-color: hsl(227,18%,21%);
+                background-color: hsl(0,18%,25%);
+                border-color: hsl(0,18%,21%);
               }
             }
           }
@@ -537,7 +522,7 @@ a.avatar {
   body {
     > header {
       // box-shadow: 0 0 8px hsl(23, 100%, 26%);
-			box-shadow: 0 0 8px hsl(8, 100%, 20%);
+			box-shadow: 0 0 8px hsl(0, 80%, 18%);
     }
   }
 }
@@ -618,7 +603,7 @@ body[data-controller="post"] {
 
 // Global post styles
 article.post {
-  background-color: hsl(227,18%,22%);
+  background-color: hsl(0,18%,22%);
 }
 
 //////////////////////
@@ -632,7 +617,7 @@ body[data-controller="announcement"][data-view="announcement"] {
   section.summary {
     dl.byline {
       dd {
-        color: hsl(227,41%,80%);
+        color: hsl(0,41%,80%);
 
         &.date {
           color: hsl(0,0%,67%);
@@ -643,13 +628,13 @@ body[data-controller="announcement"][data-view="announcement"] {
 
   section.posts {
     > nav {
-      background: hsl(227,18%,22%);
+      background: hsl(0,18%,22%);
     }
   }
 
   article.post {
     header {
-      background: hsl(227,18%,18%);
+      background: hsl(0,18%,18%);
 
       dd {
         &.time {
@@ -659,7 +644,7 @@ body[data-controller="announcement"][data-view="announcement"] {
     }
     section.content.signature {
       color: hsl(0,0%,70%);
-      background-color: hsl(227,18%,24%);
+      background-color: hsl(0,18%,24%);
 
       p {
         color: hsl(0,0%,80%);
@@ -670,18 +655,18 @@ body[data-controller="announcement"][data-view="announcement"] {
   @media only screen and (min-width: 600px) {
     article.post {
       section.content.post {
-        background-color: hsl(227,18%,22%);
+        background-color: hsl(0,18%,22%);
 
         &::before {
-          background-color: hsl(227,18%,22%);
+          background-color: hsl(0,18%,22%);
         }
       }
       nav.actions {
-        background-color: hsl(227,18%,22%);
+        background-color: hsl(0,18%,22%);
       }
       section.content.signature {
-        border-color: hsl(227,18%,18%);
-        background-color: hsl(227,18%,24%);
+        border-color: hsl(0,18%,18%);
+        background-color: hsl(0,18%,24%);
       }
     }
 
@@ -717,7 +702,7 @@ body[data-controller="topic"][data-view="private-topic"] {
 body[data-view="user"] {
   article.post {
     header {
-      background: hsl(227,18%,16%);
+      background: hsl(0,18%,16%);
     }
   }
 

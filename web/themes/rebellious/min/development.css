@@ -7,9 +7,10 @@ body {
   font-weight: 400;
   text-rendering: optimizeLegibility;
   color: white;
-  background-color: hsl(0, 0%, 98%); }
-  body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a {
-    background-color: hsl(23, 100%, 32%); }
+  background-color: hsl(0, 0%, 96%); }
+  body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a,
+  body > header nav li a:hover {
+    background-color: hsl(0, 70%, 35%); }
 
 html.cssanimations.csstransforms span.loading-indicator {
   border-top-color: #666;
@@ -18,7 +19,7 @@ html.cssanimations.csstransforms span.loading-indicator {
   border-left-color: #666; }
 
 a {
-  color: hsl(23, 100%, 32%); }
+  color: hsl(0, 90%, 40%); }
 
 p {
   color: hsl(0, 0%, 13%); }
@@ -30,40 +31,43 @@ a.home .logo {
   fill: hsl(0, 0%, 100%); }
 
 body > header {
-  background-color: hsl(8, 100%, 30%);
-  box-shadow: 0 0 1.6vw hsl(8, 100%, 20%); }
+  background-color: hsl(0, 80%, 26%);
+  box-shadow: 0 0 1.6vw hsl(0, 80%, 18%); }
   body > header nav li a {
     color: hsl(0, 0%, 100%); }
   body > header section.status a.private-topics::before {
-    color: hsl(227, 100%, 90%); }
+    color: hsl(0, 0%, 100%); }
 
-body.floating-header-active > header, body.floating-header-hidden > header {
-  background-color: hsl(8, 100%, 30%); }
+main {
+  background-image: linear-gradient(180deg, hsl(0, 80%, 30%) 0, hsl(0, 80%, 30%) 100px, hsl(0, 0%, 96%) 101px); }
 
 @media only screen and (max-width: 599px) {
   .slide-menu {
-    background-color: hsl(227, 18%, 18%); }
+    background-color: hsl(0, 80%, 26%);
+    box-shadow: 0 0 1.6vw hsl(0, 80%, 18%); }
+    .slide-menu li a {
+      color: hsl(0, 0%, 100%); }
 
   .menu-shadow {
     background-color: hsla(227, 1%, 0%, 0.5); } }
 nav.breadcrumbs {
-  color: hsl(23, 100%, 75%);
-  background-color: hsl(8, 90%, 34%); }
+  color: hsl(0, 25%, 65%);
+  background-color: hsl(0, 80%, 30%); }
   nav.breadcrumbs a {
-    color: hsl(23, 100%, 75%); }
+    color: hsl(0, 25%, 65%); }
 
 main > header {
-  background-image: linear-gradient(180deg, hsl(8, 90%, 34%) 0, hsl(8, 90%, 45%)); }
+  background-image: linear-gradient(180deg, hsl(0, 80%, 30%) 0, hsl(0, 80%, 40%)); }
 
 section.summary > p {
   color: hsl(0, 0%, 100%); }
 section.summary dl.content-stats {
-  color: hsl(23, 100%, 95%); }
+  color: hsl(0, 100%, 95%); }
 section.notice {
-  background-color: hsl(227, 18%, 18%);
-  border-color: hsl(227, 18%, 40%); }
+  background-color: hsl(0, 18%, 18%);
+  border-color: hsl(0, 18%, 40%); }
   section.notice::before {
-    color: hsl(227, 100%, 90%); }
+    color: hsl(0, 100%, 90%); }
   section.notice.error, section.notice.locked, section.notice.banned {
     background: hsl(0, 40%, 50%); }
     section.notice.error::before,
@@ -72,46 +76,46 @@ section.notice {
     section.notice.banned a {
       color: white; }
 section.announcements {
-  background: hsl(0, 0%, 94%); }
+  background: hsl(0, 0%, 92%); }
 section.content {
   color: hsl(0, 0%, 85%); }
   section.content blockquote {
     color: #d2d2d2;
-    background-color: hsl(227, 18%, 24%);
-    border-color: hsl(227, 18%, 50%); }
+    background-color: hsl(0, 18%, 24%);
+    border-color: hsl(0, 18%, 50%); }
     section.content blockquote a.expand:hover {
-      background: hsl(227, 18%, 30%); }
+      background: hsl(0, 18%, 30%); }
   section.content.signature blockquote {
-    background-color: hsl(227, 18%, 19%); }
+    background-color: hsl(0, 18%, 19%); }
 
 nav.pagination ul {
   color: #A5B2D9; }
 nav.pagination li.current a {
-  color: hsl(227, 41%, 13%);
-  background-image: linear-gradient(180deg, hsl(227, 64%, 86%), hsl(227, 32%, 68%) 98%); }
+  color: hsl(0, 41%, 13%);
+  background-image: linear-gradient(180deg, hsl(0, 64%, 86%), hsl(0, 32%, 68%) 98%); }
 
 dl.content-stats {
-  border-color: hsl(23, 100%, 75%);
-  color: hsl(23, 100%, 40%); }
+  border-color: hsl(0, 25%, 65%);
+  color: hsl(0, 100%, 40%); }
 
 article {
-  border-color: hsl(0, 0%, 90%); }
+  border-color: hsl(0, 0%, 86%); }
   article.unread::before, article.updated::before {
-    background-color: hsl(227, 100%, 90%); }
+    background-color: hsl(0, 100%, 90%); }
 
 h1 {
   color: hsl(0, 0%, 100%); }
 
 h2 {
-  color: hsl(0, 0%, 40%); }
+  color: hsl(0, 0%, 34%); }
 
 footer {
-  background-color: hsl(227, 18%, 16%);
-  border-color: hsl(227, 18%, 14%); }
+  background-color: hsl(0, 80%, 26%);
+  border-color: hsl(0, 80%, 75%); }
   footer section.copyright p {
-    color: hsl(225, 18%, 60%); }
+    color: hsl(0, 18%, 60%); }
   footer section.copyright a {
-    color: hsl(225, 18%, 60%); }
+    color: hsl(0, 18%, 60%); }
 
 form label {
   color: white; }
@@ -120,8 +124,8 @@ form p.label-note {
 form input,
 form select,
 form textarea {
-  border-color: hsl(227, 18%, 30%);
-  background-color: hsl(227, 18%, 32%); }
+  border-color: hsl(0, 18%, 30%);
+  background-color: hsl(0, 18%, 32%); }
   form input:focus,
   form select:focus,
   form textarea:focus {
@@ -129,40 +133,35 @@ form textarea {
     border-color: hsla(227, 18%, 55%, 1);
     background-color: hsla(227, 18%, 34%, 1); }
 form input[type="checkbox"]:checked::after {
-  color: hsl(227, 100%, 90%); }
+  color: hsl(0, 100%, 90%); }
 form input[type="radio"]:checked::after {
-  background-color: hsl(227, 100%, 90%); }
+  background-color: hsl(0, 100%, 90%); }
 
 table {
   color: hsl(0, 0%, 85%); }
   table th,
   table td {
-    border-color: hsl(227, 18%, 50%); }
+    border-color: hsl(0, 18%, 50%); }
   table th {
-    background: hsl(227, 18%, 30%); }
+    background: hsl(0, 18%, 30%); }
 
 a.avatar {
-  border-color: hsla(221, 18%, 18%, 1); }
+  border: none !important; }
 
 @media only screen and (min-width: 600px) {
-  body {
-    font-size: 2.2vw; }
-    body > header nav li a:hover {
-      background-color: hsl(0, 90%, 26%); }
-
   html.js body > header.authenticated nav ul.account {
-    background-color: hsl(227, 18%, 25%);
-    border-color: hsl(227, 18%, 21%);
-    box-shadow: 0 2px 6px hsl(227, 18%, 16%); }
+    background-color: hsl(0, 18%, 25%);
+    border-color: hsl(0, 18%, 21%);
+    box-shadow: 0 2px 6px hsl(0, 18%, 16%); }
     html.js body > header.authenticated nav ul.account::after {
-      background-color: hsl(227, 18%, 25%);
-      border-color: hsl(227, 18%, 21%); }
+      background-color: hsl(0, 18%, 25%);
+      border-color: hsl(0, 18%, 21%); }
 
   section.summary > nav::before {
     background-image: linear-gradient(90deg, hsla(227, 18%, 50%, 0), hsla(227, 18%, 50%, 1), hsla(227, 18%, 50%, 0)); } }
 @media only screen and (min-width: 720px) {
   body > header {
-    box-shadow: 0 0 8px hsl(8, 100%, 20%); } }
+    box-shadow: 0 0 8px hsl(0, 80%, 18%); } }
 body[data-controller="discussion"][data-view="discussion"] main > p,
 body[data-controller="announcements"][data-view="announcements"] main > p,
 body[data-controller="private-topics"][data-view="private-topics"] main > p,
@@ -192,12 +191,12 @@ body[data-controller="post"] section.summary dl {
     margin-left: 16rem; } }
 
 article.post {
-  background-color: hsl(227, 18%, 22%); }
+  background-color: hsl(0, 18%, 22%); }
 
 body[data-controller="topic"][data-view="topic"] section.summary dl.byline dd,
 body[data-controller="topic"][data-view="private-topic"] section.summary dl.byline dd,
 body[data-controller="announcement"][data-view="announcement"] section.summary dl.byline dd {
-  color: hsl(227, 41%, 80%); }
+  color: hsl(0, 41%, 80%); }
   body[data-controller="topic"][data-view="topic"] section.summary dl.byline dd.date,
   body[data-controller="topic"][data-view="private-topic"] section.summary dl.byline dd.date,
   body[data-controller="announcement"][data-view="announcement"] section.summary dl.byline dd.date {
@@ -205,11 +204,11 @@ body[data-controller="announcement"][data-view="announcement"] section.summary d
 body[data-controller="topic"][data-view="topic"] section.posts > nav,
 body[data-controller="topic"][data-view="private-topic"] section.posts > nav,
 body[data-controller="announcement"][data-view="announcement"] section.posts > nav {
-  background: hsl(227, 18%, 22%); }
+  background: hsl(0, 18%, 22%); }
 body[data-controller="topic"][data-view="topic"] article.post header,
 body[data-controller="topic"][data-view="private-topic"] article.post header,
 body[data-controller="announcement"][data-view="announcement"] article.post header {
-  background: hsl(227, 18%, 18%); }
+  background: hsl(0, 18%, 18%); }
   body[data-controller="topic"][data-view="topic"] article.post header dd.time,
   body[data-controller="topic"][data-view="private-topic"] article.post header dd.time,
   body[data-controller="announcement"][data-view="announcement"] article.post header dd.time {
@@ -218,7 +217,7 @@ body[data-controller="topic"][data-view="topic"] article.post section.content.si
 body[data-controller="topic"][data-view="private-topic"] article.post section.content.signature,
 body[data-controller="announcement"][data-view="announcement"] article.post section.content.signature {
   color: hsl(0, 0%, 70%);
-  background-color: hsl(227, 18%, 24%); }
+  background-color: hsl(0, 18%, 24%); }
   body[data-controller="topic"][data-view="topic"] article.post section.content.signature p,
   body[data-controller="topic"][data-view="private-topic"] article.post section.content.signature p,
   body[data-controller="announcement"][data-view="announcement"] article.post section.content.signature p {
@@ -227,20 +226,20 @@ body[data-controller="announcement"][data-view="announcement"] article.post sect
   body[data-controller="topic"][data-view="topic"] article.post section.content.post,
   body[data-controller="topic"][data-view="private-topic"] article.post section.content.post,
   body[data-controller="announcement"][data-view="announcement"] article.post section.content.post {
-    background-color: hsl(227, 18%, 22%); }
+    background-color: hsl(0, 18%, 22%); }
     body[data-controller="topic"][data-view="topic"] article.post section.content.post::before,
     body[data-controller="topic"][data-view="private-topic"] article.post section.content.post::before,
     body[data-controller="announcement"][data-view="announcement"] article.post section.content.post::before {
-      background-color: hsl(227, 18%, 22%); }
+      background-color: hsl(0, 18%, 22%); }
   body[data-controller="topic"][data-view="topic"] article.post nav.actions,
   body[data-controller="topic"][data-view="private-topic"] article.post nav.actions,
   body[data-controller="announcement"][data-view="announcement"] article.post nav.actions {
-    background-color: hsl(227, 18%, 22%); }
+    background-color: hsl(0, 18%, 22%); }
   body[data-controller="topic"][data-view="topic"] article.post section.content.signature,
   body[data-controller="topic"][data-view="private-topic"] article.post section.content.signature,
   body[data-controller="announcement"][data-view="announcement"] article.post section.content.signature {
-    border-color: hsl(227, 18%, 18%);
-    background-color: hsl(227, 18%, 24%); } }
+    border-color: hsl(0, 18%, 18%);
+    background-color: hsl(0, 18%, 24%); } }
 
 body[data-controller="topic"][data-view="private-topic"] ul.participants li:nth-child(n+2)::before {
   color: hsl(0, 0%, 85%); }
@@ -250,7 +249,7 @@ body[data-controller="topic"][data-view="private-topic"] ul.participants li:last
   color: hsl(0, 0%, 85%); }
 
 body[data-view="user"] article.post header {
-  background: hsl(227, 18%, 16%); }
+  background: hsl(0, 18%, 16%); }
 
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 /**
@@ -839,8 +838,8 @@ body > header {
     text-decoration: none;
     text-transform: uppercase;
     cursor: pointer;
-    color: hsl(227, 100%, 90%);
-    box-shadow: 0 0 0 1px hsl(227, 100%, 90%) inset;
+    color: hsl(0, 100%, 90%);
+    box-shadow: 0 0 0 1px hsl(0, 100%, 90%) inset;
     position: absolute;
     top: 3vw;
     right: 2.5vw; }
@@ -921,7 +920,7 @@ body.floating-header-hidden > header {
     text-transform: uppercase;
     cursor: pointer;
     color: #373B49;
-    background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%);
+    background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%);
     position: absolute;
     top: 3vw;
     left: 2.5vw; } }
@@ -934,7 +933,7 @@ body.floating-header-hidden > header {
 @media only screen and (max-width: 599px) {
     .main-menu-icon:hover {
       color: hsla(227, 41%, 83%, 1);
-      background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
+      background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
     .main-menu-icon::before {
       content: "";
       font-family: glyphs;
@@ -1219,8 +1218,8 @@ section.content {
       text-decoration: none;
       text-transform: uppercase;
       cursor: pointer;
-      color: hsl(227, 100%, 90%);
-      box-shadow: 0 0 0 1px hsl(227, 100%, 90%) inset;
+      color: hsl(0, 100%, 90%);
+      box-shadow: 0 0 0 1px hsl(0, 100%, 90%) inset;
       position: absolute;
       top: 2vw;
       right: 1.6vw;
@@ -1314,7 +1313,7 @@ nav.pagination {
     text-transform: uppercase;
     cursor: pointer;
     color: #A5B2D9;
-    background-image: linear-gradient(180deg, hsl(227, 18%, 22%) 0%, hsl(227, 18%, 16%) 98%);
+    background-image: linear-gradient(180deg, hsl(0, 18%, 22%) 0%, hsl(0, 18%, 16%) 98%);
     border: 1px solid #474F66; }
     @media only screen and (min-width: 600px) {
       nav.pagination a {
@@ -1323,8 +1322,8 @@ nav.pagination {
       nav.pagination a {
         border-radius: 0.3rem; } }
     nav.pagination a:hover {
-      color: hsl(227, 41%, 13%);
-      background-image: linear-gradient(180deg, hsl(227, 64%, 86%), hsl(227, 32%, 68%) 98%); }
+      color: hsl(0, 41%, 13%);
+      background-image: linear-gradient(180deg, hsl(0, 64%, 86%), hsl(0, 32%, 68%) 98%); }
 
 nav.previous-and-next {
   flex: 1 0 auto;
@@ -1357,7 +1356,7 @@ nav.previous-and-next {
     text-transform: uppercase;
     cursor: pointer;
     color: #A5B2D9;
-    background-image: linear-gradient(180deg, hsl(227, 18%, 22%) 0%, hsl(227, 18%, 16%) 98%);
+    background-image: linear-gradient(180deg, hsl(0, 18%, 22%) 0%, hsl(0, 18%, 16%) 98%);
     border: 1px solid #474F66; }
     @media only screen and (min-width: 600px) {
       nav.previous-and-next a {
@@ -1366,8 +1365,8 @@ nav.previous-and-next {
       nav.previous-and-next a {
         border-radius: 0.3rem; } }
     nav.previous-and-next a:hover {
-      color: hsl(227, 41%, 13%);
-      background-image: linear-gradient(180deg, hsl(227, 64%, 86%), hsl(227, 32%, 68%) 98%); }
+      color: hsl(0, 41%, 13%);
+      background-image: linear-gradient(180deg, hsl(0, 64%, 86%), hsl(0, 32%, 68%) 98%); }
 
 dl.content-stats {
   flex: 0 0 22vw;
@@ -1497,8 +1496,8 @@ a.to-the-top {
   text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
-  color: hsl(227, 100%, 90%);
-  box-shadow: 0 0 0 1px hsl(227, 100%, 90%) inset;
+  color: hsl(0, 100%, 90%);
+  box-shadow: 0 0 0 1px hsl(0, 100%, 90%) inset;
   width: 50vw;
   margin: 10vw auto; }
   @media only screen and (min-width: 600px) {
@@ -1650,7 +1649,7 @@ form ul.actions {
     form ul.actions > li.cancel a {
       text-transform: initial;
       background: none;
-      color: hsl(227, 41%, 75%); }
+      color: hsl(0, 41%, 75%); }
     form ul.actions > li input[type="submit"] {
       box-shadow: none; }
     form ul.actions > li input[type="submit"],
@@ -1670,7 +1669,7 @@ form ul.actions {
       text-transform: uppercase;
       cursor: pointer;
       color: #373B49;
-      background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%); }
+      background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%); }
       @media only screen and (min-width: 600px) {
         form ul.actions > li input[type="submit"],
         form ul.actions > li a {
@@ -1682,7 +1681,7 @@ form ul.actions {
       form ul.actions > li input[type="submit"]:hover,
       form ul.actions > li a:hover {
         color: hsla(227, 41%, 83%, 1);
-        background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
+        background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
 
 nav.actions {
   position: relative;
@@ -1717,7 +1716,7 @@ nav.actions {
     text-transform: uppercase;
     cursor: pointer;
     color: #373B49;
-    background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%); }
+    background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%); }
     @media only screen and (min-width: 600px) {
       nav.actions a {
         border-radius: 0.4vw; } }
@@ -1726,7 +1725,7 @@ nav.actions {
         border-radius: 0.3rem; } }
     nav.actions a:hover {
       color: hsla(227, 41%, 83%, 1);
-      background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
+      background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
 
 table {
   width: 100%;
@@ -1867,8 +1866,8 @@ a.avatar {
               text-decoration: none;
               text-transform: uppercase;
               cursor: pointer;
-              color: hsl(227, 100%, 90%);
-              box-shadow: 0 0 0 1px hsl(227, 100%, 90%) inset; } }
+              color: hsl(0, 100%, 90%);
+              box-shadow: 0 0 0 1px hsl(0, 100%, 90%) inset; } }
             @media only screen and (min-width: 600px) and (min-width: 600px) {
               body > header nav ul.account li.sign-in a {
                 border-radius: 0.4vw; } }
@@ -1892,7 +1891,7 @@ a.avatar {
               text-transform: uppercase;
               cursor: pointer;
               color: #373B49;
-              background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%); } }
+              background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%); } }
             @media only screen and (min-width: 600px) and (min-width: 600px) {
               body > header nav ul.account li.register a {
                 border-radius: 0.4vw; } }
@@ -1902,7 +1901,7 @@ a.avatar {
 @media only screen and (min-width: 600px) {
               body > header nav ul.account li.register a:hover {
                 color: hsla(227, 41%, 83%, 1);
-                background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
+                background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
         body > header nav li {
           margin: 0 .2vw;
           display: inline-block;
@@ -2179,7 +2178,7 @@ a.avatar {
     text-transform: uppercase;
     cursor: pointer;
     color: #373B49;
-    background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%); } }
+    background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%); } }
   @media only screen and (min-width: 600px) and (min-width: 600px) {
     nav.actions a {
       border-radius: 0.4vw; } }
@@ -2189,7 +2188,7 @@ a.avatar {
 @media only screen and (min-width: 600px) {
     nav.actions a:hover {
       color: hsla(227, 41%, 83%, 1);
-      background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
+      background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
 
   a.avatar {
     width: 8vw;
@@ -3653,7 +3652,7 @@ article.post nav.actions {
     text-transform: uppercase;
     cursor: pointer;
     color: #A5B2D9;
-    background-image: linear-gradient(180deg, hsl(227, 18%, 22%) 0%, hsl(227, 18%, 16%) 98%);
+    background-image: linear-gradient(180deg, hsl(0, 18%, 22%) 0%, hsl(0, 18%, 16%) 98%);
     border: 1px solid #474F66; }
     @media only screen and (min-width: 600px) {
       article.post nav.actions a {
@@ -3662,8 +3661,8 @@ article.post nav.actions {
       article.post nav.actions a {
         border-radius: 0.3rem; } }
     article.post nav.actions a:hover {
-      color: hsl(227, 41%, 13%);
-      background-image: linear-gradient(180deg, hsl(227, 64%, 86%), hsl(227, 32%, 68%) 98%); }
+      color: hsl(0, 41%, 13%);
+      background-image: linear-gradient(180deg, hsl(0, 64%, 86%), hsl(0, 32%, 68%) 98%); }
 @media only screen and (min-width: 600px) {
   article.post nav.actions {
     padding: 2vw; }
@@ -3846,7 +3845,7 @@ body[data-view="user"] article.post {
 body[data-controller="sign-in"] form ul.actions > li.secondary a {
   text-transform: initial;
   background: none;
-  color: hsl(227, 41%, 75%); }
+  color: hsl(0, 41%, 75%); }
 
 @media only screen and (min-width: 600px) {
   body[data-controller="sign-in"] section.form {
