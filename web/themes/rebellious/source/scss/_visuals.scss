@@ -214,7 +214,7 @@ body {
   &[data-controller="about"] nav li.about a,
   &[data-controller="help"] nav li.help a,
 	> header nav li a:hover {
-    background-color: hsl(0, 70%, 35%);
+    background-color: hsl(0, 50%, 30%);
   }
 }
 
@@ -226,7 +226,7 @@ html.cssanimations.csstransforms span.loading-indicator {
 }
 
 a {
-  color: hsl(0, 90%, 40%);
+  color: hsl(0, 60%, 40%);
 }
 
 p {
@@ -246,8 +246,8 @@ a.home {
 body > header {
   // background-color: hsl(23, 100%, 36%);
 	// box-shadow: 0 0 1.6vw hsl(23, 100%, 26%);
-	background-color: hsl(0, 80%, 26%);
-  box-shadow: 0 0 1.6vw hsl(0, 80%, 18%);
+	background-color: hsl(0, 0%, 10%);
+  box-shadow: 0 0 1.6vw hsl(0, 65%, 12%);
 
   nav {
     li {
@@ -267,7 +267,7 @@ body > header {
 }
 
 main {
-	background-image: linear-gradient(180deg, hsl(0, 80%, 30%) 0, hsl(0, 80%, 30%) 100px, hsl(0, 0%, 96%) 101px);
+	background-image: linear-gradient(180deg, hsl(0, 50%, 30%) 0, hsl(0, 50%, 30%) 100px, hsl(0, 0%, 96%) 101px);
 }
 
 
@@ -275,8 +275,8 @@ main {
 // here than to overwrite within the 600px media query later.
 @media only screen and (max-width: 599px) {
   .slide-menu {
-    background-color: hsl(0, 80%, 26%);
-		box-shadow: 0 0 1.6vw hsl(0, 80%, 18%);
+    background-color: hsl(0, 50%, 30%);
+		box-shadow: 0 0 1.6vw hsl(0, 50%, 18%);
 
 		li {
 			a {
@@ -286,14 +286,35 @@ main {
   }
 
   .menu-shadow {
-    background-color: hsla(227,1%,0%,0.5);
+    background-color: hsla(0,1%,0%,0.5);
+  }
+
+  body {
+    // Navigation highlighting
+    &[data-controller="index"] nav li.news a,
+    &[data-controller="discussions"] nav li.discussions a,
+    &[data-controller="discussion"] nav li.discussions a,
+    &[data-controller="announcements"] nav li.discussions a,
+    &[data-controller="announcement"] nav li.discussions a,
+    &[data-controller="topic"][data-view="topic"] nav li.discussions a,
+    &[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a,
+    &[data-controller="topic"][data-view="private-topic"] nav li.private-topics a,
+    &[data-controller="topic"][data-view="start-private"] nav li.private-topics a,
+    &[data-controller="private-topics"] nav li.private-topics a,
+    &[data-controller="sign-in"] nav li.sign-in a,
+    &[data-controller="register"] nav li.register a,
+    &[data-controller="account"] nav li.account a,
+    &[data-controller="about"] nav li.about a,
+    &[data-controller="help"] nav li.help a {
+      background-color: hsl(0, 50%, 40%);
+    }
   }
 }
 
 nav.breadcrumbs {
   color: hsl(0, 25%, 65%);
   // background-color: hsl(23, 90%, 40%);
-	background-color: hsl(0, 80%, 30%);
+	background-color: hsl(0, 50%, 30%);
 
   a {
     color: hsl(0, 25%, 65%);
@@ -303,7 +324,7 @@ nav.breadcrumbs {
 main {
   > header {
     // background-image: linear-gradient(180deg, hsl(23, 90%, 40%) 0, hsl(23, 90%, 50%));
-		background-image: linear-gradient(180deg, hsl(0, 80%, 30%) 0, hsl(0, 80%, 40%));
+		background-image: linear-gradient(180deg, hsl(0, 50%, 30%) 0, hsl(0, 50%, 45%));
   }
 }
 
@@ -490,13 +511,11 @@ a.avatar {
         &.authenticated {
           nav {
             ul.account {
-              background-color: hsl(0,18%, 25%);
-              border-color: hsl(0,18%,21%);
-              box-shadow: 0 2px 6px hsl(0,18%,16%);
+              background-color: hsl(0, 0%, 10%);
+              box-shadow: 0 2px 6px hsl(0, 65%, 12%);
 
               &::after {
-                background-color: hsl(0,18%,25%);
-                border-color: hsl(0,18%,21%);
+                background-color: hsl(0, 0%, 10%);
               }
             }
           }
@@ -522,7 +541,7 @@ a.avatar {
   body {
     > header {
       // box-shadow: 0 0 8px hsl(23, 100%, 26%);
-			box-shadow: 0 0 8px hsl(0, 80%, 18%);
+			box-shadow: 0 0 8px hsl(0, 65%, 12%);
     }
   }
 }

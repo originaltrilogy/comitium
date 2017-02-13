@@ -10,7 +10,7 @@ body {
   background-color: hsl(0, 0%, 96%); }
   body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a,
   body > header nav li a:hover {
-    background-color: hsl(0, 70%, 35%); }
+    background-color: hsl(0, 50%, 30%); }
 
 html.cssanimations.csstransforms span.loading-indicator {
   border-top-color: #666;
@@ -19,7 +19,7 @@ html.cssanimations.csstransforms span.loading-indicator {
   border-left-color: #666; }
 
 a {
-  color: hsl(0, 90%, 40%); }
+  color: hsl(0, 60%, 40%); }
 
 p {
   color: hsl(0, 0%, 13%); }
@@ -31,33 +31,36 @@ a.home .logo {
   fill: hsl(0, 0%, 100%); }
 
 body > header {
-  background-color: hsl(0, 80%, 26%);
-  box-shadow: 0 0 1.6vw hsl(0, 80%, 18%); }
+  background-color: hsl(0, 0%, 10%);
+  box-shadow: 0 0 1.6vw hsl(0, 65%, 12%); }
   body > header nav li a {
     color: hsl(0, 0%, 100%); }
   body > header section.status a.private-topics::before {
     color: hsl(0, 0%, 100%); }
 
 main {
-  background-image: linear-gradient(180deg, hsl(0, 80%, 30%) 0, hsl(0, 80%, 30%) 100px, hsl(0, 0%, 96%) 101px); }
+  background-image: linear-gradient(180deg, hsl(0, 50%, 30%) 0, hsl(0, 50%, 30%) 100px, hsl(0, 0%, 96%) 101px); }
 
 @media only screen and (max-width: 599px) {
   .slide-menu {
-    background-color: hsl(0, 80%, 26%);
-    box-shadow: 0 0 1.6vw hsl(0, 80%, 18%); }
+    background-color: hsl(0, 50%, 30%);
+    box-shadow: 0 0 1.6vw hsl(0, 50%, 18%); }
     .slide-menu li a {
       color: hsl(0, 0%, 100%); }
 
   .menu-shadow {
-    background-color: hsla(227, 1%, 0%, 0.5); } }
+    background-color: hsla(0, 1%, 0%, 0.5); }
+
+  body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a {
+    background-color: hsl(0, 50%, 40%); } }
 nav.breadcrumbs {
   color: hsl(0, 25%, 65%);
-  background-color: hsl(0, 80%, 30%); }
+  background-color: hsl(0, 50%, 30%); }
   nav.breadcrumbs a {
     color: hsl(0, 25%, 65%); }
 
 main > header {
-  background-image: linear-gradient(180deg, hsl(0, 80%, 30%) 0, hsl(0, 80%, 40%)); }
+  background-image: linear-gradient(180deg, hsl(0, 50%, 30%) 0, hsl(0, 50%, 45%)); }
 
 section.summary > p {
   color: hsl(0, 0%, 100%); }
@@ -150,18 +153,16 @@ a.avatar {
 
 @media only screen and (min-width: 600px) {
   html.js body > header.authenticated nav ul.account {
-    background-color: hsl(0, 18%, 25%);
-    border-color: hsl(0, 18%, 21%);
-    box-shadow: 0 2px 6px hsl(0, 18%, 16%); }
+    background-color: hsl(0, 0%, 10%);
+    box-shadow: 0 2px 6px hsl(0, 65%, 12%); }
     html.js body > header.authenticated nav ul.account::after {
-      background-color: hsl(0, 18%, 25%);
-      border-color: hsl(0, 18%, 21%); }
+      background-color: hsl(0, 0%, 10%); }
 
   section.summary > nav::before {
     background-image: linear-gradient(90deg, hsla(227, 18%, 50%, 0), hsla(227, 18%, 50%, 1), hsla(227, 18%, 50%, 0)); } }
 @media only screen and (min-width: 720px) {
   body > header {
-    box-shadow: 0 0 8px hsl(0, 80%, 18%); } }
+    box-shadow: 0 0 8px hsl(0, 65%, 12%); } }
 body[data-controller="discussion"][data-view="discussion"] main > p,
 body[data-controller="announcements"][data-view="announcements"] main > p,
 body[data-controller="private-topics"][data-view="private-topics"] main > p,
@@ -1914,13 +1915,12 @@ a.avatar {
 
   html.js body > header.authenticated nav ul.account {
     position: absolute;
-    top: 10.5vw;
+    top: 12vw;
     right: -50vw;
     margin: 0;
+    padding: 2vw 0;
     border-radius: 0.3rem;
     text-align: center;
-    border-width: 1px;
-    border-style: solid;
     z-index: 4; }
     html.js body > header.authenticated nav ul.account.active {
       right: 1vw; }
@@ -1931,12 +1931,8 @@ a.avatar {
       height: 4vw;
       transform: rotate(45deg);
       position: absolute;
-      top: -2vw;
+      top: -1.8vw;
       right: 1vw;
-      border-top-width: 1px;
-      border-left-width: 1px;
-      border-top-style: solid;
-      border-left-style: solid;
       z-index: 1; }
     html.js body > header.authenticated nav ul.account li {
       position: relative;
@@ -2287,15 +2283,16 @@ a.avatar {
     height: 50px; }
 
   html.js body > header.authenticated nav ul.account {
-    top: 7rem;
+    top: 7.2rem;
+    padding: 1.2rem 0;
     border-radius: 0.3rem; }
     html.js body > header.authenticated nav ul.account.active {
-      right: 0.7rem; }
+      right: 0.6rem; }
     html.js body > header.authenticated nav ul.account li a {
       padding: 0.8rem 1.6rem; }
     html.js body > header.authenticated nav ul.account::after {
       top: -1.2rem;
-      right: 0.4rem;
+      right: 0.6rem;
       width: 2.4rem;
       height: 2.4rem; }
 

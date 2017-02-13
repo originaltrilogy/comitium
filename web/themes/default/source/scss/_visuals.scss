@@ -362,7 +362,7 @@ nav.pagination {
 
 // Topic counts for forums, post counts for topics
 dl.content-stats {
-  border-color: hsl(0, 15%, 53%);
+  border-color: hsla(227, 15%, 53%, 1);
   color: hsl(0, 0%, 80%);
 }
 
@@ -491,13 +491,11 @@ a.avatar {
         &.authenticated {
           nav {
             ul.account {
-              background-color: hsl(227,18%, 25%);
-              border-color: hsl(227,18%,21%);
-              box-shadow: 0 2px 6px hsl(227,18%,16%);
+              background-color: hsl(227,18%, 16%);
+              box-shadow: 0 2px 6px hsl(227,0%,10%);
 
               &::after {
-                background-color: hsl(227,18%,25%);
-                border-color: hsl(227,18%,21%);
+                background-color: hsl(227,18%,16%);
               }
             }
           }
