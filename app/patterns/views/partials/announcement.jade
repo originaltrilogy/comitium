@@ -28,5 +28,5 @@ article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? '
         img(src="avatars/#{topic.lastPostAuthorID}.jpg")
       a(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
         = topic.lastPostAuthor
-      |  replied
+      |  replied 
       time #{topic.lastPostCreatedFormatted}
