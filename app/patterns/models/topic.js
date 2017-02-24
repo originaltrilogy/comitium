@@ -498,8 +498,8 @@ function insert(args, emitter) {
           updateDiscussionStats: function (previous, emitter) {
 
             client.query(
-              'update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = $1 and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = $1 and t.draft = false ) where "id" = $1;',
-              [ args.discussionID ],
+              'update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = $1 and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = $1 and t.draft = false ), last_post_id = $2 where "id" = $1;',
+              [ args.discussionID, previous.insertPost.id ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -796,7 +796,7 @@ function move(args, emitter) {
             updateOldDiscussionStats: function (previous, emitter) {
 
               client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ) where "id" = $1',
+                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ), last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
                 [ args.discussionID ],
                 function (err, result) {
                   if ( err ) {
@@ -816,7 +816,7 @@ function move(args, emitter) {
             updateNewDiscussionStats: function (previous, emitter) {
 
               client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ) where "id" = $1',
+                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ), last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
                 [ args.newDiscussionID ],
                 function (err, result) {
                   if ( err ) {
@@ -951,8 +951,8 @@ function reply(args, emitter) {
           updateDiscussionStats: function (previous, emitter) {
 
             client.query(
-              'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
-              [ args.discussionID ],
+              'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ), last_post_id = $2 where "id" = $1',
+              [ args.discussionID, previous.insertPost.id ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
