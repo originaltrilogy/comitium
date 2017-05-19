@@ -19,6 +19,8 @@ module.exports = {
   lock: lock,
   lockForm: lockForm,
   unlock: unlock,
+  edit: edit,
+  editForm: editForm,
   // merge: merge,
   // mergeForm: mergeForm,
   move: move,
@@ -1380,6 +1382,153 @@ function unlock(params, context, emitter) {
       emitter.emit('error', output.listen);
     }
   });
+
+}
+
+
+
+function edit(params, context, emitter) {
+  
+}
+
+
+
+function editForm(params, context, emitter) {
+
+  if ( params.request.method === 'POST' ) {
+    // Verify the user's group has post access to the discussion
+    app.listen('waterfall', {
+      access: function (emitter) {
+        app.toolbox.access.discussionPost({
+          discussionID: params.url.id,
+          user: params.session
+        }, emitter);
+      },
+      proceed: function (previous, emitter) {
+        if ( previous.access === true ) {
+          emitter.emit('ready', true);
+        } else {
+          emitter.emit('end', false);
+        }
+      },
+      discussion: function (previous, emitter) {
+        app.models.discussion.info(params.url.id, emitter);
+      }
+    }, function (output) {
+      var discussion = output.discussion,
+          parsedTitle,
+          parsedContent,
+          url,
+          draft = false,
+          time = app.toolbox.helpers.isoDate();
+
+      // If the group has post access, process the topic form
+      if ( output.listen.success ) {
+        if ( output.access === true ) {
+          parsedTitle = app.toolbox.markdown.title(params.form.title);
+          parsedContent = app.toolbox.markdown.content(params.form.content);
+
+          url = app.toolbox.slug(params.form.title);
+          url = url.length ? url : 'untitled';
+
+          switch ( params.form.formAction ) {
+            default:
+              emitter.emit('error', {
+                message: 'No valid form action received'
+              });
+              break;
+            case 'Preview post':
+              emitter.emit('ready', {
+                view: 'start',
+                content: {
+                  preview: {
+                    title: parsedTitle,
+                    content: parsedContent
+                  },
+                  discussion: discussion,
+                  breadcrumbs: app.models.topic.breadcrumbs({
+                    discussionTitle: output.discussion.title,
+                    discussionUrl: output.discussion.url,
+                    discussionID: output.discussion.id
+                  })
+                }
+              });
+              break;
+            case 'Save as draft':
+            case 'Post your topic':
+              if ( params.form.formAction === 'Save as draft' ) {
+                draft = true;
+              }
+              app.listen({
+                saveTopic: function (emitter) {
+                  app.models.topic.insert({
+                    discussionID: discussion.id,
+                    userID: params.session.userID,
+                    title: params.form.title,
+                    titleHtml: parsedTitle,
+                    url: url,
+                    text: params.form.content,
+                    html: parsedContent,
+                    draft: draft,
+                    private: false,
+                    time: time
+                  }, emitter);
+                }
+              }, function (output) {
+                var topic = output.saveTopic;
+
+                if ( output.listen.success && output.saveTopic.success ) {
+                  if ( params.form.subscribe ) {
+                    app.listen({
+                      subscribe: function (emitter) {
+                        app.models.topic.subscribe({
+                          userID: params.session.userID,
+                          topicID: topic.id,
+                          time: time
+                        }, emitter);
+                      }
+                    }, function (output) {
+                      if ( output.listen.success ) {
+                        emitter.emit('ready', {
+                          redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
+                        });
+                      } else {
+                        emitter.emit('error', output.listen);
+                      }
+                    });
+                  } else {
+                    emitter.emit('ready', {
+                      redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
+                    });
+                  }
+                } else {
+                  if ( !output.listen.success ) {
+                    emitter.emit('error', output.listen);
+                  } else {
+                    emitter.emit('ready', {
+                      view: 'start',
+                      content: {
+                        topic: output.saveTopic,
+                        discussion: discussion,
+                        breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url, discussion.id)
+                      }
+                    });
+                  }
+                }
+              });
+              break;
+          }
+        } else {
+          emitter.emit('ready', output.access);
+        }
+      } else {
+        emitter.emit('error', output.listen);
+      }
+    });
+  // If it's a GET, fall back to the default topic start action
+  } else {
+    start(params, context, emitter);
+  }
 
 }
 
