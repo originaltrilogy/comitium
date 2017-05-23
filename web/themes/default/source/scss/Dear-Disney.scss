@@ -1,0 +1,24 @@
+///////////////////
+//  Dear Disney  //
+///////////////////
+
+body[data-view="Dear-Disney"] {
+  section.letter {
+    padding: 4vw;
+  }
+
+  img.pvg {
+    border-radius: 2vw;
+    margin: 8vw 0;
+    width: 100%;
+  }
+
+  @media only screen and ( min-width: 600px ) {
+    img.pvg {
+      border-radius: 1vw;
+      float: left;
+      margin: 3.5vw 4vw 6vw 0vw;
+      width: 38%;
+    }
+  }
+}

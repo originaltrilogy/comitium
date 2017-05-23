@@ -686,6 +686,7 @@ body[data-breadcrumbs="false"] {
 }
 
 // Discussion, discussions, and topic view summaries
+body[data-controller="index"][data-view="index"],
 body[data-controller="discussions"][data-view="discussions"],
 body[data-controller="discussion"][data-view="discussion"],
 body[data-controller="topic"][data-view="topic"],
@@ -1597,6 +1598,7 @@ a.avatar {
   }
 
   // Discussion, discussions, and topic view summaries
+  body[data-controller="index"][data-view="index"],
   body[data-controller="discussions"][data-view="discussions"],
   body[data-controller="discussion"][data-view="discussion"],
   body[data-controller="topic"][data-view="topic"],
@@ -2164,6 +2166,7 @@ a.avatar {
   }
 
   // Discussion, discussions, and topic view summaries
+  body[data-controller="index"][data-view="index"],
   body[data-controller="discussions"][data-view="discussions"],
   body[data-controller="discussion"][data-view="discussion"],
   body[data-controller="topic"][data-view="topic"],
