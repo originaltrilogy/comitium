@@ -459,8 +459,8 @@ function topicEdit(args, emitter) {
         });
       }
     },
-    // Check that the user has posting rights to the topic's current discussion.
-    // If a topic has been moved to a discussion that the author doesn't have
+    // Check if the user has posting rights to the topic's current discussion.
+    // If a topic has been moved to a discussion that the user doesn't have
     // permission to post in, they lose their editing permissions.
     discussionPost: function (previous, emitter) {
       discussionPost(app.extend(args, {

@@ -26,6 +26,10 @@ section.form.post.topic-write
         label(for="post-content")
           | Post content
         textarea(id="post-content" name="content" rows="10" required) #{form.content}
+      li.topic-edit-reason.textarea
+        label(for="topic-edit-reason")
+          | Reason for editing
+        textarea(id="topic-edit-reason" name="reason") #{form.reason}
 
     ul.actions
       li.secondary.preview

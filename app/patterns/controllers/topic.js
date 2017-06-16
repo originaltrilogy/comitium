@@ -1451,20 +1451,25 @@ function editForm(params, context, emitter) {
       },
       topic: function (previous, emitter) {
         app.models.topic.info(params.url.id, emitter);
+      },
+      post: function (previous, emitter) {
+        app.models.post.info(previous.topic.firstPostID, emitter);
       }
     }, function (output) {
       var topic = output.topic,
           announcement = topic.discussionID === 2 ? true : false,
           parsedTitle,
           parsedContent,
+          parsedReason,
           url,
           time = app.toolbox.helpers.isoDate();
 
-      // If the group has post access, process the topic form
+      // If the user has edit access, process the topic form
       if ( output.listen.success ) {
         if ( output.access === true ) {
           parsedTitle = app.toolbox.markdown.title(params.form.title);
           parsedContent = app.toolbox.markdown.content(params.form.content);
+          parsedReason = app.toolbox.markdown.inline(params.form.reason);
 
           url = app.toolbox.slug(params.form.title);
           url = url.length ? url : 'untitled';
@@ -1489,22 +1494,24 @@ function editForm(params, context, emitter) {
               break;
             case 'Save changes':
               app.listen({
-                updateTopic: function (emitter) {
-                  app.models.topic.insert({
+                edit: function (emitter) {
+                  app.models.topic.edit({
                     topicID: topic.id,
-                    userID: params.session.userID,
+                    discussionID: topic.discussionID,
+                    postID: topic.firstPostID,
+                    editorID: params.session.userID,
+                    currentPost: output.post,
                     title: params.form.title,
                     titleHtml: parsedTitle,
                     url: url,
                     text: params.form.content,
                     html: parsedContent,
+                    reason: parsedReason,
                     time: time
                   }, emitter);
                 }
               }, function (output) {
-                var topic = output.updateTopic;
-
-                if ( output.listen.success && output.updateTopic.success ) {
+                if ( output.listen.success && output.edit.success ) {
                   emitter.emit('ready', {
                     redirect: announcement ? app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + topic.id : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
                   });
@@ -1515,7 +1522,7 @@ function editForm(params, context, emitter) {
                     emitter.emit('ready', {
                       view: 'edit',
                       content: {
-                        topic: output.updateTopic
+                        topic: output.edit
                       }
                     });
                   }

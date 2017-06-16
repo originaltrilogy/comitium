@@ -83,8 +83,109 @@ function announcementReply(args, emitter) {
 }
 
 
-function edit(topicID, emitter) {
 
+function edit(args, emitter) {
+  if ( !args.title.length || !args.text.length ) {
+    emitter.emit('ready', {
+      success: false,
+      reason: 'requiredFieldsEmpty',
+      message: 'Title and text can\'t be empty.'
+    });
+  } else {
+    app.toolbox.dbPool.connect(function (err, client, done) {
+      if ( err ) {
+        emitter.emit('error', err);
+      } else {
+
+        app.listen('waterfall', {
+          begin: function (emitter) {
+            client.query('begin', function (err) {
+              if ( err ) {
+                done();
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready');
+              }
+            });
+          },
+          updatePost: function (previous, emitter) {
+            client.query(
+              'update "posts" set "text" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "modified" = $5 where "id" = $6',
+              [ args.text, args.html, args.editorID, args.reason, args.time, args.postID ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    success: true,
+                    affectedRows: result.rows
+                  });
+                }
+              }
+            );
+          },
+          insertPostHistory: function (previous, emitter) {
+            client.query(
+              'insert into "postHistory" ( "postID", "editorID", "editReason", "text", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
+              [ args.postID, !args.currentPost.editorID ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    id: result.rows[0].id
+                  });
+                }
+              }
+            );
+          },
+          updateTopic: function (previous, emitter) {
+            client.query(
+              'update "topics" set "title" = $1, "titleHtml" = $2, "url" = $3, "editedByID" = $4, "editReason" = $5 where "id" = $6',
+              [ args.title, args.titleHtml, args.url, args.editorID, args.reason, args.topicID ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    success: true,
+                    affectedRows: result.rows
+                  });
+                }
+              }
+            );
+          },
+          commit: function (previous, emitter) {
+            client.query('commit', function () {
+              done();
+              emitter.emit('ready');
+            });
+          }
+        }, function (output) {
+          if ( output.listen.success ) {
+            // Clear the topic cache
+            app.cache.clear({ scope: 'topic-' + args.currentPost.topicID });
+            app.cache.clear({ scope: 'discussion-' + args.discussionID });
+
+            emitter.emit('ready', {
+              success: true
+            });
+          } else {
+            emitter.emit('error', output.listen);
+          }
+        });
+      }
+    });
+  }
 }
 
 

@@ -19,10 +19,10 @@ section.form.topic-move
             each discussion in category.discussions
               if discussion.discussionID !== topic.discussionID
                 option(value=discussion.discussionID)
-                  = discussion.discussionTitle
+                  = '– ' + discussion.discussionTitle
               else
                 option(value=discussion.discussionID selected)
-                  = discussion.discussionTitle
+                  = '– ' + discussion.discussionTitle
       li.notify.checkbox
         input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
         label(for="notify") Notify members following this topic
