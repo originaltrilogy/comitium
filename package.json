@@ -17,7 +17,7 @@
     "start-prod": "node ./app/start-prod.js"
   },
   "dependencies": {
-    "bcrypt": "~0.8.7",
+    "bcrypt": "^0.8.7",
     "citizen": "~0.7.0",
     "gm": "~1.23.0",
     "markdown-it": "~8.1.0",

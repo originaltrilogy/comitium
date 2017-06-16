@@ -34,8 +34,9 @@ function handler(params, context, emitter) {
       emitter.emit('ready', {
         content: {
           categories: output.categories,
-          topicCount: app.toolbox.numeral(output.topicCount).format('0,0'),
-          breadcrumbs: app.models.discussions.breadcrumbs()
+          topicCount: app.toolbox.numeral(output.topicCount).format('0,0')
+          // Breadcrumbs will return when the today/home page is done
+          // breadcrumbs: app.models.discussions.breadcrumbs()
         },
         include: {
           announcements: {
