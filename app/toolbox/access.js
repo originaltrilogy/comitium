@@ -14,6 +14,7 @@ module.exports = {
   postView: postView,
   privateTopicStart: privateTopicStart,
   privateTopicsView: privateTopicsView,
+  topicEdit: topicEdit,
   topicLock: topicLock,
   topicMove: topicMove,
   topicMoveForm: topicMoveForm,
@@ -436,6 +437,47 @@ function privateTopicsView(args, emitter) {
     challenge(args, emitter);
   }
 
+}
+
+
+
+function topicEdit(args, emitter) {
+  app.listen('waterfall', {
+    topic: function (emitter) {
+      app.models.topic.info(args.topicID, emitter);
+    },
+    topicEdit: function (previous, emitter) {
+      if ( previous.topic ) {
+        if ( ( args.user.userID === previous.topic.authorID && !previous.topic.lockedByID ) || args.user.moderateDiscussions ) {
+          emitter.emit('ready', true);
+        } else {
+          challenge(app.extend(args, { emit: 'end' }), emitter);
+        }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        });
+      }
+    },
+    // Check that the user has posting rights to the topic's current discussion.
+    // If a topic has been moved to a discussion that the author doesn't have
+    // permission to post in, they lose their editing permissions.
+    discussionPost: function (previous, emitter) {
+      discussionPost(app.extend(args, {
+        discussionID: previous.topic.discussionID
+      }), emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.topicEdit === true && output.discussionPost === true ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(args, emitter);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 }
 
 

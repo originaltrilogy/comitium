@@ -1388,7 +1388,45 @@ function unlock(params, context, emitter) {
 
 
 function edit(params, context, emitter) {
-  
+  // Verify the user has edit rights
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicEdit({
+        topicID: params.url.id,
+        user: params.session
+      }, emitter);
+    },
+    proceed: function (previous, emitter) {
+      if ( previous.access === true ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('end', false);
+      }
+    },
+    topic: function (previous, emitter) {
+      app.models.topic.info(params.url.id, emitter);
+    }
+  }, function (output) {
+    // If the user has access rights, display the topic edit form
+    if ( output.listen.success ) {
+      if ( output.access === true ) {
+        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/' + output.topic.id + '/' + output.topic.url);
+        params.form.title = output.topic.title;
+        params.form.content = output.topic.text;
+
+        emitter.emit('ready', {
+          view: 'edit',
+          content: {
+            topic: output.topic
+          }
+        });
+      } else {
+        emitter.emit('ready', output.access);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 }
 
 
@@ -1396,11 +1434,11 @@ function edit(params, context, emitter) {
 function editForm(params, context, emitter) {
 
   if ( params.request.method === 'POST' ) {
-    // Verify the user's group has post access to the discussion
+    // Verify the user's group has edit access to the topic
     app.listen('waterfall', {
       access: function (emitter) {
-        app.toolbox.access.discussionPost({
-          discussionID: params.url.id,
+        app.toolbox.access.topicEdit({
+          topicID: params.url.id,
           user: params.session
         }, emitter);
       },
@@ -1411,15 +1449,15 @@ function editForm(params, context, emitter) {
           emitter.emit('end', false);
         }
       },
-      discussion: function (previous, emitter) {
-        app.models.discussion.info(params.url.id, emitter);
+      topic: function (previous, emitter) {
+        app.models.topic.info(params.url.id, emitter);
       }
     }, function (output) {
-      var discussion = output.discussion,
+      var topic = output.topic,
+          announcement = topic.discussionID === 2 ? true : false,
           parsedTitle,
           parsedContent,
           url,
-          draft = false,
           time = app.toolbox.helpers.isoDate();
 
       // If the group has post access, process the topic form
@@ -1437,80 +1475,47 @@ function editForm(params, context, emitter) {
                 message: 'No valid form action received'
               });
               break;
-            case 'Preview post':
+            case 'Preview changes':
               emitter.emit('ready', {
-                view: 'start',
+                view: 'edit',
                 content: {
                   preview: {
                     title: parsedTitle,
                     content: parsedContent
                   },
-                  discussion: discussion,
-                  breadcrumbs: app.models.topic.breadcrumbs({
-                    discussionTitle: output.discussion.title,
-                    discussionUrl: output.discussion.url,
-                    discussionID: output.discussion.id
-                  })
+                  topic: topic
                 }
               });
               break;
-            case 'Save as draft':
-            case 'Post your topic':
-              if ( params.form.formAction === 'Save as draft' ) {
-                draft = true;
-              }
+            case 'Save changes':
               app.listen({
-                saveTopic: function (emitter) {
+                updateTopic: function (emitter) {
                   app.models.topic.insert({
-                    discussionID: discussion.id,
+                    topicID: topic.id,
                     userID: params.session.userID,
                     title: params.form.title,
                     titleHtml: parsedTitle,
                     url: url,
                     text: params.form.content,
                     html: parsedContent,
-                    draft: draft,
-                    private: false,
                     time: time
                   }, emitter);
                 }
               }, function (output) {
-                var topic = output.saveTopic;
+                var topic = output.updateTopic;
 
-                if ( output.listen.success && output.saveTopic.success ) {
-                  if ( params.form.subscribe ) {
-                    app.listen({
-                      subscribe: function (emitter) {
-                        app.models.topic.subscribe({
-                          userID: params.session.userID,
-                          topicID: topic.id,
-                          time: time
-                        }, emitter);
-                      }
-                    }, function (output) {
-                      if ( output.listen.success ) {
-                        emitter.emit('ready', {
-                          redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
-                        });
-                      } else {
-                        emitter.emit('error', output.listen);
-                      }
-                    });
-                  } else {
-                    emitter.emit('ready', {
-                      redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
-                    });
-                  }
+                if ( output.listen.success && output.updateTopic.success ) {
+                  emitter.emit('ready', {
+                    redirect: announcement ? app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + topic.id : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
+                  });
                 } else {
                   if ( !output.listen.success ) {
                     emitter.emit('error', output.listen);
                   } else {
                     emitter.emit('ready', {
-                      view: 'start',
+                      view: 'edit',
                       content: {
-                        topic: output.saveTopic,
-                        discussion: discussion,
-                        breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url, discussion.id)
+                        topic: output.updateTopic
                       }
                     });
                   }

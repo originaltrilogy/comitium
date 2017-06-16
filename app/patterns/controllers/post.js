@@ -220,7 +220,7 @@ function edit(params, context, emitter) {
 function editForm(params, context, emitter) {
 
   if ( params.request.method === 'POST' ) {
-    // Verify the user's group has reply access to the topic
+    // Verify the user's group has post access to the topic
     app.listen('waterfall', {
       access: function (emitter) {
         app.toolbox.access.postEdit({
