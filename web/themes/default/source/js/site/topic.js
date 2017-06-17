@@ -23,16 +23,18 @@ CF.topic = ( function (Modernizr, CF) {
         openImage = document.createElement('a');
         openImage.classList.add('open-tab');
         openImage.setAttribute('target', '_blank');
-        openImage.innerText = 'Open in a new browser tab';
         mask.appendChild(zoomImage);
         mask.appendChild(openImage);
         document.body.appendChild(mask);
       }
 
       document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item, index, array) {
+        var src = item.getAttribute('src');
+
         item.addEventListener('click', function (e) {
-          zoomImage.setAttribute('src', item.getAttribute('src'));
-          openImage.setAttribute('href', item.getAttribute('src'));
+          zoomImage.setAttribute('src', src);
+          openImage.setAttribute('href', src);
+          openImage.innerText = src;
           document.body.classList.remove('floating-header-active');
           document.body.classList.add('mask-enabled', 'floating-header-hidden');
           mask.classList.add('enabled');
