@@ -9,11 +9,35 @@ CF.topic = ( function (Modernizr, CF) {
       // if ( document.querySelectorAll('main nav.topic.actions li').length > 2 ) {
       //   methods.topicMenu();
       // }
-      var form = document.querySelector('#quick-reply-form');
+      var form = document.querySelector('#quick-reply-form'),
+          mask, zoomImage, openImage;
 
       if ( form && !CF.global.hasClass(form.parentNode, 'quote') ) {
         methods.postContent();
       }
+
+      if ( CF.params.device.relativeSize === 'x-large' ) {
+        mask = document.createElement('div');
+        mask.setAttribute('id', 'mask');
+        zoomImage = document.createElement('img');
+        openImage = document.createElement('a');
+        openImage.classList.add('open-tab');
+        openImage.setAttribute('target', '_blank');
+        openImage.innerText = 'Open in a new browser tab';
+        mask.appendChild(zoomImage);
+        mask.appendChild(openImage);
+        document.body.appendChild(mask);
+      }
+
+      document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item, index, array) {
+        item.addEventListener('click', function (e) {
+          zoomImage.setAttribute('src', item.getAttribute('src'));
+          openImage.setAttribute('href', item.getAttribute('src'));
+          document.body.classList.remove('floating-header-active');
+          document.body.classList.add('mask-enabled', 'floating-header-hidden');
+          mask.classList.add('enabled');
+        });
+      });
     },
 
     start: function () {

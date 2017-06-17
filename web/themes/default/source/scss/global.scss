@@ -132,6 +132,64 @@ p {
   }
 }
 
+// Zoomed images
+#mask {
+  display: flex;
+  flex-wrap: wrap;
+  position: fixed;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  top: 0;
+  align-items: center;
+  justify-content: center;
+  background: hsla(0,0%,0%,0);
+  transition: background 0.2s;
+
+  img {
+    width: 70%;
+    object-fit: contain;
+    opacity: 0;
+    transition: width 0.2s, opacity 0.2s;
+  }
+
+  &.enabled {
+    width: 100%;
+    height: 100%;
+    background: hsla(0,0%,0%,0.9);
+
+    img {
+      width: 98%;
+      height: 98%;
+      opacity: 1;
+    }
+  }
+
+  a.open-tab {
+    position: absolute;
+    bottom: 10px;
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    padding: 10px 15px;
+    color: #efefef;
+    background: hsl(0,0%,0%);
+    border: 1px solid hsla(0,0%,100%,0.2);
+    border-radius: 3px;
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: hsla(0,0%,100%,0.4);
+    }
+  }
+}
+
+body.mask-enabled {
+  main {
+    filter: grayscale(100%);
+  }
+}
+
 time {
   @include bodyFont(normal, 300);
   color: rgb(191,191,191);
@@ -1943,6 +2001,18 @@ a.avatar {
               }
             }
           }
+        }
+      }
+    }
+    section.content.post {
+      > img,
+      p > img {
+        box-shadow: 0px 0px 0px hsl(227,41%,80%);
+        transition: box-shadow 0.2s;
+
+        &:hover {
+          cursor: pointer;
+          box-shadow: 0px 0px 7px hsl(227,41%,80%);
         }
       }
     }
