@@ -1508,7 +1508,14 @@ CF.topic = ( function (Modernizr, CF) {
       }
 
       document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item, index, array) {
-        var src = item.getAttribute('src');
+        var wrapper = document.createElement('div'),
+            parent = item.parentNode,
+            src = item.getAttribute('src');
+        
+        wrapper.classList.add('zoom');
+        parent.appendChild(wrapper);
+        parent.insertBefore(wrapper, item);
+        wrapper.appendChild(item);
 
         item.addEventListener('click', function (e) {
           zoomImage.setAttribute('src', src);
