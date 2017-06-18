@@ -9,7 +9,10 @@ section.topics
       nav
         include ../partials/pagination
     each topic in topics
-      include ../partials/topic
+      if topic.discussionID !== 2
+        include ../partials/topic
+      else
+        include ../partials/announcement
   else
     p You're not subscribed to any topics.
 
