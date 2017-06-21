@@ -21,12 +21,6 @@ CF.topic = ( function (Modernizr, CF) {
         mask = document.createElement('div');
         mask.setAttribute('id', 'mask');
         mask.innerHTML = '<div id="mask-close"></div><img><a class="open-tab" target="_blank"></a>';
-        // zoomImage = document.createElement('img');
-        // openImage = document.createElement('a');
-        // openImage.classList.add('open-tab');
-        // openImage.setAttribute('target', '_blank');
-        // mask.appendChild(zoomImage);
-        // mask.appendChild(openImage);
         document.body.appendChild(mask);
       }
 
