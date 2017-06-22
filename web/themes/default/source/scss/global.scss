@@ -132,6 +132,120 @@ p {
   }
 }
 
+// Mask for zoomed images
+#mask {
+  display: flex;
+  flex-wrap: wrap;
+  position: fixed;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  top: 0;
+  align-items: center;
+  justify-content: center;
+  background: hsla(0,0%,0%,0);
+  transition: background 0.2s;
+
+  // Close button
+  #mask-close {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-image: url(/themes/default/images/cross.svg);
+    background-size: cover;
+    cursor: pointer;
+  }
+
+  img {
+    width: 70%;
+    object-fit: contain;
+    opacity: 0;
+    transition: width 0.2s, opacity 0.2s;
+  }
+
+  &.enabled {
+    width: 100%;
+    height: 100%;
+    padding-top: 60px;
+    padding-bottom: 80px;
+    background: hsla(0,0%,0%,0.9);
+
+    img {
+      width: 98%;
+      height: 98%;
+      opacity: 1;
+    }
+  }
+
+  a.open-tab {
+    position: absolute;
+    bottom: 20px;
+    margin: 0 auto;
+    display: block;
+    font-size: 12px;
+    text-align: center;
+    padding: 10px 30px 10px 10px;
+    color: #efefef;
+    border: 1px solid hsla(0,0%,100%,0);
+    border-radius: 3px;
+    transition: border-color 0.2s;
+
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      background-image: url(/themes/default/images/arrow-up-right.svg);
+      background-size: cover;
+    }
+
+    &:hover {
+      border-color: hsla(0,0%,100%,0.4);
+    }
+  }
+}
+
+html.no-touch {
+  div.zoom {
+    position: relative;
+    cursor: pointer;
+
+    &:hover {
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: calc(50% - 40px);
+        left: calc(50% - 40px);
+        width: 80px;
+        height: 80px;
+        background: hsla(0,0%,0%,0.6);
+        background-image: url(/themes/default/images/zoom-in.svg);
+        background-size: 44px;
+        background-position: center;
+        background-repeat: no-repeat;
+        border: 1px solid hsla(0,0%,100%,0.3);
+        border-radius: 10px;
+      }
+    }
+
+  }
+}
+
+html.mask-enabled {
+  height: 100%;
+  overflow: hidden;
+
+  main {
+    filter: grayscale(100%);
+  }
+}
+
 time {
   @include bodyFont(normal, 300);
   color: rgb(191,191,191);
@@ -1943,6 +2057,31 @@ a.avatar {
               }
             }
           }
+        }
+      }
+    }
+  }
+
+  html.touch {
+    section.content.post {
+      div.zoom {
+        position: relative;
+
+        &::after {
+          content: '';
+          display: block;
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
+          width: 40px;
+          height: 40px;
+          background: hsla(0,0%,0%,0.6);
+          background-image: url(/themes/default/images/zoom-in.svg);
+          background-size: 22px;
+          background-position: center;
+          background-repeat: no-repeat;
+          border: 1px solid hsla(0,0%,100%,0.3);
+          border-radius: 50%;
         }
       }
     }

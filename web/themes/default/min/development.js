@@ -1488,11 +1488,48 @@ CF.topic = ( function (Modernizr, CF) {
       // if ( document.querySelectorAll('main nav.topic.actions li').length > 2 ) {
       //   methods.topicMenu();
       // }
-      var form = document.querySelector('#quick-reply-form');
+      var form = document.querySelector('#quick-reply-form'),
+          // mask, closeButton, zoomImage, openImage;
+          mask;
 
       if ( form && !CF.global.hasClass(form.parentNode, 'quote') ) {
         methods.postContent();
       }
+
+      if ( CF.params.device.relativeSize === 'x-large' ) {
+        mask = document.createElement('div');
+        mask.setAttribute('id', 'mask');
+        mask.innerHTML = '<div id="mask-close"></div><img><a class="open-tab" target="_blank"></a>';
+        document.body.appendChild(mask);
+      }
+
+      document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item, index, array) {
+        var wrapper = document.createElement('div'),
+            parent = item.parentNode,
+            src = item.getAttribute('src'),
+            closeButton = mask.querySelector('#mask-close'),
+            zoomImage = mask.querySelector('img'),
+            openImage = mask.querySelector('a.open-tab');
+        
+        wrapper.classList.add('zoom');
+        parent.appendChild(wrapper);
+        parent.insertBefore(wrapper, item);
+        wrapper.appendChild(item);
+
+        item.addEventListener('click', function (e) {
+          zoomImage.setAttribute('src', src);
+          openImage.setAttribute('href', src);
+          openImage.innerText = src;
+          document.body.classList.remove('floating-header-active');
+          document.querySelector('html').classList.add('mask-enabled');
+          document.body.classList.add('floating-header-hidden');
+          mask.classList.add('enabled');
+          closeButton.addEventListener('click', function (e) {
+            mask.classList.remove('enabled');
+            document.querySelector('html').classList.remove('mask-enabled');
+          });
+        });
+      });
     },
 
     start: function () {
