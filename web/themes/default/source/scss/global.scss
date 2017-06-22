@@ -4,7 +4,6 @@
 /////////////////////////
 //
 //  CSS3
-//    Flexible Box Model
 //    CSS Animations
 //    CSS 2D Transforms
 //    CSS Transitions
@@ -15,6 +14,7 @@
 //
 //  Non-core detects
 //    emoji
+//    touchevents
 
 
 /////////////////////////
@@ -211,31 +211,27 @@ p {
   }
 }
 
-html.no-touch {
-  div.zoom {
-    position: relative;
-    cursor: pointer;
+div.zoom {
+  position: relative;
+  cursor: pointer;
 
-    &:hover {
-      &::before {
-        content: '';
-        display: block;
-        position: absolute;
-        top: calc(50% - 40px);
-        left: calc(50% - 40px);
-        width: 80px;
-        height: 80px;
-        background: hsla(0,0%,0%,0.6);
-        background-image: url(/themes/default/images/zoom-in.svg);
-        background-size: 44px;
-        background-position: center;
-        background-repeat: no-repeat;
-        border: 1px solid hsla(0,0%,100%,0.3);
-        border-radius: 10px;
-      }
-    }
-
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 40px;
+    height: 40px;
+    background: hsla(0,0%,0%,0.6);
+    background-image: url(/themes/default/images/zoom-in.svg);
+    background-size: 22px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid hsla(0,0%,100%,0.3);
+    border-radius: 50%;
   }
+
 }
 
 html.mask-enabled {
@@ -2063,30 +2059,7 @@ a.avatar {
     }
   }
 
-  html.touch {
-    section.content.post {
-      div.zoom {
-        position: relative;
 
-        &::after {
-          content: '';
-          display: block;
-          position: absolute;
-          right: 10px;
-          bottom: 10px;
-          width: 40px;
-          height: 40px;
-          background: hsla(0,0%,0%,0.6);
-          background-image: url(/themes/default/images/zoom-in.svg);
-          background-size: 22px;
-          background-position: center;
-          background-repeat: no-repeat;
-          border: 1px solid hsla(0,0%,100%,0.3);
-          border-radius: 50%;
-        }
-      }
-    }
-  }
 
   h1 {
     padding: 0 0 0.8rem;
