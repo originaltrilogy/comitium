@@ -1525,8 +1525,12 @@ CF.topic = ( function (Modernizr, CF) {
           document.body.classList.add('floating-header-hidden');
           mask.classList.add('enabled');
           closeButton.addEventListener('click', function (e) {
-            mask.classList.remove('enabled');
+            mask.classList.add('closing');
             document.querySelector('html').classList.remove('mask-enabled');
+
+            setTimeout( function () {
+              mask.classList.remove('closing', 'enabled');
+            }, 200);
           });
         });
       });
