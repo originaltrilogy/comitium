@@ -139,8 +139,9 @@ p {
   height: 0;
   overflow: hidden;
   top: 0;
-  background: hsla(0,0%,0%,0);
-  transition: background 0.2s;
+  background: hsla(0,0%,0%,0.95);
+  opacity: 0;
+  transition: opacity 0.2s;
 
   // Close button
   #mask-close {
@@ -155,10 +156,10 @@ p {
   }
 
   img {
-    width: 70%;
+    width: 98%;
+    height: 98%;
+    margin: 0 auto;
     object-fit: contain;
-    opacity: 0;
-    transition: width 0.2s, opacity 0.2s;
   }
 
   &.enabled {
@@ -166,14 +167,7 @@ p {
     height: 100%;
     padding-top: 60px;
     padding-bottom: 50px;
-    background: hsla(0,0%,0%,0.9);
-
-    img {
-      width: 98%;
-      height: 98%;
-      margin: 0 auto;
-      opacity: 1;
-    }
+    opacity: 1;
   }
 
   &.closing {
@@ -238,10 +232,6 @@ div.zoom {
 html.mask-enabled {
   height: 100%;
   overflow: hidden;
-
-  main {
-    filter: grayscale(100%);
-  }
 }
 
 time {

@@ -20,17 +20,13 @@ CF.topic = ( function (Modernizr, CF) {
       if ( CF.params.device.relativeSize === 'x-large' ) {
         mask = document.createElement('div');
         mask.setAttribute('id', 'mask');
-        mask.innerHTML = '<div id="mask-close"></div><img><a class="open-tab" target="_blank"></a>';
         document.body.appendChild(mask);
       }
 
       document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item, index, array) {
         var wrapper = document.createElement('div'),
             parent = item.parentNode,
-            src = item.getAttribute('src'),
-            closeButton = mask.querySelector('#mask-close'),
-            zoomImage = mask.querySelector('img'),
-            openImage = mask.querySelector('a.open-tab');
+            src = item.getAttribute('src');
         
         wrapper.classList.add('zoom');
         parent.appendChild(wrapper);
@@ -38,19 +34,19 @@ CF.topic = ( function (Modernizr, CF) {
         wrapper.appendChild(item);
 
         item.addEventListener('click', function (e) {
-          zoomImage.setAttribute('src', src);
-          openImage.setAttribute('href', src);
-          openImage.innerText = src;
+          mask.innerHTML = '<div id="mask-close"></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '</a>';
           document.body.classList.remove('floating-header-active');
-          document.querySelector('html').classList.add('mask-enabled');
           document.body.classList.add('floating-header-hidden');
+          document.querySelector('html').classList.add('mask-enabled');
           mask.classList.add('enabled');
-          closeButton.addEventListener('click', function (e) {
+
+          mask.querySelector('#mask-close').addEventListener('click', function (e) {
             mask.classList.add('closing');
             document.querySelector('html').classList.remove('mask-enabled');
 
             setTimeout( function () {
               mask.classList.remove('closing', 'enabled');
+              mask.innerHTML = '';
             }, 200);
           });
         });
