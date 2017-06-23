@@ -13,7 +13,7 @@ if !topic.lockedByID || session.moderateDiscussions
         else
           li.unsubscribe
             a(href="topic/action/unsubscribe/id/#{topic.id}" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
-      if ( ( !topic.lockedByID && session.userID === topic.authorID ) || session.moderateDiscussions ) && topic.discussionID !== 1
+      if userCanEdit
         li.edit
           a(href="topic/action/edit/id/#{topic.id}" title="Edit this topic.") Edit
       if session.moderateDiscussions
