@@ -209,6 +209,8 @@ div.zoom {
   display: inline-block;
   position: relative;
   cursor: pointer;
+  min-width: 70px;
+  min-height: 70px;
 
   &::before {
     content: '';
