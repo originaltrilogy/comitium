@@ -2,90 +2,89 @@
 //  discussions pattern   //
 ////////////////////////////
 
+body[data-controller="index"],
 body[data-controller="discussions"] {
 
-  &[data-view="discussions"] {
-    section.categories {
-      padding: 0 4vw;
-    }
-    section.category {
-      margin: 8vw 0;
+  section.categories {
+    padding: 0 4vw;
+  }
+  section.category {
+    margin: 8vw 0;
 
+    article {
+      section.description {
+        flex: 0 0 72vw;
+        margin-right: 4vw;
+
+        p {
+          margin: 1vw 0 4vw;
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 400px) {
+    section.categories {
       article {
         section.description {
-          flex: 0 0 72vw;
-          margin-right: 4vw;
+          flex: 0 0 74vw;
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    section.categories {
+      article {
+        section.description {
+          flex-basis: 76vw;
+        }
+      }
+    }
+    p.description {
+      margin-bottom: 3vw;
+    }
+    p.last-post {
+      margin: 0;
+    }
+  }
+
+  @media only screen and (min-width: 720px) {
+    section.categories {
+      padding: 0 2.4rem;
+
+      section.category {
+        max-width: 96rem;
+        margin: 2.4rem auto 6.4rem;
+      }
+      article {
+        flex-wrap: nowrap;
+
+        section.description {
+          flex: 1 1 auto;
+          order: 1;
+          margin-right: 3.2rem;
 
           p {
-            margin: 1vw 0 4vw;
+            margin: 0.6rem 0 0;
           }
         }
       }
     }
+    p.last-post {
+      flex: 0 0 20rem;
+      order: 2;
+      font-size: 90%;
 
-    @media only screen and (min-width: 400px) {
-      section.categories {
-        article {
-          section.description {
-            flex: 0 0 74vw;
-          }
-        }
+      a:nth-child(2) {
+        display: block;
+        width: 20rem;
+        margin-top: 0.6rem;
       }
     }
-
-    @media only screen and (min-width: 600px) {
-      section.categories {
-        article {
-          section.description {
-            flex-basis: 76vw;
-          }
-        }
-      }
-      p.description {
-        margin-bottom: 3vw;
-      }
-      p.last-post {
-        margin: 0;
-      }
-    }
-
-    @media only screen and (min-width: 720px) {
-      section.categories {
-        padding: 0 2.4rem;
-
-        section.category {
-          max-width: 96rem;
-          margin: 2.4rem auto 6.4rem;
-        }
-        article {
-          flex-wrap: nowrap;
-
-          section.description {
-            flex: 1 1 auto;
-            order: 1;
-            margin-right: 3.2rem;
-
-            p {
-              margin: 0.6rem 0 0;
-            }
-          }
-        }
-      }
-      p.last-post {
-        flex: 0 0 20rem;
-        order: 2;
-        font-size: 90%;
-
-        a:nth-child(2) {
-          display: block;
-          width: 20rem;
-          margin-top: 0.6rem;
-        }
-      }
-      a.content-stats {
-        flex: 0 0 6.4rem;
-        order: 3;
-      }
+    a.content-stats {
+      flex: 0 0 6.4rem;
+      order: 3;
     }
   }
 

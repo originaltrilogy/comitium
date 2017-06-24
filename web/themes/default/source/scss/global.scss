@@ -4,7 +4,6 @@
 /////////////////////////
 //
 //  CSS3
-//    Flexible Box Model
 //    CSS Animations
 //    CSS 2D Transforms
 //    CSS Transitions
@@ -15,6 +14,7 @@
 //
 //  Non-core detects
 //    emoji
+//    touchevents
 
 
 /////////////////////////
@@ -110,6 +110,110 @@ p {
     text-decoration: underline;
     word-break: break-word;
   }
+}
+
+// Mask for zoomed images
+#mask {
+  position: fixed;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  top: 0;
+  background: hsla(0,0%,0%,0.95);
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  // Close button
+  #mask-close {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-image: url(/themes/default/images/cross.svg);
+    background-size: cover;
+    cursor: pointer;
+  }
+
+  img {
+    width: 98%;
+    height: 98%;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+
+  &.enabled {
+    width: 100%;
+    height: 100%;
+    padding-top: 60px;
+    padding-bottom: 50px;
+    opacity: 1;
+  }
+
+  &.closing {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  a.open-tab {
+    margin: 20px auto;
+    display: block;
+    font-size: 12px;
+    text-align: center;
+    text-overflow: ellipsis;
+    padding: 10px;
+    color: #efefef;
+    border-radius: 3px;
+    transition: border-color 0.2s;
+
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      margin-left: 5px;
+      background-image: url(/themes/default/images/arrow-up-right.svg);
+      background-size: cover;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+div.zoom {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  min-width: 70px;
+  min-height: 70px;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 40px;
+    height: 40px;
+    background: hsla(0,0%,0%,0.6);
+    background-image: url(/themes/default/images/zoom-in.svg);
+    background-size: 22px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid hsla(0,0%,100%,0.3);
+    border-radius: 50%;
+  }
+
+}
+
+html.mask-enabled {
+  height: 100%;
+  overflow: hidden;
 }
 
 time {
@@ -629,6 +733,7 @@ body[data-breadcrumbs="false"] {
 }
 
 // Discussion, discussions, and topic view summaries
+body[data-controller="index"][data-view="index"],
 body[data-controller="discussions"][data-view="discussions"],
 body[data-controller="discussion"][data-view="discussion"],
 body[data-controller="topic"][data-view="topic"],
@@ -1510,6 +1615,7 @@ a.avatar {
   }
 
   // Discussion, discussions, and topic view summaries
+  body[data-controller="index"][data-view="index"],
   body[data-controller="discussions"][data-view="discussions"],
   body[data-controller="discussion"][data-view="discussion"],
   body[data-controller="topic"][data-view="topic"],
@@ -1855,6 +1961,8 @@ a.avatar {
     }
   }
 
+
+
   h1 {
     padding: 0 0 0.8rem;
     font-size: 2.4rem;
@@ -2073,6 +2181,7 @@ a.avatar {
   }
 
   // Discussion, discussions, and topic view summaries
+  body[data-controller="index"][data-view="index"],
   body[data-controller="discussions"][data-view="discussions"],
   body[data-controller="discussion"][data-view="discussion"],
   body[data-controller="topic"][data-view="topic"],

@@ -16,30 +16,30 @@ function handler(params, context, emitter) {
     });
   } else {
     app.listen({
-        unreadTopics: function (emitter) {
-          app.models.subscriptions.unread({
-            userID: params.session.userID
-          }, emitter);
-        },
-        unreadPrivateTopics: function (emitter) {
-          app.models['private-topics'].unread({
-            userID: params.session.userID
-          }, emitter);
-        }
-      }, function (output) {
-        if ( output.listen.success ) {
-          emitter.emit('ready', {
-            content: {
-              unread: {
-                topics: output.unreadTopics,
-                privateTopics: output.unreadPrivateTopics
-              },
-              logo: app.resources.images.logo
-            }
-          });
-        } else {
-          emitter.emit('error', output.listen);
-        }
+      unreadTopics: function (emitter) {
+        app.models.subscriptions.unread({
+          userID: params.session.userID
+        }, emitter);
+      },
+      unreadPrivateTopics: function (emitter) {
+        app.models['private-topics'].unread({
+          userID: params.session.userID
+        }, emitter);
+      }
+    }, function (output) {
+      if ( output.listen.success ) {
+        emitter.emit('ready', {
+          content: {
+            unread: {
+              topics: output.unreadTopics,
+              privateTopics: output.unreadPrivateTopics
+            },
+            logo: app.resources.images.logo
+          }
+        });
+      } else {
+        emitter.emit('error', output.listen);
+      }
     });
   }
 }

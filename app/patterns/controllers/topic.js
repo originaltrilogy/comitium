@@ -19,6 +19,8 @@ module.exports = {
   lock: lock,
   lockForm: lockForm,
   unlock: unlock,
+  edit: edit,
+  editForm: editForm,
   // merge: merge,
   // mergeForm: mergeForm,
   move: move,
@@ -147,6 +149,7 @@ function handler(params, context, emitter) {
                   posts: output.posts,
                   invitees: output.invitees,
                   userIsSubscribed: output.subscriptionExists,
+                  userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 0 && topic.discussionID !== 1,
                   userCanReply: output.userCanReply,
                   pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
                   previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),
@@ -1380,6 +1383,165 @@ function unlock(params, context, emitter) {
       emitter.emit('error', output.listen);
     }
   });
+
+}
+
+
+
+function edit(params, context, emitter) {
+  // Verify the user has edit rights
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicEdit({
+        topicID: params.url.id,
+        user: params.session
+      }, emitter);
+    },
+    proceed: function (previous, emitter) {
+      if ( previous.access === true ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('end', false);
+      }
+    },
+    topic: function (previous, emitter) {
+      app.models.topic.info(params.url.id, emitter);
+    }
+  }, function (output) {
+    // If the user has access rights, display the topic edit form
+    if ( output.listen.success ) {
+      if ( output.access === true ) {
+        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/' + output.topic.id + '/' + output.topic.url);
+        params.form.title = output.topic.title;
+        params.form.content = output.topic.text;
+
+        emitter.emit('ready', {
+          view: 'edit',
+          content: {
+            topic: output.topic
+          }
+        });
+      } else {
+        emitter.emit('ready', output.access);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+}
+
+
+
+function editForm(params, context, emitter) {
+
+  if ( params.request.method === 'POST' ) {
+    // Verify the user's group has edit access to the topic
+    app.listen('waterfall', {
+      access: function (emitter) {
+        app.toolbox.access.topicEdit({
+          topicID: params.url.id,
+          user: params.session
+        }, emitter);
+      },
+      proceed: function (previous, emitter) {
+        if ( previous.access === true ) {
+          emitter.emit('ready', true);
+        } else {
+          emitter.emit('end', false);
+        }
+      },
+      topic: function (previous, emitter) {
+        app.models.topic.info(params.url.id, emitter);
+      },
+      post: function (previous, emitter) {
+        app.models.post.info(previous.topic.firstPostID, emitter);
+      }
+    }, function (output) {
+      var topic = output.topic,
+          announcement = topic.discussionID === 2 ? true : false,
+          parsedTitle,
+          parsedContent,
+          parsedReason,
+          url,
+          time = app.toolbox.helpers.isoDate();
+
+      // If the user has edit access, process the topic form
+      if ( output.listen.success ) {
+        if ( output.access === true ) {
+          parsedTitle = app.toolbox.markdown.title(params.form.title);
+          parsedContent = app.toolbox.markdown.content(params.form.content);
+          parsedReason = app.toolbox.markdown.inline(params.form.reason);
+
+          url = app.toolbox.slug(params.form.title);
+          url = url.length ? url : 'untitled';
+
+          switch ( params.form.formAction ) {
+            default:
+              emitter.emit('error', {
+                message: 'No valid form action received'
+              });
+              break;
+            case 'Preview changes':
+              emitter.emit('ready', {
+                view: 'edit',
+                content: {
+                  preview: {
+                    title: parsedTitle,
+                    content: parsedContent
+                  },
+                  topic: topic
+                }
+              });
+              break;
+            case 'Save changes':
+              app.listen({
+                edit: function (emitter) {
+                  app.models.topic.edit({
+                    topicID: topic.id,
+                    discussionID: topic.discussionID,
+                    postID: topic.firstPostID,
+                    editorID: params.session.userID,
+                    currentPost: output.post,
+                    title: params.form.title,
+                    titleHtml: parsedTitle,
+                    url: url,
+                    text: params.form.content,
+                    html: parsedContent,
+                    reason: parsedReason,
+                    time: time
+                  }, emitter);
+                }
+              }, function (output) {
+                if ( output.listen.success && output.edit.success ) {
+                  emitter.emit('ready', {
+                    redirect: announcement ? app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + topic.id : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
+                  });
+                } else {
+                  if ( !output.listen.success ) {
+                    emitter.emit('error', output.listen);
+                  } else {
+                    emitter.emit('ready', {
+                      view: 'edit',
+                      content: {
+                        topic: output.edit
+                      }
+                    });
+                  }
+                }
+              });
+              break;
+          }
+        } else {
+          emitter.emit('ready', output.access);
+        }
+      } else {
+        emitter.emit('error', output.listen);
+      }
+    });
+  // If it's a GET, fall back to the default topic start action
+  } else {
+    start(params, context, emitter);
+  }
 
 }
 

@@ -5,6 +5,7 @@
 module.exports = {
   announcementView: announcementView,
   announcementReply: announcementReply,
+  edit: edit,
   exists: exists,
   firstUnreadPost: firstUnreadPost,
   hasInvitee: hasInvitee,
@@ -79,6 +80,112 @@ function announcementReply(args, emitter) {
       );
     }
   });
+}
+
+
+
+function edit(args, emitter) {
+  if ( !args.title.length || !args.text.length ) {
+    emitter.emit('ready', {
+      success: false,
+      reason: 'requiredFieldsEmpty',
+      message: 'Title and text can\'t be empty.'
+    });
+  } else {
+    app.toolbox.dbPool.connect(function (err, client, done) {
+      if ( err ) {
+        emitter.emit('error', err);
+      } else {
+
+        app.listen('waterfall', {
+          begin: function (emitter) {
+            client.query('begin', function (err) {
+              if ( err ) {
+                done();
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready');
+              }
+            });
+          },
+          updatePost: function (previous, emitter) {
+            client.query(
+              'update "posts" set "text" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "modified" = $5 where "id" = $6',
+              [ args.text, args.html, args.editorID, args.reason, args.time, args.postID ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    success: true,
+                    affectedRows: result.rows
+                  });
+                }
+              }
+            );
+          },
+          insertPostHistory: function (previous, emitter) {
+            client.query(
+              'insert into "postHistory" ( "postID", "editorID", "editReason", "text", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
+              [ args.postID, !args.currentPost.editorID ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    id: result.rows[0].id
+                  });
+                }
+              }
+            );
+          },
+          updateTopic: function (previous, emitter) {
+            client.query(
+              'update "topics" set "title" = $1, "titleHtml" = $2, "url" = $3, "editedByID" = $4, "editReason" = $5 where "id" = $6',
+              [ args.title, args.titleHtml, args.url, args.editorID, args.reason, args.topicID ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', {
+                    success: true,
+                    affectedRows: result.rows
+                  });
+                }
+              }
+            );
+          },
+          commit: function (previous, emitter) {
+            client.query('commit', function () {
+              done();
+              emitter.emit('ready');
+            });
+          }
+        }, function (output) {
+          if ( output.listen.success ) {
+            // Clear the topic cache
+            app.cache.clear({ scope: 'topic-' + args.currentPost.topicID });
+            app.cache.clear({ scope: 'discussion-' + args.discussionID });
+
+            emitter.emit('ready', {
+              success: true
+            });
+          } else {
+            emitter.emit('error', output.listen);
+          }
+        });
+      }
+    });
+  }
 }
 
 
@@ -244,7 +351,7 @@ function info(topicID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created", t."modified", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and "draft" = false order by created desc limit 1 ) where t."id" = $1;',
+              'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created", t."modified", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", p.text, u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and "draft" = false order by created desc limit 1 ) where t."id" = $1;',
               [ topicID ],
               function (err, result) {
                 done();

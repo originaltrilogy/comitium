@@ -1,0 +1,90 @@
+///////////////////
+//  Dear Disney  //
+///////////////////
+
+body[data-view="Dear-Disney"] {
+  section.letter {
+    padding: 4vw;
+  }
+
+  img.pvg {
+    border-radius: 2vw;
+    margin: 8vw 0;
+    width: 100%;
+  }
+
+  img.death-star {
+    width: 26vw;
+    margin: 10vw auto 0;
+  }
+
+  @media only screen and ( min-width: 600px ) {
+
+    img.pvg {
+      border-radius: 1vw;
+      float: left;
+      margin: 1vw 4vw 3vw 0;
+      width: 48%;
+    }
+
+    img.death-star {
+      width: 20vw;
+      margin: 6vw auto 2vw;
+    }
+
+  }
+
+  @media only screen and ( min-width: 720px ) {
+
+    section.summary {
+      max-width: 76.8rem;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+
+    section.letter {
+      max-width: 76.8rem;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 40px;
+    }
+
+    img.pvg {
+      border-radius: 4px;
+      float: left;
+      margin: 20px 35px 20px 0;
+      width: 250px;
+    }
+
+    img.death-star {
+      width: 100px;
+      margin: 40px auto 10px;
+    }
+
+    h2 {
+      margin: auto;
+      max-width: 32rem;
+    }
+
+  }
+
+  @media only screen and ( min-width: 848px ) {
+
+    main > header section.summary {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    section.letter {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+  }
+}
