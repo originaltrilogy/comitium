@@ -1500,36 +1500,36 @@ CF.topic = ( function (Modernizr, CF) {
         mask = document.createElement('div');
         mask.setAttribute('id', 'mask');
         document.body.appendChild(mask);
-      }
 
-      document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item, index, array) {
-        var wrapper = document.createElement('div'),
-            parent = item.parentNode,
-            src = item.getAttribute('src');
-        
-        wrapper.classList.add('zoom');
-        parent.appendChild(wrapper);
-        parent.insertBefore(wrapper, item);
-        wrapper.appendChild(item);
+        document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item, index, array) {
+          var wrapper = document.createElement('div'),
+              parent = item.parentNode,
+              src = item.getAttribute('src');
+          
+          wrapper.classList.add('zoom');
+          parent.appendChild(wrapper);
+          parent.insertBefore(wrapper, item);
+          wrapper.appendChild(item);
 
-        wrapper.addEventListener('click', function (e) {
-          mask.innerHTML = '<div id="mask-close"></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '</a>';
-          document.body.classList.remove('floating-header-active');
-          document.body.classList.add('floating-header-hidden');
-          document.querySelector('html').classList.add('mask-enabled');
-          mask.classList.add('enabled');
+          wrapper.addEventListener('click', function (e) {
+            mask.innerHTML = '<div id="mask-close"></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '</a>';
+            document.body.classList.remove('floating-header-active');
+            document.body.classList.add('floating-header-hidden');
+            document.querySelector('html').classList.add('mask-enabled');
+            mask.classList.add('enabled');
 
-          mask.querySelector('#mask-close').addEventListener('click', function (e) {
-            mask.classList.add('closing');
-            document.querySelector('html').classList.remove('mask-enabled');
+            mask.querySelector('#mask-close').addEventListener('click', function (e) {
+              mask.classList.add('closing');
+              document.querySelector('html').classList.remove('mask-enabled');
 
-            setTimeout( function () {
-              mask.classList.remove('closing', 'enabled');
-              mask.innerHTML = '';
-            }, 200);
+              setTimeout( function () {
+                mask.classList.remove('closing', 'enabled');
+                mask.innerHTML = '';
+              }, 200);
+            });
           });
         });
-      });
+      }
     },
 
     start: function () {
