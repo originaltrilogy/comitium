@@ -208,11 +208,11 @@ p {
 
 span.zoom {
   display: block;
-  min-width: 70px;
-  min-height: 70px;
 
   span.zoom-image {
     display: inline-block;
+    min-width: 70px;
+    min-height: 70px;
     position: relative;
     cursor: pointer;
 
