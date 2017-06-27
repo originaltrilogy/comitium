@@ -10,7 +10,6 @@ CF.topic = ( function (Modernizr, CF) {
       //   methods.topicMenu();
       // }
       var form = document.querySelector('#quick-reply-form'),
-          // mask, closeButton, zoomImage, openImage;
           mask;
 
       if ( form && !CF.global.hasClass(form.parentNode, 'quote') ) {
@@ -23,16 +22,19 @@ CF.topic = ( function (Modernizr, CF) {
         document.body.appendChild(mask);
 
         document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item, index, array) {
-          var wrapper = document.createElement('div'),
+          var zoomWrapper = document.createElement('span'),
+              imageWrapper = document.createElement('span'),
               parent = item.parentNode,
               src = item.getAttribute('src');
           
-          wrapper.classList.add('zoom');
-          parent.appendChild(wrapper);
-          parent.insertBefore(wrapper, item);
-          wrapper.appendChild(item);
+          zoomWrapper.classList.add('zoom');
+          imageWrapper.classList.add('zoom-image');
+          zoomWrapper.appendChild(imageWrapper);
+          parent.appendChild(zoomWrapper);
+          parent.insertBefore(zoomWrapper, item);
+          imageWrapper.appendChild(item);
 
-          wrapper.addEventListener('click', function (e) {
+          imageWrapper.addEventListener('click', function (e) {
             mask.innerHTML = '<div id="mask-close"></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '</a>';
             document.body.classList.remove('floating-header-active');
             document.body.classList.add('floating-header-hidden');
