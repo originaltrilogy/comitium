@@ -194,8 +194,8 @@ $gNoUpdates: '\eac4';
 //////////////////////
 body {
   @include bodyFont;
-  color: white;
-  background-color: hsl(0, 0%, 96%);
+  color: hsl(0, 0%, 20%);
+  background-color: hsl(0, 0%, 100%);
 
   // Navigation highlighting
   &[data-controller="index"] nav li.news a,
@@ -214,7 +214,7 @@ body {
   &[data-controller="about"] nav li.about a,
   &[data-controller="help"] nav li.help a,
 	> header nav li a:hover {
-    background-color: hsl(0, 80%, 30%);
+    background-color: hsl(227,18%,40%);
   }
 }
 
@@ -244,10 +244,8 @@ a.home {
 }
 
 body > header {
-  // background-color: hsl(23, 100%, 36%);
-	// box-shadow: 0 0 1.6vw hsl(23, 100%, 26%);
-	background-color: hsl(0, 80%, 37%);
-  box-shadow: 0 0 1.6vw hsl(0, 65%, 12%);
+	background-color: hsl(227,18%,30%);
+  box-shadow: 0 0 1.6vw hsl(227, 0%, 10%);
 
   nav {
     li {
@@ -322,15 +320,12 @@ nav.breadcrumbs {
 
 main {
   > header {
-		background: hsl(0,0%,90%);
+		background: hsl(0,0%,86%);
   }
 }
 
 section {
   &.summary {
-    & > p {
-      color: hsl(0, 0%, 100%);
-    }
 		dl.content-stats {
 			color: hsl(0, 100%, 95%);
 		}
@@ -413,16 +408,16 @@ article {
 }
 
 h1 {
-  color: hsl(0, 0%, 100%);
+  color: hsl(0, 0%, 20%);
 }
 
 h2 {
-  color: hsl(0,0%,34%);
+  color: hsl(0,0%,90%);
 }
 
 footer {
-  background-color: hsl(0, 80%, 26%);
-  border-color: hsl(0, 80%, 75%);
+  background-color: hsl(227, 18%, 30%);
+  border-color: hsl(227, 18%, 15%);
 
   section.copyright {
     p {
@@ -538,8 +533,7 @@ a.avatar {
 @media only screen and (min-width: 720px) {
   body {
     > header {
-      // box-shadow: 0 0 8px hsl(23, 100%, 26%);
-			box-shadow: 0 0 8px hsl(0, 65%, 12%);
+      box-shadow: 0 0 6px hsl(227, 0%, 10%);
     }
   }
 }
@@ -592,31 +586,6 @@ body[data-view="index"] {
 //////////////////////////////
 //        post styles       //
 //////////////////////////////
-
-// Post view styles
-body[data-controller="post"] {
-
-  section.summary {
-    dl {
-      margin: 0;
-    }
-  }
-
-  @media only screen and (min-width: 720px) {
-
-    section.summary {
-      dt {
-        width: 16rem;
-      }
-      dd {
-        margin-left: 16rem;
-      }
-    }
-
-  }
-
-}
-
 
 // Global post styles
 article.post {

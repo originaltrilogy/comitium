@@ -584,31 +584,6 @@ body[data-view="index"] {
 //        post styles       //
 //////////////////////////////
 
-// Post view styles
-body[data-controller="post"] {
-
-  section.summary {
-    dl {
-      margin: 0;
-    }
-  }
-
-  @media only screen and (min-width: 720px) {
-
-    section.summary {
-      dt {
-        width: 16rem;
-      }
-      dd {
-        margin-left: 16rem;
-      }
-    }
-
-  }
-
-}
-
-
 // Global post styles
 article.post {
   background-color: hsl(227,18%,22%);

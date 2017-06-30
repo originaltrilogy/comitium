@@ -10,7 +10,7 @@ body {
   background-color: hsl(0, 0%, 96%); }
   body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a,
   body > header nav li a:hover {
-    background-color: hsl(0, 50%, 30%); }
+    background-color: hsl(0, 80%, 30%); }
 
 html.cssanimations.csstransforms span.loading-indicator {
   border-top-color: #666;
@@ -31,7 +31,7 @@ a.home .logo {
   fill: hsl(0, 0%, 100%); }
 
 body > header {
-  background-color: hsl(0, 0%, 10%);
+  background-color: hsl(0, 80%, 37%);
   box-shadow: 0 0 1.6vw hsl(0, 65%, 12%); }
   body > header nav li a {
     color: hsl(0, 0%, 100%); }
@@ -60,7 +60,7 @@ nav.breadcrumbs {
     color: hsl(0, 25%, 65%); }
 
 main > header {
-  background-image: linear-gradient(180deg, hsl(0, 50%, 30%) 0, hsl(0, 50%, 45%)); }
+  background: hsl(0, 0%, 90%); }
 
 section.summary > p {
   color: hsl(0, 0%, 100%); }

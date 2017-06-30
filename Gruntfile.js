@@ -19,14 +19,14 @@ module.exports = function (grunt) {
               'web/themes/default/source/js/site/*.js'],
         dest: 'web/themes/default/min/debug.js'
       },
-      development: {
+      dev: {
         src: ['web/themes/default/source/js/lib/modernizr-dev.js',
               'web/themes/default/source/js/lib/respond.min.js',
               'web/themes/default/source/js/site/immediate.js',
               'web/themes/default/source/js/site/*.js'],
         dest: 'web/themes/default/min/development.js'
       },
-      production: {
+      prod: {
         src: ['web/themes/default/source/js/lib/modernizr-prod.js',
               'web/themes/default/source/js/lib/respond.min.js',
               'web/themes/default/source/js/site/immediate.js',
@@ -35,20 +35,23 @@ module.exports = function (grunt) {
       }
     },
     sass: {
-      dist: {
-        options: {
-          sourcemap: 'auto'
-        },
+      options: {
+        sourcemap: 'auto'
+      },
+      debug: {
+        files: {
+          'web/themes/default/min/debug.css': ['web/themes/default/source/scss/env/debug.scss'],
+          'web/themes/imperial/min/debug.css': ['web/themes/imperial/source/scss/env/debug.scss'],
+          'web/themes/ot-light/min/debug.css': ['web/themes/ot-light/source/scss/env/debug.scss'],
+          'web/themes/rebellious/min/debug.css': ['web/themes/rebellious/source/scss/env/debug.scss']
+        }
+      },
+      prod: {
         files: {
           'web/themes/default/min/production.css': ['web/themes/default/source/scss/env/production.scss'],
-          'web/themes/default/min/debug.css': ['web/themes/default/source/scss/env/debug.scss'],
-          'web/themes/default/min/development.css': ['web/themes/default/source/scss/env/development.scss'],
           'web/themes/imperial/min/production.css': ['web/themes/imperial/source/scss/env/production.scss'],
-          'web/themes/imperial/min/debug.css': ['web/themes/imperial/source/scss/env/debug.scss'],
-          'web/themes/imperial/min/development.css': ['web/themes/imperial/source/scss/env/development.scss'],
-          'web/themes/rebellious/min/production.css': ['web/themes/rebellious/source/scss/env/production.scss'],
-          'web/themes/rebellious/min/debug.css': ['web/themes/rebellious/source/scss/env/debug.scss'],
-          'web/themes/rebellious/min/development.css': ['web/themes/rebellious/source/scss/env/development.scss']
+          'web/themes/ot-light/min/production.css': ['web/themes/ot-light/source/scss/env/production.scss'],
+          'web/themes/rebellious/min/production.css': ['web/themes/rebellious/source/scss/env/production.scss']
         }
       }
     },
@@ -62,42 +65,53 @@ module.exports = function (grunt) {
           require('cssnano')({ safe: true, colormin: false }) // minify the result
         ]
       },
-      default1: {
-        src: 'web/themes/default/min/debug.css',
-        dest: 'web/themes/default/min/debug.css'
+      debug: {
+        default: {
+          src: 'web/themes/default/min/debug.css',
+          dest: 'web/themes/default/min/debug.css'
+        },
+        imperial: {
+          src: 'web/themes/imperial/min/debug.css',
+          dest: 'web/themes/imperial/min/debug.css'
+        },
+        otlight: {
+          src: 'web/themes/ot-light/min/debug.css',
+          dest: 'web/themes/ot-light/min/debug.css'
+        },
+        rebellious: {
+          src: 'web/themes/default/min/debug.css',
+          dest: 'web/themes/default/min/debug.css'
+        },
       },
-      default2: {
-        src: 'web/themes/default/min/development.css',
-        dest: 'web/themes/default/min/development.css'
-      },
-      default3: {
-        src: 'web/themes/default/min/production.css',
-        dest: 'web/themes/default/min/production.css'
-      },
-      imperial1: {
-        src: 'web/themes/imperial/min/debug.css',
-        dest: 'web/themes/imperial/min/debug.css'
-      },
-      imperial2: {
-        src: 'web/themes/imperial/min/development.css',
-        dest: 'web/themes/imperial/min/development.css'
-      },
-      imperial3: {
-        src: 'web/themes/imperial/min/production.css',
-        dest: 'web/themes/imperial/min/production.css'
-      },
-      rebellious1: {
-        src: 'web/themes/default/min/debug.css',
-        dest: 'web/themes/default/min/debug.css'
-      },
-      rebellious2: {
-        src: 'web/themes/default/min/development.css',
-        dest: 'web/themes/default/min/development.css'
-      },
-      rebellious3: {
-        src: 'web/themes/default/min/production.css',
-        dest: 'web/themes/default/min/production.css'
+      prod: {
+        default: {
+          src: 'web/themes/default/min/production.css',
+          dest: 'web/themes/default/min/production.css'
+        },
+        imperial: {
+          src: 'web/themes/imperial/min/production.css',
+          dest: 'web/themes/imperial/min/production.css'
+        },
+        rebellious: {
+          src: 'web/themes/default/min/production.css',
+          dest: 'web/themes/default/min/production.css'
+        }
       }
+      // default2: {
+      //   src: 'web/themes/default/min/development.css',
+      //   dest: 'web/themes/default/min/development.css'
+      // },
+
+      // imperial2: {
+      //   src: 'web/themes/imperial/min/development.css',
+      //   dest: 'web/themes/imperial/min/development.css'
+      // },
+
+      // rebellious2: {
+      //   src: 'web/themes/default/min/development.css',
+      //   dest: 'web/themes/default/min/development.css'
+      // },
+
     },
     uglify: {
       options: {
@@ -120,7 +134,7 @@ module.exports = function (grunt) {
       },
       css: {
         files: ['web/themes/*/source/scss/**/*.scss'],
-        tasks: ['sass', 'postcss'],
+        tasks: ['sass:debug', 'postcss:debug'],
         options: {
           livereload: true
         }
@@ -132,7 +146,7 @@ module.exports = function (grunt) {
       js: {
         files: ['web/themes/*/source/js/lib/*.js',
         'web/themes/*/source/js/site/*.js'],
-        tasks: ['concat', 'uglify'],
+        tasks: ['concat:debug'],
         options: {
           livereload: true
         }
@@ -141,5 +155,6 @@ module.exports = function (grunt) {
   });
 
   require('load-grunt-tasks')(grunt);
-  grunt.registerTask('default', ['sass', 'postcss', 'jshint', 'concat', 'uglify', 'watch']);
+  grunt.registerTask('debug', ['sass:debug', 'postcss:debug', 'jshint', 'concat:debug', 'watch']);
+  grunt.registerTask('prod', ['sass:prod', 'postcss:prod', 'jshint', 'concat:prod', 'uglify']);
 };
