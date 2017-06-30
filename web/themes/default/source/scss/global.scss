@@ -147,6 +147,7 @@ p {
     height: 100%;
     padding-top: 60px;
     padding-bottom: 50px;
+    z-index: 2;
     opacity: 1;
   }
 
@@ -185,30 +186,33 @@ p {
   }
 }
 
-div.zoom {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  min-width: 70px;
-  min-height: 70px;
+span.zoom {
+  display: block;
 
-  &::before {
-    content: '';
-    display: block;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    width: 40px;
-    height: 40px;
-    background: hsla(0,0%,0%,0.6);
-    background-image: url(/themes/default/images/zoom-in.svg);
-    background-size: 22px;
-    background-position: center;
-    background-repeat: no-repeat;
-    border: 1px solid hsla(0,0%,100%,0.3);
-    border-radius: 50%;
+  span.zoom-image {
+    display: inline-block;
+    min-width: 70px;
+    min-height: 70px;
+    position: relative;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 40px;
+      height: 40px;
+      background: hsla(0,0%,0%,0.6);
+      background-image: url(/themes/default/images/zoom-in.svg);
+      background-size: 22px;
+      background-position: center;
+      background-repeat: no-repeat;
+      border: 1px solid hsla(0,0%,100%,0.3);
+      border-radius: 50%;
+    }
   }
-
 }
 
 html.mask-enabled {
