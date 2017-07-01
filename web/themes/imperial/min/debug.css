@@ -2644,27 +2644,6 @@ a.avatar {
 
   form textarea[name="title"] {
     height: 6rem; } }
-body[data-view="index"] section.news {
-  padding: 4vw; }
-body[data-view="index"] article {
-  display: block; }
-body[data-view="index"] time {
-  display: block;
-  margin: 4vw auto 6vw;
-  text-align: center; }
-@media only screen and (min-width: 720px) {
-  body[data-view="index"] section.news {
-    padding: 2.4rem; }
-  body[data-view="index"] time {
-    margin: 1.6rem auto 3.2rem;
-    font-size: 85%;
-    text-align: left; } }
-@media only screen and (min-width: 1008px) {
-  body[data-view="index"] section.news {
-    max-width: 96rem;
-    margin: auto;
-    padding: 2.4rem 0; } }
-
 body[data-controller="index"] section.categories,
 body[data-controller="discussions"] section.categories {
   padding: 0 4vw; }

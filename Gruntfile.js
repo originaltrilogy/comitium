@@ -28,10 +28,10 @@ module.exports = function (grunt) {
       }
     },
     sass: {
-      options: {
-        sourcemap: 'auto'
-      },
       debug: {
+        options: {
+          sourcemap: 'auto'
+        },
         files: {
           'web/themes/default/min/debug.css': ['web/themes/default/source/scss/env/debug.scss'],
           'web/themes/imperial/min/debug.css': ['web/themes/imperial/source/scss/env/debug.scss'],
@@ -40,6 +40,9 @@ module.exports = function (grunt) {
         }
       },
       prod: {
+        options: {
+          sourcemap: 'auto'
+        },
         files: {
           'web/themes/default/min/production.css': ['web/themes/default/source/scss/env/production.scss'],
           'web/themes/imperial/min/production.css': ['web/themes/imperial/source/scss/env/production.scss'],
@@ -49,16 +52,13 @@ module.exports = function (grunt) {
       }
     },
     postcss: {
-      options: {
-        map: {
-          inline: false
-        },
-        processors: [
-          require('autoprefixer')({ browsers: 'last 2 versions' }), // add vendor prefixes
-          require('cssnano')({ safe: true, colormin: false }) // minify the result
-        ]
-      },
       debug: {
+        options: {
+          processors: [
+            require('autoprefixer')({ browsers: 'last 2 versions' }), // add vendor prefixes
+            require('cssnano')({ safe: true, colormin: false }) // minify the result
+          ]
+        },
         default: {
           src: 'web/themes/default/min/debug.css',
           dest: 'web/themes/default/min/debug.css'
@@ -77,6 +77,15 @@ module.exports = function (grunt) {
         },
       },
       prod: {
+        options: {
+          map: {
+            inline: false
+          },
+          processors: [
+            require('autoprefixer')({ browsers: 'last 2 versions' }), // add vendor prefixes
+            require('cssnano')({ safe: true, colormin: false }) // minify the result
+          ]
+        },
         default: {
           src: 'web/themes/default/min/production.css',
           dest: 'web/themes/default/min/production.css'
@@ -84,6 +93,10 @@ module.exports = function (grunt) {
         imperial: {
           src: 'web/themes/imperial/min/production.css',
           dest: 'web/themes/imperial/min/production.css'
+        },
+        otlight: {
+          src: 'web/themes/ot-light/min/production.css',
+          dest: 'web/themes/ot-light/min/production.css'
         },
         rebellious: {
           src: 'web/themes/default/min/production.css',

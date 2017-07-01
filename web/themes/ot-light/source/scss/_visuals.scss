@@ -65,34 +65,34 @@ $gNoUpdates: '\eac4';
 
   @if $color == 'light' {
 		color: #373B49;
-		background-image: linear-gradient(180deg,hsl(0,75%,90%),hsl(0,40%,75%) 98%);
+		background-image: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
 
 		&:hover {
 			color: hsla(227,41%,83%,1);
-      background-image: linear-gradient(180deg,hsl(0,18%,34%) 0,hsl(0,18%,30%) 98%);
+      background-image: linear-gradient(180deg,hsl(227,18%,34%) 0,hsl(227,18%,30%) 98%);
     }
   } @else if $color == 'dark' {
 		color: #A5B2D9;
-		background-image: linear-gradient(180deg, hsl(0,18%,22%) 0%, hsl(0,18%,16%) 98%);
+		background-image: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
 		border: 1px solid #474F66;
 
 		&:hover {
-			color: hsl(0,41%,13%);
-			background-image: linear-gradient(180deg,hsl(0,64%,86%),hsl(0,32%,68%) 98%);
+			color: hsl(227,41%,13%);
+			background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
     }
   } @else if $color == 'lightGhost' {
-    color: hsl(0,100%,90%);
-		box-shadow: 0 0 0 1px hsl(0,100%,90%) inset;
+    color: hsl(227,100%,90%);
+		box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
   } @else if $color == 'darkGhost' {
-    color: hsl(0,18%,25%);
-		box-shadow: 0 0 0 1px hsl(0,18%,25%) inset;
+    color: hsl(227,18%,25%);
+		box-shadow: 0 0 0 1px hsl(227,18%,25%) inset;
   }
 }
 
 @mixin debutton {
 	text-transform: initial;
 	background: none;
-	color: hsl(0,41%,75%);
+	color: hsl(227,41%,75%);
 }
 
 @mixin icon ($content) {
@@ -214,7 +214,7 @@ body {
   &[data-controller="about"] nav li.about a,
   &[data-controller="help"] nav li.help a,
 	> header nav li a:hover {
-    background-color: hsl(227,18%,40%);
+    background-color: hsl(227,18%,26%);
   }
 }
 
@@ -243,24 +243,34 @@ a.home {
   }
 }
 
-body > header {
-	background-color: hsl(227,18%,30%);
-  box-shadow: 0 0 1.6vw hsl(227, 0%, 10%);
+body {
+  > header {
+    background-color: hsl(227,18%,26%);
+    box-shadow: 0 0 1.6vw hsl(227, 0%, 10%);
 
-  nav {
-    li {
-      a {
-				color: hsl(0,0%,100%);
+    nav {
+      li {
+        a {
+          color: hsl(0,0%,100%);
+
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
+    }
+
+    section.status {
+      a.private-topics {
+        &::before {
+          color: hsl(0, 0%, 100%);
+        }
       }
     }
   }
 
-  section.status {
-    a.private-topics {
-      &::before {
-        color: hsl(0, 0%, 100%);
-      }
-    }
+  &.floating-header-active > header {
+    background-color: hsla(227,18%,26%,0.97);
   }
 }
 
@@ -273,39 +283,19 @@ main {
 // here than to overwrite within the 600px media query later.
 @media only screen and (max-width: 599px) {
   .slide-menu {
-    background-color: hsl(0, 50%, 30%);
-		box-shadow: 0 0 1.6vw hsl(0, 50%, 18%);
+    background-color: hsl(227,18%, 18%);
 
-		li {
-			a {
-				color: hsl(0, 0%, 100%);
-			}
-		}
+    a {
+      color: hsl(227, 41%, 80%);
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 
   .menu-shadow {
-    background-color: hsla(0,1%,0%,0.5);
-  }
-
-  body {
-    // Navigation highlighting
-    &[data-controller="index"] nav li.news a,
-    &[data-controller="discussions"] nav li.discussions a,
-    &[data-controller="discussion"] nav li.discussions a,
-    &[data-controller="announcements"] nav li.discussions a,
-    &[data-controller="announcement"] nav li.discussions a,
-    &[data-controller="topic"][data-view="topic"] nav li.discussions a,
-    &[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a,
-    &[data-controller="topic"][data-view="private-topic"] nav li.private-topics a,
-    &[data-controller="topic"][data-view="start-private"] nav li.private-topics a,
-    &[data-controller="private-topics"] nav li.private-topics a,
-    &[data-controller="sign-in"] nav li.sign-in a,
-    &[data-controller="register"] nav li.register a,
-    &[data-controller="account"] nav li.account a,
-    &[data-controller="about"] nav li.about a,
-    &[data-controller="help"] nav li.help a {
-      background-color: hsl(0, 50%, 40%);
-    }
+    background-color: hsla(227,1%,0%,0.5);
   }
 }
 

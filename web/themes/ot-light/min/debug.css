@@ -10,7 +10,7 @@ body {
   background-color: hsl(0, 0%, 92%); }
   body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a,
   body > header nav li a:hover {
-    background-color: hsl(227, 18%, 40%); }
+    background-color: hsl(227, 18%, 26%); }
 
 html.cssanimations.csstransforms span.loading-indicator {
   border-top-color: #666;
@@ -30,28 +30,30 @@ a.home .logo {
   fill: hsl(0, 0%, 100%); }
 
 body > header {
-  background-color: hsl(227, 18%, 30%);
+  background-color: hsl(227, 18%, 26%);
   box-shadow: 0 0 1.6vw hsl(227, 0%, 10%); }
   body > header nav li a {
     color: hsl(0, 0%, 100%); }
+    body > header nav li a:hover {
+      text-decoration: none; }
   body > header section.status a.private-topics::before {
     color: hsl(0, 0%, 100%); }
+body.floating-header-active > header {
+  background-color: hsla(227, 18%, 26%, 0.97); }
 
 main {
   background-image: linear-gradient(180deg, hsl(0, 0%, 92%) 0, hsl(0, 0%, 92%) 100px, hsl(0, 0%, 98%) 101px); }
 
 @media only screen and (max-width: 599px) {
   .slide-menu {
-    background-color: hsl(0, 50%, 30%);
-    box-shadow: 0 0 1.6vw hsl(0, 50%, 18%); }
-    .slide-menu li a {
-      color: hsl(0, 0%, 100%); }
+    background-color: hsl(227, 18%, 18%); }
+    .slide-menu a {
+      color: hsl(227, 41%, 80%); }
+      .slide-menu a:hover {
+        text-decoration: none; }
 
   .menu-shadow {
-    background-color: hsla(0, 1%, 0%, 0.5); }
-
-  body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a {
-    background-color: hsl(0, 50%, 40%); } }
+    background-color: hsla(227, 1%, 0%, 0.5); } }
 main > header {
   background: hsl(0, 0%, 92%); }
 
@@ -910,8 +912,8 @@ body > header {
     text-decoration: none;
     text-transform: uppercase;
     cursor: pointer;
-    color: hsl(0, 100%, 90%);
-    box-shadow: 0 0 0 1px hsl(0, 100%, 90%) inset;
+    color: hsl(227, 100%, 90%);
+    box-shadow: 0 0 0 1px hsl(227, 100%, 90%) inset;
     position: absolute;
     top: 3vw;
     right: 2.5vw; }
@@ -992,7 +994,7 @@ body.floating-header-hidden > header {
     text-transform: uppercase;
     cursor: pointer;
     color: #373B49;
-    background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%);
+    background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%);
     position: absolute;
     top: 3vw;
     left: 2.5vw; } }
@@ -1005,7 +1007,7 @@ body.floating-header-hidden > header {
 @media only screen and (max-width: 599px) {
     .main-menu-icon:hover {
       color: hsla(227, 41%, 83%, 1);
-      background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
+      background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
     .main-menu-icon::before {
       content: "";
       font-family: glyphs;
@@ -1285,8 +1287,8 @@ section.content {
       text-decoration: none;
       text-transform: uppercase;
       cursor: pointer;
-      color: hsl(0, 100%, 90%);
-      box-shadow: 0 0 0 1px hsl(0, 100%, 90%) inset;
+      color: hsl(227, 100%, 90%);
+      box-shadow: 0 0 0 1px hsl(227, 100%, 90%) inset;
       position: absolute;
       top: 2vw;
       right: 1.6vw;
@@ -1382,7 +1384,7 @@ nav.pagination {
     text-transform: uppercase;
     cursor: pointer;
     color: #A5B2D9;
-    background-image: linear-gradient(180deg, hsl(0, 18%, 22%) 0%, hsl(0, 18%, 16%) 98%);
+    background-image: linear-gradient(180deg, hsl(227, 18%, 22%) 0%, hsl(227, 18%, 16%) 98%);
     border: 1px solid #474F66; }
     @media only screen and (min-width: 600px) {
       nav.pagination a {
@@ -1391,8 +1393,8 @@ nav.pagination {
       nav.pagination a {
         border-radius: 0.3rem; } }
     nav.pagination a:hover {
-      color: hsl(0, 41%, 13%);
-      background-image: linear-gradient(180deg, hsl(0, 64%, 86%), hsl(0, 32%, 68%) 98%); }
+      color: hsl(227, 41%, 13%);
+      background-image: linear-gradient(180deg, hsl(227, 64%, 86%), hsl(227, 32%, 68%) 98%); }
 
 nav.previous-and-next {
   flex: 1 0 auto;
@@ -1425,7 +1427,7 @@ nav.previous-and-next {
     text-transform: uppercase;
     cursor: pointer;
     color: #A5B2D9;
-    background-image: linear-gradient(180deg, hsl(0, 18%, 22%) 0%, hsl(0, 18%, 16%) 98%);
+    background-image: linear-gradient(180deg, hsl(227, 18%, 22%) 0%, hsl(227, 18%, 16%) 98%);
     border: 1px solid #474F66; }
     @media only screen and (min-width: 600px) {
       nav.previous-and-next a {
@@ -1434,8 +1436,8 @@ nav.previous-and-next {
       nav.previous-and-next a {
         border-radius: 0.3rem; } }
     nav.previous-and-next a:hover {
-      color: hsl(0, 41%, 13%);
-      background-image: linear-gradient(180deg, hsl(0, 64%, 86%), hsl(0, 32%, 68%) 98%); }
+      color: hsl(227, 41%, 13%);
+      background-image: linear-gradient(180deg, hsl(227, 64%, 86%), hsl(227, 32%, 68%) 98%); }
 
 dl.content-stats {
   flex: 0 0 22vw;
@@ -1565,8 +1567,8 @@ a.to-the-top {
   text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
-  color: hsl(0, 100%, 90%);
-  box-shadow: 0 0 0 1px hsl(0, 100%, 90%) inset;
+  color: hsl(227, 100%, 90%);
+  box-shadow: 0 0 0 1px hsl(227, 100%, 90%) inset;
   width: 50vw;
   margin: 10vw auto; }
   @media only screen and (min-width: 600px) {
@@ -1718,7 +1720,7 @@ form ul.actions {
     form ul.actions > li.cancel a {
       text-transform: initial;
       background: none;
-      color: hsl(0, 41%, 75%); }
+      color: hsl(227, 41%, 75%); }
     form ul.actions > li input[type="submit"] {
       box-shadow: none; }
     form ul.actions > li input[type="submit"],
@@ -1738,7 +1740,7 @@ form ul.actions {
       text-transform: uppercase;
       cursor: pointer;
       color: #373B49;
-      background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%); }
+      background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%); }
       @media only screen and (min-width: 600px) {
         form ul.actions > li input[type="submit"],
         form ul.actions > li a {
@@ -1750,7 +1752,7 @@ form ul.actions {
       form ul.actions > li input[type="submit"]:hover,
       form ul.actions > li a:hover {
         color: hsla(227, 41%, 83%, 1);
-        background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
+        background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
 
 nav.actions {
   position: relative;
@@ -1785,7 +1787,7 @@ nav.actions {
     text-transform: uppercase;
     cursor: pointer;
     color: #373B49;
-    background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%); }
+    background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%); }
     @media only screen and (min-width: 600px) {
       nav.actions a {
         border-radius: 0.4vw; } }
@@ -1794,7 +1796,7 @@ nav.actions {
         border-radius: 0.3rem; } }
     nav.actions a:hover {
       color: hsla(227, 41%, 83%, 1);
-      background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
+      background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
 
 table {
   width: 100%;
@@ -1935,8 +1937,8 @@ a.avatar {
               text-decoration: none;
               text-transform: uppercase;
               cursor: pointer;
-              color: hsl(0, 100%, 90%);
-              box-shadow: 0 0 0 1px hsl(0, 100%, 90%) inset; } }
+              color: hsl(227, 100%, 90%);
+              box-shadow: 0 0 0 1px hsl(227, 100%, 90%) inset; } }
             @media only screen and (min-width: 600px) and (min-width: 600px) {
               body > header nav ul.account li.sign-in a {
                 border-radius: 0.4vw; } }
@@ -1960,7 +1962,7 @@ a.avatar {
               text-transform: uppercase;
               cursor: pointer;
               color: #373B49;
-              background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%); } }
+              background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%); } }
             @media only screen and (min-width: 600px) and (min-width: 600px) {
               body > header nav ul.account li.register a {
                 border-radius: 0.4vw; } }
@@ -1970,7 +1972,7 @@ a.avatar {
 @media only screen and (min-width: 600px) {
               body > header nav ul.account li.register a:hover {
                 color: hsla(227, 41%, 83%, 1);
-                background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
+                background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
         body > header nav li {
           margin: 0 .2vw;
           display: inline-block;
@@ -2247,7 +2249,7 @@ a.avatar {
     text-transform: uppercase;
     cursor: pointer;
     color: #373B49;
-    background-image: linear-gradient(180deg, hsl(0, 75%, 90%), hsl(0, 40%, 75%) 98%); } }
+    background-image: linear-gradient(180deg, hsl(227, 75%, 90%), hsl(227, 40%, 75%) 98%); } }
   @media only screen and (min-width: 600px) and (min-width: 600px) {
     nav.actions a {
       border-radius: 0.4vw; } }
@@ -2257,7 +2259,7 @@ a.avatar {
 @media only screen and (min-width: 600px) {
     nav.actions a:hover {
       color: hsla(227, 41%, 83%, 1);
-      background-image: linear-gradient(180deg, hsl(0, 18%, 34%) 0, hsl(0, 18%, 30%) 98%); }
+      background-image: linear-gradient(180deg, hsl(227, 18%, 34%) 0, hsl(227, 18%, 30%) 98%); }
 
   a.avatar {
     width: 8vw;
@@ -2717,27 +2719,6 @@ a.avatar {
 
   form textarea[name="title"] {
     height: 6rem; } }
-body[data-view="index"] section.news {
-  padding: 4vw; }
-body[data-view="index"] article {
-  display: block; }
-body[data-view="index"] time {
-  display: block;
-  margin: 4vw auto 6vw;
-  text-align: center; }
-@media only screen and (min-width: 720px) {
-  body[data-view="index"] section.news {
-    padding: 2.4rem; }
-  body[data-view="index"] time {
-    margin: 1.6rem auto 3.2rem;
-    font-size: 85%;
-    text-align: left; } }
-@media only screen and (min-width: 1008px) {
-  body[data-view="index"] section.news {
-    max-width: 96rem;
-    margin: auto;
-    padding: 2.4rem 0; } }
-
 body[data-controller="index"] section.categories,
 body[data-controller="discussions"] section.categories {
   padding: 0 4vw; }
@@ -3742,7 +3723,7 @@ article.post nav.actions {
     text-transform: uppercase;
     cursor: pointer;
     color: #A5B2D9;
-    background-image: linear-gradient(180deg, hsl(0, 18%, 22%) 0%, hsl(0, 18%, 16%) 98%);
+    background-image: linear-gradient(180deg, hsl(227, 18%, 22%) 0%, hsl(227, 18%, 16%) 98%);
     border: 1px solid #474F66; }
     @media only screen and (min-width: 600px) {
       article.post nav.actions a {
@@ -3751,8 +3732,8 @@ article.post nav.actions {
       article.post nav.actions a {
         border-radius: 0.3rem; } }
     article.post nav.actions a:hover {
-      color: hsl(0, 41%, 13%);
-      background-image: linear-gradient(180deg, hsl(0, 64%, 86%), hsl(0, 32%, 68%) 98%); }
+      color: hsl(227, 41%, 13%);
+      background-image: linear-gradient(180deg, hsl(227, 64%, 86%), hsl(227, 32%, 68%) 98%); }
 @media only screen and (min-width: 600px) {
   article.post nav.actions {
     padding: 2vw; }
@@ -3935,7 +3916,7 @@ body[data-view="user"] article.post {
 body[data-controller="sign-in"] form ul.actions > li.secondary a {
   text-transform: initial;
   background: none;
-  color: hsl(0, 41%, 75%); }
+  color: hsl(227, 41%, 75%); }
 
 @media only screen and (min-width: 600px) {
   body[data-controller="sign-in"] section.form {

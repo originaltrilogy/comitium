@@ -242,24 +242,30 @@ a.home {
   }
 }
 
-body > header {
-  background-color: hsl(227,18%,16%);
-  box-shadow: 0 0 1.6vw hsl(227,0%,10%);
+body {
+  > header {
+    background-color: hsl(227,18%,16%);
+    box-shadow: 0 0 1.6vw hsl(227,0%,10%);
 
-  nav {
-    li {
-      a {
-        color: rgb(204, 216, 255);
+    nav {
+      li {
+        a {
+          color: rgb(204, 216, 255);
+        }
+      }
+    }
+
+    section.status {
+      a.private-topics {
+        &::before {
+          color: hsl(227,100%,90%);
+        }
       }
     }
   }
 
-  section.status {
-    a.private-topics {
-      &::before {
-        color: hsl(227,100%,90%);
-      }
-    }
+  &.floating-header-active > header {
+    background-color: hsla(227,18%,16%,0.95);
   }
 }
 

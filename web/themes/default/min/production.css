@@ -36,6 +36,8 @@ body > header {
     color: #ccd8ff; }
   body > header section.status a.private-topics::before {
     color: hsl(227, 100%, 90%); }
+body.floating-header-active > header {
+  background-color: hsla(227, 18%, 16%, 0.95); }
 
 main {
   background-image: linear-gradient(180deg, hsl(227, 18%, 19%) 0, hsl(227, 18%, 19%) 100px, hsl(227, 18%, 18%) 101px); }
