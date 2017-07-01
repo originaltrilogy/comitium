@@ -19,13 +19,6 @@ module.exports = function (grunt) {
               'web/themes/default/source/js/site/*.js'],
         dest: 'web/themes/default/min/debug.js'
       },
-      dev: {
-        src: ['web/themes/default/source/js/lib/modernizr-dev.js',
-              'web/themes/default/source/js/lib/respond.min.js',
-              'web/themes/default/source/js/site/immediate.js',
-              'web/themes/default/source/js/site/*.js'],
-        dest: 'web/themes/default/min/development.js'
-      },
       prod: {
         src: ['web/themes/default/source/js/lib/modernizr-prod.js',
               'web/themes/default/source/js/lib/respond.min.js',
@@ -97,21 +90,6 @@ module.exports = function (grunt) {
           dest: 'web/themes/default/min/production.css'
         }
       }
-      // default2: {
-      //   src: 'web/themes/default/min/development.css',
-      //   dest: 'web/themes/default/min/development.css'
-      // },
-
-      // imperial2: {
-      //   src: 'web/themes/imperial/min/development.css',
-      //   dest: 'web/themes/imperial/min/development.css'
-      // },
-
-      // rebellious2: {
-      //   src: 'web/themes/default/min/development.css',
-      //   dest: 'web/themes/default/min/development.css'
-      // },
-
     },
     uglify: {
       options: {

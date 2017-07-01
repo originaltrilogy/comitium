@@ -492,8 +492,6 @@ section {
     padding-bottom: 4vw;
 
     & > p {
-      @include bodyFont(normal, 300);
-
       &:first-of-type {
         margin-top: 0;
       }

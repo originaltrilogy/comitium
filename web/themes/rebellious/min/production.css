@@ -1127,15 +1127,10 @@ section.summary {
   overflow: hidden;
   margin: auto 4vw;
   padding-bottom: 4vw; }
-  section.summary > p {
-    font-family: 'Open Sans', 'sans serif';
-    font-style: normal;
-    font-weight: 300;
-    text-rendering: optimizeLegibility; }
-    section.summary > p:first-of-type {
-      margin-top: 0; }
-    section.summary > p:nth-child(n-1) {
-      margin-bottom: 0; }
+  section.summary > p:first-of-type {
+    margin-top: 0; }
+  section.summary > p:nth-child(n-1) {
+    margin-bottom: 0; }
 section.notice {
   padding: 4vw;
   position: relative;

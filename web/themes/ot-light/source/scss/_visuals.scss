@@ -194,8 +194,8 @@ $gNoUpdates: '\eac4';
 //////////////////////
 body {
   @include bodyFont;
-  color: hsl(0, 0%, 20%);
-  background-color: hsl(0, 0%, 100%);
+  color: hsl(0, 0%, 0%);
+  background-color: hsl(0, 0%, 92%);
 
   // Navigation highlighting
   &[data-controller="index"] nav li.news a,
@@ -226,11 +226,11 @@ html.cssanimations.csstransforms span.loading-indicator {
 }
 
 a {
-  color: hsl(0, 60%, 40%);
-}
+  color: hsl(227, 18%, 30%);
 
-p {
-  color: hsl(0,0%,13%);
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 time {
@@ -265,7 +265,7 @@ body > header {
 }
 
 main {
-	background-image: linear-gradient(180deg, hsl(0, 50%, 30%) 0, hsl(0, 50%, 30%) 100px, hsl(0, 0%, 96%) 101px);
+	background-image: linear-gradient(180deg, hsl(0, 0%, 92%) 0, hsl(0, 0%, 92%) 100px, hsl(0, 0%, 98%) 101px);
 }
 
 
@@ -309,23 +309,18 @@ main {
   }
 }
 
-nav.breadcrumbs {
-  color: hsl(0, 25%, 65%);
-	background-color: hsl(0, 50%, 30%);
-
-  a {
-    color: hsl(0, 25%, 65%);
-  }
-}
-
 main {
   > header {
-		background: hsl(0,0%,86%);
+		background: hsl(0,0%,92%);
   }
 }
 
 section {
   &.summary {
+    > p {
+      @include bodyFont(normal);
+      color: hsl(0,0%,30%);
+    }
 		dl.content-stats {
 			color: hsl(0, 100%, 95%);
 		}
@@ -352,7 +347,7 @@ section {
   }
 
   &.announcements {
-    background: hsl(0, 0%, 92%);
+    background: hsl(0, 0%, 96%);
   }
 
   &.content {
@@ -409,10 +404,6 @@ article {
 
 h1 {
   color: hsl(0, 0%, 20%);
-}
-
-h2 {
-  color: hsl(0,0%,90%);
 }
 
 footer {

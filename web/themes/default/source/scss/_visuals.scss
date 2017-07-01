@@ -296,7 +296,7 @@ main {
 
 section {
   &.summary {
-    & > p {
+    > p {
       color: rgb(191,191,191);
     }
   }

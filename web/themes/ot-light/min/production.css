@@ -6,8 +6,8 @@ body {
   font-style: normal;
   font-weight: 400;
   text-rendering: optimizeLegibility;
-  color: hsl(0, 0%, 20%);
-  background-color: hsl(0, 0%, 100%); }
+  color: hsl(0, 0%, 0%);
+  background-color: hsl(0, 0%, 92%); }
   body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a,
   body > header nav li a:hover {
     background-color: hsl(227, 18%, 40%); }
@@ -19,10 +19,9 @@ html.cssanimations.csstransforms span.loading-indicator {
   border-left-color: #666; }
 
 a {
-  color: hsl(0, 60%, 40%); }
-
-p {
-  color: hsl(0, 0%, 13%); }
+  color: hsl(227, 18%, 30%); }
+  a:hover {
+    text-decoration: underline; }
 
 time {
   color: #bfbfbf; }
@@ -39,7 +38,7 @@ body > header {
     color: hsl(0, 0%, 100%); }
 
 main {
-  background-image: linear-gradient(180deg, hsl(0, 50%, 30%) 0, hsl(0, 50%, 30%) 100px, hsl(0, 0%, 96%) 101px); }
+  background-image: linear-gradient(180deg, hsl(0, 0%, 92%) 0, hsl(0, 0%, 92%) 100px, hsl(0, 0%, 98%) 101px); }
 
 @media only screen and (max-width: 599px) {
   .slide-menu {
@@ -53,15 +52,15 @@ main {
 
   body[data-controller="index"] nav li.news a, body[data-controller="discussions"] nav li.discussions a, body[data-controller="discussion"] nav li.discussions a, body[data-controller="announcements"] nav li.discussions a, body[data-controller="announcement"] nav li.discussions a, body[data-controller="topic"][data-view="topic"] nav li.discussions a, body[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a, body[data-controller="topic"][data-view="private-topic"] nav li.private-topics a, body[data-controller="topic"][data-view="start-private"] nav li.private-topics a, body[data-controller="private-topics"] nav li.private-topics a, body[data-controller="sign-in"] nav li.sign-in a, body[data-controller="register"] nav li.register a, body[data-controller="account"] nav li.account a, body[data-controller="about"] nav li.about a, body[data-controller="help"] nav li.help a {
     background-color: hsl(0, 50%, 40%); } }
-nav.breadcrumbs {
-  color: hsl(0, 25%, 65%);
-  background-color: hsl(0, 50%, 30%); }
-  nav.breadcrumbs a {
-    color: hsl(0, 25%, 65%); }
-
 main > header {
-  background: hsl(0, 0%, 86%); }
+  background: hsl(0, 0%, 92%); }
 
+section.summary > p {
+  font-family: 'Open Sans', 'sans serif';
+  font-style: normal;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  color: hsl(0, 0%, 30%); }
 section.summary dl.content-stats {
   color: hsl(0, 100%, 95%); }
 section.notice {
@@ -77,7 +76,7 @@ section.notice {
     section.notice.banned a {
       color: white; }
 section.announcements {
-  background: hsl(0, 0%, 92%); }
+  background: hsl(0, 0%, 96%); }
 section.content {
   color: hsl(0, 0%, 85%); }
   section.content blockquote {
@@ -106,9 +105,6 @@ article {
 
 h1 {
   color: hsl(0, 0%, 20%); }
-
-h2 {
-  color: hsl(0, 0%, 90%); }
 
 footer {
   background-color: hsl(227, 18%, 30%);
@@ -1117,15 +1113,10 @@ section.summary {
   overflow: hidden;
   margin: auto 4vw;
   padding-bottom: 4vw; }
-  section.summary > p {
-    font-family: 'Open Sans', 'sans serif';
-    font-style: normal;
-    font-weight: 300;
-    text-rendering: optimizeLegibility; }
-    section.summary > p:first-of-type {
-      margin-top: 0; }
-    section.summary > p:nth-child(n-1) {
-      margin-bottom: 0; }
+  section.summary > p:first-of-type {
+    margin-top: 0; }
+  section.summary > p:nth-child(n-1) {
+    margin-bottom: 0; }
 section.notice {
   padding: 4vw;
   position: relative;
