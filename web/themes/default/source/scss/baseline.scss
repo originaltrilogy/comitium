@@ -42,7 +42,6 @@ dt {
   float: left;
   clear: left;
   width: 34vw;
-  @include bodyFont(normal, 600);
 
   &::after {
     content: ':';
@@ -83,7 +82,6 @@ input,
 select,
 textarea {
   appearance: none;
-  -webkit-appearance: none;
   border: none;
   border-radius: 0;
 }
@@ -96,20 +94,24 @@ select {
 
 b,
 strong {
-  @include bodyFont(normal, 600);
+  font-weight: 600;
+  font-style: normal;
 
   i,
   em {
-    @include bodyFont(italic, 600);
+    font-weight: 600;
+    font-style: italic;
   }
 }
 
 i,
 em {
-  @include bodyFont(italic, 400);
+  font-weight: 400;
+  font-style: italic;
 
   b,
   strong {
-    @include bodyFont(normal, 600);
+    font-weight: 600;
+    font-style: italic;
   }
 }

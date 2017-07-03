@@ -1,5 +1,3 @@
-
-@import '../_visuals';
 @import '../../../../default/source/scss/lib/normalize';
 @import '../../../../default/source/scss/baseline';
 
@@ -23,3 +21,6 @@
 @import '../../../../default/source/scss/sign-in';
 @import '../../../../default/source/scss/register';
 @import '../../../../default/source/scss/password-reset';
+
+// Theme styles
+@import '../_visuals';
