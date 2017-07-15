@@ -88,12 +88,22 @@ gulp.task('jsProd', function () {
              .pipe(livereload());
 });
 
+gulp.task('views', function () {
+  // return gulp.src(['app/patterns/views/**/**.jade',
+  //                  'web/**/**.jade'])
+  //            .pipe(livereload());
+  livereload.reload();
+  return;
+});
+
 gulp.task('watch', function() {
   livereload.listen();
   themes.forEach( function (item, index, array) {
     gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', ['cssDebug' + item.name]);
   });
   gulp.watch('web/themes/default/source/js', ['js']);
+  gulp.watch('app/patterns/views/**/**.jade', ['views']);
+  gulp.watch('web/**/**.jade', ['views']);
 });
 
 // gulp.task('default', ['css']);
