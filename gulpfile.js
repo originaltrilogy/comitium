@@ -89,9 +89,6 @@ gulp.task('jsProd', function () {
 });
 
 gulp.task('views', function () {
-  // return gulp.src(['app/patterns/views/**/**.jade',
-  //                  'web/**/**.jade'])
-  //            .pipe(livereload());
   livereload.reload();
   return;
 });
