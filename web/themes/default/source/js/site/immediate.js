@@ -6,7 +6,8 @@ window.CF = {
     }
   },
   boundEvents: {
-    internalLinks: false
+    internalLinks: false,
+    viewportResize: false
   }
 };
 

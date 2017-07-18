@@ -118,7 +118,8 @@ main {
 
 main {
   > header {
-		background: hsl(0,0%,92%);
+    background: hsl(0,0%,92%);
+    border-bottom: 1px solid hsl(0,0%,86%);
   }
 }
 
@@ -152,6 +153,7 @@ section {
 
   &.announcements {
     background: hsl(0, 0%, 96%);
+    border-bottom: 1px solid hsl(0,0%,92%);
 
     article {
       border-color: hsl(0, 0%, 90%);
@@ -206,7 +208,7 @@ article {
   &.unread,
   &.updated {
     &::before {
-      background-color: hsl(0,100%, 90%);
+      background-color: hsl(227,22%,70%);
     }
   }
 }
@@ -217,7 +219,7 @@ h1 {
 
 footer {
   color: hsl(0,0%,90%);
-  background-color: hsl(227,18%,26%);
+  background-color: hsl(227,18%,20%);
 
   section.copyright {
     p {
@@ -237,7 +239,7 @@ footer {
 
 form {
   label {
-    color: white;
+    color: hsl(227,18%,30%);
   }
   p.label-note {
     color: #CDCDCD;
@@ -245,13 +247,12 @@ form {
   input,
   select,
   textarea {
-    border-color: hsl(0,18%,30%);
-    background-color: hsl(0,18%,32%);
+    border-color: hsl(0,0%,90%);
+    background-color: hsl(227,18%,100%);
 
     &:focus {
       outline: none;
-      border-color: hsla(227,18%,55%,1);
-      background-color: hsla(227,18%,34%,1);
+      border-color: hsl(0,0%,50%);
     }
   }
 

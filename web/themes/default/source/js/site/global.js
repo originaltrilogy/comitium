@@ -33,19 +33,18 @@ CF.global = ( function (Modernizr, CF) {
         bodyOffset = body.getBoundingClientRect().top;
       });
 
-      if ( Modernizr.csstransitions && CF.params.device.relativeSize === 'small' || CF.params.device.relativeSize === 'medium' ) {
-        menuIcon = document.createElement('div');
+      // Create the main menu icon
+      menuIcon = document.createElement('div');
 
-        menuIcon.className = 'main-menu-icon';
-        menuIcon.appendChild(document.createTextNode('Menu'));
-        header.appendChild(menuIcon);
+      menuIcon.setAttribute('id', 'main-menu-icon');
+      menuIcon.appendChild(document.createTextNode('Menu'));
+      header.appendChild(menuIcon);
 
-        methods.menu({
-          menu: 'header nav',
-          trigger: 'header .main-menu-icon',
-          position: 'left'
-        });
-      }
+      methods.menu({
+        menu: 'header nav',
+        trigger: '#main-menu-icon',
+        position: 'left'
+      });
 
       if ( CF.params.device.relativeSize === 'large' || CF.params.device.relativeSize === 'x-large' ) {
         accountNav.addEventListener('mouseleave', function (e) {
@@ -79,7 +78,6 @@ CF.global = ( function (Modernizr, CF) {
       }
 
       methods.viewportResizeCheck('responsiveModeSet', CF.immediate.responsiveModeSet);
-      methods.viewportResizeCheck('frameworkReinit', CF.global.init);
       // methods.bindInternalLinks();
     },
 

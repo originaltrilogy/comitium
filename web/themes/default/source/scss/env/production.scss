@@ -1,6 +1,5 @@
 @import '../lib/normalize';
 @import '../baseline';
-@import '../_visuals';
 
 @font-face {
   font-family: 'glyphs';
@@ -23,3 +22,6 @@
 @import '../register';
 @import '../password-reset';
 @import '../Dear-Disney';
+
+// Colors, fonts, etc.
+@import '../_visuals';

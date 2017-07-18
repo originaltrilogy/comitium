@@ -203,9 +203,15 @@ $gNoUpdates: '\eac4';
 /////////////////////////
 ////  global styles  ////
 /////////////////////////
+html {
+  height: 100%;
+}
+
 body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: relative;
-  @include bodyFont;
   overflow-x: hidden;
 
   &.transitioning {
@@ -505,9 +511,28 @@ body {
   }
 }
 
+main {
+  flex: 1 0 auto;
+  clear: both;
+  overflow: hidden;
+
+  & > h1:first-child {
+    margin-top: 5vw;
+  }
+
+  & > p {
+    margin-left: 4vw;
+    margin-right: 4vw;
+  }
+}
+
 
 // The menu button and sliding nav are used on mobile only. Much easier to limit
 // here than to overwrite within the 600px media query later.
+#main-menu-icon {
+  display: none;
+}
+
 @media only screen and (max-width: 599px) {
   html.js.csstransitions {
     body > header {
@@ -517,7 +542,7 @@ body {
     }
   }
 
-  .main-menu-icon {
+  #main-menu-icon {
     @include button(light, $padding: 2vw 2vw 2vw 8vw);
     position: absolute;
     top: 3vw;
@@ -615,7 +640,6 @@ body {
 nav.breadcrumbs {
   padding: 4vw 4vw 0;
   @include titleFont(normal, 300);
-  font-size: 110%;
 
   ul {
     line-height: 1.4;
@@ -643,20 +667,6 @@ nav.breadcrumbs {
         text-overflow: ellipsis;
       }
     }
-  }
-}
-
-main {
-  clear: both;
-  overflow: hidden;
-
-  & > h1:first-child {
-    margin-top: 5vw;
-  }
-
-  & > p {
-    margin-left: 4vw;
-    margin-right: 4vw;
   }
 }
 
@@ -1136,8 +1146,6 @@ a.to-the-top {
 
 footer {
   padding: 4vw;
-  border-top-width: 1px;
-  border-top-style: solid;
 
   a.home {
     width: 50vw;
@@ -1485,7 +1493,7 @@ a.avatar {
     }
   }
 
-  .main-menu-icon {
+  #main-menu-icon {
     font-size: 110%;
   }
 

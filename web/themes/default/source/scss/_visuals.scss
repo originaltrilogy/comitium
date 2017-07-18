@@ -1,187 +1,4 @@
 /////////////////////////
-//       Variables     //
-/////////////////////////
-
-// Icons
-$gBanned:   '\ed64';
-$gChecked:  '\ed6c';
-$gError:    '\ed68';
-$gLock:     '\eb52';
-$gMenu:     '\ec6a';
-$gNotice:   '\ed4d';
-$gPrivate:  '\ec23';
-$gSelect:   '\ee38';
-$gSuccess:  '\ecff';
-$gUpdates:  '\eac2';
-$gNoUpdates: '\eac4';
-
-
-/////////////////////////
-//        Mixins       //
-/////////////////////////
-
-// Preserve original color values
-@function hsl($h, $s, $l) {
-  @return unquote('hsl(#{$h}, #{$s}, #{$l})');
-}
-
-@function hsla($h, $s, $l, $a) {
-  @return unquote('hsla(#{$h}, #{$s}, #{$l}, #{$a})');
-}
-
-@mixin bodyFont($style: normal, $weight: 400) {
-	font-family: 'Open Sans', 'sans serif';
-	font-style: $style;
-	font-weight: $weight;
-  text-rendering: optimizeLegibility;
-}
-
-@mixin titleFont($style: normal, $weight: 600) {
-	font-family: 'Titillium Web', 'Open Sans', 'sans serif';
-	font-style: $style;
-	font-weight: $weight;
-  text-rendering: optimizeLegibility;
-}
-
-@mixin button($color: light, $size: 91%, $padding: 2.5vw 3.5vw) {
-  display: block;
-	padding: $padding;
-	font-size: $size;
-  border-radius: 0.6vw;
-  border: none;
-	@include bodyFont();
-	line-height: 1;
-  text-align: center;
-  text-decoration: none;
-	text-transform: uppercase;
-  cursor: pointer;
-
-  @media only screen and (min-width: 600px) {
-    border-radius: 0.4vw;
-  }
-  @media only screen and (min-width: 720px) {
-    border-radius: 0.3rem;
-  }
-
-  @if $color == 'light' {
-		color: #373B49;
-		background-image: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
-
-		&:hover {
-			color: hsla(227,41%,83%,1);
-      background-image: linear-gradient(180deg,hsl(227,18%,34%) 0,hsl(227,18%,30%) 98%);
-    }
-  } @else if $color == 'dark' {
-		color: #A5B2D9;
-		background-image: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
-		border: 1px solid #474F66;
-
-		&:hover {
-			color: hsl(227,41%,13%);
-			background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
-    }
-  } @else if $color == 'lightGhost' {
-    color: hsl(227,100%,90%);
-		box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
-  } @else if $color == 'darkGhost' {
-    color: hsl(227,18%,25%);
-		box-shadow: 0 0 0 1px hsl(227,18%,25%) inset;
-  }
-}
-
-@mixin debutton {
-	text-transform: initial;
-	background: none;
-	color: hsl(227,41%,75%);
-}
-
-@mixin icon ($content) {
-  content: $content;
-  font-family: glyphs;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  speak: none;
-}
-
-// Creates an icon by replacing text with a glyph
-@mixin textToIcon ($iconSize, $content) {
-	position: relative;
-	display: block;
-	margin: 0;
-	padding: 0 0 0 #{$iconSize + 'vw'};
-	width: #{$iconSize + 'vw'};
-	height: #{$iconSize + 'vw'};
-	text-indent: 110%;
-	overflow: hidden;
-	text-decoration: none;
-	line-height: #{$iconSize * 1.1 + 'vw'};
-
-	&::before {
-		position: absolute;
-		top: 50%;
-		margin-top: -#{$iconSize / 2 + 'vw'};
-		left: 50%;
-		margin-left: -#{$iconSize / 2 + 'vw'};
-		display: block;
-		width: #{$iconSize + 'vw'};
-		height: #{$iconSize + 'vw'};
-		content: $content;
-		font-family: $glyphs;
-		font-size: #{$iconSize + 'vw'};
-		text-indent: 0;
-	}
-}
-
-// Adds an icon in front of an anchor's text
-@mixin iconBeforeText ($iconSize, $content) {
-	text-decoration: none;
-	line-height: #{$iconSize * 10 + 'px'};
-	line-height: #{$iconSize + 'rem'};
-	width: auto;
-	text-indent: 0;
-
-	&::before {
-		display: inline;
-		vertical-align: top;
-		width: #{$iconSize * 10 + 'px'};
-		width: #{$iconSize + 'rem'};
-		height: #{$iconSize * 10 + 'px'};
-		height: #{$iconSize + 'rem'};
-		padding-right: #{$iconSize * 10 / 4 + 'px'};
-		padding-right: #{$iconSize / 4 + 'rem'};
-		content: $content;
-		font-family: $glyphs;
-		font-size: #{$iconSize * 10 + 'px'};
-		font-size: #{$iconSize + 'rem'};
-
-	}
-}
-
-// Adds an icon after an anchor's text
-@mixin iconAfterText ($iconSize, $content) {
-	text-decoration: none;
-	line-height: #{$iconSize * 10 + 'px'};
-	line-height: #{$iconSize + 'rem'};
-	width: auto;
-
-	&::after {
-		display: inline;
-		vertical-align: top;
-		width: #{$iconSize * 10 + 'px'};
-		width: #{$iconSize + 'rem'};
-		height: #{$iconSize * 10 + 'px'};
-		height: #{$iconSize + 'rem'};
-		padding-left: #{$iconSize * 10 / 4 + 'px'};
-		padding-left: #{$iconSize / 4 + 'rem'};
-		content: $content;
-		font-family: $glyphs;
-		font-size: #{$iconSize * 10 + 'px'};
-		font-size: #{$iconSize + 'rem'};
-	}
-}
-
-
-/////////////////////////
 ////      fonts      ////
 /////////////////////////
 
@@ -226,6 +43,10 @@ html.cssanimations.csstransforms span.loading-indicator {
 
 a {
   color: hsl(227,41%,80%);
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 p {
@@ -251,6 +72,10 @@ body {
       li {
         a {
           color: rgb(204, 216, 255);
+
+          &:hover {
+            text-decoration: none;
+          }
         }
       }
     }
@@ -287,7 +112,6 @@ main {
 
 nav.breadcrumbs {
   color: hsl(227,23%,60%);
-  background-color: hsl(227,18%,19%);
 
   a {
     color: hsl(227,23%,60%);
@@ -297,6 +121,7 @@ nav.breadcrumbs {
 main {
   > header {
     background-image: linear-gradient(180deg, hsl(227,18%,19%) 0, hsl(227,18%,25%));
+    border-bottom: 1px solid hsl(227,18%,16%);
   }
 }
 
@@ -329,6 +154,7 @@ section {
 
   &.announcements {
     background: hsl(227,18%,20%);
+    border-bottom: 1px solid hsl(227,18%,14%);
   }
 
   &.content {
@@ -393,14 +219,14 @@ h2 {
 
 footer {
   background-color: hsl(227,18%, 16%);
-  border-color: hsl(227,18%,14%);
+  border-top: 1px solid hsl(227,18%,14%);
 
   section.copyright {
     p {
-      color: hsl(0,18%,60%);
+      color: hsl(227,18%,60%);
     }
     a {
-      color: hsl(0,18%,60%);
+      color: hsl(227,18%,60%);
     }
   }
 }
@@ -475,8 +301,6 @@ a.avatar {
 @media only screen and (min-width: 600px) {
 
   body {
-    font-size: 2.2vw;
-
     & > header {
       nav {
         li {
