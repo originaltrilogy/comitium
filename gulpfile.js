@@ -68,7 +68,7 @@ gulp.task('jsDebug', function () {
                   ])
              .pipe(sourcemaps.init())
                .pipe(uglify())
-               .pipe(concat('production.js'))
+               .pipe(concat('debug.js'))
                .pipe(sourcemaps.write(''))
              .pipe(gulp.dest('web/themes/default/min'))
              .pipe(livereload());
@@ -82,7 +82,7 @@ gulp.task('jsProd', function () {
                   ])
              .pipe(sourcemaps.init())
                .pipe(uglify())
-               .pipe(concat('debug.js'))
+               .pipe(concat('production.js'))
                .pipe(sourcemaps.write(''))
              .pipe(gulp.dest('web/themes/default/min'))
              .pipe(livereload());
@@ -98,7 +98,7 @@ gulp.task('watch', function() {
   themes.forEach( function (item, index, array) {
     gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', ['cssDebug' + item.name]);
   });
-  gulp.watch('web/themes/default/source/js', ['js']);
+  gulp.watch('web/themes/default/source/js/**/**.js', ['jsDebug']);
   gulp.watch('app/patterns/views/**/**.jade', ['views']);
   gulp.watch('web/**/**.jade', ['views']);
 });
