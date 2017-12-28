@@ -39,14 +39,27 @@ $gNoUpdates: '\eac4';
 //        Mixins       //
 /////////////////////////
 
-// Preserve original color values
-@function hsl($h, $s, $l) {
-  @return unquote('hsl(#{$h}, #{$s}, #{$l})');
-}
+// Preserve original color values 
+@function hsl($h, $s, $l) { 
+  @return unquote('hsl(#{$h}, #{$s}, #{$l})'); 
+} 
 
-@function hsla($h, $s, $l, $a) {
-  @return unquote('hsla(#{$h}, #{$s}, #{$l}, #{$a})');
-}
+@function hsla($h, $s, $l, $a) { 
+  @return unquote('hsla(#{$h}, #{$s}, #{$l}, #{$a})'); 
+} 
+
+// Use HSB values provided by apps like Sketch and Photoshop and 
+// convert them into HSL. Why? HSL (native CSS) and HSB aren't 
+// interchangeable. 
+@function hsb($h-hsb, $s-hsb, $b-hsb, $a: 1) { 
+  @if $b-hsb == 0 { 
+    @return unquote('hsla(0, 0, 0, $a)'); 
+  } @else { 
+    $l-hsl: ($b-hsb/2) * (2 - ($s-hsb/100)); 
+    $s-hsl: ($b-hsb * $s-hsb) / if($l-hsl < 50, $l-hsl * 2, 200 - $l-hsl * 2); 
+    @return unquote('hsla($h-hsb, $s-hsl, $l-hsl, $a)'); 
+  } 
+} 
 
 @mixin bodyFont($style: normal, $weight: 400) {
 	font-family: 'Open Sans', 'sans serif';
@@ -767,7 +780,7 @@ section {
   }
 
   &.announcements {
-    padding: 2vw 4vw 6vw;
+    padding: 6vw 4vw;
 
     article {
       padding: 2vw 0;
@@ -952,10 +965,10 @@ body[data-controller="announcement"][data-view="announcement"] {
 }
 
 nav.pagination {
-  flex: 0 0 auto;
-  justify-content: center;
+  flex: 0 1 auto;
   display: flex;
-  margin-bottom: 6vw;
+  justify-content: center;
+  margin-bottom: 4vw;
 
   ul {
     display: flex;
@@ -1128,10 +1141,10 @@ h1 {
 }
 
 h2 {
-  padding: 5vw 0;
   @include titleFont($weight: 400);
-  text-align: center;
+  margin-bottom: 2vw;
   text-transform: uppercase;
+  text-align: center;
 }
 
 h3, h4, h5, h6 {
@@ -1674,10 +1687,6 @@ a.avatar {
     font-size: 4vw;
   }
 
-  h2 {
-    padding: 3.2vw 0;
-  }
-
   nav.breadcrumbs {
     padding: 2vw 4vw 0;
     font-size: 2.4vw;
@@ -1703,10 +1712,6 @@ a.avatar {
         }
       }
     }
-  }
-
-  nav.pagination {
-    margin-bottom: 4vw;
   }
 
   nav.pagination,
@@ -2162,8 +2167,9 @@ a.avatar {
   }
 
   h2 {
-    padding: 2.4rem 0;
+    margin-bottom: 1.4rem;
     font-size: 2rem;
+    text-align: left;
   }
 
   a.avatar {
@@ -2207,10 +2213,6 @@ a.avatar {
     }
   }
 
-  nav.pagination {
-    margin-bottom: 2.4rem;
-  }
-
   nav.previous-and-next {
     margin: 3.2rem auto;
   }
@@ -2225,7 +2227,7 @@ a.avatar {
   nav.pagination,
   nav.actions {
     li {
-      margin: 0 0.4rem 2.4rem;
+      margin: 0 0.6rem;
     }
   }
 
@@ -2242,6 +2244,8 @@ a.avatar {
   }
 
   nav.pagination {
+    margin-bottom: 0;
+
     li {
       margin: 0 0.4rem;
     }
@@ -2252,7 +2256,7 @@ a.avatar {
 
   section {
     &.announcements {
-      padding: 0.4rem 2.4rem 2.4rem;
+      padding: 2.4rem;
 
       & > * {
         max-width: 96rem;
@@ -2638,10 +2642,6 @@ a.avatar {
 }
 
 @media only screen and (min-width: 1008px) {
-
-  h2 {
-    text-align: initial;
-  }
 
   section.summary {
     max-width: 96rem;

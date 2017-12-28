@@ -22,7 +22,7 @@ function password(p) {
 
 
 function username(u) {
-  var usernameRegex = new RegExp(/^[^\n\t\r\v@:!<>()\[\]]{1,30}$/);
+  var usernameRegex = new RegExp(/^[^\n\t\r\v@:!<>(),\[\]]{1,30}$/);
   if ( !u.trim().length ) {
     return false;
   } else {

@@ -10,7 +10,7 @@ module.exports = {
 
 
 function handler(params, context, emitter) {
-  var themePath = app.config.comitium.themes[params.session.theme || 'Default'].path,
+  var themePath = app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes['Default'].path,
       cssKey = themePath.css + '/min/' + app.config.citizen.mode + '.css',
       cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.css + '/min/' + app.config.citizen.mode + '.css?v=',
       jsKey = themePath.js + '/min/' + app.config.citizen.mode + '.js',

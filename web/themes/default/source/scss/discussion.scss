@@ -11,14 +11,17 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     margin: 4vw 4vw 6vw;
   }
   section.topics {
-    margin-top: 4vw;
+    margin-top: 6vw;
     padding: 0 4vw;
 
     header {
-      nav {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+
+      h2 {
+        flex: 1 0 100%;
       }
     }
   }
@@ -97,6 +100,14 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
   @media only screen and (min-width: 375px) {
 
+    section.topics {
+      header {
+        nav.actions {
+          margin-left: 4vw;
+        }
+      }
+    }
+
     article.topic {
       section.author {
         flex: 0 0 52vw;
@@ -146,7 +157,11 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   }
 
   @media only screen and (min-width: 600px) {
-
+    section.topics {
+      header {
+        justify-content: space-between;
+      }
+    }
     article.topic {
       section.description {
         flex-basis: 76vw;
@@ -200,7 +215,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     section.announcements {
       & > * {
         max-width: 96rem;
-        margin: auto;
       }
       article {
         min-height: 0;
@@ -217,6 +231,13 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         margin: auto;
       }
       header {
+        flex-wrap: nowrap;
+        margin-bottom: 2.4rem;
+
+        h2 {
+          flex: 1 1 auto;
+          margin-bottom: 0;
+        }
         nav.actions {
           margin-left: 3.2rem;
         }
@@ -291,17 +312,12 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
   }
 
-  @media only screen and (min-width: 1008px) {
+  @media only screen and (min-width: 768px) {
     section.topics {
       header {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-
-        > nav {
-          justify-content: flex-end;
-          margin-top: 2rem;
-        }
       }
     }
   }
