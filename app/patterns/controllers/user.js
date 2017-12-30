@@ -157,21 +157,16 @@ function ban(params, context, emitter) {
         emitter.emit('end', false);
       }
     },
-    user: function (previous, emitter) {
-      app.models.user.info({
-        userID: params.url.id
-      }, emitter);
-    },
     banUser: function (previous, emitter) {
       app.models.user.ban({
         userID: params.url.id
       }, emitter);
-      // End the user's session immediately
-      app.session.end('userID', previous.user.id);
     }
   }, function (output) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
+        // End the banned user's session immediately
+        app.session.end('userID', +params.url.id); // URL params are always strings, so cast to number
         emitter.emit('ready', {
           redirect: params.request.headers.referer
         });
