@@ -6,12 +6,11 @@ header
 
 section.topics
   header
-    nav
-      include ../partials/pagination
-      nav.discussion.actions
-        ul
-          li.new-topic
-            a(href="topic/action/startPrivate") Start a new private topic
+    include ../partials/pagination
+    nav.discussion.actions
+      ul
+        li.new-topic
+          a(href="topic/action/startPrivate") Start a new private topic
   if topics
     each topic in topics
       include ../partials/private-topic

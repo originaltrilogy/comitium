@@ -221,6 +221,10 @@ body[data-controller="announcement"][data-view="announcement"] {
     section.posts {
       > nav {
         justify-content: center;
+
+        nav.pagination {
+          margin-right: 4vw;
+        }
       }
     }
 
@@ -351,7 +355,6 @@ body[data-controller="announcement"][data-view="announcement"] {
 
         nav.pagination {
           margin-right: 3.2rem;
-          margin-bottom: 1.6rem;
         }
         nav.actions {
           li {
@@ -548,30 +551,21 @@ body[data-controller="topic"][data-view="private-topic"] {
       display: inline;
 
       &:nth-child(n+2) {
-        margin-left: -4px;
 
         &::before {
           content: ', ';
+          margin-left: -4px;
         }
       }
       &:last-child {
         position: relative;
-        margin-left: 0;
 
         &::before {
-          content: ' and ';
+          content: ', and ';
         }
-        &::after {
+        a::after {
           content: '.';
-          // Prevents the period from becoming a widow on the next line
-          position: absolute;
-          top: 0;
         }
-      }
-
-      a {
-        // Prevents line breaks in usernames
-        display: inline-block;
       }
     }
   }

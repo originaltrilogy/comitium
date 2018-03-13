@@ -15,7 +15,7 @@ body {
   background-color: hsl(227,18%,18%);
 
   // Navigation highlighting
-  &[data-controller="index"] nav li.news a,
+  &[data-controller="index"] nav li.discussions a,
   &[data-controller="discussions"] nav li.discussions a,
   &[data-controller="discussion"] nav li.discussions a,
   &[data-controller="announcements"] nav li.discussions a,
@@ -58,7 +58,7 @@ time {
 }
 
 a.home {
-  .logo {
+  svg {
     fill: hsl(0, 0%, 91%);
   }
 }
@@ -242,7 +242,7 @@ form {
     color: white;
   }
   p.label-note {
-    color: #CDCDCD;
+    color: hsla(0,0%,100%,0.5);
   }
   input,
   select,
@@ -321,7 +321,7 @@ a.avatar {
         &.authenticated {
           nav {
             ul.account {
-              background-color: hsl(227,18%, 16%);
+              background-color: hsla(227,18%,16%,.95);
               box-shadow: 0 2px 6px hsl(227,0%,10%);
 
               &::after {

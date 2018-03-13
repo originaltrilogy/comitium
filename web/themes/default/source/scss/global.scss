@@ -422,7 +422,7 @@ time {
 a.home {
   display: block;
 
-  .logo {
+  svg {
     width: 100%;
     height: 100%;
   }
@@ -430,12 +430,13 @@ a.home {
 
 body > header {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
+  padding: 1vw 1.5vw;
 
   a.home {
     width: 32vw;
-    margin: 0 auto;
-    padding: 2.2vw 0;
   }
 
   nav {
@@ -459,24 +460,20 @@ body > header {
 
   a.sign-in {
     @include button(lightGhost, $padding: 2vw 3vw);
-    position: absolute;
-    top: 3vw;
-    right: 2.5vw;
+    margin: 1vw 0 0.9vw 1vw;
   }
 
   section.status {
-    position: absolute;
-    top: 2vw;
-    right: 2vw;
+    display: flex;
 
     a.private-topics {
       display: block;
-      position: absolute;
-      right: 14vw;
       width: 10vw;
       height: 10vw;
+      margin-right: 2vw;
       padding-top: 10vw;
       overflow: hidden;
+      position: relative;
 
       &::before {
         @include icon($gNoUpdates);
@@ -497,8 +494,6 @@ body > header {
 
     a.account {
       display: block;
-      position: absolute;
-      right: 0;
       width: 10vw;
       height: 10vw;
 
@@ -556,16 +551,13 @@ main {
   }
 
   #main-menu-icon {
-    @include button(light, $padding: 2vw 2vw 2vw 8vw);
-    position: absolute;
-    top: 3vw;
-    left: 2.5vw;
+    @include button(light, $padding: 2vw);
+    display: flex;
+    align-items: center;
 
     &::before {
       @include icon($gMenu);
-      position: absolute;
-      top: 1.8vw;
-      left: 2vw;
+      margin-right: 1.5vw;
       font-size: 4.5vw;
     }
   }
@@ -653,6 +645,7 @@ main {
 nav.breadcrumbs {
   padding: 4vw 4vw 0;
   @include titleFont(normal, 300);
+  text-transform: uppercase;
 
   ul {
     line-height: 1.4;
@@ -784,6 +777,7 @@ section {
 
     article {
       padding: 2vw 0;
+      border: none;
     }
   }
 
@@ -978,18 +972,22 @@ nav.pagination {
     border-radius: 2px;
   }
   li {
-    flex: 0 0 auto;
-    margin: 0 1.5vw;
-
-    &:first-child {
-      margin-left: 0;
+    a {
+      @include button(dark);
     }
-    &:last-child {
-      margin-right: 0;
+    &:nth-child(n+2) {
+      a {
+        border-left: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
     }
-  }
-  a {
-    @include button(dark);
+    &:nth-last-child(n+2) {
+      a {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
   }
 }
 
@@ -1561,19 +1559,13 @@ a.avatar {
       flex-wrap: wrap;
 
       a.home {
-        margin: 0 1.6vw;
-        padding: 1.4vw 0;
         width: 18.4vw;
       }
       a.sign-in {
         display: none;
       }
       section.status {
-        top: 1vw;
-        right: 1vw;
-
         a.private-topics {
-          right: 10vw;
           padding-top: 6vw;
           width: 6vw;
           height: 6vw;
@@ -1594,6 +1586,7 @@ a.avatar {
         display: flex;
         flex: 1 1 auto;
         align-items: center;
+        margin-left: 2.4vw;
 
         ul {
           flex: 1 1 auto;
@@ -1714,21 +1707,17 @@ a.avatar {
     }
   }
 
-  nav.pagination,
   nav.actions {
     li {
       margin-right: 1vw;
       margin-left: 1vw;
-    }
-    a {
-      padding: 1.5vw 2vw;
     }
   }
 
   section {
     &.announcements {
       article {
-        padding: 1.5vw 0;
+        padding: 0.8vw 0;
       }
     }
     &.content {
@@ -2059,19 +2048,19 @@ a.avatar {
       display: flex;
       font-size: 1.2rem;
 
+      > nav {
+        margin-left: 2.4rem;
+      }
       a.home {
-        width: 10.8rem;
-        margin: 0.8rem 1.2rem;
+        width: 16.8rem;
+        height: 4rem;
         padding: 0;
       }
       section.status {
-        top: 0.5rem;
-        right: 0.5rem;
-
         a.private-topics {
-          right: 5rem;
           width: 4rem;
           height: 4rem;
+          margin-right: 1rem;
           padding-top: 4rem;
 
           &::before {
@@ -2089,7 +2078,6 @@ a.avatar {
       nav {
         ul.account {
           margin-right: 1rem;
-          max-width: 25rem;
 
           li.sign-in a,
           li.register a {
@@ -2097,7 +2085,7 @@ a.avatar {
           }
         }
         li {
-          margin: 0 0.4rem;
+          margin: 0 0.8rem;
 
           &.register {
             margin: 0;
@@ -2134,12 +2122,12 @@ a.avatar {
         &.authenticated {
           nav {
             ul.account {
-              top: 7.2rem;
+              top: 8.8rem;
               padding: 1.2rem 0;
               border-radius: 0.3rem;
 
               &.active {
-                right: 0.6rem;
+                right: calc((100% - 100rem) / 2);
               }
               li {
                 a {
@@ -2197,7 +2185,7 @@ a.avatar {
 
   nav.breadcrumbs {
     padding: 1.8rem 2.4rem 0;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
 
     ul {
       max-width: 96rem;
@@ -2224,13 +2212,6 @@ a.avatar {
     font-size: 2.2rem;
   }
 
-  nav.pagination,
-  nav.actions {
-    li {
-      margin: 0 0.6rem;
-    }
-  }
-
   nav.actions {
     &::before,
     &::after {
@@ -2238,6 +2219,9 @@ a.avatar {
       height: 10rem;
     }
 
+    li {
+      margin: 0 0.6rem;
+    }
     a {
       padding: 10px 12px;
     }
@@ -2247,10 +2231,9 @@ a.avatar {
     margin-bottom: 0;
 
     li {
-      margin: 0 0.4rem;
-    }
-    a {
-      padding: 9px 12px;
+      a {
+        padding: 9px 12px;
+      }
     }
   }
 
@@ -2265,7 +2248,7 @@ a.avatar {
       }
       article {
         min-height: 0;
-        padding: 0.8rem 0;
+        padding: 0.6rem 0;
       }
     }
     &.content {
@@ -2285,7 +2268,8 @@ a.avatar {
         margin-bottom: 0;
       }
       dl, ol, ul {
-        margin: 3rem 4rem;
+        margin: 2rem auto;
+        padding: 0 3rem;
       }
       blockquote {
         margin: 1.6rem 0;
@@ -2373,7 +2357,7 @@ a.avatar {
   // If the page doesn't have breadcrumbs...
   body[data-breadcrumbs="false"] {
     section.summary {
-      padding: 3.2rem 0 2.4rem;
+      padding: 2.4rem 0;
     }
   }
 
@@ -2397,13 +2381,13 @@ a.avatar {
         min-height: 4.2rem;
       }
       dl.content-stats {
-        top: 2rem;
+        top: 0;
       }
     }
     &[data-breadcrumbs="false"] {
       section.summary {
         dl.content-stats {
-          top: 3.5rem;
+          top: 2.8rem;
         }
       }
     }
@@ -2456,7 +2440,6 @@ a.avatar {
     }
     p.label-note {
       margin: 0.8rem 0;
-      font-size: 100%;
     }
     input,
     select,
@@ -2615,7 +2598,7 @@ a.avatar {
     padding: 4rem;
 
     a.home {
-      width: 24rem;
+      width: 16rem;
       margin: 4rem auto 6rem;
     }
     section.stats {
@@ -2642,6 +2625,21 @@ a.avatar {
 }
 
 @media only screen and (min-width: 1008px) {
+
+  body {
+    > header {
+      padding: 1.2rem calc( (100% - 100rem ) / 2 );
+
+      a.home {
+        margin-left: 0;
+      }
+      nav {
+        ul.account {
+          margin-right: 0;
+        }
+      }
+    }
+  }
 
   section.summary {
     max-width: 96rem;

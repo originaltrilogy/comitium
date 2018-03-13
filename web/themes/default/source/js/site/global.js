@@ -38,7 +38,7 @@ CF.global = ( function (Modernizr, CF) {
 
       menuIcon.setAttribute('id', 'main-menu-icon');
       menuIcon.appendChild(document.createTextNode('Menu'));
-      header.appendChild(menuIcon);
+      header.insertBefore(menuIcon, header.querySelector('a.home'));
 
       methods.menu({
         menu: 'header nav',

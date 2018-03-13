@@ -17,7 +17,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     header {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: space-around;
       align-items: center;
 
       h2 {
@@ -100,14 +100,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
   @media only screen and (min-width: 375px) {
 
-    section.topics {
-      header {
-        nav.actions {
-          margin-left: 4vw;
-        }
-      }
-    }
-
     article.topic {
       section.author {
         flex: 0 0 52vw;
@@ -157,11 +149,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   }
 
   @media only screen and (min-width: 600px) {
-    section.topics {
-      header {
-        justify-content: space-between;
-      }
-    }
     article.topic {
       section.description {
         flex-basis: 76vw;
@@ -215,10 +202,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     section.announcements {
       & > * {
         max-width: 96rem;
-      }
-      article {
-        min-height: 0;
-        padding: 0.8rem 0;
       }
     }
 

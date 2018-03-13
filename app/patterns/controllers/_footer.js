@@ -31,7 +31,7 @@ function handler(params, context, emitter) {
 
     emitter.emit('ready', {
       content: {
-        logo: app.resources.images.logo,
+        logo: app.resources.images.logoVertical,
         stats: {
           topics: app.toolbox.numeral(output.topics).format('0,0'),
           posts: app.toolbox.numeral(output.posts).format('0,0'),

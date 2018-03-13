@@ -11,7 +11,7 @@ function handler(params, context, emitter) {
   if ( !params.session.username ) {
     emitter.emit('ready', {
       content: {
-        logo: app.resources.images.logo
+        logo: app.resources.images.logoHorizontal
       }
     });
   } else {
@@ -34,7 +34,7 @@ function handler(params, context, emitter) {
               topics: output.unreadTopics,
               privateTopics: output.unreadPrivateTopics
             },
-            logo: app.resources.images.logo
+            logo: app.resources.images.logoHorizontal
           }
         });
       } else {
