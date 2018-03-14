@@ -34,7 +34,7 @@ function form(params, context, emitter) {
           app.models.content.mail({
             template: 'Registration',
             replace: {
-              activationUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + previous.register.id + '/activationCode/' + previous.register.activationCode,
+              activationUrl: app.config.comitium.baseUrl + 'user/action/activate/id/' + previous.register.id + '/activationCode/' + previous.register.activationCode,
               username: previous.register.username
             }
           }, emitter);

@@ -423,10 +423,10 @@ function lockForm(params, context, emitter) {
                       app.models.content.mail({
                         template: 'Post Lock',
                         replace: {
-                          postUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'post/id/' + post.id,
+                          postUrl: app.config.comitium.baseUrl + 'post/id/' + post.id,
                           postText: post.text,
                           topicTitle: post.topicTitle,
-                          topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+                          topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
                           reason: params.form.reason
                         }
                       }, emitter);
@@ -619,10 +619,10 @@ function reportForm(params, context, emitter) {
                 template: 'Post Report',
                 replace: {
                   reporter: params.session.username,
-                  postUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'post/id/' + post.id,
+                  postUrl: app.config.comitium.baseUrl + 'post/id/' + post.id,
                   postText: post.text,
                   topicTitle: post.topicTitle,
-                  topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+                  topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
                   reason: params.form.reason
                 }
               }, emitter);
@@ -778,7 +778,7 @@ function trashForm(params, context, emitter) {
                           postID: post.id,
                           postText: post.text,
                           topicTitle: post.topicTitle,
-                          topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+                          topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
                           reason: params.form.reason
                         }
                       }, emitter);

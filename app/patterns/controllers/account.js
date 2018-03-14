@@ -141,7 +141,7 @@ function generalForm(params, context, emitter) {
                       app.models.content.mail({
                         template: 'Reactivation',
                         replace: {
-                          activationUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'user/action/activate/id/' + params.session.userID + '/activationCode/' + output.updateEmail.activationCode + '/reactivation/true'
+                          activationUrl: app.config.comitium.baseUrl + 'user/action/activate/id/' + params.session.userID + '/activationCode/' + output.updateEmail.activationCode + '/reactivation/true'
                         }
                       }, emitter);
                     }

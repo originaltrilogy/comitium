@@ -81,7 +81,7 @@ function form(params, context, emitter) {
         app.models.content.mail({
           template: 'Password Reset',
           replace: {
-            resetUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + previous.user.id + '/code/' + previous.generateVerification.verificationCode
+            resetUrl: app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + previous.user.id + '/code/' + previous.generateVerification.verificationCode
           }
         }, emitter);
       }

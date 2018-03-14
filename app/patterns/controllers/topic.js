@@ -88,7 +88,7 @@ function handler(params, context, emitter) {
         // and a specific page hasn't been requested, redirect the user to the first unread post.
         if ( output.firstUnreadPost && output.firstUnreadPost.post.id !== topic.firstPostID ) {
           emitter.emit('ready', {
-            redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + output.firstUnreadPost.page + '#' + output.firstUnreadPost.post.id
+            redirect: app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + output.firstUnreadPost.page + '#' + output.firstUnreadPost.post.id
           });
         } else {
           // If the user has read access, get the posts for the requested page
@@ -762,7 +762,7 @@ function startPrivateForm(params, context, emitter) {
                     app.models.content.mail({
                       template: 'Topic Invitation',
                       replace: {
-                        topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/id/' + previous.saveTopic.id,
+                        topicUrl: app.config.comitium.baseUrl + 'topic/id/' + previous.saveTopic.id,
                         author: params.session.username
                       }
                     }, emitter);
@@ -1000,8 +1000,8 @@ function replyForm(params, context, emitter) {
                     pageParameter = page === 1 ? '' : '/page/' + page,
                     controller = topic.discussionID === 2 ? 'announcement' : 'topic',
                     urlTitle = topic.private ? '' : '/' + topic.url,
-                    replyUrl = params.route.parsed.protocol + app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '#' + output.reply.id,
-                    forwardToUrl = draft ? params.route.parsed.protocol + app.config.comitium.baseUrl + '/drafts' : replyUrl;
+                    replyUrl = app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '#' + output.reply.id,
+                    forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : replyUrl;
 
                 if ( output.listen.success ) {
                   if ( output.reply.success ) {
@@ -1042,7 +1042,7 @@ function replyForm(params, context, emitter) {
                           replyAuthor: params.session.username,
                           replyUrl: replyUrl,
                           topicTitle: topic.private ? 'Private Topic (title withheld for your privacy)' : topic.title,
-                          unsubscribeUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/action/unsubscribe/id/' + topic.id
+                          unsubscribeUrl: app.config.comitium.baseUrl + 'topic/action/unsubscribe/id/' + topic.id
                         }
                       });
                     }
@@ -1304,7 +1304,7 @@ function lockForm(params, context, emitter) {
                   template: 'Topic Lock',
                   replace: {
                     topicTitle: topic.title,
-                    topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
+                    topicUrl: app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
                     reason: params.form.reason
                   }
                 });
@@ -1641,7 +1641,7 @@ function moveForm(params, context, emitter) {
                     template: 'Topic Move',
                     replace: {
                       topicTitle: topic.title,
-                      topicUrl: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
+                      topicUrl: app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
                       oldDiscussionTitle: topic.discussionTitle,
                       newDiscussionTitle: output.newDiscussion.title
                     }
