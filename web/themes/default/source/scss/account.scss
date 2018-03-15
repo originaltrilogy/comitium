@@ -4,13 +4,27 @@
 
 body[data-controller="account"] {
 
-  section.avatar {
-    a.avatar {
-      float: left;
-      margin: 5vw 4vw 4vw;
+  section.settings {
+    > section {
+      margin: 6vw auto;
     }
-    form {
-      clear: both;
+  }
+  section.avatar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    h2 {
+      flex: 0 0 100%;
+    }
+    a.avatar {
+      width: 16vw;
+      height: 16vw;
+      margin: 0 4vw;
+    }
+    > p {
+      flex: 0 0 72vw;
+      margin: 0;
     }
   }
 
@@ -33,12 +47,13 @@ body[data-controller="account"] {
       }
     }
     section.avatar {
+      max-width: 32rem;
+
       a.avatar {
-        margin-left: 20vw;
+        margin-left: 0;
       }
-      & > p {
-        margin-top: 4.5vw;
-        margin-right: 20vw;
+      > p {
+        flex-basis: 50vw;
       }
       form {
         padding-top: 0;
@@ -76,10 +91,12 @@ body[data-controller="account"] {
     }
     section.avatar {
       a.avatar {
-        margin: 1.6rem 1.6rem 4rem 0;
+        width: 10rem;
+        height: 10rem;
+        margin-right: 2rem;
       }
-      & > p {
-        margin: 1.6rem 0;
+      > p {
+        flex-basis: 20rem;
       }
     }
   }

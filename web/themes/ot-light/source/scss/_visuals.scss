@@ -62,8 +62,8 @@ a.home {
 
 body {
   > header {
-    background-color: hsl(227,18%,26%);
-    box-shadow: 0 0 1.6vw hsl(227, 0%, 10%);
+    background-color: hsl(227,18%,22%);
+    box-shadow: 0 0 1.6vw hsl(227,18%,8%);
 
     nav {
       li {
@@ -87,12 +87,12 @@ body {
   }
 
   &.floating-header-active > header {
-    background-color: hsla(227,18%,26%,0.97);
+    background-color: hsla(227,18%,22%,0.95);
   }
 }
 
 main {
-	background-image: linear-gradient(180deg, hsl(0, 0%, 92%) 0, hsl(0, 0%, 92%) 100px, hsl(0, 0%, 98%) 100px);
+	background-image: linear-gradient(180deg,hsl(227,18%,96%),hsl(227,18%,92%) 100px,hsl(227,18%,100%) 0);
 }
 
 
@@ -118,8 +118,8 @@ main {
 
 main {
   > header {
-    background: hsl(0,0%,92%);
-    border-bottom: 1px solid hsl(0,0%,86%);
+    background: hsl(227,18%,96%);
+    border-bottom: 1px solid hsl(227,18%,90%);
   }
 }
 
@@ -152,8 +152,8 @@ section {
   }
 
   &.announcements {
-    background: hsl(0, 0%, 96%);
-    border-bottom: 1px solid hsl(0,0%,92%);
+    background: hsl(227,18%,98%);
+    border-bottom: 1px solid hsl(227,18%,92%);
 
     article {
       border-color: hsl(0, 0%, 90%);
@@ -161,7 +161,7 @@ section {
   }
 
   &.content {
-    color: hsl(0,0%,85%);
+    color: hsl(0,0%,5%);
 
     blockquote {
       color: #d2d2d2;
@@ -186,19 +186,30 @@ nav.pagination {
     color: #A5B2D9;
   }
   li {
-    &.current {
-      a {
-        color: hsl(0,41%,13%);
-        background-image: linear-gradient(180deg,hsl(0,64%,86%),hsl(0,32%,68%) 98%);
-      }
+    a {
+      color: hsla(0,0%,0%,0.7);
+      background-image: linear-gradient(180deg,hsl(227,18%,92%),hsl(227,18%,84%) 98%);
+      border-color: hsl(227,18%,76%);
     }
+    &.current a,
+    &:hover a {
+      color: hsla(0,0%,100%,0.9);
+      background-image: linear-gradient(180deg,hsl(227,15%,60%),hsl(227,15%,46%) 98%);
+    }
+  }
+}
+
+nav.actions {
+  a {
+    color: hsl(0,0%,100%);
+    background-image: linear-gradient(180deg,hsl(227,18%,40%),hsl(227,18%,26%) 98%);
   }
 }
 
 // Topic counts for forums, post counts for topics
 dl.content-stats {
   color: hsl(0, 0%, 95%);
-  background: hsl(0,0%,60%);
+  background: hsl(227,12%,60%);
   border: none;
 }
 
@@ -242,7 +253,7 @@ form {
     color: hsl(227,18%,30%);
   }
   p.label-note {
-    color: #CDCDCD;
+    color: hsl(0,0%,50%);
   }
   input,
   select,
@@ -259,7 +270,7 @@ form {
   input[type="checkbox"] {
     &:checked {
       &::after {
-        color: hsl(0,100%,90%);
+        color: hsl(227,18%,40%);
       }
     }
   }
@@ -268,6 +279,15 @@ form {
     &:checked {
       &::after {
         background-color: hsl(0,100%, 90%);
+      }
+    }
+  }
+
+  ul.actions {
+    > li {
+      a, input[type="submit"] {
+        color: hsl(0,0%,100%);
+        background-image: linear-gradient(180deg,hsl(227,18%,40%),hsl(227,18%,26%) 98%);
       }
     }
   }
@@ -390,7 +410,7 @@ body[data-view="index"] {
 
 // Global post styles
 article.post {
-  background-color: hsl(0,18%,22%);
+  background-color: hsl(0,0%,100%);
 }
 
 //////////////////////
@@ -400,6 +420,10 @@ article.post {
 body[data-controller="topic"][data-view="topic"],
 body[data-controller="topic"][data-view="private-topic"],
 body[data-controller="announcement"][data-view="announcement"] {
+
+  main {
+    background-image: linear-gradient(180deg,hsl(227,18%,96%),hsl(227,18%,92%) 100px,hsl(227,18%,98%) 0);
+  }
 
   section.summary {
     dl.byline {
@@ -415,13 +439,13 @@ body[data-controller="announcement"][data-view="announcement"] {
 
   section.posts {
     > nav {
-      background: hsl(0,18%,22%);
+      // background: hsl(0,18%,22%);
     }
   }
 
   article.post {
     header {
-      background: hsl(0,18%,18%);
+      background: hsl(227,18%,96%);
 
       dd {
         &.time {
@@ -431,29 +455,65 @@ body[data-controller="announcement"][data-view="announcement"] {
     }
     section.content.signature {
       color: hsl(0,0%,70%);
-      background-color: hsl(0,18%,24%);
+      background-color: hsl(0,0%,100%);
 
       p {
-        color: hsl(0,0%,80%);
+        color: hsl(0,0%,40%);
       }
     }
   }
 
   @media only screen and (min-width: 600px) {
+
+    // First page
+    &[data-page="1"] {
+      article.post:first-of-type {
+        section.content {
+          border-right: none;
+          border-left: none;
+        }
+      }
+    }
+
     article.post {
+      header {
+        background: none;
+      }
       section.content.post {
-        background-color: hsl(0,18%,22%);
+        border-top: 1px solid;
+        border-right: 1px solid;
+        border-left: 1px solid;
+        border-color: hsl(227,18%,90%);
+        background-color: hsl(0,0%,100%);
 
         &::before {
-          background-color: hsl(0,18%,22%);
+          border-bottom: 1px solid;
+          border-left: 1px solid;
+          border-color: hsl(227,18%,90%);
+          background-color: hsl(0,0%,100%);
         }
       }
       nav.actions {
-        background-color: hsl(0,18%,22%);
+        border-right: 1px solid;
+        border-left: 1px solid;
+        border-color: hsl(227,18%,90%);
+        background-color: hsl(0,0%,100%);
+      }
+      &[data-signature="false"] {
+        nav.actions {
+          border-bottom-right-radius: 4px;
+          border-bottom-left-radius: 4px;
+          border-bottom: 1px solid;
+          border-color: hsl(227,18%,90%);
+        }
       }
       section.content.signature {
-        border-color: hsl(0,18%,18%);
-        background-color: hsl(0,18%,24%);
+        border-top: none;
+        border-right: 1px solid;
+        border-bottom: 1px solid;
+        border-left: 1px solid;
+        border-color: hsl(227,18%,90%);
+        background-color: hsl(0,0%,100%);
       }
     }
 

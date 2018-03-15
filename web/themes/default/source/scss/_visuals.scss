@@ -274,6 +274,10 @@ form {
   }
 }
 
+::placeholder {
+  color: hsla(0,0%,100%,0.5);
+}
+
 
 /////////////////////////
 ////     tables      ////
@@ -441,7 +445,8 @@ body[data-controller="announcement"][data-view="announcement"] {
 
   section.posts {
     > nav {
-      background: hsl(227,18%,22%);
+      background: hsl(227,18%,20%);
+    border-bottom: 1px solid hsl(227,18%,16%);
     }
   }
 

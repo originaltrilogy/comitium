@@ -436,7 +436,7 @@ body > header {
   padding: 1vw 1.5vw;
 
   a.home {
-    width: 32vw;
+    width: 36vw;
   }
 
   nav {
@@ -1217,7 +1217,7 @@ form {
   }
 
   select {
-    padding: 4vw;
+    line-height: 1.5;
   }
 
   textarea {
@@ -1559,7 +1559,7 @@ a.avatar {
       flex-wrap: wrap;
 
       a.home {
-        width: 18.4vw;
+        width: 24vw;
       }
       a.sign-in {
         display: none;
@@ -1911,7 +1911,7 @@ a.avatar {
         &.select {
           &::after {
             right: 0.5vw;
-            bottom: 0;
+            bottom: 0.8vw;
             font-size: 4vw;
           }
         }
@@ -2127,7 +2127,7 @@ a.avatar {
               border-radius: 0.3rem;
 
               &.active {
-                right: calc((100% - 100rem) / 2);
+                right: 1.6rem;
               }
               li {
                 a {
@@ -2417,7 +2417,9 @@ a.avatar {
     &.updated {
       &::before {
         width: 0.6rem;
-        left: -2.4rem;
+        left: -2rem;
+        border-top-left-radius: 0.4rem;
+        border-bottom-left-radius: 0.4rem;
       }
     }
 
@@ -2488,7 +2490,7 @@ a.avatar {
         &.select {
           &::after {
             right: 0;
-            bottom: .4rem;
+            bottom: 0.8rem;
             font-size: 2.4rem;
             line-height: 2.4rem;
           }
@@ -2625,6 +2627,20 @@ a.avatar {
 }
 
 @media only screen and (min-width: 1008px) {
+
+  html.js {
+    body {
+      > header.authenticated {
+        nav {
+          ul.account {
+            &.active {
+              right: calc((100% - 100rem) / 2);
+            }
+          }
+        }
+      }
+    }
+  }
 
   body {
     > header {
