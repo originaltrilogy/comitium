@@ -36,8 +36,6 @@ CF.topic = ( function (Modernizr, CF) {
 
           imageWrapper.addEventListener('click', function (e) {
             mask.innerHTML = '<div id="mask-close"></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '</a>';
-            document.body.classList.remove('floating-header-active');
-            document.body.classList.add('floating-header-hidden');
             document.querySelector('html').classList.add('mask-enabled');
             mask.classList.add('enabled');
 

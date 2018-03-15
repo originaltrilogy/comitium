@@ -66,6 +66,12 @@ body[data-controller="account"] {
     section.settings {
       display: flex;
       align-items: flex-start;
+      max-width: 96rem;
+      margin: auto;
+
+      > section {
+        margin: 3.2rem auto;
+      }
     }
     section.general,
     section.avatar {

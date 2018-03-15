@@ -342,7 +342,7 @@ p {
     height: 100%;
     padding-top: 60px;
     padding-bottom: 50px;
-    z-index: 2;
+    z-index: 1000;
     opacity: 1;
   }
 
@@ -412,7 +412,6 @@ span.zoom {
 
 html.mask-enabled {
   height: 100%;
-  overflow: hidden;
 }
 
 time {
@@ -648,30 +647,35 @@ nav.breadcrumbs {
   text-transform: uppercase;
 
   ul {
+    display: flex;
     line-height: 1.4;
   }
   li {
-    display: inline-block;
     position: absolute;
     left: -100vw;
 
     &:last-child {
       position: static;
-
-      &::before {
-        content: '< ';
-        vertical-align: top;
-      }
-      &::after {
-        display: none;
-      }
-      a {
-        display: inline-block;
-        max-width: 86vw;
-        overflow-x: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
+      display: flex;
+      align-items: center;
+    }
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 0;
+      height: 0;
+      margin: 0 2vw 0 0;
+      border-top: 1.5vw solid transparent;
+      border-right: 2vw solid;
+      border-bottom: 1.5vw solid transparent;
+      border-radius: 0.5vw;
+    }
+    a {
+      display: inline-block;
+      max-width: 86vw;
+      overflow-x: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 }
@@ -1685,24 +1689,15 @@ a.avatar {
     font-size: 2.4vw;
 
     li {
-      position: static;
       margin-bottom: 0;
       margin-top: 1vw;
 
-      &::after {
-        content: '>';
-        padding: 0 0.7vw 0 1.2vw;
-      }
-      &:last-child {
-        &::before {
-          display: none;
-        }
-        &::after {
-          display: inline;
-        }
-        a {
-          display: inline;
-        }
+      &::before {
+        margin: 0 1.2vw 0 1.6vw;
+        border-top: 1vw solid transparent;
+        border-right: 1.6vw solid;
+        border-bottom: 1vw solid transparent;
+        border-radius: 0.4vw;
       }
     }
   }
@@ -2184,7 +2179,7 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding: 1.8rem 2.4rem 0;
+    padding: 2.4rem 2.4rem 0;
     font-size: 1.4rem;
 
     ul {
@@ -2193,10 +2188,24 @@ a.avatar {
     }
 
     li {
+      position: static;
+      display: flex;
+      align-items: center;
       margin-top: 0;
 
+      &::before {
+        display: none;
+      }
       &::after {
-        padding: 0 0.7rem 0 1.2rem;
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        margin: 0.1rem 1rem 0 1.2rem;
+        border-top: 0.5rem solid transparent;
+        border-left: 0.8rem solid;
+        border-bottom: 0.5rem solid transparent;
+        border-radius: 0.2rem;
       }
     }
   }
@@ -2381,7 +2390,7 @@ a.avatar {
         min-height: 4.2rem;
       }
       dl.content-stats {
-        top: 0;
+        top: 2rem;
       }
     }
     &[data-breadcrumbs="false"] {

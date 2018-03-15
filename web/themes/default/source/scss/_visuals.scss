@@ -111,8 +111,14 @@ main {
 }
 
 nav.breadcrumbs {
-  color: hsl(227,23%,60%);
-
+  li {
+    &::before {
+      border-right-color: hsl(227,18%,35%);
+    }
+    &::after {
+      border-left-color: hsl(227,18%,35%);
+    }
+  }
   a {
     color: hsl(227,23%,60%);
   }
