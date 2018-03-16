@@ -3,7 +3,7 @@ article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? '
     h3
       a(href="topic/id/#{topic.id}") !{topic.titleHtml}
     section.author
-      a.avatar(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
+      a(class="avatar #{ topic.topicStarterGroupID === 6 ? 'banned' : '' }" href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
         img(src="avatars/#{topic.topicStarterID}.jpg")
       dl.byline
         dt.author Author
@@ -24,7 +24,7 @@ article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? '
         dd.replies
           = topic.repliesFormatted
     p.last-post
-      a.avatar(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+      a(class="avatar #{ topic.lastPostAuthorGroupID === 6 ? 'banned' : '' }" href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
         img(src="avatars/#{topic.lastPostAuthorID}.jpg")
       a(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
         = topic.lastPostAuthor
