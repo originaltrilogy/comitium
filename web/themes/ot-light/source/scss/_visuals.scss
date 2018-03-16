@@ -105,7 +105,7 @@ nav.breadcrumbs {
     }
   }
   a {
-    color: hsl(227,23%,60%);
+    color: hsl(227,18%,60%);
   }
 }
 
@@ -146,11 +146,12 @@ section {
   }
 
   &.notice {
-    background-color: hsl(0,18%,18%);
-    border-color: hsl(0,18%,40%);
+    background-color: hsl(227,12%,40%);
+    border-color: hsl(227,10%,40%);
+    color: hsl(0,0%,100%);
 
     &::before {
-      color: hsl(0,100%,90%);
+      color: hsl(0,0%,100%);
     }
 
     &.error,
@@ -160,7 +161,13 @@ section {
 
       &::before,
       a {
-        color: white;
+        color: hsl(0,0%,100%);
+      }
+    }
+
+    &.private {
+      a {
+        color: hsl(227,60%,90%);
       }
     }
   }
@@ -227,7 +234,7 @@ dl.content-stats {
 }
 
 article {
-  border-color: hsl(0, 0%, 92%);
+  border-color: hsl(227,18%,94%);
 
   &.unread,
   &.updated {
@@ -465,13 +472,14 @@ body[data-controller="announcement"][data-view="announcement"] {
 
   section.posts {
     > nav {
+      border-bottom: 1px solid hsl(227,18%,92%);
       background: hsl(227,18%,98%);
     }
   }
 
   article.post {
     header {
-      background: hsl(227,18%,96%);
+      background: hsl(227,18%,94%);
 
       dd {
         &.time {
@@ -495,6 +503,7 @@ body[data-controller="announcement"][data-view="announcement"] {
     &[data-page="1"] {
       article.post:first-of-type {
         section.content {
+          border-top: none;
           border-right: none;
           border-left: none;
         }
@@ -546,25 +555,25 @@ body[data-controller="announcement"][data-view="announcement"] {
 }
 
 // Private topic view
-body[data-controller="topic"][data-view="private-topic"] {
-  ul.participants {
-    li {
-      &:nth-child(n+2) {
-        &::before {
-          color: hsl(0,0%,85%);
-        }
-      }
-      &:last-child {
-        &::before {
-          color: hsl(0,0%,85%);
-        }
-        &::after {
-          color: hsl(0,0%,85%);
-        }
-      }
-    }
-  }
-}
+// body[data-controller="topic"][data-view="private-topic"] {
+//   ul.participants {
+//     li {
+//       &:nth-child(n+2) {
+//         &::before {
+//           color: hsl(0,0%,85%);
+//         }
+//       }
+//       &:last-child {
+//         &::before {
+//           color: hsl(0,0%,85%);
+//         }
+//         &::after {
+//           color: hsl(0,0%,85%);
+//         }
+//       }
+//     }
+//   }
+// }
 
 
 ///////////////////

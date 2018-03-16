@@ -214,7 +214,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         margin: auto;
       }
       header {
-        flex-wrap: nowrap;
+        justify-content: flex-end;
         margin-bottom: 2.4rem;
 
         h2 {
@@ -295,16 +295,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
   }
 
-  @media only screen and (min-width: 768px) {
-    section.topics {
-      header {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-    }
-  }
-
 }
 
 body[data-controller="announcements"][data-view="announcements"],
@@ -317,11 +307,4 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     }
   }
 
-  @media only screen and (min-width: 1008px) {
-    section.topics {
-      header {
-        justify-content: flex-end;
-      }
-    }
-  }
 }

@@ -549,19 +549,20 @@ body[data-controller="topic"][data-view="private-topic"] {
     li {
       list-style: none;
       display: inline;
-
+      
       &:nth-child(n+2) {
-
         &::before {
           content: ', ';
-          margin-left: -4px;
+          margin-left: -4px; // The way browsers handle inline display is dumb
         }
       }
       &:last-child {
-        position: relative;
-
         &::before {
           content: ', and ';
+        }
+        &:nth-child(2)::before {
+          content: ' and ';
+          margin-left: 0; // Causes browser not to ignore first space in content property above
         }
         a::after {
           content: '.';
