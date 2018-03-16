@@ -49,10 +49,10 @@ themes.forEach( function (item, index, array) {
   prodTasks[index] = 'cssProd' + item.name;
 
   gulp.task('cssDebug' + item.name, function () {
-    return css({ env: 'debug', theme: item.path });
+    css({ env: 'debug', theme: item.path });
   });
   gulp.task('cssProd' + item.name, function () {
-    return css({ env: 'production', theme: item.path });
+    css({ env: 'production', theme: item.path });
   });
 });
 
@@ -96,7 +96,12 @@ gulp.task('views', function () {
 gulp.task('watch', function() {
   livereload.listen();
   themes.forEach( function (item, index, array) {
-    gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', ['cssDebug' + item.name]);
+    gulp.watch('web/themes/default/source/scss/**/**.scss', ['cssDebug' + item.name]);
+  });
+  themes.forEach( function (item, index, array) {
+    if ( item.name !== 'Default') {
+      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', ['cssDebug' + item.name]);
+    }
   });
   gulp.watch('web/themes/default/source/js/**/**.js', ['jsDebug']);
   gulp.watch('app/patterns/views/**/**.jade', ['views']);
