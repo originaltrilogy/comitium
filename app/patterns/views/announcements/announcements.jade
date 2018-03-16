@@ -7,13 +7,12 @@ header
 
 section.topics
   header
-    nav
-      include ../partials/pagination
-      if session.moderateDiscussions
-        nav.actions
-          ul
-            li.new-announcement
-              a(href="topic/action/startAnnouncement") Make an announcement
+    include ../partials/pagination
+    if session.moderateDiscussions
+      nav.actions
+        ul
+          li.new-announcement
+            a(href="topic/action/startAnnouncement") Make an announcement
   if topics
     each topic in topics
       include ../partials/announcement
