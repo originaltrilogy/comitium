@@ -15,18 +15,18 @@ var themes = [
         name: 'Default',
         path: 'default'
       },
-      {
-        name: 'Imperial',
-        path: 'imperial'
-      },
+      // {
+      //   name: 'Imperial',
+      //   path: 'imperial'
+      // },
       {
         name: 'OTLight',
         path: 'ot-light'
       },
-      {
-        name: 'Rebellious',
-        path: 'rebellious'
-      }
+      // {
+      //   name: 'Rebellious',
+      //   path: 'rebellious'
+      // }
     ],
     debugTasks = [],
     prodTasks = [];
