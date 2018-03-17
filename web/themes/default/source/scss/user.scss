@@ -33,6 +33,10 @@ body[data-view="user"] {
     }
   }
 
+  h2 {
+    margin-top: 4vw;
+  }
+
   section.ip-history,
   section.ip-matches {
     margin: auto 4vw;
@@ -87,11 +91,10 @@ body[data-view="user"] {
       }
       h1 {
         flex: 1 0 50%;
-        padding-top: 4vw;
+        padding: 2vw 4vw;
       }
-      nav.actions {
-        margin: 4vw 0;
-        padding-top: 4vw;
+      dl {
+        margin-bottom: 4vw;
       }
     }
     section.user-logs {
@@ -108,18 +111,27 @@ body[data-view="user"] {
       }
     }
     nav.pagination {
-      li {
-        margin: 0 1vw;
-      }
       a {
         font-size: 100%;
         padding: 1.6vw 2.4vw;
       }
     }
     article.post {
+      margin: 2vw;
+      border-radius: .5vw;
+      background: none;
+
+      header {
+        dl {
+          margin: 0 2vw;
+        }
+      }
+      section.content {
+        margin: 0;
+        padding: 3vw;
+      }
       nav.actions {
-        padding-right: 3vw;
-        background: none;
+        margin: 0;
       }
     }
 
@@ -138,7 +150,7 @@ body[data-view="user"] {
         padding: 1.2rem 0;
       }
       dl {
-        margin: 2.4rem 0 3.2rem;
+        margin: 1.2rem 0;
       }
       dt {
         width: 50%;
@@ -154,25 +166,34 @@ body[data-view="user"] {
       }
       nav.actions {
         margin: 2.4rem 0 0;
-        padding-top: 2.4rem;
+        padding: 0;
       }
     }
     h2 {
+      flex: 0 0 100%;
+      margin-top: 2.4rem;
       text-align: center;
     }
     nav.pagination {
-      margin: 0 auto 2.4rem;
-
-      li {
-        margin: 0 0.4rem;
-      }
+      margin: 0 auto 1.8rem;
 
       a {
         padding: 1rem 1.4rem;
-        font-size: 91%;
       }
     }
+    section.posts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 86.8rem;
+      margin: auto;
+    }
     article.post {
+      flex: 0 1 86.8rem;
+      margin: 1.8rem;
+      border-radius: 0.4rem;
+      overflow: hidden;
+
       &:first-of-type {
         &::before {
           left: 2.4rem;
@@ -183,7 +204,7 @@ body[data-view="user"] {
         padding: 1.6rem 0;
 
         dl {
-          margin: 0 2.4rem;
+          margin: 0 1.6rem;
         }
         dt {
           width: 5.6rem;
@@ -192,8 +213,8 @@ body[data-view="user"] {
           margin-left: 5.6rem;
         }
       }
-      nav.actions {
-        padding-right: 2.4rem;
+      section.content {
+        padding: 2rem 2.4rem;
       }
     }
 

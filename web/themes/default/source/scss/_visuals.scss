@@ -149,7 +149,7 @@ section {
     &.error,
     &.locked,
     &.banned {
-      background: hsl(0,40%,50%);
+      background: hsl(0,50%,50%);
 
       &::before,
       a {
@@ -344,16 +344,6 @@ a.avatar {
     }
   }
 
-  section {
-    &.summary {
-      > nav {
-        &::before {
-          background-image: linear-gradient(90deg,hsla(227,18%,50%,0),hsla(227,18%,50%,1),hsla(227,18%,50%,0));
-        }
-      }
-    }
-  }
-
 }
 
 // Screens wider than 720px
@@ -516,4 +506,40 @@ body[data-controller="topic"][data-view="private-topic"] {
       }
     }
   }
+}
+
+///////////////////
+//   user view   //
+///////////////////
+
+body[data-view="user"] {
+
+  main {
+    // background: hsl(227,18%,96%);
+  }
+
+  article.post {
+    header {
+      background: hsl(227,18%,18%);
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    
+    article.post {
+      border: initial;
+
+      header {
+        background: hsl(227,18%,24%);
+      }
+      section.content {
+        background-color: hsl(227,18%,22%);
+      }
+      nav.actions {
+        background-color: hsl(227,18%,22%);
+      }
+    }
+
+  }
+
 }

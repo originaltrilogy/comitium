@@ -351,15 +351,10 @@ body[data-controller="announcement"][data-view="announcement"] {
 
     section.posts {
       > nav {
-        padding: 1.6rem 2.4rem 0;
+        padding: 1.6rem 2.4rem;
 
         nav.pagination {
           margin-right: 3.2rem;
-        }
-        nav.actions {
-          li {
-            margin-bottom: 1.6rem;
-          }
         }
       }
     }

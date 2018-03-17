@@ -55,6 +55,9 @@ article.post {
   }
 
   @media only screen and (min-width: 600px) {
+    p.edited {
+      display: none;
+    }
     nav.actions {
       padding: 2vw;
 
@@ -76,9 +79,6 @@ article.post {
   }
 
   @media only screen and (min-width: 720px) {
-    p.edited {
-      display: none;
-    }
     nav.actions {
       padding: 1.2rem;
 

@@ -768,11 +768,9 @@ section {
     p.why {
       margin-bottom: 0;
       @include bodyFont(normal, 600);
-      font-size: 85%;
     }
     p.reason {
       margin-top: 0;
-      font-size: 85%;
     }
   }
 
@@ -897,6 +895,10 @@ section {
       dl, ol, ul {
         margin-left: 8vw;
       }
+    }
+    span.emoji {
+      font-size: 180%;
+      line-height: 0.5;
     }
   }
 
@@ -1648,7 +1650,7 @@ a.avatar {
               z-index: 4;
 
               &.active {
-                right: 1vw;
+                right: 1.4vw;
               }
 
               &::after {
@@ -1778,13 +1780,6 @@ a.avatar {
       }
       p {
         margin-bottom: 3vw;
-      }
-      p.why {
-        display: inline-block;
-        margin-top: 0;
-      }
-      p.reason {
-        display: inline;
       }
     }
     &.form.post {
@@ -2117,12 +2112,12 @@ a.avatar {
         &.authenticated {
           nav {
             ul.account {
-              top: 8.8rem;
+              top: 8rem;
               padding: 1.2rem 0;
               border-radius: 0.3rem;
 
               &.active {
-                right: 1.6rem;
+                right: 1.2rem;
               }
               li {
                 a {
@@ -2131,7 +2126,7 @@ a.avatar {
               }
               &::after {
                 top: -1.2rem;
-                right: 0.6rem;
+                right: 0.8rem;
                 width: 2.4rem;
                 height: 2.4rem;
               }
@@ -2648,7 +2643,8 @@ a.avatar {
         nav {
           ul.account {
             &.active {
-              right: calc((100% - 100rem) / 2);
+              right: calc((100% - 100.2rem) / 2);
+              top: 9.2rem;
             }
           }
         }

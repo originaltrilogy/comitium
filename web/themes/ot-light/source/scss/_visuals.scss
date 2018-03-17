@@ -157,7 +157,7 @@ section {
     &.error,
     &.locked,
     &.banned {
-      background: hsl(0,40%,50%);
+      background: hsl(0,50%,50%);
 
       &::before,
       a {
@@ -189,8 +189,12 @@ section {
       border-color: hsl(227,18%,80%);
 
       a.expand {
+        color: hsl(227,18%,50%);
+        box-shadow: inset 0 0 0 1px hsl(227,18%,80%);
+
         &:hover {
-          background: hsl(227,18%,30%);
+          background: hsl(227,18%,95%);
+          box-shadow: inset 0 0 0 1px hsl(227,18%,50%);
         }
       }
     }
@@ -353,16 +357,6 @@ a.avatar {
               }
             }
           }
-        }
-      }
-    }
-  }
-
-  section {
-    &.summary {
-      > nav {
-        &::before {
-          background-image: linear-gradient(90deg,hsla(227,18%,50%,0),hsla(227,18%,50%,1),hsla(227,18%,50%,0));
         }
       }
     }
@@ -554,37 +548,36 @@ body[data-controller="announcement"][data-view="announcement"] {
   }
 }
 
-// Private topic view
-// body[data-controller="topic"][data-view="private-topic"] {
-//   ul.participants {
-//     li {
-//       &:nth-child(n+2) {
-//         &::before {
-//           color: hsl(0,0%,85%);
-//         }
-//       }
-//       &:last-child {
-//         &::before {
-//           color: hsl(0,0%,85%);
-//         }
-//         &::after {
-//           color: hsl(0,0%,85%);
-//         }
-//       }
-//     }
-//   }
-// }
-
 
 ///////////////////
 //   user view   //
 ///////////////////
 
 body[data-view="user"] {
+
+  main {
+    background: hsl(227,18%,96%);
+  }
+
   article.post {
     header {
-      background: hsl(0,18%,16%);
+      background: hsl(227,18%,94%);
     }
+  }
+
+  @media only screen and (min-width: 600px) {
+    
+    article.post {
+      border: 1px solid hsl(227,18%,92%);
+
+      section.content {
+        background: hsl(0,0%,100%);
+      }
+      nav.actions {
+        background: hsl(0,0%,100%);
+      }
+    }
+
   }
 
 }
