@@ -1,4 +1,4 @@
-article(id="#{post.id}" class="post" data-post-id="#{post.id}" data-signature="#{ post.authorSignature ? 'true' : 'false' }")
+article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' }" data-post-id="#{post.id}")
   header
     a(class="avatar #{ post.authorGroupID === 6 ? 'banned' : '' }" href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
       img(src="avatars/#{post.authorID}.jpg")
