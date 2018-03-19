@@ -909,7 +909,6 @@ function reply(params, context, emitter) {
           view: 'reply',
           content: {
             topic: output.topic,
-            breadcrumbs: app.models.topic.breadcrumbs(output.topic),
             reply: {
               message: message
             }
@@ -972,8 +971,7 @@ function replyForm(params, context, emitter) {
                   preview: {
                     content: parsedContent
                   },
-                  topic: topic,
-                  breadcrumbs: app.models.topic.breadcrumbs(topic)
+                  topic: topic
                 }
               });
               break;
