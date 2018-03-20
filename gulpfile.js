@@ -4,8 +4,9 @@ var autoprefixer  = require('autoprefixer'),
     gulp          = require('gulp'),
     concat        = require('gulp-concat'),
     cssnano       = require('gulp-cssnano'),
-    postcss       = require('gulp-postcss'),
+    filter        = require('gulp-filter'),
     livereload    = require('gulp-livereload'),
+    postcss       = require('gulp-postcss'),
     sass          = require('gulp-sass'),
     sourcemaps    = require('gulp-sourcemaps'),
     uglify        = require('gulp-uglify');
@@ -40,6 +41,7 @@ function css(options) {
                .pipe(cssnano({ safe: true, colormin: false }))
                .pipe(sourcemaps.write(''))
              .pipe(gulp.dest('web/themes/' + options.theme + '/min'))
+             .pipe(filter('**/*.css'))
              .pipe(livereload());
 }
 
