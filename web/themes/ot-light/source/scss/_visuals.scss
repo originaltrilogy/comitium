@@ -586,12 +586,13 @@ body[data-controller="announcement"][data-view="announcement"] {
       section.signature {
         section.staff {
           &.moderator {
-            background-position-x: -1.2rem;
-            background-size: 8.4rem;
+            background-position-x: -0.4rem;
+            background-size: 9.6rem;
           }
           &.administrator {
-            background-position-x: -2.2rem;
-            background-size: 9.2rem;
+            min-height: 6rem;
+            background-position-x: -1.4rem;
+            background-size: 8rem;
           }
         }
       }
