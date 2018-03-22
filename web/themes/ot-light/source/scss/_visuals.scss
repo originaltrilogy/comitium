@@ -489,14 +489,15 @@ body[data-controller="announcement"][data-view="announcement"] {
       section.staff {
         background-position-y: bottom;
         background-repeat: no-repeat;
-        background-size: 16vw;
         
         &.moderator {
           background-image: url(/themes/ot-light/images/moderator.png);
-          background-position-x: -3vw;
+          background-size: 18vw;
+          background-position-x: -1vw;
         }
         &.administrator {
           background-image: url(/themes/ot-light/images/administrator.png);
+          background-size: 16vw;
           background-position-x: -2.5vw;
         }
       }

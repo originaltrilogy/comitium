@@ -868,9 +868,8 @@ section {
         }
       }
       &.nested {
-        > blockquote:first-child {
-          margin-top: 7.5vw;
-        }
+        padding-top: 8vw;
+
         *:nth-child(n-1) {
           margin-bottom: 0;
         }
@@ -1723,9 +1722,7 @@ a.avatar {
         border-bottom-right-radius: .5vw;
 
         &.nested {
-          > blockquote:first-child {
-            margin-top: 4vw;
-          }
+          padding-top: 4vw;
         }
         a.expand {
           top: 1.2vw;
@@ -2266,9 +2263,7 @@ a.avatar {
         border-bottom-right-radius: 4px;
 
         &.nested {
-          > blockquote:first-child {
-            margin-top: 1.6rem;
-          }
+          padding-top: 3.2rem;
         }
         a.expand {
           top: 0.8rem;
