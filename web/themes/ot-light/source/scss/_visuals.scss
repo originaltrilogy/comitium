@@ -198,10 +198,6 @@ section {
         }
       }
     }
-
-    &.signature blockquote {
-      background-color: hsl(227,18%,19%)
-    }
   }
 }
 
@@ -226,7 +222,7 @@ nav.pagination {
 nav.actions {
   a {
     color: hsl(0,0%,100%);
-    background-image: linear-gradient(180deg,hsl(227,18%,40%),hsl(227,18%,26%) 98%);
+    background-image: linear-gradient(180deg,hsl(227,18%,50%),hsl(227,18%,26%) 98%);
   }
 }
 
@@ -449,7 +445,7 @@ body[data-controller="topic"][data-view="private-topic"],
 body[data-controller="announcement"][data-view="announcement"] {
 
   main {
-    background: hsl(227,18%,96%);
+    background-image: linear-gradient(180deg,hsl(227,18%,98%),hsl(227,18%,94%) 100px,hsl(227,18%,94%) 0);
   }
 
   section.summary {
@@ -476,17 +472,38 @@ body[data-controller="announcement"][data-view="announcement"] {
       background: hsl(227,18%,94%);
 
       dd {
+        &.author {
+          span.title {
+            color: hsl(227,18%,60%);
+          }
+        }
         &.time {
           color: #acacac;
         }
       }
     }
-    section.content.signature {
-      color: hsl(0,0%,70%);
+    section.signature {
+      color: hsl(0,0%,40%);
       background-color: hsl(227,18%,98%);
 
-      p {
-        color: hsl(0,0%,40%);
+      section.staff {
+        background-position-y: bottom;
+        background-repeat: no-repeat;
+        background-size: 16vw;
+        
+        &.moderator {
+          background-image: url(/themes/ot-light/images/moderator.png);
+          background-position-x: -3vw;
+        }
+        &.administrator {
+          background-image: url(/themes/ot-light/images/administrator.png);
+          background-position-x: -2.5vw;
+        }
+      }
+      section.content {
+        p {
+          color: hsl(0,0%,40%);
+        }
       }
     }
   }
@@ -501,6 +518,14 @@ body[data-controller="announcement"][data-view="announcement"] {
           border-right: none;
           border-left: none;
         }
+        nav.actions {
+          border-right: none;
+          border-left: none;
+        }
+        section.signature {
+          border-right: none;
+          border-left: none;
+        }
       }
     }
 
@@ -512,39 +537,65 @@ body[data-controller="announcement"][data-view="announcement"] {
         border-top: 1px solid;
         border-right: 1px solid;
         border-left: 1px solid;
-        border-color: hsl(227,18%,92%);
+        border-color: hsl(227,18%,90%);
         background-color: hsl(0,0%,100%);
 
         &::before {
           border-bottom: 1px solid;
           border-left: 1px solid;
-          border-color: hsl(227,18%,92%);
+          border-color: hsl(227,18%,90%);
           background-color: hsl(0,0%,100%);
         }
       }
       nav.actions {
         border-right: 1px solid;
+        border-bottom: 1px solid;
         border-left: 1px solid;
-        border-color: hsl(227,18%,92%);
+        border-color: hsl(227,18%,90%);
         background-color: hsl(0,0%,100%);
       }
-      &[data-signature="false"] {
+      &.signature {
         nav.actions {
-          border-bottom-right-radius: 4px;
-          border-bottom-left-radius: 4px;
-          border-bottom: 1px solid;
-          border-color: hsl(227,18%,92%);
+          border-bottom: none;
         }
       }
-      section.content.signature {
+      section.signature {
         border-top: none;
         border-right: 1px solid;
         border-bottom: 1px solid;
         border-left: 1px solid;
-        border-color: hsl(227,18%,92%);
+        border-color: hsl(227,18%,90%);
+
+        section.staff {          
+          &.moderator {
+            background-size: 11vw;
+            background-position-x: -2vw;
+          }
+          &.administrator {
+            background-size: 11vw;
+            background-position-x: -2vw;
+          }
+        }
       }
     }
 
+  }
+
+  @media only screen and (min-width: 720px) {
+    article.post {
+      section.signature {
+        section.staff {
+          &.moderator {
+            background-position-x: -1.2rem;
+            background-size: 8.4rem;
+          }
+          &.administrator {
+            background-position-x: -2.2rem;
+            background-size: 9.2rem;
+          }
+        }
+      }
+    }
   }
 }
 

@@ -1,12 +1,11 @@
-article.post(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' }" data-post-id="#{post.id}")
+article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' } #{ post.authorGroupID === 4 || post.authorGroupID === 5 ? 'staff' : ''}" data-post-id="#{post.id}")
   header
     a(class="avatar #{ post.authorGroupID === 6 ? 'banned' : '' }" href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
       img(src="avatars/#{post.authorID}.jpg")
     dl
       dt.author Author
       dd.author
-        a.author(href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
-          = post.author
+        a.author(href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author") #{post.author}
       dt.time Time
       dd.time
         if !post.editorID
@@ -15,19 +14,19 @@ article.post(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' :
           time #{post.createdFormatted} <span class="edited">— <a href="post/id/#{post.id}">Edited #{post.modifiedFormatted}</a></span>
   section.content.post
     != post.html
-  if post.editorID
-    p.edited
-      a(href="post/id/#{post.id}") This post has been edited.
   nav.actions
     ul
-      if !topic.lockedByID
-        li.quote
-          a(href="topic/action/reply/id/#{url.id}/quote/#{post.id}") Quote
-      if ( session.username === post.author && !post.lockedByID && !topic.lockedByID ) || session.moderateDiscussions
+      li.quote
+        a(href="topic/action/reply/id/#{url.id}/quote/#{post.id}") Quote
+      if session.username === post.author
         li.edit
           a(href="post/action/edit/id/#{post.id}") Edit
       //- li.bookmark
       //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
-  if post.authorSignature
-    section.content.signature
+  section.signature
+    if post.authorGroupID === 4
+      section.staff.moderator originaltrilogy.com Moderator
+    else if post.authorGroupID === 5
+      section.staff.administrator originaltrilogy.com Administrator
+    section.content
       != post.authorSignature

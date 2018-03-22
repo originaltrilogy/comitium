@@ -29,12 +29,6 @@ body[data-controller="post"] {
 
 // Global post styles
 article.post {
-  p.edited {
-    flex: 0 0 96vw;
-    font-size: 80%;
-    @include bodyFont(italic);
-    text-align: right;
-  }
   nav.actions {
     flex-basis: 100%;
     margin-top: 4vw;
@@ -55,9 +49,6 @@ article.post {
   }
 
   @media only screen and (min-width: 600px) {
-    p.edited {
-      display: none;
-    }
     nav.actions {
       padding: 2vw;
 

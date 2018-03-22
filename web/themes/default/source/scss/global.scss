@@ -75,7 +75,7 @@ $gNoUpdates: '\eac4';
   text-rendering: optimizeLegibility;
 }
 
-@mixin button($color: light, $size: 91%, $padding: 2.5vw 3.5vw) {
+@mixin button($color: light, $size: 88%, $padding: 2.5vw 3.5vw) {
   display: block;
 	padding: $padding;
 	font-size: $size;
@@ -1155,12 +1155,6 @@ h3, h4, h5, h6 {
   @include bodyFont();
 }
 
-a.to-the-top {
-  @include button(lightGhost, $padding: 6vw);
-  width: 50vw;
-  margin: 10vw auto;
-}
-
 footer {
   padding: 4vw;
 
@@ -1546,11 +1540,6 @@ a.avatar {
     font-size: 100%;
   }
 
-  a.to-the-top {
-    width: 36vw;
-    padding: 4vw;
-  }
-
 }
 
 
@@ -1816,7 +1805,7 @@ a.avatar {
         min-height: 8vw;
       }
       dl.content-stats {
-        top: 4.5vw;
+        top: 3vw;
       }
     }
   }
@@ -1977,11 +1966,6 @@ a.avatar {
       height: 6vw;
       margin-right: 2vw;
     }
-  }
-
-  a.to-the-top {
-    width: 24vw;
-    padding: 3vw;
   }
 
   footer {
@@ -2599,10 +2583,6 @@ a.avatar {
     a {
       padding: 1.2rem 1.6rem;
     }
-  }
-
-  a.to-the-top {
-    display: none;
   }
 
   footer {
