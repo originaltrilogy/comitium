@@ -492,8 +492,8 @@ body[data-controller="announcement"][data-view="announcement"] {
         
         &.moderator {
           background-image: url(/themes/ot-light/images/moderator.png);
-          background-size: 18vw;
-          background-position-x: -1vw;
+          background-size: 17vw;
+          background-position-x: -3vw;
         }
         &.administrator {
           background-image: url(/themes/ot-light/images/administrator.png);
@@ -573,8 +573,8 @@ body[data-controller="announcement"][data-view="announcement"] {
             background-position-x: -2vw;
           }
           &.administrator {
-            background-size: 11vw;
-            background-position-x: -2vw;
+            background-size: 12vw;
+            background-position-x: -2.5vw;
           }
         }
       }
@@ -587,13 +587,32 @@ body[data-controller="announcement"][data-view="announcement"] {
       section.signature {
         section.staff {
           &.moderator {
-            background-position-x: -0.4rem;
-            background-size: 9.6rem;
+            background-position-x: -2rem;
+            background-size: 8.8rem;
           }
           &.administrator {
             min-height: 6rem;
             background-position-x: -1.4rem;
             background-size: 8rem;
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 960px) {
+    // First page
+    &[data-page="1"] {
+      article.post:first-of-type {
+        section.signature {
+          section.staff {
+            &.moderator {
+              padding-left: 9.4rem;
+              background-position-x: 0;
+            },
+            &.administrator {
+              background-position-x: 0;
+            }
           }
         }
       }

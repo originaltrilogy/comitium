@@ -459,15 +459,16 @@ body[data-controller="announcement"][data-view="announcement"] {
       section.staff {
         background-position-y: bottom;
         background-repeat: no-repeat;
-        background-size: 16vw;
         
         &.moderator {
           background-image: url(/themes/default/images/moderator.png);
+          background-size: 16vw;
           background-position-x: -3vw;
         }
         &.administrator {
           background-image: url(/themes/default/images/administrator.png);
-          background-position-x: -1vw;
+          background-size: 20vw;
+          background-position-x: -3.5vw;
         }
       }
       section.content {
@@ -500,8 +501,8 @@ body[data-controller="announcement"][data-view="announcement"] {
             background-position-x: -2vw;
           }
           &.administrator {
-            background-size: 11vw;
-            background-position-x: -0.5vw;
+            background-size: 14vw;
+            background-position-x: -3vw;
           }
         }
       }
@@ -513,12 +514,31 @@ body[data-controller="announcement"][data-view="announcement"] {
       section.signature {
         section.staff {
           &.moderator {
-            background-position-x: -1.4rem;
-            background-size: 8rem;
+            background-size: 9.2rem;
+            background-position: -1.4rem 0.8rem;
           }
           &.administrator {
-            background-position-x: -0.5rem;
-            background-size: 8rem;
+            background-position-x: -2.2rem;
+            background-size: 10rem;
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 960px) {
+    // First page
+    &[data-page="1"] {
+      article.post:first-of-type {
+        section.signature {
+          section.staff {
+            &.moderator {
+              background-position-x: 0;
+            }
+            &.administrator {
+              padding-left: 10rem;
+              background-position-x: 0;
+            }
           }
         }
       }
