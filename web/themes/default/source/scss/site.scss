@@ -1,5 +1,5 @@
-@import '../lib/normalize';
-@import '../baseline';
+@import 'lib/normalize';
+@import 'baseline';
 
 @font-face {
   font-family: 'glyphs';
@@ -11,17 +11,17 @@
   font-feature-settings: 'liga';
 }
 
-@import '../global';
-@import '../discussions';
-@import '../discussion';
-@import '../topic';
-@import '../post';
-@import '../account';
-@import '../user';
-@import '../sign-in';
-@import '../register';
-@import '../password-reset';
-@import '../Dear-Disney';
+@import 'global';
+@import 'discussions';
+@import 'discussion';
+@import 'topic';
+@import 'post';
+@import 'account';
+@import 'user';
+@import 'sign-in';
+@import 'register';
+@import 'password-reset';
+@import 'Dear-Disney';
 
 // Colors, fonts, etc.
-@import '../_visuals';
+@import '_visuals';

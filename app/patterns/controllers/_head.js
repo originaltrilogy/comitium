@@ -11,8 +11,8 @@ module.exports = {
 
 function handler(params, context, emitter) {
   var themePath = app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes['Default'].path,
-      cssKey = themePath.css + '/min/' + app.config.citizen.mode + '.css',
-      cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.css + '/min/' + app.config.citizen.mode + '.css?v=',
+      cssKey = themePath.css + '/min/site.css',
+      cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.css + '/min/site.css?v=',
       jsKey = themePath.js + '/min/' + app.config.citizen.mode + '.js',
       jsUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.js + '/min/' + app.config.citizen.mode + '.js?v=',
       staticFileStats = app.cache.get({ scope: 'staticFileStats' });
@@ -42,12 +42,12 @@ function handler(params, context, emitter) {
       } else {
         app.listen({
           css: function (emitter) {
-            fs.stat(app.config.citizen.directories.web + '/themes/' + themePath.css + '/min/' + app.config.citizen.mode + '.css', function (err, stats) {
+            fs.stat(app.config.citizen.directories.web + '/themes/' + themePath.css + '/min/site.css', function (err, stats) {
               // If there's a problem reading the CSS file, fall back to the default theme
               if ( err ) {
-                cssKey = 'default/min/' + app.config.citizen.mode + '.css';
-                cssUrl = app.config.comitium.staticAssetUrl + 'themes/default/min/' + app.config.citizen.mode + '.css?v=';
-                fs.stat(app.config.citizen.directories.web + '/themes/default/min/' + app.config.citizen.mode + '.css', function (err, stats) {
+                cssKey = 'default/min/site.css';
+                cssUrl = app.config.comitium.staticAssetUrl + 'themes/default/min/site.css?v=';
+                fs.stat(app.config.citizen.directories.web + '/themes/default/min/site.css', function (err, stats) {
                   if ( err ) {
                     emitter.emit('error', err);
                   } else {

@@ -29,12 +29,12 @@ var themes = [
       //   path: 'rebellious'
       // }
     ],
-    debugTasks = [],
+    devTasks = [],
     prodTasks = [];
 
 
 function css(options) {
-  return gulp.src('web/themes/' + options.theme + '/source/scss/env/' + options.env + '.scss')
+  return gulp.src('web/themes/' + options.theme + '/source/scss/site.scss')
              .pipe(sourcemaps.init())
                .pipe(sass().on('error', sass.logError))
                .pipe(postcss([autoprefixer({ browsers: 'last 2 versions' })]))
@@ -47,22 +47,17 @@ function css(options) {
 
 
 themes.forEach( function (item, index, array) {
-  debugTasks[index] = 'cssDebug' + item.name;
-  prodTasks[index] = 'cssProd' + item.name;
+  prodTasks[index] = 'css' + item.name;
 
-  gulp.task('cssDebug' + item.name, function () {
-    css({ env: 'debug', theme: item.path });
-  });
-  gulp.task('cssProd' + item.name, function () {
-    css({ env: 'production', theme: item.path });
+  gulp.task('css' + item.name, function () {
+    css({ theme: item.path });
   });
 });
 
-debugTasks.push('jsDebug');
+devTasks.push('jsDev');
 prodTasks.push('jsProd');
 
-
-gulp.task('jsDebug', function () {
+gulp.task('jsDev', function () {
   return gulp.src(['web/themes/default/source/js/lib/modernizr-dev.js',
                    'web/themes/default/source/js/lib/respond.min.js',
                    'web/themes/default/source/js/site/immediate.js',
@@ -98,20 +93,20 @@ gulp.task('views', function () {
 gulp.task('watch', function() {
   livereload.listen();
   themes.forEach( function (item, index, array) {
-    gulp.watch('web/themes/default/source/scss/**/**.scss', ['cssDebug' + item.name]);
+    gulp.watch('web/themes/default/source/scss/**/**.scss', ['css' + item.name]);
   });
   themes.forEach( function (item, index, array) {
     if ( item.name !== 'Default') {
-      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', ['cssDebug' + item.name]);
+      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', ['css' + item.name]);
     }
   });
-  gulp.watch('web/themes/default/source/js/**/**.js', ['jsDebug']);
+  gulp.watch('web/themes/default/source/js/**/**.js', ['jsDev', 'jsProd']);
   gulp.watch('app/patterns/views/**/**.jade', ['views']);
   gulp.watch('web/**/**.jade', ['views']);
 });
 
 // gulp.task('default', ['css']);
 gulp.task('default', ['watch']);
-gulp.task('debug', debugTasks);
+gulp.task('dev', devTasks);
 gulp.task('prod', prodTasks);
-gulp.task('all', debugTasks.concat(prodTasks));
+gulp.task('all', devTasks.concat(prodTasks));
