@@ -13,7 +13,7 @@ var autoprefixer  = require('autoprefixer'),
 
 var themes = [
       {
-        name: 'Default',
+        name: 'DarkSide',
         path: 'default'
       },
       // {
@@ -21,8 +21,8 @@ var themes = [
       //   path: 'imperial'
       // },
       {
-        name: 'OTLight',
-        path: 'ot-light'
+        name: 'LightSide',
+        path: 'light-side'
       },
       // {
       //   name: 'Rebellious',

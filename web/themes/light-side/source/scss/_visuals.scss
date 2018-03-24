@@ -491,12 +491,12 @@ body[data-controller="announcement"][data-view="announcement"] {
         background-repeat: no-repeat;
         
         &.moderator {
-          background-image: url(/themes/ot-light/images/moderator.png);
+          background-image: url(/themes/light-side/images/moderator.png);
           background-size: 17vw;
           background-position-x: -3vw;
         }
         &.administrator {
-          background-image: url(/themes/ot-light/images/administrator.png);
+          background-image: url(/themes/light-side/images/administrator.png);
           background-size: 16vw;
           background-position-x: -2.5vw;
         }
