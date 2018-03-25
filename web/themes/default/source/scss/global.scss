@@ -300,13 +300,6 @@ a {
   text-decoration: none;
 }
 
-p {
-  a {
-    text-decoration: underline;
-    word-break: break-word;
-  }
-}
-
 // Mask for zoomed images
 #mask {
   position: fixed;
@@ -820,6 +813,10 @@ section {
       padding: 0;
       @include bodyFont(italic);
     }
+    a {
+      text-decoration: underline;
+      word-break: break-word;
+    }
     & > img,
     * > img {
       width: 100%;
@@ -910,16 +907,15 @@ section {
   }
 
   &.preview {
+    margin-top: 6vw;
+    
     article {
-      padding: 4vw 0;
+      padding: 0;
       border: none;
 
       h3.title {
         @include titleFont;
         margin: 4vw;
-      }
-      section.content {
-        margin-bottom: 4vw !important;
       }
     }
   }
@@ -2325,8 +2321,11 @@ a.avatar {
       }
     }
     &.preview {
-      padding: 0;
+      margin-top: 3.2rem;
 
+      h2 {
+        margin: 0 2.4rem;
+      }
       article {
         padding: 0;
       }
