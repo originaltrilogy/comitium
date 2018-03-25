@@ -494,6 +494,9 @@ body[data-controller="announcement"][data-view="announcement"] {
           section.staff {
             padding-left: 8.8rem;
           }
+          section.content {
+            padding-right: 0;
+          }
         }
       }
     }
