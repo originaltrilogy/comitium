@@ -13,7 +13,8 @@ var autoprefixer  = require('autoprefixer'),
 
 var themes = [
       {
-        name: 'DarkSide',
+        // Dark Side theme
+        name: 'Default',
         path: 'default'
       },
       // {
