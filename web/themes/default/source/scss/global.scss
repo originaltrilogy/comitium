@@ -768,7 +768,7 @@ section {
   }
 
   &.announcements {
-    padding: 6vw 4vw;
+    padding: 4vw;
 
     article {
       padding: 2vw 0;
@@ -805,7 +805,6 @@ section {
       padding: 0;
       background: none;
       text-align: left;
-      text-decoration: underline;
     }
     h3 {
       margin-top: 8vw;
@@ -914,7 +913,7 @@ section {
       border: none;
 
       h3.title {
-        @include titleFont;
+        @include titleFont($weight: normal);
         margin: 4vw;
       }
     }
@@ -925,37 +924,6 @@ section {
 body[data-breadcrumbs="false"] {
   section.summary {
     padding: 3vw 0 5vw;
-  }
-}
-
-// Discussion, discussions, and topic view summaries
-body[data-controller="index"][data-view="index"],
-body[data-controller="discussions"][data-view="discussions"],
-body[data-controller="discussion"][data-view="discussion"],
-body[data-controller="topic"][data-view="topic"],
-body[data-controller="topic"][data-view="private-topic"],
-body[data-controller="announcements"][data-view="announcements"],
-body[data-controller="announcement"][data-view="announcement"] {
-  section.summary {
-    &::before {
-      content: '';
-      display: block;
-      float: right;
-      width: 24vw;
-      height: 22vw;
-    }
-    dl.content-stats {
-      position: absolute;
-      top: 2vw;
-      right: 0;
-    }
-  }
-  &[data-breadcrumbs="false"] {
-    section.summary {
-      dl.content-stats {
-        top: 7vw;
-      }
-    }
   }
 }
 
@@ -1021,13 +989,12 @@ nav.previous-and-next {
 
 // Topic counts for forums, post counts for topics
 dl.content-stats {
-  flex: 0 0 22vw;
   display: flex;
   flex-direction: column;
-  width: 18vw;
-  height: 18vw;
+  width: 16vw;
+  height: 16vw;
   margin: 0;
-  padding: 4.5vw 2vw 2vw;
+  padding: 4vw 1.5vw 2vw;
   border-width: 1px;
   border-style: solid;
   border-radius: 50%;
@@ -1115,12 +1082,6 @@ article {
   & > *:last-child {
       margin-bottom: 0;
   }
-
-  dl.content-stats {
-    width: 16vw;
-    height: 16vw;
-    padding: 4vw 1.5vw 2vw;
-  }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -1141,7 +1102,7 @@ h1 {
 
 h2 {
   @include titleFont($weight: 400);
-  margin-bottom: 2vw;
+  margin: 2vw;
   text-transform: uppercase;
   text-align: center;
 }
@@ -1508,13 +1469,11 @@ a.avatar {
     height: 10vw;
   }
 
-  article {
-    dl.content-stats {
-      width: 14vw;
-      height: 14vw;
-      padding: 3.5vw 1.5vw 2vw;
-      font-size: 3.2vw;
-    }
+  dl.content-stats {
+    width: 12vw;
+    height: 12vw;
+    padding: 2.5vw 1vw 1.5vw;
+    font-size: 3vw;
   }
 
   // Discussion, discussions, and topic view summaries
@@ -1773,52 +1732,9 @@ a.avatar {
     }
   }
 
-  // Discussion, discussions, and topic view summaries
-  body[data-controller="index"][data-view="index"],
-  body[data-controller="discussions"][data-view="discussions"],
-  body[data-controller="discussion"][data-view="discussion"],
-  body[data-controller="topic"][data-view="topic"],
-  body[data-controller="private-topics"][data-view="private-topics"],
-  body[data-controller="topic"][data-view="private-topic"],
-  body[data-controller="announcements"][data-view="announcements"],
-  body[data-controller="announcement"][data-view="announcement"],
-  body[data-controller="subscriptions"][data-view="subscriptions"] {
-    section.summary {
-      display: flex;
-      flex-wrap: wrap;
-
-      h1 {
-        flex: 0 0 74vw;
-      }
-      &::before {
-        display: none;
-      }
-      & > p {
-        flex: 0 1 74vw;
-        min-height: 8vw;
-      }
-      dl.content-stats {
-        top: 3vw;
-      }
-    }
-  }
-
-  dl.content-stats {
-    width: 14vw;
-    height: 14vw;
-    padding: 3.5vw 1.5vw 2vw;
-    font-size: 3.5vw;
-  }
-
   article {
     padding: 3vw 0;
 
-    dl.content-stats {
-      width: 12vw;
-      height: 12vw;
-      padding: 2.5vw 1vw 1.5vw;
-      font-size: 3vw;
-    }
     &::after {
       left: 3vw;
       width: calc(100% - 6vw);
@@ -1931,7 +1847,18 @@ a.avatar {
     }
 
     a {
-      @include button($padding: 1.65vw 2vw);
+      // @include button($padding: 1.65vw 2vw);
+      padding: 1.65vw 2vw;
+    }
+  }
+
+  nav.pagination,
+  nav.actions {
+    li {
+      a {
+        padding: 2vw 3vw;
+        font-size: 100%;
+      }
     }
   }
 
@@ -1963,7 +1890,7 @@ a.avatar {
 
   footer {
     a.home {
-      width: 38vw;
+      width: 30vw;
     }
     section.stats {
       p {
@@ -2122,7 +2049,7 @@ a.avatar {
   }
 
   h2 {
-    margin-bottom: 1.4rem;
+    margin: 0 0 1.2rem;
     font-size: 2rem;
     text-align: left;
   }
@@ -2187,10 +2114,10 @@ a.avatar {
   }
 
   dl.content-stats {
-    width: 8.8rem;
-    height: 8.8rem;
-    padding: 2.2rem .8rem .8rem;
-    font-size: 2.2rem;
+    width: 6.4rem;
+    height: 6.4rem;
+    padding: 1.6rem .4rem;
+    font-size: 1.6rem;
   }
 
   nav.actions {
@@ -2201,16 +2128,15 @@ a.avatar {
     }
 
     li {
-      margin: 0 0.6rem;
+      margin: 0 0.4rem;
     }
     a {
       padding: 10px 12px;
     }
   }
 
-  nav.pagination {
-    margin-bottom: 0;
-
+  nav.pagination,
+  nav.actions {
     li {
       a {
         padding: 9px 12px;
@@ -2229,7 +2155,7 @@ a.avatar {
       }
       article {
         min-height: 0;
-        padding: 0.6rem 0;
+        padding: 0.4rem 0;
       }
     }
     &.content {
@@ -2343,56 +2269,10 @@ a.avatar {
     }
   }
 
-  // Discussion, discussions, and topic view summaries
-  body[data-controller="index"][data-view="index"],
-  body[data-controller="discussions"][data-view="discussions"],
-  body[data-controller="discussion"][data-view="discussion"],
-  body[data-controller="topic"][data-view="topic"],
-  body[data-controller="private-topics"][data-view="private-topics"],
-  body[data-controller="topic"][data-view="private-topic"],
-  body[data-controller="subscriptions"][data-view="subscriptions"],
-  body[data-controller="announcements"][data-view="announcements"],
-  body[data-controller="announcement"][data-view="announcement"] {
-    section.summary {
-      h1,
-      & > p {
-        flex-basis: 100%;
-        padding-right: 12rem;
-      }
-      p {
-        min-height: 4.2rem;
-      }
-      dl.content-stats {
-        top: 2rem;
-      }
-    }
-    &[data-breadcrumbs="false"] {
-      section.summary {
-        dl.content-stats {
-          top: 2.8rem;
-        }
-      }
-    }
-  }
-
-  body[data-controller="private-topics"][data-view="private-topics"],
-  body[data-controller="subscriptions"][data-view="subscriptions"],
-  body[data-controller="announcements"][data-view="announcements"] {
-    section.summary {
-      h1,
-      & > p {
-        padding-right: 0;
-      }
-      p {
-        min-height: 0;
-      }
-    }
-  }
-
   article {
     align-items: center;
     min-height: 9.2rem;
-    padding: 1.4rem 0;
+    padding: 1.2rem 0;
     border-radius: 0;
 
     &.unread,
@@ -2403,13 +2283,6 @@ a.avatar {
         border-top-left-radius: 0.4rem;
         border-bottom-left-radius: 0.4rem;
       }
-    }
-
-    dl.content-stats {
-      width: 6.4rem;
-      height: 6.4rem;
-      padding: 1.6rem .4rem;
-      font-size: 1.6rem;
     }
 
     &::after {

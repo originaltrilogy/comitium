@@ -46,6 +46,8 @@ function info(discussionID, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
+        output.discussion[0]['topicsFormatted'] = app.toolbox.numeral(output.discussion[0].topics).format('0,0');
+        
         // Cache the discussion info object for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({

@@ -19,7 +19,7 @@ function handler(params, context, emitter) {
     }
   }, function (output) {
     params.url.page = params.url.page || 1;
-
+console.log('blowme');
     if ( output.listen.success ) {
       if ( output.access === true ) {
         app.listen({

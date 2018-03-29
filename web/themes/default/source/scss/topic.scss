@@ -40,9 +40,9 @@ body[data-controller="announcement"][data-view="announcement"] {
   section.posts {
     > nav {
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
-      padding: 4vw 4vw 0;
+      justify-content: space-around;
+      align-items: center;
     }
   }
 
@@ -243,17 +243,8 @@ body[data-controller="announcement"][data-view="announcement"] {
   @media only screen and (min-width: 600px) {
 
     section.posts {
-      > nav {
-        padding: 2vw 4vw;
-
-        nav.pagination {
-          margin-right: 4vw;
-        }
-        nav.actions {
-          li {
-            margin-bottom: 0;
-          }
-        }
+      h2 {
+        margin: 0 2vw;
       }
     }
 
@@ -391,11 +382,28 @@ body[data-controller="announcement"][data-view="announcement"] {
   @media only screen and (min-width: 720px) {
 
     section.posts {
+      h2 {
+        flex: 0 1 auto;
+        margin: 0;
+      }
       > nav {
-        padding: 1.2rem 2.4rem;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        max-width: 96rem;
+        margin: 1.2rem auto;
+        padding: 0 1.2rem 0 2.4rem;
 
+        h2 {
+          flex: 1 1 auto;
+          margin: 1.2rem 0;
+        }
+        nav.pagination,
+        nav.actions {
+          flex: 0 1 auto;
+          margin: 1.2rem 0;
+        }
         nav.pagination {
-          margin-right: 3.2rem;
+          margin: 1.2rem 2.4rem 1.2rem 1.2rem;
         }
       }
     }
@@ -500,6 +508,12 @@ body[data-controller="announcement"][data-view="announcement"] {
         }
       }
     }
+
+    section.posts {
+      > nav {
+        border-radius: 0.4rem;
+      }
+    }
   }
 
   // Topic and announcement views (excludes start, move, etc.)
@@ -511,9 +525,8 @@ body[data-controller="announcement"][data-view="announcement"] {
 
       section.summary {
         h1 {
-          flex-basis: 64vw;
           margin-left: 14vw;
-          padding: 2vw 3vw 0;
+          padding: 2vw 0 0 3vw;
         }
         a.avatar {
           margin: 0;
@@ -536,10 +549,9 @@ body[data-controller="announcement"][data-view="announcement"] {
 
       section.summary {
         h1 {
-          flex: 1 1 54rem;
           min-height: 4.4rem;
           padding: 0;
-          margin: 1.6rem 12.8rem 0 10.8rem;
+          margin: 1.6rem 0 0 10.8rem;
         }
         a.avatar {
           top: 2rem;

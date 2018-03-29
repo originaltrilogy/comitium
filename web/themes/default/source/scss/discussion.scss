@@ -11,7 +11,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     margin: 4vw 4vw 6vw;
   }
   section.topics {
-    margin-top: 6vw;
+    margin-top: 2vw;
     padding: 0 4vw;
 
     header {
@@ -206,7 +206,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     }
 
     section.topics {
-      margin-top: 2.4rem;
+      margin-top: 1.2rem;
       padding: 0 2.4rem;
 
       > * {
@@ -214,15 +214,21 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         margin: auto;
       }
       header {
-        justify-content: flex-end;
-        margin-bottom: 2.4rem;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        margin-bottom: 1.2rem;
 
         h2 {
           flex: 1 1 auto;
-          margin-bottom: 0;
+          margin: 1.2rem 0;
         }
+        nav.pagination,
         nav.actions {
-          margin-left: 3.2rem;
+          flex: 0 1 auto;
+          margin: 1.2rem 0;
+        }
+        nav.pagination {
+          margin: 1.2rem 2.4rem 1.2rem 1.2rem;
         }
       }
       article.topic {
@@ -230,7 +236,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         flex: 1 0 100%;
 
         section.description {
-          position: relative;
           flex: 0 1 100%;
           margin-right: 3.2rem;
         }
@@ -244,11 +249,8 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
           a.avatar {
             position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
+            top: 1.4rem;
             left: 0;
-            margin: auto 0; // Centered vertically
           }
         }
         dl.byline {

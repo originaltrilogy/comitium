@@ -698,7 +698,7 @@ function insert(args, emitter) {
 
 
 function posts(args, emitter) {
-  // See if this topic subset is already cached
+  // See if this post subset is already cached
   var start = args.start || 0,
       end = args.end || 25,
       cacheKey = 'posts-' + start + '-' + end,
@@ -737,36 +737,26 @@ function posts(args, emitter) {
         });
       }
     }, function (output) {
-      var subset = {};
 
       if ( output.listen.success ) {
-        // Build a view-ready object containing only the posts in the requested subset
-        for ( var i = 0; i < end - start; i += 1 ) {
-          if ( output.posts[i] ) {
-            subset[i] = {};
-            for ( var property in output.posts[i] ) {
-              if ( output.posts[i].hasOwnProperty(property) ) {
-                subset[i][property] = output.posts[i][property];
-                if ( property === 'created' || property === 'modified' ) {
-                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('D-MMM-YYYY h:mm A');
-                }
-              }
+        output.posts.forEach( function (item) {
+          for ( var property in item ) {
+            if ( property === 'created' || property === 'modified' ) {
+              item[property + 'Formatted'] = app.toolbox.moment.tz(item[property], 'America/New_York').format('D-MMM-YYYY h:mm A');
             }
-          } else {
-            break;
           }
-        }
+        });
 
         // Cache the subset for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
             scope: scope,
             key: cacheKey,
-            value: subset
+            value: output.posts
           });
         }
 
-        emitter.emit('ready', subset);
+        emitter.emit('ready', output.posts);
       } else {
         emitter.emit('error', output.listen);
       }

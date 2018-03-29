@@ -18,57 +18,47 @@ function handler(params, context, emitter) {
       }, emitter);
     }
   }, function (output) {
-    var models = {};
+    var page = parseInt(params.url.page, 10) || 1;
 
     if ( output.listen.success ) {
       if ( output.access === true ) {
-
-        params.url.page = params.url.page || 1;
-
-        models = {
+        app.listen({
           discussion: function (emitter) {
             app.models.discussion.info(params.url.id, emitter);
           },
           topics: function (emitter) {
-            var start = ( params.url.page - 1 ) * 25,
+            var start = ( page - 1 ) * 25,
                 end = start + 25;
             app.models.discussion.topics({
               discussionID: params.url.id,
               start: start,
               end: end
             }, emitter);
+          },
+          announcements: function (emitter) {
+            if ( page === 1 ) {
+              app.models.discussion.announcements(params.url.id, emitter);
+            } else {
+              emitter.emit('ready', []);
+            }
           }
-        };
-
-        // Intentional double-equals for string casting
-        if ( params.url.page == 1 ) {
-          models.announcements = function (emitter) {
-            app.models.discussion.announcements(params.url.id, emitter);
-          };
-        }
-
-        app.listen(models, function (output) {
+        }, function (output) {
           var discussion = output.discussion,
               announcements = output.announcements,
               topics = output.topics;
 
           if ( output.listen.success ) {
-
             app.listen({
               viewTimes: function (emitter) {
                 var topicID = [];
 
-                for ( var topic in topics ) {
-                  if ( topics.hasOwnProperty(topic) ) {
-                    topicID.push(topics[topic].id);
-                  }
-                }
+                topics.forEach( function (item) {
+                  topicID.push(item.id);
+                })
 
-                for ( var announcement in announcements ) {
-                  if ( announcements.hasOwnProperty(announcement) ) {
-                    topicID.push(announcements[announcement].id);
-                  }
-                }
+                announcements.forEach( function (item) {
+                  topicID.push(item.id);
+                })
 
                 app.models.user.topicViewTimes({
                   userID: params.session.userID,
@@ -76,56 +66,47 @@ function handler(params, context, emitter) {
                 }, emitter);
               }
             }, function (output) {
-              var viewTimes = {},
-                  content = {};
+              var viewTimes = {};
 
               if ( output.listen.success ) {
-
                 if ( output.viewTimes.length ) {
-                  output.viewTimes.forEach( function (item, index, array) {
+                  output.viewTimes.forEach( function (item) {
                     viewTimes[item.topicID] = item;
                   });
                 }
 
-                discussion.topicsFormatted = app.toolbox.numeral(discussion.topics).format('0,0');
-
-                content = {
-                  discussion: discussion,
-                  breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
-                  pagination: app.toolbox.helpers.paginate('discussion/' + discussion.url + '/id/' + discussion.id, params.url.page, discussion.topics),
-                  previousAndNext: app.toolbox.helpers.previousAndNext('discussion/' + discussion.url + '/id/' + discussion.id, params.url.page, discussion.topics)
-                };
-
-                if ( announcements && app.size(announcements) ) {
-                  for ( var announcement in announcements ) {
-                    if ( params.session.groupID > 1 ) {
-                      if ( !viewTimes[announcements[announcement].id] || ( announcements[announcement].lastPostAuthor !== params.session.username && app.toolbox.moment(announcements[announcement].lastPostCreated).isAfter(viewTimes[announcements[announcement].id].time) ) ) {
-                        announcements[announcement].unread = true;
-                      }
-                    } else {
-                      if ( app.toolbox.moment(announcements[announcement].lastPostCreated).isAfter(params.session.lastActivity) ) {
-                        announcements[announcement].unread = true;
-                      }
+                announcements.forEach( function (item) {
+                  if ( params.session.groupID > 1 ) {
+                    if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+                      item.unread = true;
+                    }
+                  } else {
+                    if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
+                      item.unread = true;
                     }
                   }
-                  content.announcements = announcements;
-                }
+                })
 
-                if ( topics && app.size(topics) ) {
-                  for ( var topic in topics ) {
-                    if ( params.session.groupID > 1 ) {
-                      if ( !viewTimes[topics[topic].id] || ( topics[topic].lastPostAuthor !== params.session.username && app.toolbox.moment(topics[topic].lastPostCreated).isAfter(viewTimes[topics[topic].id].time) ) ) {
-                        topics[topic].unread = true;
-                      }
-                    } else if ( app.toolbox.moment(topics[topic].lastPostCreated).isAfter(params.session.lastActivity) ) {
-                      topics[topic].unread = true;
+                topics.forEach( function (item) {
+                  if ( params.session.groupID > 1 ) {
+                    if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+                      item.unread = true;
                     }
+                  } else if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
+                    item.unread = true;
                   }
-                  content.topics = topics;
-                }
+                })
 
                 emitter.emit('ready', {
-                  content: content
+                  content: {
+                    discussion: discussion,
+                    announcements: announcements.length ? announcements : false,
+                    topics: topics.length ? topics : false,
+                    breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
+                    page: page,
+                    pagination: app.toolbox.helpers.paginate('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics),
+                    previousAndNext: app.toolbox.helpers.previousAndNext('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics)
+                  }
                 });
 
               } else {

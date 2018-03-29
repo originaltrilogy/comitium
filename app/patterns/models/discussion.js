@@ -46,6 +46,8 @@ function info(discussionID, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
+        output.discussion[0]['topicsFormatted'] = app.toolbox.numeral(output.discussion[0].topics).format('0,0');
+        
         // Cache the discussion info object for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
@@ -106,42 +108,26 @@ function announcements(discussionID, emitter) {
         });
       }
     }, function (output) {
-      var announcements = {};
-
       if ( output.listen.success ) {
-
-        for ( var i = 0; i < output.announcements.length; i += 1 ) {
-          if ( output.announcements[i] ) {
-            announcements[i] = {};
-            for ( var property in output.announcements[i] ) {
-              if ( output.announcements[i].hasOwnProperty(property) ) {
-                announcements[i][property] = output.announcements[i][property];
-                if ( property === 'replies' ) {
-                  announcements[i][property + 'Formatted'] = app.toolbox.numeral(output.announcements[i][property]).format('0,0');
-                } else if ( property === 'postDate' || property === 'lastPostCreated' ) {
-                  announcements[i][property + 'Formatted'] = app.toolbox.moment.tz(output.announcements[i][property], 'America/New_York').format('D-MMM-YYYY');
-                }
-              }
-            }
-          } else {
-            break;
-          }
-        }
+        output.announcements.forEach( function (item) {
+          item['repliesFormatted'] = app.toolbox.numeral(item['replies']).format('0,0');
+          item['postDateFormatted'] = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY');
+          item['lastPostCreatedFormatted'] = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY');
+        })
 
         // Cache the announcements for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
             key: cacheKey,
             scope: scope,
-            value: announcements
+            value: output.announcements
           });
         }
 
-        emitter.emit('ready', announcements);
+        emitter.emit('ready', output.announcements);
       } else {
         emitter.emit('error', output.listen);
       }
-
     });
   }
 }
@@ -194,48 +180,32 @@ function topics(args, emitter) {
         });
       }
     }, function (output) {
-      var topics = {};
-
       if ( output.listen.success ) {
-
-        for ( var i = 0; i < end - start; i += 1 ) {
-          if ( output.topics[i] ) {
-            topics[i] = {};
-            for ( var property in output.topics[i] ) {
-              if ( output.topics[i].hasOwnProperty(property) ) {
-                topics[i][property] = output.topics[i][property];
-                if ( property === 'replies' ) {
-                  topics[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
-                } else if ( property === 'postDate' || property === 'lastPostCreated' ) {
-                  topics[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('D-MMM-YYYY');
-                }
-              }
-            }
-          } else {
-            break;
-          }
-        }
+        output.topics.forEach( function (item) {
+          item['repliesFormatted'] = app.toolbox.numeral(item['replies']).format('0,0');
+          item['postDateFormatted'] = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY');
+          item['lastPostCreatedFormatted'] = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY');
+        })
 
         // Cache the topics for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
             key: cacheKey,
             scope: scope,
-            value: topics
+            value: output.topics
           });
         }
 
-        emitter.emit('ready', topics);
+        emitter.emit('ready', app.cache.get({ scope: scope, key: cacheKey }));
       } else {
         emitter.emit('error', output.listen);
       }
-
     });
   }
 }
 
 
-function breadcrumbs(discussionTitle) {
+function breadcrumbs() {
   return {
     a: {
       name: 'Home',

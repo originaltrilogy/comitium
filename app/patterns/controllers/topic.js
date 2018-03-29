@@ -130,6 +130,8 @@ function handler(params, context, emitter) {
               }, emitter);
             }
           }, function (output) {
+            var firstPost = [];
+
             if ( output.listen.success ) {
               if ( params.session.userID ) {
                 app.models.topic.viewTimeUpdate({
@@ -142,11 +144,17 @@ function handler(params, context, emitter) {
               topic.createdFormatted = app.toolbox.moment.tz(topic.created, 'America/New_York').format('D-MMM-YYYY');
               topic.repliesFormatted = app.toolbox.numeral(topic.replies).format('0,0');
 
+              if ( page === 1 ) {
+                firstPost[0] = output.posts.shift();
+              }
+
               emitter.emit('ready', {
                 view: type,
                 content: {
                   topic: topic,
+                  firstPost: firstPost,
                   posts: output.posts,
+                  page: page,
                   invitees: output.invitees,
                   userIsSubscribed: output.subscriptionExists,
                   userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 0 && topic.discussionID !== 1,

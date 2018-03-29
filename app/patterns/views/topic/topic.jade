@@ -1,6 +1,6 @@
 header
   include ../partials/breadcrumbs
-  if !url.page || url.page === '1'
+  if page === 1
     include ../partials/topic-summary-first-page
   else
     include ../partials/topic-summary
@@ -16,12 +16,14 @@ if topic.lockedByID
       p.reason !{topic.lockReason}
 
 section.posts
+  each post in firstPost
+    include ../post/_topic-post
   nav
+    h2 #{topic.repliesFormatted} Repl#{ topic.replies === 1 ? 'y' : 'ies' }
     include ../partials/pagination
     include ../partials/topic-actions
-  if posts
-    each post in posts
-      include ../post/_topic-post
+  each post in posts
+    include ../post/_topic-post
 
 include ../partials/previous-and-next
 

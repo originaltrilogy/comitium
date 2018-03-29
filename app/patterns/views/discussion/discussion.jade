@@ -4,9 +4,6 @@ header
     h1 #{discussion.title}
     if discussion.description
       p !{discussion.description}
-    dl.content-stats
-      dt Topics
-      dd #{discussion.topicsFormatted}
 
 if announcements
   section.announcements
@@ -18,7 +15,7 @@ if announcements
 
 section.topics
   header
-    h2 Topics
+    h2 #{discussion.topicsFormatted} Topic#{ discussion.topics === 1 ? '' : 's' }
     include ../partials/pagination
     if discussion.id !== 1
       nav.actions
@@ -28,9 +25,8 @@ section.topics
           if session.moderateDiscussions
             li.new-announcement
               a(href="topic/action/startAnnouncement/id/#{discussion.id}") Make an announcement
-  if topics
-    each topic in topics
-      include ../partials/topic
+  each topic in topics
+    include ../partials/topic
   else
     p This discussion has no topics. <a href="topic/action/start/id/#{discussion.id}">Why not start one?</a>
 

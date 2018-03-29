@@ -9,10 +9,3 @@ section.summary
     dt.date Date
     dd.date
       time #{topic.createdFormatted}
-  dl.content-stats
-    dt
-      if topic.replies != 1
-        | Replies
-      else
-        | Reply
-    dd #{topic.repliesFormatted}
