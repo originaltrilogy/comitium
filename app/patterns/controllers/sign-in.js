@@ -59,6 +59,8 @@ function submit(params, context, emitter) {
 
         if ( output.authenticate.success ) {
           user.userID = output.authenticate.user.id;
+          user.authenticated = true;
+          user.loginReferrer = params.form.loginReferrer;
           delete user.id;
 
           if ( params.form.remember ) {
@@ -81,7 +83,7 @@ function submit(params, context, emitter) {
                 expires: 'now'
               }
             },
-            session: app.extend(user, { authenticated: true, loginReferrer: params.form.loginReferrer }),
+            session: user,
             redirect: {
               url: params.form.forwardToUrl
             }
