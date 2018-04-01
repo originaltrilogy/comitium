@@ -2,6 +2,8 @@ header
   section.summary
     h1 Lock a post
     p Locking a post prevents its author from making edits. You can unlock the post at any time.
+    p
+      strong This will only lock an individual post. If you're trying to lock the entire topic, <a href="topic/action/lock/id/#{post.topicID}">click here</a>.
 
 if lock && lock.message
   section.notice.error

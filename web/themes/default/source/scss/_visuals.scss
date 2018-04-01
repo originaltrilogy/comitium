@@ -196,8 +196,8 @@ nav.pagination {
 
 // Topic counts for forums, post counts for topics
 dl.content-stats {
-  border-color: hsla(227, 15%, 53%, 1);
-  color: hsl(0, 0%, 80%);
+  background: hsla(227,18%,26%,1);
+  color: hsl(227,18%,80%);
 }
 
 article {
@@ -437,8 +437,7 @@ body[data-controller="announcement"][data-view="announcement"] {
 
   section.posts {
     > nav {
-      background: hsl(227,18%,20%);
-    border-bottom: 1px solid hsl(227,18%,16%);
+      background: hsl(227,18%,22%);
     }
   }
 

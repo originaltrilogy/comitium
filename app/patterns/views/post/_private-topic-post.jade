@@ -1,4 +1,4 @@
-article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' } #{ post.authorGroupID === 4 || post.authorGroupID === 5 ? 'staff' : ''}" data-post-id="#{post.id}")
+article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' } #{ post.authorGroupID === 4 || post.authorGroupID === 5 ? 'signature staff' : ''}" data-post-id="#{post.id}")
   header
     a(class="avatar #{ post.authorGroupID === 6 ? 'banned' : '' }" href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
       img(src="avatars/#{post.authorID}.jpg")
@@ -23,10 +23,11 @@ article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' }
           a(href="post/action/edit/id/#{post.id}") Edit
       //- li.bookmark
       //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
-  section.signature
-    if post.authorGroupID === 4
-      section.staff.moderator originaltrilogy.com Moderator
-    else if post.authorGroupID === 5
-      section.staff.administrator originaltrilogy.com Administrator
-    section.content
-      != post.authorSignature
+  if post.authorSignature
+    section.signature
+      if post.authorGroupID === 4
+        section.staff.moderator originaltrilogy.com Moderator
+      else if post.authorGroupID === 5
+        section.staff.administrator originaltrilogy.com Administrator
+      section.content
+        != post.authorSignature
