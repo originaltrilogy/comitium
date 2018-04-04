@@ -219,6 +219,8 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
         h2 {
           flex: 1 1 auto;
+          display: flex;
+          align-items: center;
           margin: 1.2rem 0;
         }
         nav.pagination,
