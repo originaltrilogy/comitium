@@ -103,7 +103,7 @@ gulp.task('watch', function() {
   })
   gulp.watch('web/themes/default/source/js/**/**.js', ['jsDev', 'jsProd'])
   gulp.watch('app/patterns/views/**/**.jade', ['views'])
-  gulp.watch('web/**/**.jade', ['views'])
+  gulp.watch('web/**/**.html', ['views'])
 })
 
 gulp.task('default', ['watch'])
