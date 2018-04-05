@@ -30,8 +30,7 @@ var themes = [
       //   path: 'rebellious'
       // }
     ],
-    devTasks = [],
-    prodTasks = []
+    buildTasks = []
 
 
 function css(options) {
@@ -46,41 +45,23 @@ function css(options) {
              .pipe(livereload())
 }
 
-
 themes.forEach( function (item, index) {
-  prodTasks[index] = 'css' + item.name
+  buildTasks[index] = 'css' + item.name
 
   gulp.task('css' + item.name, function () {
     css({ theme: item.path })
   })
 })
 
-devTasks.push('jsDev')
-prodTasks.push('jsProd')
+buildTasks.push('js')
 
-gulp.task('jsDev', function () {
-  return gulp.src(['web/themes/default/source/js/lib/modernizr-dev.js',
-                   'web/themes/default/source/js/lib/respond.min.js',
-                   'web/themes/default/source/js/site/immediate.js',
+gulp.task('js', function () {
+  return gulp.src(['web/themes/default/source/js/site/immediate.js',
                    'web/themes/default/source/js/site/**.js'
                   ])
              .pipe(sourcemaps.init())
                .pipe(uglify())
-               .pipe(concat('debug.js'))
-               .pipe(sourcemaps.write(''))
-             .pipe(gulp.dest('web/themes/default/min'))
-             .pipe(livereload())
-})
-
-gulp.task('jsProd', function () {
-  return gulp.src(['web/themes/default/source/js/lib/modernizr-prod.js',
-                   'web/themes/default/source/js/lib/respond.min.js',
-                   'web/themes/default/source/js/site/immediate.js',
-                   'web/themes/default/source/js/site/**.js'
-                  ])
-             .pipe(sourcemaps.init())
-               .pipe(uglify())
-               .pipe(concat('production.js'))
+               .pipe(concat('site.js'))
                .pipe(sourcemaps.write(''))
              .pipe(gulp.dest('web/themes/default/min'))
              .pipe(livereload())
@@ -101,12 +82,10 @@ gulp.task('watch', function() {
       gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', ['css' + item.name])
     }
   })
-  gulp.watch('web/themes/default/source/js/**/**.js', ['jsDev', 'jsProd'])
+  gulp.watch('web/themes/default/source/js/**/**.js', ['js'])
   gulp.watch('app/patterns/views/**/**.jade', ['views'])
   gulp.watch('web/**/**.html', ['views'])
 })
 
 gulp.task('default', ['watch'])
-gulp.task('dev', devTasks)
-gulp.task('prod', prodTasks)
-gulp.task('all', devTasks.concat(prodTasks))
+gulp.task('all', buildTasks)

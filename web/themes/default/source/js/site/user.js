@@ -1,17 +1,17 @@
-CF.user = ( function (Modernizr, CF) {
-  'use strict';
+CF.user = ( function () {
+  'use strict'
 
   var methods = {
 
       init: function () {
-        CF.global.collapseQuotes();
+        CF.global.collapseQuotes()
       }
 
-    };
+    }
 
   //  Public methods
   return {
     init: methods.init
-  };
+  }
 
-})(Modernizr, CF);
+})(CF)

@@ -14,7 +14,7 @@ function handler(params, context, emitter) {
       cssKey = themePath.css + '/min/site.css',
       cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.css + '/min/site.css?v=',
       jsKey = themePath.js + '/min/' + app.config.citizen.mode + '.js',
-      jsUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.js + '/min/' + app.config.citizen.mode + '.js?v=',
+      jsUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.js + '/min/site.js?v=',
       staticFileStats = app.cache.get({ scope: 'staticFileStats' });
 
   app.listen({
@@ -60,12 +60,12 @@ function handler(params, context, emitter) {
             });
           },
           js: function (emitter) {
-            fs.stat(app.config.citizen.directories.web + '/themes/' + themePath.js + '/min/' + app.config.citizen.mode + '.js', function (err, stats) {
+            fs.stat(app.config.citizen.directories.web + '/themes/' + themePath.js + '/min/site.js', function (err, stats) {
               // If there's a problem reading the JS file, fall back to the default theme
               if ( err ) {
-                jsKey = 'default/min/' + app.config.citizen.mode + '.js';
-                jsUrl = app.config.comitium.staticAssetUrl + 'themes/default/min/' + app.config.citizen.mode + '.js?v=';
-                fs.stat(app.config.citizen.directories.web + '/themes/default/min/' + app.config.citizen.mode + '.js', function (err, stats) {
+                jsKey = 'default/min/site.js';
+                jsUrl = app.config.comitium.staticAssetUrl + 'themes/default/min/site.js?v=';
+                fs.stat(app.config.citizen.directories.web + '/themes/default/min/site.js', function (err, stats) {
                   if ( err ) {
                     emitter.emit('error', err);
                   } else {
