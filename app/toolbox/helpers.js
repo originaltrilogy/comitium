@@ -150,7 +150,7 @@ function previousAndNext(baseUrl, currentPage, itemCount) {
   var pagination = {
         // Make sure currentPage and itemCount are number types
         currentPage: parseInt(currentPage, 10),
-        lastPage: Math.ceil( parseInt(itemCount, 10) / 25 ),
+        lastPage: parseInt(itemCount, 10) ? Math.ceil( parseInt(itemCount, 10) / 25 ) : parseInt(currentPage, 10),
         pages: {}
       },
       output = false;
