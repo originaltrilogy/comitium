@@ -71,6 +71,7 @@ function handler(params, context, emitter) {
                 }
 
                 content = {
+                  stats: stats,
                   breadcrumbs: app.models['private-topics'].breadcrumbs(),
                   pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, stats.topics),
                   previousAndNext: app.toolbox.helpers.previousAndNext('private-topics', params.url.page, stats.topics)

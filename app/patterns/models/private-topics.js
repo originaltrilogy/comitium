@@ -46,6 +46,8 @@ function stats(userID, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
+        output.stats[0].topicsFormatted = app.toolbox.numeral(output.stats[0].topics).format('0,0');
+
         // Cache the discussion info object for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
@@ -59,7 +61,6 @@ function stats(userID, emitter) {
       } else {
         emitter.emit('error', output.listen);
       }
-
     });
   }
 }
