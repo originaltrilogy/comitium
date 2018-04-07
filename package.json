@@ -1,6 +1,6 @@
 {
   "name": "comitium",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Forum software for Node.js",
   "author": {
     "name": "Jay Sylvester",
@@ -18,8 +18,9 @@
   },
   "dependencies": {
     "bcrypt": "1.0.3",
-    "citizen": "0.7.19",
+    "citizen": "0.8.0",
     "gm": "1.23.1",
+    "jade": "1.11.0",
     "markdown-it": "8.4.1",
     "markdown-it-emoji": "1.4.0",
     "moment": "2.21.0",
