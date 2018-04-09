@@ -113,38 +113,23 @@ function topics(args, emitter) {
         });
       }
     }, function (output) {
-      var announcements = {};
-
       if ( output.listen.success ) {
-
-        for ( var i = 0; i < output.announcements.length; i += 1 ) {
-          if ( output.announcements[i] ) {
-            announcements[i] = {};
-            for ( var property in output.announcements[i] ) {
-              if ( output.announcements[i].hasOwnProperty(property) ) {
-                announcements[i][property] = output.announcements[i][property];
-                if ( property === 'replies' ) {
-                  announcements[i][property + 'Formatted'] = app.toolbox.numeral(output.announcements[i][property]).format('0,0');
-                } else if ( property === 'postDate' || property === 'lastPostCreated' ) {
-                  announcements[i][property + 'Formatted'] = app.toolbox.moment.tz(output.announcements[i][property], 'America/New_York').format('D-MMM-YYYY');
-                }
-              }
-            }
-          } else {
-            break;
-          }
-        }
+        output.announcements.forEach( function (item) {
+          item['repliesFormatted'] = app.toolbox.numeral(item['replies']).format('0,0');
+          item['postDateFormatted'] = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY');
+          item['lastPostCreatedFormatted'] = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY');
+        })
 
         // Cache the announcements for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
             key: cacheKey,
             scope: scope,
-            value: announcements
+            value: output.announcements
           });
         }
 
-        emitter.emit('ready', announcements);
+        emitter.emit('ready', output.announcements);
       } else {
         emitter.emit('error', output.listen);
       }

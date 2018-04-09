@@ -196,7 +196,7 @@ function topics(args, emitter) {
           });
         }
 
-        emitter.emit('ready', app.cache.get({ scope: scope, key: cacheKey }));
+        emitter.emit('ready', output.topics);
       } else {
         emitter.emit('error', output.listen);
       }
