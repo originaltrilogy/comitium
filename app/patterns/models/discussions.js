@@ -45,34 +45,41 @@ function categories(groupID, emitter) {
         });
       }
     }, function (output) {
-      var categories = {};
+      var categories = [];
 
       if ( output.listen.success ) {
         // Transform the data array into a nested object usable by the view
         output.categories.forEach( function (category, index, array) {
-          categories[category.categoryTitle] = {};
-          for ( var property in category ) {
-            if ( category.hasOwnProperty(property) && property.search('category') === 0 ) {
-              categories[category.categoryTitle][property] = category[property];
-            }
-          }
-          categories[category.categoryTitle].discussions = {};
+          categories[category.categorySort-1] = {
+            categoryID: category.categoryID,
+            categorySort: category.categorySort,
+            categoryTitle: category.categoryTitle,
+            categoryDescription: category.categoryDescription,
+            subcategories: []
+          };
         });
-
-        output.categories.forEach( function (category, index, array) {
-          categories[category.categoryTitle].discussions[category.discussionTitle] = {};
-          for ( var property in category ) {
-            if ( category.hasOwnProperty(property) && property.search('category') !== 0 ) {
-              categories[category.categoryTitle].discussions[category.discussionTitle][property] = category[property];
-              if ( property === 'topics' || property === 'posts' ) {
-                categories[category.categoryTitle].discussions[category.discussionTitle][property + 'Formatted'] = app.toolbox.numeral(category[property]).format('0,0');
-              } else if ( property === 'lastPostCreated' ) {
-                categories[category.categoryTitle].discussions[category.discussionTitle][property + 'Formatted'] = app.toolbox.moment.tz(category[property], 'America/New_York').format('D-MMM-YYYY');
-                // Formatting needs to be moved to the controller for this to work.
-                // categories[category.categoryTitle].discussions[category.discussionTitle][property + 'Formatted'] = app.toolbox.moment.tz(category[property], 'America/New_York').fromNow();
-              }
+        categories.forEach( function (category, index, array) {
+          output.categories.forEach( function (subcategory, index, array) {
+            if ( subcategory.categoryID === category.categoryID ) {
+              categories[category.categorySort-1].subcategories[subcategory.discussionSort-1] = {
+                discussionID: subcategory.discussionID,
+                discussionSort: subcategory.discussionSort,
+                discussionTitle: subcategory.discussionTitle,
+                discussionUrl: subcategory.discussionUrl,
+                discussionDescription: subcategory.discussionDescription,
+                topics: subcategory.topics,
+                topicsFormatted: app.toolbox.numeral(subcategory.topics).format('0,0'),
+                posts: subcategory.posts,
+                postsFormatted: app.toolbox.numeral(subcategory.posts).format('0,0'),
+                lastPostAuthorID: subcategory.lastPostAuthorID,
+                lastPostCreated: subcategory.lastPostCreated,
+                lastPostCreatedFormatted: app.toolbox.moment.tz(subcategory.lastPostCreated, 'America/New_York').format('D-MMM-YYYY'),
+                lastPostAuthorGroupID: subcategory.lastPostAuthorGroupID,
+                lastPostAuthor: subcategory.lastPostAuthor,
+                lastPostAuthorUrl: subcategory.lastPostAuthorUrl
+              };
             }
-          }
+          });
         });
 
         // Cache the categories object for future requests

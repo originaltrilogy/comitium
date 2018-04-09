@@ -171,38 +171,23 @@ function topics(args, emitter) {
         });
       }
     }, function (output) {
-      var subset = {};
-
       if ( output.listen.success ) {
-        // Build a view-ready object containing only the posts in the requested subset
-        for ( var i = 0; i < end - start; i += 1 ) {
-          if ( output.topics[i] ) {
-            subset[i] = {};
-            for ( var property in output.topics[i] ) {
-              if ( output.topics[i].hasOwnProperty(property) ) {
-                subset[i][property] = output.topics[i][property];
-                if ( property === 'replies' ) {
-                  subset[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
-                } else if ( property === 'postDate' || property === 'lastPostCreated' ) {
-                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('D-MMM-YYYY');
-                }
-              }
-            }
-          } else {
-            break;
-          }
-        }
+        output.topics.forEach( function (item) {
+          item['repliesFormatted'] = app.toolbox.numeral(item['replies']).format('0,0');
+          item['postDateFormatted'] = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY');
+          item['lastPostCreatedFormatted'] = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY');
+        })
 
         // Cache the subset for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
             key: cacheKey,
             scope: scope,
-            value: subset
+            value: output.topics
           });
         }
 
-        emitter.emit('ready', subset);
+        emitter.emit('ready', output.topics);
       } else {
         emitter.emit('error', output.listen);
       }

@@ -59,8 +59,7 @@ function handler(params, context, emitter) {
                 }
               }
             }, function (output) {
-              var viewTimes = {},
-                  content = {};
+              var viewTimes = {};
 
               if ( output.listen.success ) {
 
@@ -70,28 +69,24 @@ function handler(params, context, emitter) {
                   });
                 }
 
-                content = {
-                  breadcrumbs: {
-                    a: {
-                      name: 'Home',
-                      url: app.config.comitium.basePath
-                    }
-                  },
-                  pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, stats.topics),
-                  previousAndNext: app.toolbox.helpers.previousAndNext('subscriptions', params.url.page, stats.topics),
-                };
-
-                if ( topics && app.size(topics) ) {
-                  for ( var topic in topics ) {
-                    if ( !viewTimes[topics[topic].id] || ( topics[topic].lastPostAuthor !== params.session.username && app.toolbox.moment(topics[topic].lastPostCreated).isAfter(viewTimes[topics[topic].id].time) ) ) {
-                      topics[topic].unread = true;
-                    }
+                topics.forEach( function (item) {
+                  if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+                    item.unread = true;
                   }
-                  content.topics = topics;
-                }
+                })
 
                 emitter.emit('ready', {
-                  content: content
+                  content: {
+                    topics: topics.length ? topics : false,
+                    breadcrumbs: {
+                      a: {
+                        name: 'Home',
+                        url: app.config.comitium.basePath
+                      }
+                    },
+                    pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, stats.topics),
+                    previousAndNext: app.toolbox.helpers.previousAndNext('subscriptions', params.url.page, stats.topics),
+                  }
                 });
 
               } else {

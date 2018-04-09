@@ -70,28 +70,26 @@ function handler(params, context, emitter) {
                   });
                 }
 
-                content = {
-                  discussion: discussion,
-                  breadcrumbs: app.models.announcements.breadcrumbs(),
-                  pagination: app.toolbox.helpers.paginate('announcements/id/2', params.url.page, discussion.topics),
-                  previousAndNext: app.toolbox.helpers.previousAndNext('announcements/id/2', params.url.page, discussion.topics)
-                };
-
-                if ( topics && app.size(topics) ) {
-                  for ( var topic in topics ) {
-                    if ( params.session.groupID > 1 ) {
-                      if ( !viewTimes[topics[topic].id] || ( topics[topic].lastPostAuthor !== params.session.username && app.toolbox.moment(topics[topic].lastPostCreated).isAfter(viewTimes[topics[topic].id].time) ) ) {
-                        topics[topic].unread = true;
-                      }
-                    } else if ( app.toolbox.moment(topics[topic].lastPostCreated).isAfter(params.session.lastActivity) ) {
-                      topics[topic].unread = true;
+                topics.forEach( function (item) {
+                  if ( params.session.groupID > 1 ) {
+                    if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+                      item.unread = true;
+                    }
+                  } else {
+                    if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
+                      item.unread = true;
                     }
                   }
-                  content.topics = topics;
-                }
+                })
 
                 emitter.emit('ready', {
-                  content: content
+                  content: {
+                    discussion: discussion,
+                    topics: topics.length ? topics : false,
+                    breadcrumbs: app.models.announcements.breadcrumbs(),
+                    pagination: app.toolbox.helpers.paginate('announcements/id/2', params.url.page, discussion.topics),
+                    previousAndNext: app.toolbox.helpers.previousAndNext('announcements/id/2', params.url.page, discussion.topics)
+                  }
                 });
               } else {
                 emitter.emit('error', output.listen);

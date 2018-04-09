@@ -19,17 +19,13 @@ function handler(params, context, emitter) {
     }
   }, function (output) {
     if ( output.listen.success ) {
-      for ( var category in output.categories ) {
-        if ( output.categories.hasOwnProperty(category) ) {
-          for ( var discussion in output.categories[category].discussions ) {
-            if ( output.categories[category].discussions.hasOwnProperty(discussion) ) {
-              if ( app.toolbox.moment(output.categories[category].discussions[discussion].lastPostCreated).isAfter(params.session.lastActivity) && output.categories[category].discussions[discussion].lastPostAuthorID !== params.session.userID ) {
-                output.categories[category].discussions[discussion].unread = true;
-              }
-            }
+      output.categories.forEach( function (item) {
+        item.subcategories.forEach( function (item) {
+          if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) && item.lastPostAuthorID !== params.session.userID ) {
+            item.unread = true;
           }
-        }
-      }
+        });
+      })
 
       emitter.emit('ready', {
         content: {

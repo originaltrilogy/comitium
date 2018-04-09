@@ -12,7 +12,7 @@ section.categories
   each category in categories
     section(class="category" data-category-id="#{category.categoryID}")
       h2 #{category.categoryTitle}
-      each discussion in category.discussions
+      each discussion in category.subcategories
         article(class="discussion #{ discussion.unread ? 'unread' : ''}" data-discussion-id="#{discussion.discussionID}")
           section.description
             h3
