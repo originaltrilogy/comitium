@@ -1428,11 +1428,9 @@ function viewTimeUpdate(args, emitter) {
         }
       }, function (output) {
         if ( output.listen.success ) {
-          if ( !args.topic.private ) {
-            app.cache.clear({ scope: 'subscriptions-' + args.userID, key: 'models-subscriptions-unread' });
-          } else {
-            app.cache.clear({ scope: 'private-topics-' + args.userID, key: 'private-topics-unread' });
-          }
+          app.cache.clear({ scope: 'subscriptions-' + args.userID, key: 'models-subscriptions-unread' });
+          app.cache.clear({ scope: 'private-topics-' + args.userID, key: 'private-topics-unread' });
+          
           if ( emitter ) {
             if ( output.listen.success ) {
               emitter.emit('ready', {
