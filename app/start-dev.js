@@ -56,8 +56,8 @@ app.toolbox.dbPool.on('error', function (err, client) {
 app.resources = {
   images: {
     defaultAvatar: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/default-avatar.jpg'),
-    logoHorizontal: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/logo-horizontal.svg'),
-    logoVertical: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/logo-vertical.svg')
+    logoHorizontal: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/logo-horizontal.svg').toString(),
+    logoVertical: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/logo-vertical.svg').toString()
   }
 };
 
