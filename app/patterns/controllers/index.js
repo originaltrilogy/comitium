@@ -9,7 +9,6 @@ module.exports = {
 
 
 function handler(params, context, emitter) {
-  // emitter.emit('ready');
   emitter.emit('ready', {
     handoff: {
       controller: 'discussions'

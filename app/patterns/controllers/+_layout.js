@@ -8,10 +8,13 @@ module.exports = {
 
 
 function handler(params, context, emitter) {
-  var controllerChain = params.route.chain[0].controller;
+  var controllerChain = '';
 
-  for ( var i = 1; i < params.route.chain.length; i++ ) {
-    controllerChain = controllerChain + ', ' + params.route.chain[i].controller;
+  for ( var i = 0; i < params.route.chain.length; i++ ) {
+    controllerChain += params.route.chain[i].controller;
+    if ( i < params.route.chain.length-1 ) {
+      controllerChain += ', ';
+    }
   }
 
   emitter.emit('ready', {
