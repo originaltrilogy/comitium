@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "bcrypt": "1.0.3",
-    "citizen": "^0.8.2",
+    "citizen": "0.8.3",
     "gm": "1.23.1",
     "jade": "1.11.0",
     "markdown-it": "8.4.1",
