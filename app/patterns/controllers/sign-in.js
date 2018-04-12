@@ -53,8 +53,7 @@ function submit(params, context, emitter) {
       }
     }, function (output) {
       var user = output.authenticate.user,
-          cookie = {},
-          cookieExpires = 'session';
+          cookie = {};
 
       if ( output.listen.success ) {
 
