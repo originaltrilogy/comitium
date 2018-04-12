@@ -57,6 +57,11 @@ function start(params, context, emitter) {
                 });
 
                 emitter.emit('ready', {
+                  cookie: {
+                    comitium_active: {
+                      expires: 'now'
+                    }
+                  },
                   session: user
                 });
               } else {

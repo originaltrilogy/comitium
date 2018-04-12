@@ -53,6 +53,7 @@ function submit(params, context, emitter) {
       }
     }, function (output) {
       var user = output.authenticate.user,
+          cookie = {},
           cookieExpires = 'session';
 
       if ( output.listen.success ) {
@@ -63,8 +64,16 @@ function submit(params, context, emitter) {
           user.loginReferrer = params.form.loginReferrer;
           delete user.id;
 
-          if ( params.form.remember ) {
-            cookieExpires = 'never';
+          if ( !params.cookie.comitium_id ) {
+            cookie.comitium_id = {
+              value: output.authenticate.user.usernameHash,
+              expires: params.form.remember ? 'never' : 'session'
+            }
+          }
+          
+          // This cookie is only necessary for guests
+          cookie.comitium_active = {
+            expires: 'now'
           }
 
           app.models.user.log({
@@ -74,19 +83,9 @@ function submit(params, context, emitter) {
           });
 
           emitter.emit('ready', {
-            cookie: {
-              comitium_id: {
-                value: output.authenticate.user.usernameHash,
-                expires: cookieExpires
-              },
-              comitium_active: {
-                expires: 'now'
-              }
-            },
+            cookie: cookie,
             session: user,
-            redirect: {
-              url: params.form.forwardToUrl
-            }
+            redirect: params.form.forwardToUrl
           });
         } else {
           emitter.emit('ready', {
