@@ -15,7 +15,7 @@ if announcements
 
 section.topics
   header
-    h2 #{discussion.topicsFormatted} Topic#{ discussion.topics === 1 ? '' : 's' }
+    h2 #{discussion.topicsFormatted} Topic#{ discussion.topics != 1 ? 's' : '' }
     include ../partials/pagination
     if discussion.id !== 1
       nav.actions

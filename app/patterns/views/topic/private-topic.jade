@@ -17,7 +17,7 @@ section.posts
   each post in firstPost
     include ../post/_topic-post
   nav
-    h2 #{topic.repliesFormatted} Repl#{ topic.replies === 1 ? 'y' : 'ies' }
+    h2 #{topic.repliesFormatted} Repl#{ topic.replies != 1 ? 'ies' : 'y' }
     include ../partials/pagination
     include ../partials/private-topic-actions
   each post in posts

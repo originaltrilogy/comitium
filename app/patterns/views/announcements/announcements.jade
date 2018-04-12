@@ -7,7 +7,7 @@ header
 
 section.topics
   header
-    h2 #{discussion.topicsFormatted} Announcement#{ discussion.topics === 1 ? '' : 's' }
+    h2 #{discussion.topicsFormatted} Announcement#{ discussion.topics != 1 ? 's' : '' }
     include ../partials/pagination
     if session.moderateDiscussions
       nav.actions
