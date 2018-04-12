@@ -77,6 +77,7 @@ function handler(params, context, emitter) {
 
                 emitter.emit('ready', {
                   content: {
+                    stats: stats,
                     topics: topics.length ? topics : false,
                     breadcrumbs: {
                       a: {

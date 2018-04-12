@@ -1184,7 +1184,7 @@ function unsubscribe(params, context, emitter) {
 
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.topicView({
+      app.toolbox.access.topicSubscribe({
         topicID: params.url.id,
         user: params.session
       }, emitter);
@@ -1209,7 +1209,7 @@ function unsubscribe(params, context, emitter) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
         emitter.emit('ready', {
-          redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
+          redirect: params.request.headers['referer'] && !params.request.headers['referer'].search('/sign-in') ? params.request.headers['referer'] : app.config.comitium.baseUrl + 'subscriptions'
         });
       } else {
         emitter.emit('ready', output.access);

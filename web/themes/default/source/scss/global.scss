@@ -612,7 +612,7 @@ nav.breadcrumbs {
     a {
       display: inline-block;
       max-width: 86vw;
-      overflow-x: hidden;
+      overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
@@ -841,6 +841,7 @@ section {
     span.emoji {
       font-size: 180%;
       line-height: 0.5;
+      vertical-align: middle;
     }
   }
 
@@ -1328,8 +1329,6 @@ a.avatar {
   margin: 0;
   width: 12vw;
   height: 12vw;
-  border-width: 1px;
-  border-style: solid;
   border-radius: 50%;
   overflow: hidden;
 

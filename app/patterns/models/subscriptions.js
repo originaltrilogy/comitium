@@ -12,7 +12,7 @@ module.exports = {
 
 
 function stats(userID, emitter) {
-  // See if this user's private topic stats are already cached
+  // See if this user's subscription stats are already cached
   var cacheKey = 'models-subscriptions-stats',
       scope = 'subscriptions-' + userID,
       cached = app.cache.get({ scope: scope, key: cacheKey });
@@ -36,6 +36,7 @@ function stats(userID, emitter) {
                 if ( err ) {
                   emitter.emit('error', err);
                 } else {
+                  result.rows[0]['topicsFormatted'] = app.toolbox.numeral(result.rows[0]['topics']).format('0,0');
                   emitter.emit('ready', result.rows);
                 }
               }

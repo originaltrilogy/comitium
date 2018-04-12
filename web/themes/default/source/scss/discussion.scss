@@ -311,3 +311,46 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   }
 
 }
+
+body[data-controller="subscriptions"][data-view="subscriptions"] {
+  article.topic {
+    p.last-post {
+      bottom: 17vw;
+    }
+    nav.actions {
+      flex: 1 1 auto;
+      order: 4;
+      margin: 4vw 0 0;
+      display: flex;
+      justify-content: flex-end;
+  
+      li {
+        margin: 0;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    article.topic {
+      p.last-post {
+        bottom: 13vw;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 720px) {
+    article.topic {
+      nav.actions {
+        flex: 0 0 auto;
+        margin: 0 0 0 1.6rem;
+
+        li {
+          a {
+            padding: 8px 10px;
+            font-size: 88%;
+          }
+        }
+      }
+    }
+  }
+}

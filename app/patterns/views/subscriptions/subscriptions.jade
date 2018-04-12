@@ -5,15 +5,15 @@ header
     p This is a list of topics you're following, sorted by most recent activity.
 
 section.topics
+  header
+    h2 #{stats.topicsFormatted} Topic#{ stats.topics === 1 ? '' : 's' }
+    include ../partials/pagination
   if topics
-    if pagination && pagination.lastPage > 1
-      nav
-        include ../partials/pagination
     each topic in topics
       if topic.discussionID !== 2
-        include ../partials/topic
+        include ../partials/subscribed-topic
       else
-        include ../partials/announcement
+        include ../partials/subscribed-announcement
   else
     p You're not subscribed to any topics.
 
