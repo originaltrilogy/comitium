@@ -13,7 +13,8 @@ CF.global = ( function () {
       window.addEventListener('scroll', function () {
         if ( bodyOffset > body.getBoundingClientRect().top && Math.abs(body.getBoundingClientRect().top) > header.getBoundingClientRect().height && !body.classList.contains('floating-header') ) {
           body.classList.add('floating-header')
-        } else if ( body.getBoundingClientRect().top > bodyOffset ) {
+        // The second half of the statement deals with Safari's bounceback when you scroll past the top of the page
+        } else if ( body.getBoundingClientRect().top >= bodyOffset || Math.abs(body.getBoundingClientRect().top) <= header.getBoundingClientRect().height ) {
           body.classList.remove('floating-header')
         }
 
