@@ -163,7 +163,7 @@ function topics(args, emitter) {
               'join users u2 on u2.id = p2."userID" ' +
               'where t."discussionID" = $1 ' +
               'and t.draft = false and t.private = false ' +
-              'order by t."sticky" asc, p2.created desc ' +
+              'order by t."sticky" desc, p2.created desc ' +
               'limit $2 offset $3;',
               values: [ args.discussionID, end - start, start ]
             },
