@@ -475,12 +475,20 @@ body[data-controller="announcement"][data-view="announcement"] {
 
   @media only screen and (min-width: 600px) {
     article.post {
+      header {
+        dl {
+          background-color: hsl(227,18%,22%);
+          
+          &::before {
+            background-color: hsl(227,18%,22%);
+          }
+          &::after {
+            background: hsl(227,18%,28%);
+          }
+        }
+      }
       section.content.post {
         background-color: hsl(227,18%,22%);
-
-        &::before {
-          background-color: hsl(227,18%,22%);
-        }
       }
       nav.actions {
         background-color: hsl(227,18%,22%);

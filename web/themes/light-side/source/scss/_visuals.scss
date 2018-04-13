@@ -527,10 +527,25 @@ body[data-controller="announcement"][data-view="announcement"] {
 
     article.post {
       header {
-        background: none;
+        dl {
+          border-top: 1px solid;
+          border-right: 1px solid;
+          border-left: 1px solid;
+          border-color: hsl(227,18%,90%);
+          background-color: hsl(0,0%,100%);
+          
+          &::before {
+            border-bottom: 1px solid;
+            border-left: 1px solid;
+            border-color: hsl(227,18%,90%);
+            background-color: hsl(0,0%,100%);
+          }
+          &::after {
+            background: hsl(227,18%,92%);
+          }
+        }
       }
       section.content.post {
-        border-top: 1px solid;
         border-right: 1px solid;
         border-left: 1px solid;
         border-color: hsl(227,18%,90%);
