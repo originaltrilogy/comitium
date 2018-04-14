@@ -426,9 +426,9 @@ function insert(args, emitter) {
           insertTopic: function (previous, emitter) {
 
             client.query(
-              'insert into topics ( "discussionID", "title", "titleHtml", "url", "created", "draft", "private" ) ' +
+              'insert into topics ( "discussionID", "title", "titleHtml", "url", "created", "sticky", "draft", "private" ) ' +
               'values ( $1, $2, $3, $4, $5, $6, $7 ) returning id;',
-              [ args.discussionID, args.title, args.titleHtml, args.url, args.time, args.draft, args.private ],
+              [ args.discussionID, args.title, args.titleHtml, args.url, args.time, args.time, args.draft, args.private ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -1019,11 +1019,33 @@ function reply(args, emitter) {
             );
 
           },
-          updateTopicStats: function (previous, emitter) {
-
+          sticky: function (previous, emitter) {
             client.query(
-              'update topics set replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1 where "id" = $1;',
+              'select sticky from topics where id = $1;',
               [ args.topicID ],
+              function (err, result) {
+                if ( err ) {
+                  client.query('rollback', function (err) {
+                    done();
+                  });
+                  emitter.emit('error', err);
+                } else {
+                  emitter.emit('ready', result.rows[0].sticky);
+                }
+              }
+            );
+          },
+          updateTopicStats: function (previous, emitter) {
+            var sticky;
+
+            if ( previous.sticky > args.time ) {
+              sticky = previous.sticky;
+            } else {
+              sticky = args.time;
+            }
+            client.query(
+              'update topics set replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, sticky = $2 where "id" = $1;',
+              [ args.topicID, sticky ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {

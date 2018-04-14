@@ -97,7 +97,7 @@ function topics(args, emitter) {
               'join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
               'join users u2 on u2."id" = p2."userID" ' +
               'where dp."groupID" = $1 and dp."read" = true and t."draft" = false and t.private = false ' +
-              'order by t."sticky" asc, p2.created desc ' +
+              'order by t."sticky" desc ' +
               'limit $2 offset $3;',
               [ args.groupID, end - start, start ],
               function (err, result) {

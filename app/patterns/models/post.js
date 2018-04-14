@@ -347,11 +347,49 @@ function trash(args, emitter) {
           );
 
         },
-        updateTopicStats: function (previous, emitter) {
-
+        sticky: function (previous, emitter) {
           client.query(
-            'update "topics" set "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1 where "id" = $1',
+            'select sticky from topics where id = $1;',
             [ args.topicID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', result.rows[0].sticky);
+              }
+            }
+          );
+        },
+        lastPostDate: function (previous, emitter) {
+          client.query(
+            'select max(created) as "lastPostDate" from posts where "topicID" = $1 and draft = false;',
+            [ args.topicID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', result.rows[0].lastPostDate);
+              }
+            }
+          );
+        },
+        updateTopicStats: function (previous, emitter) {
+          var sticky;
+
+          if ( previous.sticky > previous.lastPostDate ) {
+            sticky = previous.sticky;
+          } else {
+            sticky = previous.lastPostDate;
+          }
+          client.query(
+            'update "topics" set "replies" = ( select count("id") from "posts" where "topicID" = $1 and "draft" = false ) - 1, sticky = $2 where "id" = $1',
+            [ args.topicID, sticky ],
             function (err, result) {
               if ( err ) {
                 client.query('rollback', function (err) {
@@ -365,7 +403,6 @@ function trash(args, emitter) {
               }
             }
           );
-
         },
         updateDiscussionStats: function (previous, emitter) {
 
