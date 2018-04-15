@@ -3,8 +3,11 @@
 //////////////////////
 
 body[data-controller="topic"][data-view="topic"],
+body[data-controller="post"][data-view="topic"],
 body[data-controller="topic"][data-view="private-topic"],
-body[data-controller="announcement"][data-view="announcement"] {
+body[data-controller="post"][data-view="private-topic"],
+body[data-controller="announcement"][data-view="announcement"],
+body[data-controller="post"][data-view="announcement"] {
 
   section.summary {
     a.avatar {
@@ -54,7 +57,8 @@ body[data-controller="announcement"][data-view="announcement"] {
   }
 
   // First page
-  &[data-page="1"][data-action="handler"] {
+  &[data-page="1"][data-action="handler"],
+  &[data-page="1"][data-action="topic"] {
     section.posts {
       > nav {
         nav.actions ul {
@@ -339,6 +343,9 @@ body[data-controller="announcement"][data-view="announcement"] {
             display: initial;
           }
         }
+        dd.link {
+          margin-left: 1.2rem;
+        }
       }
       section.content.post {
         position: relative;
@@ -618,7 +625,8 @@ body[data-controller="announcement"][data-view="announcement"] {
 }
 
 // Private topic view
-body[data-controller="topic"][data-view="private-topic"] {
+body[data-controller="topic"][data-view="private-topic"],
+body[data-controller="post"][data-view="private-topic"] {
 
   section.notice.private {
     &::before {
@@ -644,7 +652,6 @@ body[data-controller="topic"][data-view="private-topic"] {
       &:nth-child(n+2) {
         &::before {
           content: ', ';
-          margin-left: -4px; // The way browsers handle inline display is dumb
         }
       }
       &:last-child {

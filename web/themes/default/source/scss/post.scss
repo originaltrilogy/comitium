@@ -3,7 +3,7 @@
 //////////////////////////////
 
 // Post view styles
-body[data-controller="post"] {
+body[data-controller="post"][data-view="post"] {
 
   section.summary {
     dl {

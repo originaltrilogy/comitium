@@ -6,6 +6,8 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
         a(href="post/id/#{post.id}") ##{post.id}
       dt.topic Topic
       dd.topic <a href="topic/#{post.topicUrl}/id/#{post.topicID}">#{post.topicTitle}</a>
+      dt.link Link
+      dd.link <a href="post/id/#{post.id}/action/topic##{post.id}">#{config.comitium.baseUrl}post/id/#{post.id}/action/topic##{post.id}</a>
       dt.time Time
       dd.time
         if !post.editorID

@@ -7,6 +7,7 @@ module.exports = {
   info: info,
   lock: lock,
   unlock: unlock,
+  page: page,
   saveBookmark: saveBookmark,
   saveReport: saveReport,
   trash: trash
@@ -185,6 +186,35 @@ function unlock(args, emitter) {
               success: true,
               affectedRows: result.rows
             });
+          }
+        }
+      );
+    }
+  });
+}
+
+
+function page(postID, emitter) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'select ceiling(row_number::real/25::real) as page from ' +
+        '( select id, row_number() over (order by created asc) ' +
+        'from posts where "topicID" = ( select "topicID" from posts where id = $1 and draft = false ) ) posts ' +
+        'where posts.id = $1;',
+        [ postID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            emitter.emit('error', err);
+          } else {
+            if ( result.rows.length ) {
+              emitter.emit('ready', result.rows[0].page);
+            } else {
+              emitter.emit('ready', false);
+            }
           }
         }
       );

@@ -15,14 +15,16 @@ body {
   background-color: hsl(0, 0%, 92%);
 
   // Navigation highlighting
-  &[data-controller="index"] nav li.news a,
+  &[data-controller="index"] nav li.discussions a,
   &[data-controller="discussions"] nav li.discussions a,
   &[data-controller="discussion"] nav li.discussions a,
   &[data-controller="announcements"] nav li.discussions a,
   &[data-controller="announcement"] nav li.discussions a,
   &[data-controller="topic"][data-view="topic"] nav li.discussions a,
+  &[data-controller="post"][data-view="topic"] nav li.discussions a,
   &[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a,
   &[data-controller="topic"][data-view="private-topic"] nav li.private-topics a,
+  &[data-controller="post"][data-view="private-topic"] nav li.private-topics a,
   &[data-controller="topic"][data-view="start-private"] nav li.private-topics a,
   &[data-controller="private-topics"] nav li.private-topics a,
   &[data-controller="sign-in"] nav li.sign-in a,
@@ -435,8 +437,11 @@ article.post {
 //////////////////////
 
 body[data-controller="topic"][data-view="topic"],
+body[data-controller="post"][data-view="topic"],
 body[data-controller="topic"][data-view="private-topic"],
-body[data-controller="announcement"][data-view="announcement"] {
+body[data-controller="post"][data-view="private-topic"],
+body[data-controller="announcement"][data-view="announcement"],
+body[data-controller="post"][data-view="announcement"] {
 
   main {
     background-image: linear-gradient(180deg,hsl(227,18%,98%),hsl(227,18%,94%) 100px,hsl(227,18%,94%) 0);

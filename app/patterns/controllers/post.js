@@ -13,6 +13,7 @@ module.exports = {
   unlock: unlock,
   report: report,
   reportForm: reportForm,
+  topic: topic,
   trash: trash,
   trashForm: trashForm
 };
@@ -48,7 +49,8 @@ function handler(params, context, emitter) {
       if ( output.access === true ) {
         topicController = output.topic.discussionID !== 2 ? 'topic' : 'announcement';
         topicUrlTitle = output.topic.private ? '' : '/' + output.topic.url;
-        output.topic.link = topicController + topicUrlTitle + '/id/' + output.post.topicID;
+        output.topic.url = topicController + topicUrlTitle + '/id/' + output.post.topicID;
+        output.post.url = 'post/id/' + output.post.id + '/action/topic#' + output.post.id;
 
         emitter.emit('ready', {
           content: {
@@ -670,6 +672,40 @@ function reportForm(params, context, emitter) {
     report(params, context, emitter);
   }
 
+}
+
+
+
+function topic(params, context, emitter) {
+  app.listen({
+    info: function (emitter) {
+      app.models.post.info(params.url.id, emitter);
+    },
+    page: function (emitter) {
+      app.models.post.page(params.url.id, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.page ) {
+        params.url.id = output.info.topicID;
+        params.url.page = output.page;
+
+        emitter.emit('ready', {
+          handoff: {
+            controller: 'topic'
+          },
+          view: false
+        })
+      } else {
+        emitter.emit('error', {
+          statusCode: 404,
+          message: 'The post you requested doesn\'t exist'
+        })
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
 }
 
 

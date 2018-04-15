@@ -21,8 +21,10 @@ body {
   &[data-controller="announcements"] nav li.discussions a,
   &[data-controller="announcement"] nav li.discussions a,
   &[data-controller="topic"][data-view="topic"] nav li.discussions a,
+  &[data-controller="post"][data-view="topic"] nav li.discussions a,
   &[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a,
   &[data-controller="topic"][data-view="private-topic"] nav li.private-topics a,
+  &[data-controller="post"][data-view="private-topic"] nav li.private-topics a,
   &[data-controller="topic"][data-view="start-private"] nav li.private-topics a,
   &[data-controller="private-topics"] nav li.private-topics a,
   &[data-controller="sign-in"] nav li.sign-in a,
@@ -415,8 +417,11 @@ article.post {
 //////////////////////
 
 body[data-controller="topic"][data-view="topic"],
+body[data-controller="post"][data-view="topic"],
 body[data-controller="topic"][data-view="private-topic"],
-body[data-controller="announcement"][data-view="announcement"] {
+body[data-controller="post"][data-view="private-topic"],
+body[data-controller="announcement"][data-view="announcement"],
+body[data-controller="post"][data-view="announcement"] {
 
   section.summary {
     dl.byline {
@@ -549,7 +554,8 @@ body[data-controller="announcement"][data-view="announcement"] {
 }
 
 // Private topic view
-body[data-controller="topic"][data-view="private-topic"] {
+body[data-controller="topic"][data-view="private-topic"],
+body[data-controller="post"][data-view="private-topic"] {
   ul.participants {
     li {
       &:nth-child(n+2) {

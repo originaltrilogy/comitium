@@ -1378,7 +1378,9 @@ a.avatar {
 
   // Keep the byline on topic pages from breaking
   body[data-controller="topic"][data-view="topic"],
-  body[data-controller="announcement"][data-view="announcement"] {
+  body[data-controller="post"][data-view="topic"],
+  body[data-controller="announcement"][data-view="announcement"],
+  body[data-controller="post"][data-view="announcement"] {
     section.summary {
       &::before {
         width: 26vw;
@@ -1423,8 +1425,10 @@ a.avatar {
   body[data-controller="discussions"],
   body[data-controller="discussion"],
   body[data-controller="topic"],
+  body[data-controller="post"][data-view="topic"],
   body[data-controller="announcements"],
-  body[data-controller="announcement"] {
+  body[data-controller="announcement"],
+  body[data-controller="post"][data-view="announcement"] {
     section.summary {
       &::before {
         width: 28vw;

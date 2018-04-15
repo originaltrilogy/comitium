@@ -12,6 +12,9 @@ article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' }
           time #{post.createdFormatted}
         else
           time #{post.createdFormatted} <span class="edited">— <a href="post/id/#{post.id}">Edited #{post.modifiedFormatted}</a></span>
+      dt.link Post link
+      dd.link
+        a.post(href="post/id/#{post.id}/action/topic##{post.id}" rel="author") ##{post.row_number}
   section.content.post
     != post.html
   nav.actions
