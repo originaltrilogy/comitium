@@ -1209,7 +1209,7 @@ function unsubscribe(params, context, emitter) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
         emitter.emit('ready', {
-          redirect: params.request.headers['referer'] && !params.request.headers['referer'].search('/sign-in') ? params.request.headers['referer'] : app.config.comitium.baseUrl + 'subscriptions'
+          redirect: params.request.headers['referer'] && params.request.headers['referer'].search('/sign-in') == -1 ? params.request.headers['referer'] : app.config.comitium.baseUrl + 'subscriptions'
         });
       } else {
         emitter.emit('ready', output.access);
