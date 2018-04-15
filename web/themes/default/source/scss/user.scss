@@ -21,12 +21,13 @@ body[data-view="user"] {
       margin-bottom: 4vw;
     }
     dt {
-      width: 44vw;
+      flex-basis: 50%;
+      padding-right: 2vw;
       text-align: right;
     }
     dd {
-      width: 44vw;
-      margin-left: 48vw;
+      flex-basis: 50%;
+      padding-left: 2vw;
     }
     nav.actions {
       margin-top: 0;
@@ -53,21 +54,24 @@ body[data-view="user"] {
       display: none;
     }
     header {
-      flex: 0 0 100%;
+      width: 100%;
       padding: 2vw 0;
 
       dl {
-        display: block;
         margin-bottom: 0;
       }
       dt {
-        position: relative;
-        left: 0;
-        width: 18vw;
+        flex: 0 0 14%;
       }
       dd {
-        margin-left: 18vw;
+        flex: 0 0 84%;
+        padding-left: 2%;
 
+        &.link {
+          a {
+            word-break: break-word;
+          }
+        }
         &.time {
           font-size: 100%;
           text-align: left;
@@ -153,13 +157,10 @@ body[data-view="user"] {
         margin: 1.2rem 0;
       }
       dt {
-        width: 50%;
         padding-right: 0.8rem;
       }
       dd {
-        width: 50%;
-        margin-left: 49%;
-        padding-left: 2.4rem;
+        padding-left: 0.8rem;
       }
       section.notice {
         margin: 2.4rem 0;
@@ -175,6 +176,7 @@ body[data-view="user"] {
       text-align: center;
     }
     nav.pagination {
+      width: 100%;
       margin: 0 auto 1.8rem;
 
       a {
@@ -185,12 +187,12 @@ body[data-view="user"] {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      max-width: 100.8rem;
       margin: auto;
     }
     article.post {
-      flex: 0 1 87.6rem;
       margin: 1.2rem 2.4rem;
-      border-radius: 0.4rem;
+      border-radius: 0.6rem;
       overflow: hidden;
 
       &:first-of-type {
@@ -206,10 +208,10 @@ body[data-view="user"] {
           margin: 0 1.6rem;
         }
         dt {
-          width: 5.6rem;
+          flex-basis: 10%;
         }
         dd {
-          margin-left: 5.6rem;
+          flex-basis: 90%;
         }
       }
       section.content {

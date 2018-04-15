@@ -26,29 +26,26 @@ h3 { font-size: 110%; }
 h4, h5, h6 { font-size: 100%; }
 
 ul,
-ol,
-dl {
+ol {
   margin: 4vw 0 6vw 10vw;
   line-height: 1.6;
 }
 
 dl {
-  margin-top: 0;
-  margin-right: 4vw;
-  margin-left: 4vw;
-  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 4vw 6vw;
+  line-height: 1.6;
 }
 dt {
-  float: left;
-  clear: left;
-  width: 34vw;
+  flex: 0 0 34vw;
 
   &::after {
     content: ':';
   }
 }
 dd {
-  margin-left: 34vw;
+  flex: 1 1 auto;
 }
 
 nav {

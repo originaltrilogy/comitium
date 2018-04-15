@@ -624,7 +624,7 @@ section {
     position: relative;
     overflow: hidden;
     margin: auto 4vw;
-    padding-bottom: 2vw;
+    padding-bottom: 4vw;
 
     & > p {
       &:first-of-type {
@@ -937,8 +937,8 @@ nav.previous-and-next {
 
 // Topic counts for forums, post counts for topics
 dl.content-stats {
-  display: flex;
   flex-direction: column;
+  flex-wrap: nowrap;
   width: 16vw;
   height: 16vw;
   margin: 0;
@@ -952,7 +952,6 @@ dl.content-stats {
       content: '';
     }
     &:first-child {
-      float: none;
       width: auto;
       order: 2;
       @include titleFont($weight: 300);
@@ -1417,7 +1416,7 @@ a.avatar {
   dl.content-stats {
     width: 12vw;
     height: 12vw;
-    padding: 2.5vw 1vw 1.5vw;
+    padding: 3vw 1vw;
     font-size: 3vw;
   }
 
@@ -1868,12 +1867,6 @@ a.avatar {
   dl {
     margin-right: 4rem;
     margin-left: 4rem;
-  }
-  dt {
-    width: 34rem;
-  }
-  dd {
-    margin-left: 34rem;
   }
   p {
     margin: 2rem 0;
