@@ -427,8 +427,8 @@ function insert(args, emitter) {
 
             client.query(
               'insert into topics ( "discussionID", "title", "titleHtml", "url", "created", "sticky", "draft", "private" ) ' +
-              'values ( $1, $2, $3, $4, $5, $6, $7 ) returning id;',
-              [ args.discussionID, args.title, args.titleHtml, args.url, args.time, args.time, args.draft, args.private ],
+              'values ( $1, $2, $3, $4, $5, $5, $6, $7 ) returning id;',
+              [ args.discussionID, args.title, args.titleHtml, args.url, args.time, args.draft, args.private ],
               function (err, result) {
                 if ( err ) {
                   client.query('rollback', function (err) {
@@ -740,11 +740,10 @@ function posts(args, emitter) {
 
       if ( output.listen.success ) {
         output.posts.forEach( function (item) {
-          for ( var property in item ) {
-            if ( property === 'created' || property === 'modified' ) {
-              item[property + 'Formatted'] = app.toolbox.moment.tz(item[property], 'America/New_York').format('D-MMM-YYYY h:mm A');
-            }
-          }
+          item['createdFormatted'] = app.toolbox.moment.tz(item['created'], 'America/New_York').format('D-MMM-YYYY h:mm A');
+          item['createdFormatted'] = item['createdFormatted'].replace(/ (AM|PM)/, '&nbsp;$1');
+          item['modifiedFormatted'] = app.toolbox.moment.tz(item['modified'], 'America/New_York').format('D-MMM-YYYY h:mm A');
+          item['modifiedFormatted'] = item['modifiedFormatted'].replace(/ (AM|PM)/, '&nbsp;$1');
         });
 
         // Cache the subset for future requests
