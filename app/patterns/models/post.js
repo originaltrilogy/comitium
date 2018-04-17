@@ -202,7 +202,7 @@ function page(postID, emitter) {
       client.query(
         'select ceiling(row_number::real/25::real) as page from ' +
         '( select id, row_number() over (order by created asc) ' +
-        'from posts where "topicID" = ( select "topicID" from posts where id = $1 and draft = false ) ) posts ' +
+        'from posts where "topicID" = ( select "topicID" from posts where id = $1 ) and draft = false ) posts ' +
         'where posts.id = $1;',
         [ postID ],
         function (err, result) {
