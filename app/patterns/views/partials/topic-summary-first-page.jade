@@ -1,6 +1,8 @@
 section.summary
   h1 !{topic.titleHtml}
   a(class="avatar #{ topic.authorGroupID === 6 ? 'banned' : '' }" href="user/#{topic.authorUrl}/id/#{topic.authorID}" rel="author" title="View #{topic.author}'s profile.")
+    if topic.authorGroupID === 6
+      <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
     img(src="avatars/#{topic.authorID}.jpg")
   dl.byline
     dt.author Author

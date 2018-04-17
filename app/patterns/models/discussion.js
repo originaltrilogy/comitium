@@ -85,7 +85,7 @@ function announcements(discussionID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t.id, t."sticky", t."replies", t."lockedByID", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostCreated", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select t.id, t."sticky", t."replies", t."lockedByID", p.id as "firstPostID", p2.id as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostCreated", u."username" as "topicStarter", u."groupID" as "topicStarterGroupID", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join announcements a on t.id = a."topicID" and a."discussionID" = $1 ' +
               'join posts p on p.id = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +

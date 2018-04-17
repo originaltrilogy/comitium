@@ -146,7 +146,7 @@ function topics(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select t.id, t."sticky", t."replies", t."titleHtml", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+              'select t.id, t."sticky", t."replies", t."titleHtml", p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."groupID" as "topicStarterGroupID", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
               'from topics t ' +
               'join "topicInvitations" ti on ti."userID" = $1 ' +
               'join posts p on p."topicID" = ti."topicID" ' +

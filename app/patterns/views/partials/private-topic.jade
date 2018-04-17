@@ -4,6 +4,8 @@ article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? '
       a(href="topic/id/#{topic.id}") !{topic.titleHtml}
     section.author
       a(class="avatar #{ topic.topicStarterGroupID === 6 ? 'banned' : '' }" href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
+        if topic.topicStarterGroupID === 6
+          <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
         img(src="avatars/#{topic.topicStarterID}.jpg")
       dl.byline
         dt.author Author
