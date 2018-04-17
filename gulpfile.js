@@ -57,7 +57,8 @@ buildTasks.push('js')
 
 gulp.task('js', function () {
   return gulp.src(['web/themes/default/source/js/site/immediate.js',
-                   'web/themes/default/source/js/site/**.js'
+                   'web/themes/default/source/js/site/**.js',
+                   'web/themes/default/source/js/lib/svgxuse.min.js'
                   ])
              .pipe(sourcemaps.init())
                .pipe(uglify())

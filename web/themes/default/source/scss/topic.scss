@@ -335,6 +335,7 @@ body[data-controller="post"][data-view="announcement"] {
             height: 1px;
             position: absolute;
             bottom: 2vw;
+            left: 2vw;
           }
         }
         dd.author {
@@ -463,6 +464,7 @@ body[data-controller="post"][data-view="announcement"] {
           &::after {
             width: calc(100% - 2.4rem);
             bottom: 2.6rem;
+            left: 1.2rem;
           }
         }
         dd.author,
