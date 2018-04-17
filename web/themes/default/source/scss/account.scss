@@ -14,6 +14,9 @@ body[data-controller="account"] {
     flex-wrap: wrap;
     align-items: center;
 
+    section.notice {
+      flex-basis: 100%;
+    }
     h2 {
       flex: 0 0 100%;
     }
@@ -96,6 +99,10 @@ body[data-controller="account"] {
       margin-top: 3.2rem;
     }
     section.avatar {
+      section.notice {
+        padding: 1.2rem;
+        margin-bottom: 2.4rem;
+      }
       a.avatar {
         width: 10rem;
         height: 10rem;

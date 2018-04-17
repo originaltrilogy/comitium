@@ -59,12 +59,6 @@ time {
   color: hsl(0,0%,75%);
 }
 
-a.home {
-  svg {
-    fill: hsl(0, 0%, 91%);
-  }
-}
-
 body {
   > header {
     background-color: hsl(227,18%,16%);
@@ -144,16 +138,11 @@ section {
     background-color: hsl(227,18%,18%);
     border-color: hsl(227,18%,40%);
 
-    &::before {
-      color: hsl(227,100%,90%);
-    }
-
     &.error,
     &.locked,
     &.banned {
       background: hsl(0,50%,50%);
 
-      &::before,
       a {
         color: white;
       }

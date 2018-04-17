@@ -15,7 +15,7 @@ function handler(params, context, emitter) {
       cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.css + '/min/site.css?v=',
       jsKey = themePath.js + '/min/' + app.config.citizen.mode + '.js',
       jsUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.js + '/min/site.js?v=',
-      staticFileStats = app.cache.get({ scope: 'staticFileStats' });
+      staticFileStats = app.config.citizen.cache.static.enable ? app.cache.get({ scope: 'staticFileStats' }) : false;
 
   app.listen({
     metaData: function (emitter) {

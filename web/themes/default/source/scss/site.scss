@@ -1,16 +1,5 @@
 @import 'lib/normalize';
 @import 'baseline';
-
-@font-face {
-  font-family: 'glyphs';
-  src: // url('../fonts/glyphs/icomoon-subset.woff2') format('woff2'),
-       url('../fonts/glyphs/icomoon-subset.woff') format('woff'),
-       url('../fonts/glyphs/icomoon-subset.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-feature-settings: 'liga';
-}
-
 @import 'global';
 @import 'discussions';
 @import 'discussion';

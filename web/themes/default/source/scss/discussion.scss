@@ -52,14 +52,13 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         left: -100vw;
       }
       dd.author {
-        margin: 0;
-        width: 30vw;
+        flex-basis: 30vw;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
       }
       dd.date {
-        margin-left: 0;
+        flex-basis: 30vw;
       }
     }
     a.content-stats {
@@ -105,10 +104,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
       }
       dl.byline {
         line-height: 1.8;
-
-        dd.author {
-          width: 34vw;
-        }
       }
       p.last-post {
         width: 40vw;
@@ -130,11 +125,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
       h3 {
         min-height: 14vw;
         margin-bottom: 2vw;
-      }
-      dl.byline {
-        dd.author {
-          width: 34vw;
-        }
       }
       p.last-post {
         width: 34vw;
@@ -255,18 +245,21 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
           }
         }
         dl.byline {
+          flex-wrap: nowrap;
           margin: 0;
           width: auto;
         }
         dd.author {
           display: inline;
-          width: auto;
+          flex-basis: auto;
         }
         dd.date {
-          display: inline;
+          flex-basis: auto;
 
           &::before {
-            content: ' – ';
+            content: '–';
+            display: inline-block;
+            margin: 0 0.4rem;
           }
         }
         p.last-post {

@@ -38,14 +38,15 @@ dl {
   line-height: 1.6;
 }
 dt {
-  flex: 0 0 34vw;
+  flex: 0 0 30%;
 
   &::after {
     content: ':';
   }
 }
 dd {
-  flex: 1 1 auto;
+  flex: 0 0 70%;
+  word-break: break-word;
 }
 
 nav {

@@ -21,6 +21,7 @@ CF.topic = ( function () {
         document.querySelectorAll('section.posts article.post section.content.post p > img, section.posts article.post section.content.post > img').forEach( function (item) {
           var zoomWrapper = document.createElement('span'),
               imageWrapper = document.createElement('span'),
+              zoomButton = document.createElement('span'),
               parent = item.parentNode,
               src = item.getAttribute('src')
           
@@ -29,10 +30,13 @@ CF.topic = ( function () {
           zoomWrapper.appendChild(imageWrapper)
           parent.appendChild(zoomWrapper)
           parent.insertBefore(zoomWrapper, item)
+          zoomButton.classList.add('zoom-button')
+          zoomButton.innerHTML = '<svg class="icon zoom-in"><use xlink:href="themes/default/images/symbols.svg#icon-zoom-in"></use></svg>'
           imageWrapper.appendChild(item)
+          imageWrapper.appendChild(zoomButton)
 
           imageWrapper.addEventListener('click', function () {
-            mask.innerHTML = '<div id="mask-close"></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '</a>'
+            mask.innerHTML = '<div id="mask-close"><svg class="icon close"><use xlink:href="themes/default/images/symbols.svg#icon-close"></use></svg></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '<svg class="icon arrow-up-right"><use xlink:href="themes/default/images/symbols.svg#icon-arrow-up-right"></use></svg></a>'
             document.querySelector('html').classList.add('mask-enabled')
             mask.classList.add('enabled')
 

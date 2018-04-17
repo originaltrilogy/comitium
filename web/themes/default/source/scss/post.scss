@@ -15,10 +15,7 @@ body[data-controller="post"][data-view="post"] {
 
     section.summary {
       dt {
-        width: 16rem;
-      }
-      dd {
-        margin-left: 16rem;
+        flex-basis: 16rem;
       }
     }
 
@@ -31,7 +28,7 @@ body[data-controller="post"][data-view="post"] {
 article.post {
   nav.actions {
     flex-basis: 100%;
-    margin-top: 4vw;
+    margin: 0;
     background: none;
 
     ul {

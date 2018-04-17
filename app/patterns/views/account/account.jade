@@ -8,6 +8,7 @@ section.settings
     h2 Info and settings
     if general && general.messages
       section(class="notice #{ general.success ? 'success' : 'error' }")
+        <svg class="icon #{ general.success ? 'success' : 'error' }"><use xlink:href="themes/default/images/symbols.svg#icon-#{ general.success ? 'success' : 'error' }"></use></svg>
         each message in general.messages
           p #{message}
     section.form
@@ -71,6 +72,7 @@ section.settings
     h2 Avatar
     if avatarForm && avatarForm.message
       section(class="notice #{ avatarForm.success ? 'success' : 'error' }")
+        <svg class="icon #{ avatarForm.success ? 'success' : 'error' }"><use xlink:href="themes/default/images/symbols.svg#icon-#{ avatarForm.success ? 'success' : 'error' }"></use></svg>
         p #{avatarForm.message}
     a.avatar(href="user/#{session.url}/id/#{session.userID}" rel="author")
       img(src="avatars/#{session.userID}.jpg?v=#{ Math.random() }")

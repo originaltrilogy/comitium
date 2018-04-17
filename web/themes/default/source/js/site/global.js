@@ -25,6 +25,7 @@ CF.global = ( function () {
       menuIcon = document.createElement('div')
 
       menuIcon.setAttribute('id', 'main-menu-icon')
+      menuIcon.innerHTML = '<svg class="icon menu"><use xlink:href="themes/default/images/symbols.svg#icon-menu"></use></svg>'
       menuIcon.appendChild(document.createTextNode('Menu'))
       header.insertBefore(menuIcon, header.querySelector('a.home'))
 

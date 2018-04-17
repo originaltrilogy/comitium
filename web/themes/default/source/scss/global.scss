@@ -1,41 +1,5 @@
 
 /////////////////////////
-////    Modernizr    ////
-/////////////////////////
-//
-//  CSS3
-//    CSS Animations
-//    CSS 2D Transforms
-//    CSS Transitions
-//
-//  Extra
-//    Media Queries
-//    Add CSS Classes
-//
-//  Non-core detects
-//    emoji
-//    touchevents
-
-
-/////////////////////////
-//       Variables     //
-/////////////////////////
-
-// Icons
-$gBanned:   '\ed64';
-$gChecked:  '\ed6c';
-$gError:    '\ed68';
-$gLock:     '\eb52';
-$gMenu:     '\ec6a';
-$gNotice:   '\ed4d';
-$gPrivate:  '\ec23';
-$gSelect:   '\ee38';
-$gSuccess:  '\ecff';
-$gUpdates:  '\eac2';
-$gNoUpdates: '\eac4';
-
-
-/////////////////////////
 //        Mixins       //
 /////////////////////////
 
@@ -127,92 +91,6 @@ $gNoUpdates: '\eac4';
 	color: hsl(227,41%,75%);
 }
 
-@mixin icon ($content) {
-  content: $content;
-  font-family: glyphs;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  speak: none;
-}
-
-// Creates an icon by replacing text with a glyph
-@mixin textToIcon ($iconSize, $content) {
-	position: relative;
-	display: block;
-	margin: 0;
-	padding: 0 0 0 #{$iconSize + 'vw'};
-	width: #{$iconSize + 'vw'};
-	height: #{$iconSize + 'vw'};
-	text-indent: 110%;
-	overflow: hidden;
-	text-decoration: none;
-	line-height: #{$iconSize * 1.1 + 'vw'};
-
-	&::before {
-		position: absolute;
-		top: 50%;
-		margin-top: -#{$iconSize / 2 + 'vw'};
-		left: 50%;
-		margin-left: -#{$iconSize / 2 + 'vw'};
-		display: block;
-		width: #{$iconSize + 'vw'};
-		height: #{$iconSize + 'vw'};
-		content: $content;
-		font-family: $glyphs;
-		font-size: #{$iconSize + 'vw'};
-		text-indent: 0;
-	}
-}
-
-// Adds an icon in front of an anchor's text
-@mixin iconBeforeText ($iconSize, $content) {
-	text-decoration: none;
-	line-height: #{$iconSize * 10 + 'px'};
-	line-height: #{$iconSize + 'rem'};
-	width: auto;
-	text-indent: 0;
-
-	&::before {
-		display: inline;
-		vertical-align: top;
-		width: #{$iconSize * 10 + 'px'};
-		width: #{$iconSize + 'rem'};
-		height: #{$iconSize * 10 + 'px'};
-		height: #{$iconSize + 'rem'};
-		padding-right: #{$iconSize * 10 / 4 + 'px'};
-		padding-right: #{$iconSize / 4 + 'rem'};
-		content: $content;
-		font-family: $glyphs;
-		font-size: #{$iconSize * 10 + 'px'};
-		font-size: #{$iconSize + 'rem'};
-
-	}
-}
-
-// Adds an icon after an anchor's text
-@mixin iconAfterText ($iconSize, $content) {
-	text-decoration: none;
-	line-height: #{$iconSize * 10 + 'px'};
-	line-height: #{$iconSize + 'rem'};
-	width: auto;
-
-	&::after {
-		display: inline;
-		vertical-align: top;
-		width: #{$iconSize * 10 + 'px'};
-		width: #{$iconSize + 'rem'};
-		height: #{$iconSize * 10 + 'px'};
-		height: #{$iconSize + 'rem'};
-		padding-left: #{$iconSize * 10 / 4 + 'px'};
-		padding-left: #{$iconSize / 4 + 'rem'};
-		content: $content;
-		font-family: $glyphs;
-		font-size: #{$iconSize * 10 + 'px'};
-		font-size: #{$iconSize + 'rem'};
-	}
-}
-
-
 /////////////////////////
 ////  global styles  ////
 /////////////////////////
@@ -238,6 +116,12 @@ p {
   }
 }
 
+svg.icon {
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
 // Mask for zoomed images
 #mask {
   position: fixed;
@@ -256,9 +140,13 @@ p {
     position: absolute;
     top: 20px;
     right: 20px;
-    background-image: url(/themes/default/images/cross.svg);
-    background-size: cover;
     cursor: pointer;
+    color: hsl(227,60%,90%);
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   img {
@@ -295,15 +183,12 @@ p {
     border-radius: 3px;
     transition: border-color 0.2s;
 
-    &::after {
-      content: '';
+    svg {
       display: inline-block;
       width: 16px;
       height: 16px;
       vertical-align: middle;
       margin-left: 5px;
-      background-image: url(/themes/default/images/arrow-up-right.svg);
-      background-size: cover;
     }
 
     &:hover {
@@ -322,21 +207,32 @@ span.zoom {
     position: relative;
     cursor: pointer;
 
-    &::before {
-      content: '';
-      display: block;
+    span.zoom-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
       position: absolute;
       right: 10px;
       bottom: 10px;
-      width: 40px;
-      height: 40px;
-      background: hsla(0,0%,0%,0.6);
-      background-image: url(/themes/default/images/zoom-in.svg);
-      background-size: 22px;
-      background-position: center;
-      background-repeat: no-repeat;
-      border: 1px solid hsla(0,0%,100%,0.3);
+      background: hsl(227,18%,30%);
+      border: 1px solid hsla(227,60%,90%,0.3);
       border-radius: 50%;
+      color: hsl(227,60%,90%);
+      opacity: 0.5;
+      transition: opacity 0.2s;
+
+      svg {
+        width: 60%;
+        height: 60%;
+      }
+    }
+
+    &:hover {
+      span.zoom-button {
+        opacity: 1;
+      }
     }
   }
 }
@@ -364,12 +260,13 @@ body {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    min-height: 12vw;
+    min-height: 14vw;
     margin-top: 0;
     padding: 1vw 1.5vw;
   
     a.home {
       width: 36vw;
+      height: 12vw;
     }
   
     nav {
@@ -408,20 +305,12 @@ body {
         overflow: hidden;
         position: relative;
   
-        &::before {
-          @include icon($gNoUpdates);
+        svg {
           position: absolute;
-          top: 0;
+          top: 1vw;
           left: 0;
-          width: 10vw;
-          height: 10vw;
-          font-size: 6vw;
-          line-height: 10vw;
-          text-align: center;
-        }
-  
-        &.updates::before {
-          @include icon($gUpdates);
+          width: 80%;
+          height: 80%;
         }
       }
   
@@ -468,7 +357,8 @@ main {
 
 html.js {
   main {
-    padding-top: 12vw;
+    // Matches the header height
+    padding-top: 14vw;
   }
 }
 
@@ -493,10 +383,10 @@ html.js {
     display: flex;
     align-items: center;
 
-    &::before {
-      @include icon($gMenu);
+    svg {
+      width: 5vw;
+      height: 5vw;
       margin-right: 1.5vw;
-      font-size: 4.5vw;
     }
   }
 
@@ -638,23 +528,20 @@ section {
 
   &.notice {
     padding: 4vw;
-    position: relative;
     text-align: center;
     border-top-width: 1px;
     border-top-style: solid;
     border-bottom-width: 1px;
     border-bottom-style: solid;
 
-    &::before {
-      @include icon($gNotice);
-      display: block;
-      margin-bottom: 2vw;
-      font-size: 10vw;
-    }
-
-    & > * {
+    > * {
       margin-left: 0;
       margin-right: 0;
+    }
+
+    svg {
+      width: 8vw;
+      height: 8vw;
     }
 
     &.error,
@@ -662,39 +549,21 @@ section {
     &.banned {
       border: none;
 
-      &::before,
       a {
         color: white;
       }
     }
 
     &.success {
-      padding-left: 4vw;
-      text-align: center;
-
+      svg {
+        display: inline-block;
+        margin-right: 4vw;
+        vertical-align: middle;
+      }
       p {
         display: inline;
         vertical-align: middle;
       }
-      &::before {
-        @include icon($gSuccess);
-        position: static;
-        display: inline-block;
-        vertical-align: middle;
-        margin-right: 4vw;
-      }
-    }
-
-    &.error::before {
-      @include icon($gError);
-    }
-
-    &.locked::before {
-      @include icon($gLock);
-    }
-
-    &.banned::before {
-      @include icon($gBanned);
     }
 
     & > *:first-child {
@@ -939,24 +808,23 @@ nav.previous-and-next {
 dl.content-stats {
   flex-direction: column;
   flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
   width: 16vw;
   height: 16vw;
   margin: 0;
-  padding: 4vw 1.5vw 2vw;
   border-radius: 50%;
   font-size: 4vw;
-  text-align: center;
 
   dt {
     &::after {
       content: '';
     }
     &:first-child {
-      width: auto;
       order: 2;
       @include titleFont($weight: 300);
       font-size: 90%;
-      line-height: 1.5;
+      line-height: 1;
       text-transform: lowercase;
 
       &::after {
@@ -970,10 +838,10 @@ dl.content-stats {
   }
   dd {
     &:nth-child(n+2) {
-      margin: 0;
       order: 1;
+      flex-basis: auto;
       @include titleFont();
-      line-height: 1;
+      line-height: 1.5;
     }
     &:nth-child(n+4) {
       position: absolute;
@@ -1144,16 +1012,16 @@ form {
   input[type="checkbox"] {
     &:checked {
       &::after {
-        @include icon($gChecked);
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
         display: block;
         width: 10vw;
         height: 10vw;
-        line-height: 10vw;
-        font-size: 8vw;
-        text-align: center;
+        background: url('../images/checkmark.svg') center no-repeat;
+        background-size: 8vw;
+        background-position: 1vw;
       }
     }
   }
@@ -1195,11 +1063,15 @@ form {
         position: relative;
 
         &::after {
-          @include icon($gSelect);
+          content: '';
+          display: block;
+          width: 4vw;
+          height: 8vw;
           position: absolute;
           right: 2vw;
-          bottom: 2vw;
-          font-size: 6vw;
+          bottom: 3.5vw;
+          background: url('../images/select.svg') center no-repeat;
+          background-size: cover;
         }
       }
       &.checkbox,
@@ -1337,26 +1209,16 @@ a.avatar {
   }
 
   &.banned {
-    border: none;
-
+    svg {
+      position: absolute;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      color: hsl(0,70%,50%);
+    }
     img {
       position: relative;
       z-index: 1;
-      // Helps mask image artifacts from the avatar peeking outside the edges
-      border-radius: 50%;
-      padding: 2px;
-    }
-    &::before {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 2;
-      background-image: url(/themes/default/images/buster.svg);
-      background-size: cover;
     }
   }
 }
@@ -1416,7 +1278,6 @@ a.avatar {
   dl.content-stats {
     width: 12vw;
     height: 12vw;
-    padding: 3vw 1vw;
     font-size: 3vw;
   }
 
@@ -1454,6 +1315,7 @@ a.avatar {
 
       a.home {
         width: 24vw;
+        height: 6vw;
       }
       a.sign-in {
         display: none;
@@ -1464,11 +1326,8 @@ a.avatar {
           width: 6vw;
           height: 6vw;
 
-          &::before {
-            width: 8vw;
-            height: 8vw;
-            font-size: 4vw;
-            line-height: 6vw;
+          svg {
+            top: 0.5vw;
           }
         }
         a.account {
@@ -1654,9 +1513,9 @@ a.avatar {
       }
     }
     &.notice {
-      &::before {
-        margin-bottom: 2vw;
-        font-size: 5vw;
+      svg {
+        width: 6vw;
+        height: 6vw;
       }
       p {
         margin-bottom: 3vw;
@@ -1717,8 +1576,8 @@ a.avatar {
       &:checked::after {
         width: 6vw;
         height: 6vw;
-        font-size: 5vw;
-        line-height: 6vw;
+        background-size: 5vw;
+        background-position: 0.5vw;
       }
     }
     input[type="radio"] {
@@ -1737,9 +1596,10 @@ a.avatar {
 
         &.select {
           &::after {
-            right: 0.5vw;
-            bottom: 0.8vw;
-            font-size: 4vw;
+            height: 6vw;
+            width: 3vw;
+            bottom: 1vw;
+            right: 1vw;
           }
         }
         &.checkbox,
@@ -1809,8 +1669,6 @@ a.avatar {
     height: 8vw;
 
     &.banned {
-      border-width: 0.5vw;
-
       &::after {
         top: 3.5vw;
         left: -3vw;
@@ -1893,11 +1751,10 @@ a.avatar {
           margin-right: 1rem;
           padding-top: 4rem;
 
-          &::before {
-            width: 4rem;
-            height: 4rem;
-            font-size: 2.5rem;
-            line-height: 4rem;
+          svg {
+            top: 0.5rem;
+            width: 3rem;
+            height: 3rem;
           }
         }
         a.account {
@@ -1989,8 +1846,6 @@ a.avatar {
     height: 6.4rem;
 
     &.banned {
-      border-width: 0.4rem;
-
       &::after {
         top: 3rem;
         left: -2rem;
@@ -2046,7 +1901,6 @@ a.avatar {
   dl.content-stats {
     width: 6.4rem;
     height: 6.4rem;
-    padding: 1.6rem .4rem;
     font-size: 1.6rem;
   }
 
@@ -2168,16 +2022,9 @@ a.avatar {
     &.notice {
       padding: 2.4rem;
 
-      &.success {
-        padding-left: 4rem;
-
-        &::before {
-          margin-right: 2rem;
-        }
-      }
-      &::before {
-        margin-bottom: 2rem;
-        font-size: 3.2rem;
+      svg {
+        width: 3.2rem;
+        height: 3.2rem;
       }
       p {
         margin-bottom: 1.6rem;
@@ -2259,8 +2106,8 @@ a.avatar {
       &:checked::after {
         width: 2.4rem;
         height: 2.4rem;
-        font-size: 1.8rem;
-        line-height: 2.4rem;
+        background-size: 2rem;
+        background-position: 0.2rem;
       }
     }
     input[type="radio"] {
@@ -2279,10 +2126,11 @@ a.avatar {
 
         &.select {
           &::after {
-            right: 0;
+            right: 0.8rem;
+            bottom: .8rem;
+            width: 1.2rem;
+            height: 2.4rem;
             bottom: 0.8rem;
-            font-size: 2.4rem;
-            line-height: 2.4rem;
           }
         }
         &.checkbox,

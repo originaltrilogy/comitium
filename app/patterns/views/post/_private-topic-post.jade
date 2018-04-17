@@ -1,20 +1,25 @@
 article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' } #{ post.authorGroupID === 4 || post.authorGroupID === 5 ? 'signature staff' : ''}" data-post-id="#{post.id}")
   header
     a(class="avatar #{ post.authorGroupID === 6 ? 'banned' : '' }" href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
+      if post.authorGroupID === 6
+        <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
       img(src="avatars/#{post.authorID}.jpg")
     dl
       dt.author Author
       dd.author
         a.author(href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author") #{post.author}
-      dt.time Time
       dd.time
         if !post.editorID
-          time #{post.createdFormatted}
+          time
+            != post.createdFormatted
         else
-          time #{post.createdFormatted} <span class="edited">— <a href="post/id/#{post.id}">Edited #{post.modifiedFormatted}</a></span>
+          time
+            != post.createdFormatted
+          span.edited &nbsp;<a href="post/id/#{post.id}">(Edited)</a>
       dt.link Post link
       dd.link
-        a.post(href="post/id/#{post.id}/action/topic##{post.id}" rel="author") ##{post.row_number}
+        a.post(href="post/id/#{post.id}/action/topic##{post.id}" title="Jump directly to this post.")
+          | <svg class="icon link"><use xlink:href="themes/default/images/symbols.svg#icon-link"></use></svg>
   section.content.post
     != post.html
   nav.actions

@@ -6,12 +6,13 @@ header
     include ../partials/topic-summary
 
 section.notice.private
-  p This topic is private and visible only to
-  ul.participants
-    each user in invitees
-      li
-        a(href="user/#{user.username}/id/#{user.id}")
-          = user.username
+  <svg class="icon private"><use xlink:href="themes/default/images/symbols.svg#icon-private"></use></svg>
+  p This topic is private and visible only to 
+    ul.participants
+      each user in invitees
+        li
+          a(href="user/#{user.username}/id/#{user.id}")
+            = user.username
 
 section.posts
   each post in firstPost

@@ -56,34 +56,16 @@ time {
   color: hsl(227,10%,40%);
 }
 
-a.home {
-  .logo {
-    fill: hsl(0, 0%, 100%);
-  }
-}
-
 body {
   > header {
     background-color: hsl(227,18%,22%);
     box-shadow: 0 0 1.6vw hsl(227,18%,8%);
 
-    nav {
-      li {
-        a {
-          color: hsl(0,0%,100%);
+    a {
+      color: hsl(227,60%,90%);
 
-          &:hover {
-            text-decoration: none;
-          }
-        }
-      }
-    }
-
-    section.status {
-      a.private-topics {
-        &::before {
-          color: hsl(0, 0%, 100%);
-        }
+      &:hover {
+        text-decoration: none;
       }
     }
   }
@@ -152,16 +134,11 @@ section {
     border-color: hsl(227,10%,40%);
     color: hsl(0,0%,100%);
 
-    &::before {
-      color: hsl(0,0%,100%);
-    }
-
     &.error,
     &.locked,
     &.banned {
       background: hsl(0,50%,50%);
 
-      &::before,
       a {
         color: hsl(0,0%,100%);
       }
@@ -299,7 +276,7 @@ form {
   input[type="radio"] {
     &:checked {
       &::after {
-        background-color: hsl(0,100%, 90%);
+        background-color: hsl(227,18%,40%);
       }
     }
   }

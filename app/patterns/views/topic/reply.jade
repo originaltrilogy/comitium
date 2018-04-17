@@ -11,6 +11,7 @@ if preview
 
 if reply && reply.message
   section.notice.error
+    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
     p !{reply.message}
 
 section(class="form post topic-reply #{ url.quote ? 'quote' : ''}")
