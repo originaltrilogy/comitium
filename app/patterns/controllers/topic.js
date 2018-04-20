@@ -1264,7 +1264,7 @@ function leave(params, context, emitter) {
   }, function (output) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
-        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'private-topics');
+        params.form.forwardToUrl = app.config.comitium.baseUrl + 'private-topics';
 
         emitter.emit('ready', {
           view: 'leave',

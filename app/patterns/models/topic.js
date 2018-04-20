@@ -871,17 +871,6 @@ function leave(args, emitter) {
           app.cache.clear({ scope: 'topic-' + args.topicID });
           app.cache.clear({ scope: 'subscriptions-' + args.userID });
           app.cache.clear({ scope: 'private-topics-' + args.userID });
-          app.listen({
-            invitees: function (emitter) {
-              invitees({
-                topicID: args.topicID
-              }, emitter);
-            }
-          }, function (output) {
-            output.invitees.forEach( function (item) {
-              app.cache.clear({ scope: 'private-topics-' + item.id });
-            });
-          });
 
           emitter.emit('ready', {
             success: true
