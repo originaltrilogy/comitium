@@ -8,11 +8,26 @@ header
 section.notice.private
   <svg class="icon private"><use xlink:href="themes/default/images/symbols.svg#icon-private"></use></svg>
   p This topic is private and visible only to 
-    ul.participants
-      each user in invitees
-        li
+    each user, index in participants
+      if participants.length > 1 && index === participants.length - 1
+        |  and 
+      span(class="#{index}")
+        a(href="user/#{user.username}/id/#{user.id}")
+          = user.username
+      if participants.length > 2 && index < participants.length - 1
+        | , 
+    | .
+    if left.length
+      |  
+      each user, index in left
+        if left.length > 1 && index === left.length - 1
+          |  and 
+        span(class="#{index}")
           a(href="user/#{user.username}/id/#{user.id}")
             = user.username
+        if left.length > 2 && index < left.length - 1
+          | , 
+      |  left the topic.
 
 section.posts
   each post in firstPost

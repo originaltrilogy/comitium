@@ -1,7 +1,7 @@
 article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
   section.description
     h3
-      a(href="topic/id/#{topic.id}") !{topic.titleHtml}
+      a(href="topic#{ topic.accepted ? '' : '/accept/true' }/id/#{topic.id}") !{topic.titleHtml}
     section.author
       a(class="avatar #{ topic.topicStarterGroupID === 6 ? 'banned' : '' }" href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
         if topic.topicStarterGroupID === 6
@@ -15,8 +15,13 @@ article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? '
         dd.date
           time
             = topic.postDateFormatted
+  nav.actions
+    ul
+      if topic.accepted
+        li.leave
+          a(href="topic/action/leave/id/#{topic.id}" title="Stop participating in this private topic.") Leave
   if topic.replies
-    a.content-stats(href="topic/id/#{topic.id}")
+    a.content-stats(href="topic#{ topic.accepted ? '' : '/accept/true' }/id/#{topic.id}")
       dl.content-stats(data-replies="#{topic.replies}")
         dt.replies
           if topic.replies != 1

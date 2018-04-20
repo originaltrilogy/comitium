@@ -634,15 +634,15 @@ function topicReply(args, emitter) {
           }
         } else {
           app.listen({
-            userIsInvited: function (emitter) {
-              app.models.topic.hasInvitee({
+            invitee: function (emitter) {
+              app.models.topic.invitee({
                 topicID: args.topicID,
                 userID: args.user.userID
               }, emitter);
             }
           }, function (output) {
             if ( output.listen.success ) {
-              if ( args.user.talkPrivately && output.userIsInvited ) {
+              if ( args.user.talkPrivately && output.invitee && !output.invitee.left ) {
                 emitter.emit('ready', true);
               } else {
                 challenge(args, emitter);
@@ -774,15 +774,15 @@ function topicView(args, emitter) {
           }
         } else {
           app.listen({
-            userIsInvited: function (emitter) {
-              app.models.topic.hasInvitee({
+            invitee: function (emitter) {
+              app.models.topic.invitee({
                 topicID: args.topicID,
                 userID: args.user.userID
               }, emitter);
             }
           }, function (output) {
             if ( output.listen.success ) {
-              if ( args.user.talkPrivately && output.userIsInvited ) {
+              if ( args.user.talkPrivately && output.invitee && !output.invitee.left ) {
                 emitter.emit('ready', true);
               } else {
                 challenge(args, emitter);

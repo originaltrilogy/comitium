@@ -3,16 +3,18 @@
 'use strict';
 
 module.exports = {
+  acceptInvitation: acceptInvitation,
   announcementView: announcementView,
   announcementReply: announcementReply,
   edit: edit,
   exists: exists,
   firstUnreadPost: firstUnreadPost,
-  hasInvitee: hasInvitee,
+  invitee: invitee,
   invitees: invitees,
   info: info,
   insert: insert,
   posts: posts,
+  leave: leave,
   lock: lock,
   unlock: unlock,
   move: move,
@@ -27,6 +29,40 @@ module.exports = {
   breadcrumbs: breadcrumbs,
   metaData: metaData
 };
+
+
+function acceptInvitation(args, emitter) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+      client.query(
+        'update "topicInvitations" set accepted = true where "userID" = $1 and "topicID" = $2;',
+        [ args.userID, args.topicID ],
+        function (err, result) {
+          done();
+          if ( err ) {
+            if ( emitter ) {
+              emitter.emit('error', err);
+            } else {
+              throw new Error(err);
+            }
+          } else {
+            // Clear related caches
+            app.cache.clear({ scope: 'topic-' + args.topicID });
+            app.cache.clear({ scope: 'private-topics-' + args.userID });
+            
+            if ( emitter ) {
+              emitter.emit('ready', {
+                success: true
+              });
+            }
+          }
+        }
+      );
+    }
+  });
+}
 
 
 
@@ -285,13 +321,13 @@ function firstUnreadPost(args, emitter) {
 
 
 
-function hasInvitee(args, emitter) {
+function invitee(args, emitter) {
   app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select "topicID" from "topicInvitations" where "topicID" = $1 and "userID" = $2;',
+        'select "topicID", accepted, "left" from "topicInvitations" where "topicID" = $1 and "userID" = $2;',
         [ args.topicID, args.userID ],
         function (err, result) {
           done();
@@ -299,7 +335,7 @@ function hasInvitee(args, emitter) {
             emitter.emit('error', err);
           } else {
             if ( result.rows.length ) {
-              emitter.emit('ready', true);
+              emitter.emit('ready', result.rows[0]);
             } else {
               emitter.emit('ready', false);
             }
@@ -312,13 +348,15 @@ function hasInvitee(args, emitter) {
 
 
 function invitees(args, emitter) {
+  args.left = args.left || false;
+
   app.toolbox.dbPool.connect(function (err, client, done) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
       client.query(
-        'select ti."topicID", u."id", u."username", u."url" from "topicInvitations" ti join "users" u on ti."userID" = u."id" where "topicID" = $1 order by u."username" asc;',
-        [ args.topicID ],
+        'select ti."topicID", ti.accepted, ti.left, u."id", u."username", u."url" from "topicInvitations" ti join "users" u on ti."userID" = u."id" where "topicID" = $1 and ti.left = $2 order by u."username" asc;',
+        [ args.topicID, args.left ],
         function (err, result) {
           done();
           if ( err ) {
@@ -491,7 +529,7 @@ function insert(args, emitter) {
 
               app.listen(userMethods, function (output) {
                 var userIDs = [ args.userID ],
-                    insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
+                    insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ', true )',
                     insert = true,
                     message;
 
@@ -503,7 +541,7 @@ function insert(args, emitter) {
                     if ( output[property] ) {
                       if ( output[property].id !== args.userID ) {
                         userIDs.push(output[property].id);
-                        insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
+                        insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ', false )';
                       }
                     } else {
                       insert = false;
@@ -522,7 +560,7 @@ function insert(args, emitter) {
                     app.listen({
                       insert: function (emitter) {
                         client.query(
-                          'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
+                          'insert into "topicInvitations" ( "topicID", "userID", "accepted" ) values ' + insertIDs + ';',
                           function (err, result) {
                             if ( err ) {
                               client.query('rollback', function (err) {
@@ -762,6 +800,98 @@ function posts(args, emitter) {
 
     });
   }
+}
+
+
+
+function leave(args, emitter) {
+  app.toolbox.dbPool.connect(function (err, client, done) {
+    if ( err ) {
+      emitter.emit('error', err);
+    } else {
+
+      app.listen('waterfall', {
+        begin: function (emitter) {
+          client.query('begin', function (err) {
+            if ( err ) {
+              done();
+              emitter.emit('error', err);
+            } else {
+              emitter.emit('ready');
+            }
+          });
+        },
+        leaveTopic: function (previous, emitter) {
+          client.query(
+            'update "topicInvitations" set "left" = true where "userID" = $1 and "topicID" = $2;',
+            [ args.userID, args.topicID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  success: true,
+                  affectedRows: result.rows
+                });
+              }
+            }
+          );
+        },
+        unsubscribe: function (previous, emitter) {
+          client.query(
+            'delete from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;',
+            [ args.userID, args.topicID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  success: true,
+                  affectedRows: result.rows
+                });
+              }
+            }
+          );
+        },
+        commit: function (previous, emitter) {
+          client.query('commit', function () {
+            done();
+            emitter.emit('ready');
+          });
+        }
+      }, function (output) {
+        if ( output.listen.success ) {
+          // Clear related caches
+          app.cache.clear({ scope: 'topic-' + args.topicID });
+          app.cache.clear({ scope: 'subscriptions-' + args.userID });
+          app.cache.clear({ scope: 'private-topics-' + args.userID });
+          app.listen({
+            invitees: function (emitter) {
+              invitees({
+                topicID: args.topicID
+              }, emitter);
+            }
+          }, function (output) {
+            output.invitees.forEach( function (item) {
+              app.cache.clear({ scope: 'private-topics-' + item.id });
+            });
+          });
+
+          emitter.emit('ready', {
+            success: true
+          });
+        } else {
+          emitter.emit('error', output.listen);
+        }
+      });
+    }
+  });
 }
 
 

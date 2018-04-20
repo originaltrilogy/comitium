@@ -1,5 +1,5 @@
 ////////////////////////////
-//   discussion pattern   //
+//    discussion pages    //
 ////////////////////////////
 
 body[data-controller="discussion"][data-view="discussion"],
@@ -305,6 +305,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
 }
 
+body[data-controller="private-topics"][data-view="private-topics"],
 body[data-controller="subscriptions"][data-view="subscriptions"] {
   article.topic {
     p.last-post {

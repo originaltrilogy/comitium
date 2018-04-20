@@ -663,13 +663,15 @@ body[data-controller="post"][data-view="private-topic"] {
       display: inline;
     }
   }
-  ul.participants {
+  ul.participants,
+  ul.left {
     display: inline;
 
     li {
       list-style: none;
       display: inline;
-      
+      color: hsl(0,0%,85%);
+
       &:nth-child(n+2) {
         &::before {
           content: ', ';
@@ -685,6 +687,12 @@ body[data-controller="post"][data-view="private-topic"] {
         }
         a::after {
           content: '.';
+          color: hsl(0,0%,85%);
+        }
+      }
+      &:only-child {
+        &::before {
+          display: none;
         }
       }
     }

@@ -16,6 +16,8 @@ module.exports = {
   replyForm: replyForm,
   subscribe: subscribe,
   unsubscribe: unsubscribe,
+  leave: leave,
+  leaveForm: leaveForm,
   lock: lock,
   lockForm: lockForm,
   unlock: unlock,
@@ -103,10 +105,20 @@ function handler(params, context, emitter) {
                 end: end
               }, emitter);
             },
-            invitees: function (emitter) {
+            participants: function (emitter) {
               if ( topic.private ) {
                 app.models.topic.invitees({
                   topicID: topic.id
+                }, emitter);
+              } else {
+                emitter.emit('ready', false);
+              }
+            },
+            left: function (emitter) {
+              if ( topic.private ) {
+                app.models.topic.invitees({
+                  topicID: topic.id,
+                  left: true
                 }, emitter);
               } else {
                 emitter.emit('ready', false);
@@ -139,6 +151,12 @@ function handler(params, context, emitter) {
                   topic: topic,
                   time: app.toolbox.helpers.isoDate()
                 });
+                if ( topic.private && params.url.accept ) {
+                  app.models.topic.acceptInvitation({
+                    userID: params.session.userID,
+                    topicID: topic.id
+                  });
+                }
               }
 
               topic.createdFormatted = app.toolbox.moment.tz(topic.created, 'America/New_York').format('D-MMM-YYYY');
@@ -155,7 +173,8 @@ function handler(params, context, emitter) {
                   firstPost: firstPost,
                   posts: output.posts,
                   page: page,
-                  invitees: output.invitees,
+                  participants: output.participants,
+                  left: output.left,
                   userIsSubscribed: output.subscriptionExists,
                   userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 0 && topic.discussionID !== 1,
                   userCanReply: output.userCanReply,
@@ -770,7 +789,7 @@ function startPrivateForm(params, context, emitter) {
                     app.models.content.mail({
                       template: 'Topic Invitation',
                       replace: {
-                        topicUrl: app.config.comitium.baseUrl + 'topic/id/' + previous.saveTopic.id,
+                        topicUrl: app.config.comitium.baseUrl + 'topic/accept/true/id/' + previous.saveTopic.id,
                         author: params.session.username
                       }
                     }, emitter);
@@ -1166,7 +1185,7 @@ function subscribe(params, context, emitter) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
         emitter.emit('ready', {
-          redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
+          redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
         });
       } else {
         emitter.emit('ready', output.access);
@@ -1209,7 +1228,7 @@ function unsubscribe(params, context, emitter) {
     if ( output.listen.success ) {
       if ( output.access === true ) {
         emitter.emit('ready', {
-          redirect: params.request.headers['referer'] && params.request.headers['referer'].search('/sign-in') == -1 ? params.request.headers['referer'] : app.config.comitium.baseUrl + 'subscriptions'
+          redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'subscriptions')
         });
       } else {
         emitter.emit('ready', output.access);
@@ -1219,6 +1238,90 @@ function unsubscribe(params, context, emitter) {
     }
   });
 
+}
+
+
+
+function leave(params, context, emitter) {
+  // Verify the user has read access to the private topic
+  app.listen('waterfall', {
+    access: function (emitter) {
+      app.toolbox.access.topicView({
+        topicID: params.url.id,
+        user: params.session
+      }, emitter);
+    },
+    proceed: function (previous, emitter) {
+      if ( previous.access === true ) {
+        emitter.emit('ready', true);
+      } else {
+        emitter.emit('end', false);
+      }
+    },
+    topic: function (previous, emitter) {
+      app.models.topic.info(params.url.id, emitter);
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.access === true ) {
+        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'private-topics');
+
+        emitter.emit('ready', {
+          view: 'leave',
+          content: {
+            topic: output.topic
+          }
+        });
+      } else {
+        emitter.emit('ready', output.access);
+      }
+    } else {
+      emitter.emit('error', output.listen);
+    }
+  });
+}
+
+
+
+function leaveForm(params, context, emitter) {
+  if ( params.request.method === 'POST' ) {
+    app.listen('waterfall', {
+      access: function (emitter) {
+        app.toolbox.access.topicView({
+          topicID: params.form.topicID,
+          user: params.session
+        }, emitter);
+      },
+      proceed: function (previous, emitter) {
+        if ( previous.access === true ) {
+          emitter.emit('ready', true);
+        } else {
+          emitter.emit('end', false);
+        }
+      },
+      leave: function (previous, emitter) {
+        app.models.topic.leave({
+          topicID: params.form.topicID,
+          userID: params.session.userID
+        }, emitter);
+      }
+    }, function (output) {
+      if ( output.listen.success ) {
+        if ( output.access === true ) {
+          emitter.emit('ready', {
+            redirect: params.form.forwardToUrl
+          });
+        } else {
+          emitter.emit('ready', output.access);
+        }
+      } else {
+        emitter.emit('error', output.listen);
+      }
+    });
+  // If it's a GET, fall back to the default leave action
+  } else {
+    leave(params, context, emitter);
+  }
 }
 
 
