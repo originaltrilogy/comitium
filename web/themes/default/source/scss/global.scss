@@ -9,7 +9,7 @@
 } 
 
 @function hsla($h, $s, $l, $a) { 
-  @return unquote('hsla(#{$h}, #{$s}, #{$l}, #{$a})'); 
+  @return unquote('hsla(#{$h}, #{$s}, #{$l}, #{$a})');
 } 
 
 // Use HSB values provided by apps like Sketch and Photoshop and 
@@ -211,16 +211,16 @@ span.zoom {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 40px;
-      height: 40px;
+      width: 60px;
+      height: 60px;
       position: absolute;
-      right: 10px;
-      bottom: 10px;
-      background: hsl(227,18%,30%);
-      border: 1px solid hsla(227,60%,90%,0.3);
-      border-radius: 50%;
+      top: calc(50% - 20px);
+      left: calc(50% - 20px);
+      background: hsla(227,18%,20%,0.5);
+      border: 1px solid hsla(227,60%,90%,.3);
+      border-radius: 6px;
       color: hsl(227,60%,90%);
-      opacity: 0.5;
+      opacity: 0;
       transition: opacity 0.2s;
 
       svg {
@@ -342,6 +342,7 @@ html.js body > header {
 
 main {
   flex: 1 0 auto;
+  padding-bottom: 6rem;
   clear: both;
   overflow: hidden;
 
@@ -2057,7 +2058,6 @@ a.avatar {
     align-items: center;
     min-height: 9.2rem;
     padding: 1.2rem 0;
-    border-radius: 0;
 
     &.unread,
     &.updated {
