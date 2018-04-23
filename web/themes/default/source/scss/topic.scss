@@ -35,7 +35,7 @@ body[data-controller="post"][data-view="announcement"] {
 
         &.date {
           &::before {
-            content: '–';
+            content: '—';
             display: inline-block;
             margin: 0 1vw;
           }
@@ -414,6 +414,17 @@ body[data-controller="post"][data-view="announcement"] {
 
   @media only screen and (min-width: 720px) {
 
+    section.summary {
+      dl.byline {
+        dd {
+          &.date {
+            &::before {
+              margin: 0 0.8rem;
+            }
+          }
+        }
+      }
+    }
     section.posts {
       > h2 {
         flex: 0 1 auto;
