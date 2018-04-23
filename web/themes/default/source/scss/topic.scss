@@ -130,7 +130,7 @@ body[data-controller="post"][data-view="announcement"] {
           font-size: 85%;
           
           a {
-            display: inline-block;
+            display: flex;
             width: 6vw;
             height: 6vw;
           }
@@ -357,8 +357,9 @@ body[data-controller="post"][data-view="announcement"] {
           font-size: 90%;
 
           a {
-            width: 2.5vw;
-            height: 2.5vw;
+            width: 3vw;
+            height: 3vw;
+            padding-top: 0.4vw;
           }
         }
       }
@@ -473,11 +474,12 @@ body[data-controller="post"][data-view="announcement"] {
           font-size: 100%;
         }
         dd.link {
-          margin-left: 1.2rem;
+          margin-left: 1rem;
 
           a {
-            width: 1.6rem;
-            height: 1.6rem;
+            width: 2rem;
+            height: 2rem;
+            padding-top: 0.2rem;
           }
         }
       }

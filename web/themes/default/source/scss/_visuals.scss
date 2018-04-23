@@ -36,18 +36,35 @@ body {
   }
 }
 
-html.cssanimations.csstransforms span.loading-indicator {
-  border-top-color: #666;
-  border-right-color: #c8c8c8;
-  border-bottom-color: #666;
-  border-left-color: #666;
-}
-
 a {
   color: hsl(227,41%,80%);
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+// Mask for zoomed images
+#mask {
+  background: hsla(0,0%,0%,0.95);
+
+  // Close button
+  #mask-close {
+    color: hsl(227,60%,90%);
+  }
+
+  a.open-tab {
+    color: hsl(0,0%,94%);
+  }
+}
+
+span.zoom {
+  span.zoom-image {
+    span.zoom-button {
+      background: hsla(227,18%,20%,0.5);
+      border: 1px solid hsla(227,60%,90%,.3);
+      color: hsl(227,60%,90%);
+    }
   }
 }
 
@@ -559,10 +576,6 @@ body[data-controller="post"][data-view="private-topic"] {
 ///////////////////
 
 body[data-view="user"] {
-
-  main {
-    // background: hsl(227,18%,96%);
-  }
 
   article.post {
     header {
