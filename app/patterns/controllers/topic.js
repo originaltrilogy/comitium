@@ -95,6 +95,27 @@ function handler(params, context, emitter) {
         } else {
           // If the user has read access, get the posts for the requested page
           app.listen({
+            viewTimeUpdate: function (emitter) {
+              if ( params.session.userID ) {
+                app.models.topic.viewTimeUpdate({
+                  userID: params.session.userID,
+                  topic: topic,
+                  time: app.toolbox.helpers.isoDate()
+                }, emitter);
+              } else {
+                emitter.emit('ready', false);
+              }
+            },
+            acceptInvitation: function (emitter) {
+              if ( params.session.userID && topic.private && params.url.accept ) {
+                app.models.topic.acceptInvitation({
+                  userID: params.session.userID,
+                  topicID: topic.id
+                }, emitter);
+              } else {
+                emitter.emit('ready', false);
+              }
+            },
             posts: function (emitter) {
               var start = ( page - 1 ) * 25,
                   end = start + 25;
@@ -145,20 +166,6 @@ function handler(params, context, emitter) {
             var firstPost = [];
 
             if ( output.listen.success ) {
-              if ( params.session.userID ) {
-                app.models.topic.viewTimeUpdate({
-                  userID: params.session.userID,
-                  topic: topic,
-                  time: app.toolbox.helpers.isoDate()
-                });
-                if ( topic.private && params.url.accept ) {
-                  app.models.topic.acceptInvitation({
-                    userID: params.session.userID,
-                    topicID: topic.id
-                  });
-                }
-              }
-
               if ( page === 1 ) {
                 firstPost[0] = output.posts.shift();
               }
