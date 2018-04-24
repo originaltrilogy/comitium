@@ -176,7 +176,7 @@ function handler(params, context, emitter) {
                   participants: output.participants,
                   left: output.left,
                   userIsSubscribed: output.subscriptionExists,
-                  userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 0 && topic.discussionID !== 1,
+                  userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 1,
                   userCanReply: output.userCanReply,
                   pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
                   previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),

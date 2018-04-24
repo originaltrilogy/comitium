@@ -8,5 +8,8 @@ nav.topic.actions
     else
       li.unsubscribe
         a(href="topic/action/unsubscribe/id/#{topic.id}" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
+    if userCanEdit
+      li.edit
+        a(href="topic/action/edit/id/#{topic.id}" title="Edit this topic.") Edit
     li.leave
       a(href="topic/action/leave/id/#{url.id}") Leave

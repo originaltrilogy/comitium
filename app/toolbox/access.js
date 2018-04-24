@@ -446,26 +446,33 @@ function topicEdit(args, emitter) {
     topic: function (emitter) {
       app.models.topic.info(args.topicID, emitter);
     },
-    topicEdit: function (previous, emitter) {
+    topicView: function (previous, emitter) {
       if ( previous.topic ) {
-        if ( ( args.user.userID === previous.topic.authorID && !previous.topic.lockedByID ) || args.user.moderateDiscussions ) {
-          emitter.emit('ready', true);
-        } else {
-          challenge(app.extend(args, { emit: 'end' }), emitter);
-        }
+        topicView(args, emitter);
       } else {
         emitter.emit('error', {
           statusCode: 404
         });
       }
     },
+    topicEdit: function (previous, emitter) {
+      if ( previous.topicView && ( ( args.user.userID === previous.topic.authorID && !previous.topic.lockedByID ) || args.user.moderateDiscussions ) ) {
+        emitter.emit('ready', true);
+      } else {
+        challenge(app.extend(args, { emit: 'end' }), emitter);
+      }
+    },
     // Check if the user has posting rights to the topic's current discussion.
     // If a topic has been moved to a discussion that the user doesn't have
     // permission to post in, they lose their editing permissions.
     discussionPost: function (previous, emitter) {
-      discussionPost(app.extend(args, {
-        discussionID: previous.topic.discussionID
-      }), emitter);
+      if ( !previous.topic.private ) {
+        discussionPost(app.extend(args, {
+          discussionID: previous.topic.discussionID
+        }), emitter);
+      } else {
+        emitter.emit('ready', true);
+      }
     }
   }, function (output) {
     if ( output.listen.success ) {
