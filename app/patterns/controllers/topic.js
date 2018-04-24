@@ -159,9 +159,6 @@ function handler(params, context, emitter) {
                 }
               }
 
-              topic.createdFormatted = app.toolbox.moment.tz(topic.created, 'America/New_York').format('D-MMM-YYYY');
-              topic.repliesFormatted = app.toolbox.numeral(topic.replies).format('0,0');
-
               if ( page === 1 ) {
                 firstPost[0] = output.posts.shift();
               }

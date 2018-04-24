@@ -406,6 +406,9 @@ function info(topicID, emitter) {
     }, function (output) {
 
       if ( output.listen.success ) {
+        output.topic[0].createdFormatted = app.toolbox.moment.tz(output.topic[0].created, 'America/New_York').format('D-MMM-YYYY');
+        output.topic[0].repliesFormatted = app.toolbox.numeral(output.topic[0].replies).format('0,0');
+
         // Cache the topic info object for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
           app.cache.set({
