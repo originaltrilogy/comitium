@@ -86,7 +86,7 @@ function unread(args, emitter) {
           } else {
             client.query({
                 name: 'private_topics_unread',
-                text: 'select p."topicID" from posts p join "topicInvitations" ti on ti."userID" = $1 and p."topicID" = ti."topicID" and p.id = ( select id from posts where "topicID" = ti."topicID" and "userID" <> $1 order by created desc limit 1 ) left join "topicViews" tv on ti."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
+                text: 'select p."topicID" from posts p join "topicInvitations" ti on ti."userID" = $1 and ti."left" = false and p."topicID" = ti."topicID" and p.id = ( select id from posts where "topicID" = ti."topicID" and "userID" <> $1 order by created desc limit 1 ) left join "topicViews" tv on ti."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
                 values: [ args.userID ]
               }, function (err, result) {
                 done();
