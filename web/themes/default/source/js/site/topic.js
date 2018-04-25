@@ -74,15 +74,25 @@ CF.topic = ( function () {
             document.querySelector('html').classList.add('mask-enabled')
             mask.classList.add('enabled')
 
-            mask.querySelector('#mask-close').addEventListener('click', function () {
-              mask.classList.add('closing')
-              document.querySelector('html').classList.remove('mask-enabled')
+            window.addEventListener('keydown', escape)
 
-              setTimeout( function () {
-                mask.classList.remove('closing', 'enabled')
-                mask.innerHTML = ''
-              }, 200)
+            mask.querySelector('#mask-close').addEventListener('click', function () {
+              close()
             })
+
+            function escape(e) {
+              if ( e.key === 'Escape' ) {
+                close()
+                console.log('foo')
+              }
+            }
+
+            function close() {
+              document.querySelector('html').classList.remove('mask-enabled')
+              mask.classList.remove('enabled')
+              mask.innerHTML = ''
+              window.removeEventListener('keydown', escape)
+            }
           })
         })
       }
