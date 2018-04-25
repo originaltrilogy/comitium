@@ -41,5 +41,7 @@ article.post(id="#{post.id}" data-post-id="#{post.id}")
         else
           li.unlock
             a(href="post/action/unlock/id/#{post.id}") Unlock
-        li.delete
-          a(href="post/action/trash/id/#{post.id}") Delete
+        // Don't allow the only post in the topic to be deleted
+        if topic.replies > 0
+          li.delete
+            a(href="post/action/trash/id/#{post.id}") Delete

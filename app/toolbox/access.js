@@ -286,12 +286,19 @@ function postTrash(args, emitter) {
     },
     topicView: function (previous, emitter) {
       if ( previous.post ) {
-        if ( args.user.moderateDiscussions ) {
-          topicView(app.extend(args, {
-            topicID: previous.post.topicID
-          }), emitter);
+        if ( previous.post.topicReplies > 0 ) {
+          if ( args.user.moderateDiscussions ) {
+            topicView(app.extend(args, {
+              topicID: previous.post.topicID
+            }), emitter);
+          } else {
+            challenge(app.extend(args, { emit: 'end' }), emitter);
+          }
         } else {
-          challenge(app.extend(args, { emit: 'end' }), emitter);
+          emitter.emit('error', {
+            statusCode: 403,
+            message: 'You can\'t delete the only post in a topic. Delete the entire topic instead.'
+          });
         }
       } else {
         emitter.emit('error', {

@@ -1015,7 +1015,7 @@ function posts(args, emitter) {
             emitter.emit('error', err);
           } else {
             client.query(
-              'select p."id", p."topicID", p."html", p."created", p."modified", p."editorID", p."lockedByID", p."lockReason", t."titleHtml" as "topicTitle", t."url" as "topicUrl", u."username" as "author", u."url" as "authorUrl" ' +
+              'select p."id", p."topicID", p."html", p."created", p."modified", p."editorID", p."lockedByID", p."lockReason", t."titleHtml" as "topicTitle", t."url" as "topicUrl", t.replies as "topicReplies", u."username" as "author", u."url" as "authorUrl" ' +
               'from posts p ' +
               'join topics t on p."topicID" = t."id" ' +
               'join users u on p."userID" = u.id ' +
