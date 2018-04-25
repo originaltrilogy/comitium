@@ -75,7 +75,6 @@ CF.topic = ( function () {
             mask.classList.add('enabled')
 
             window.addEventListener('keydown', escape)
-
             mask.querySelector('#mask-close').addEventListener('click', function () {
               close()
             })
@@ -83,7 +82,6 @@ CF.topic = ( function () {
             function escape(e) {
               if ( e.key === 'Escape' ) {
                 close()
-                console.log('foo')
               }
             }
 
