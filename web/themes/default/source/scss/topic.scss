@@ -72,8 +72,7 @@ body[data-controller="post"][data-view="announcement"] {
     }
     article.post:first-of-type {
       header {
-        position: absolute;
-        left: -100vw;
+        display: none;
       }
     }
   }
@@ -116,11 +115,11 @@ body[data-controller="post"][data-view="announcement"] {
       }
       dd {
         &.author {
-          flex: 1 0 40vw;
+          flex: 1 0 38vw;
           line-height: 1.2;
         }
         &.time {
-          flex-basis: 32vw;
+          flex-basis: 34vw;
           font-size: 85%;
           text-align: right;
         }
@@ -229,7 +228,7 @@ body[data-controller="post"][data-view="announcement"] {
     article.post {
       header {
         dd.time {
-          flex-basis: 28vw;
+          flex-basis: 30vw;
         }
       }
     }
@@ -354,6 +353,7 @@ body[data-controller="post"][data-view="announcement"] {
         dd.link {
           flex: 0 1 auto;
           position: initial;
+          margin-left: 1vw;
           font-size: 90%;
 
           a {

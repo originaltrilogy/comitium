@@ -65,10 +65,6 @@ span.zoom {
   }
 }
 
-time {
-  color: hsl(227,10%,40%);
-}
-
 body {
   > header {
     background-color: hsl(227,18%,22%);
@@ -368,36 +364,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   main > p {
     color: white;
   }
-  article.topic {
-    dl.byline {
-      dd.author {
-        color: #a5b2d9;
-      }
-    }
-  }
 
-  @media only screen and (min-width: 720px) {
-    section.topics {
-      article.topic {
-        dd.date {
-          &::before {
-            color: #bfbfbf;
-          }
-        }
-      }
-    }
-  }
-
-}
-
-///////////////////
-//  index view   //
-///////////////////
-
-body[data-view="index"] {
-  time {
-    color: #acacac;
-  }
 }
 
 ///////////////////
@@ -437,18 +404,6 @@ body[data-controller="post"][data-view="announcement"] {
     background-image: linear-gradient(180deg,hsl(227,18%,98%),hsl(227,18%,94%) 100px,hsl(227,18%,94%) 0);
   }
 
-  section.summary {
-    dl.byline {
-      dd {
-        color: hsl(0,41%,80%);
-
-        &.date {
-          color: hsl(0,0%,67%);
-        }
-      }
-    }
-  }
-
   section.posts {
     > nav {
       background: hsl(227,18%,98%);
@@ -460,17 +415,6 @@ body[data-controller="post"][data-view="announcement"] {
   article.post {
     header {
       background: hsl(227,18%,94%);
-
-      dd {
-        &.author {
-          span.title {
-            color: hsl(227,18%,60%);
-          }
-        }
-        &.time {
-          color: #acacac;
-        }
-      }
     }
     section.signature {
       color: hsl(0,0%,40%);

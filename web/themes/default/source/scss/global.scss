@@ -231,7 +231,7 @@ html.mask-enabled {
 }
 
 time {
-  @include bodyFont(normal, 300);
+  @include bodyFont();
 }
 
 a.home {
@@ -1135,7 +1135,6 @@ form {
 
 nav.actions {
   position: relative;
-  margin: 4vw;
   overflow: hidden;
 
   ul {
