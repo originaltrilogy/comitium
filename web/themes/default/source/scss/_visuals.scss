@@ -75,7 +75,7 @@ time {
 body {
   > header {
     background-color: hsl(227,18%,16%);
-    box-shadow: 0 0 1.6vw hsl(227,0%,10%);
+    box-shadow: 0 0 0.6rem hsl(227,0%,10%);
 
     nav {
       li {
@@ -453,12 +453,12 @@ body[data-controller="post"][data-view="announcement"] {
         
         &.moderator {
           background-image: url(/themes/default/images/moderator.png);
-          background-size: 16vw;
+          background-size: 4.8rem;
           background-position-x: -3vw;
         }
         &.administrator {
           background-image: url(/themes/default/images/administrator.png);
-          background-size: 20vw;
+          background-size: 6rem;
           background-position-x: -3.5vw;
         }
       }

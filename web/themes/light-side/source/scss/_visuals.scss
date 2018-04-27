@@ -68,7 +68,7 @@ span.zoom {
 body {
   > header {
     background-color: hsl(227,18%,22%);
-    box-shadow: 0 0 1.6vw hsl(227,18%,8%);
+    box-shadow: 0 0 0.6rem hsl(227,18%,8%);
 
     a {
       color: hsl(227,60%,90%);
@@ -85,7 +85,7 @@ body {
 }
 
 main {
-	background-image: linear-gradient(180deg,hsl(227,18%,98%),hsl(227,18%,94%) 100px,hsl(227,18%,100%) 0);
+	background-image: linear-gradient(180deg,hsl(227,18%,98%),hsl(227,18%,94%) 10rem,hsl(227,18%,100%) 0);
 }
 
 nav.breadcrumbs {

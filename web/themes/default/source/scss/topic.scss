@@ -23,7 +23,7 @@ body[data-controller="post"][data-view="announcement"] {
     }
     dl.byline {
       flex-wrap: nowrap;
-      margin: 0 0 0 4vw;
+      margin: 0 0 0 1.2rem;
 
       dt {
         flex-basis: auto;
@@ -37,7 +37,7 @@ body[data-controller="post"][data-view="announcement"] {
           &::before {
             content: '—';
             display: inline-block;
-            margin: 0 1vw;
+            margin: 0 0.4rem;
           }
         }
       }
@@ -49,7 +49,7 @@ body[data-controller="post"][data-view="announcement"] {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-around;
-      margin: 4vw auto;
+      margin: 1.2rem auto;
 
       h2 {
         flex: 1 1 auto;
@@ -94,12 +94,12 @@ body[data-controller="post"][data-view="announcement"] {
       flex: 0 0 100%;
       display: flex;
       margin: 0;
-      padding: 2vw;
+      padding: 0.6rem;
       position: relative;
       text-align: left;
 
       a.avatar {
-        flex: 0 0 12vw;
+        flex: 0 0 3.6rem;
       }
       dl {
         flex: 1 1 auto;
@@ -125,13 +125,13 @@ body[data-controller="post"][data-view="announcement"] {
         }
         &.link {
           flex-basis: auto;
-          margin-left: 2vw;
+          margin-left: 0.6rem;
           font-size: 85%;
           
           a {
             display: flex;
-            width: 6vw;
-            height: 6vw;
+            width: 1.8rem;
+            height: 1.8rem;
           }
           svg.icon {
             width: 100%;
@@ -151,7 +151,7 @@ body[data-controller="post"][data-view="announcement"] {
         display: flex;
         align-items: center;
         min-height: 14vw;
-        padding: 0 2vw 0 15vw;
+        padding: 0 0.6rem 0 15vw;
         @include titleFont($weight: normal);
         font-size: 88%;
         line-height: 1.3;
@@ -162,7 +162,7 @@ body[data-controller="post"][data-view="announcement"] {
         justify-content: flex-end;
         align-items: flex-end;
         margin: 0;
-        padding: 2vw;
+        padding: 0.6rem;
         font-size: 80%;
         text-align: right;
         overflow: auto;
@@ -170,7 +170,7 @@ body[data-controller="post"][data-view="announcement"] {
         > * {
           float: right;
           clear: right;
-          margin: 0 0 4vw;
+          margin: 0 0 1.2rem;
           max-width: 94vw;
         }
   
@@ -183,10 +183,10 @@ body[data-controller="post"][data-view="announcement"] {
         }
   
         blockquote {
-          padding: 2vw;
+          padding: 0.6rem;
   
           > * {
-            margin-bottom: 3vw;
+            margin-bottom: 1rem;
           }
           > *:last-child {
             margin-bottom: 0;
@@ -201,7 +201,7 @@ body[data-controller="post"][data-view="announcement"] {
   }
 
   section.form.quick-reply {
-    margin-top: 8vw;
+    margin-top: 2.4rem;
 
     form {
       margin-top: 0;
@@ -238,7 +238,7 @@ body[data-controller="post"][data-view="announcement"] {
     article.post {
       header {
         a.avatar {
-          flex-basis: 10vw;
+          flex-basis: 3rem;
         }
         dd.time {
           flex-basis: 26vw;
@@ -257,7 +257,7 @@ body[data-controller="post"][data-view="announcement"] {
     }
     section.posts {
       > h2 {
-        margin: 0 2vw;
+        margin: 0 0.6rem;
       }
     }
 
@@ -275,7 +275,7 @@ body[data-controller="post"][data-view="announcement"] {
           }
         }
         section.content.post {
-          padding: 4vw;
+          padding: 1.2rem;
         }
         nav.actions {
           margin: 0;
@@ -298,7 +298,7 @@ body[data-controller="post"][data-view="announcement"] {
       }
     }
     article.post {
-      padding: 2vw;
+      padding: 0.6rem;
       background: none;
 
       header {
@@ -306,35 +306,35 @@ body[data-controller="post"][data-view="announcement"] {
         background: none;
 
         a.avatar {
-          flex: 0 0 8vw;
+          flex: 0 0 2.4rem;
         }
         dl {
           align-items: flex-start;
           justify-content: space-between;
           position: relative;
-          margin: 0 0 0 2vw;
-          padding: 1.8vw 2vw 0;
+          margin: 0 0 0 0.6rem;
+          padding: 1.8vw 0.6rem 0;
           border-top-left-radius: 0.5vw;
           border-top-right-radius: 0.5vw;
 
           &::before {
             content: '';
             display: block;
-            width: 2vw;
-            height: 2vw;
+            width: 0.6rem;
+            height: 0.6rem;
             transform: rotate(45deg);
             position: absolute;
-            top: 3vw;
+            top: 1rem;
             left: -1vw;
           }
           &::after {
             content: '';
             display: block;
-            width: calc(100% - 4vw);
+            width: calc(100% - 1.2rem);
             height: 1px;
             position: absolute;
-            bottom: 2vw;
-            left: 2vw;
+            bottom: 0.6rem;
+            left: 0.6rem;
           }
         }
         dd.author {
@@ -353,23 +353,23 @@ body[data-controller="post"][data-view="announcement"] {
         dd.link {
           flex: 0 1 auto;
           position: initial;
-          margin-left: 1vw;
+          margin-left: 0.4rem;
           font-size: 90%;
 
           a {
-            width: 3vw;
-            height: 3vw;
+            width: 1rem;
+            height: 1rem;
             padding-top: 0.4vw;
           }
         }
       }
       section.content.post {
         position: relative;
-        margin: 0 0 0 10vw;
-        padding: 1vw 3vw;
+        margin: 0 0 0 3rem;
+        padding: 0.4rem 1rem;
       }
       nav.actions {
-        margin: 0 0 0 10vw;
+        margin: 0 0 0 3rem;
         border-bottom-right-radius: 0.5vw;
         border-bottom-left-radius: 0.5vw;
       }
@@ -379,7 +379,7 @@ body[data-controller="post"][data-view="announcement"] {
         }
       }
       section.signature {
-        margin-left: 10vw;
+        margin-left: 3rem;
         border-top-width: 1px;
         border-top-style: solid;
         border-bottom-right-radius: 0.5vw;
@@ -387,12 +387,12 @@ body[data-controller="post"][data-view="announcement"] {
         overflow: hidden;
 
         section.staff {
-          min-height: 10vw;
-          padding-left: 10vw;
+          min-height: 3rem;
+          padding-left: 3rem;
           font-size: 100%;
         }
         section.content {
-          padding: 2vw;
+          padding: 0.6rem;
   
           > * {
             margin: 0 0 1.6rem;
@@ -591,13 +591,13 @@ body[data-controller="post"][data-view="announcement"] {
         a.avatar {
           margin: 0;
           position: absolute;
-          top: 3vw;
+          top: 1rem;
           left: 0;
           width: 14vw;
           height: 14vw;
         }
         dl.byline {
-          margin: 0.5vw 4vw 0 17vw;
+          margin: 0.5vw 1.2rem 0 17vw;
           font-size: 110%;
           flex: 1 1 100%;
         }
@@ -670,7 +670,7 @@ body[data-controller="post"][data-view="private-topic"] {
   section.notice.private {
     svg {
       display: block;
-      margin: 0 auto 4vw;
+      margin: 0 auto 1.2rem;
     }
   }
 

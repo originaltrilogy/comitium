@@ -33,7 +33,7 @@ article.post {
 
     ul {
       justify-content: flex-end;
-      margin-right: 4vw;
+      margin-right: 1.2rem;
     }
     li {
       &:last-child {
@@ -47,7 +47,7 @@ article.post {
 
   @media only screen and (min-width: 600px) {
     nav.actions {
-      padding: 2vw;
+      padding: 0.6rem;
 
       &::before,
       &::after {
@@ -61,7 +61,7 @@ article.post {
         margin-bottom: 0;
       }
       a {
-        padding: 1.6vw 2vw;
+        padding: 0.4rem 0.6rem;
       }
     }
   }

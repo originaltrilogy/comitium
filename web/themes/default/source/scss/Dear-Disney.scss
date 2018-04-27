@@ -4,32 +4,32 @@
 
 body[data-view="Dear-Disney"] {
   section.letter {
-    padding: 4vw;
+    padding: 1.2rem;
   }
 
   img.pvg {
-    border-radius: 2vw;
-    margin: 8vw 0;
+    border-radius: 0.6rem;
+    margin: 2.4rem 0;
     width: 100%;
   }
 
   img.death-star {
     width: 26vw;
-    margin: 10vw auto 0;
+    margin: 3rem auto 0;
   }
 
   @media only screen and ( min-width: 600px ) {
 
     img.pvg {
-      border-radius: 1vw;
+      border-radius: 0.4rem;
       float: left;
-      margin: 1vw 4vw 3vw 0;
+      margin: 0.4rem 1.2rem 1rem 0;
       width: 48%;
     }
 
     img.death-star {
-      width: 20vw;
-      margin: 6vw auto 2vw;
+      width: 6rem;
+      margin: 1.8rem auto 0.6rem;
     }
 
   }

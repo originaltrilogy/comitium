@@ -39,11 +39,11 @@
   text-rendering: optimizeLegibility;
 }
 
-@mixin button($color: light, $size: 88%, $padding: 2.5vw 3.5vw) {
+@mixin button($color: light, $size: 1.4rem, $padding: 0.8rem 1rem) {
   display: block;
 	padding: $padding;
 	font-size: $size;
-  border-radius: 0.6vw;
+  border-radius: 0.3rem;
   border: none;
 	@include bodyFont();
 	line-height: 1;
@@ -51,13 +51,6 @@
   text-decoration: none;
 	text-transform: uppercase;
   cursor: pointer;
-
-  @media only screen and (min-width: 600px) {
-    border-radius: 0.4vw;
-  }
-  @media only screen and (min-width: 720px) {
-    border-radius: 0.3rem;
-  }
 
   @if $color == 'light' {
 		color: #373B49;
@@ -96,6 +89,7 @@
 /////////////////////////
 html {
   height: 100%;
+  font-size: 10px;
 }
 
 body {
@@ -104,6 +98,7 @@ body {
   height: 100%;
   position: relative;
   overflow-x: hidden;
+  font-size: 1.4rem;
 }
 
 a {
@@ -134,11 +129,11 @@ svg.icon {
 
   // Close button
   #mask-close {
-    width: 20px;
-    height: 20px;
+    width: 2rem;
+    height: 2rem;
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 2rem;
+    right: 2rem;
     cursor: pointer;
 
     svg {
@@ -156,8 +151,8 @@ svg.icon {
   &.enabled {
     width: 100%;
     height: 100%;
-    padding-top: 60px;
-    padding-bottom: 50px;
+    padding-top: 6rem;
+    padding-bottom: 5rem;
     z-index: 1000;
     opacity: 1;
   }
@@ -171,7 +166,7 @@ svg.icon {
 
   a.open-tab {
     display: block;
-    font-size: 12px;
+    font-size: 1.2rem;
     text-align: center;
     text-overflow: ellipsis;
     padding: 10px;
@@ -180,10 +175,10 @@ svg.icon {
 
     svg {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 1.6rem;
+      height: 1.6rem;
       vertical-align: middle;
-      margin-left: 5px;
+      margin-left: 0.5rem;
     }
 
     &:hover {
@@ -198,17 +193,17 @@ span.zoom {
   cursor: pointer;
 
   span.zoom-button {
-    width: 40px;
-    height: 40px;
+    width: 4rem;
+    height: 4rem;
     position: absolute;
-    top: calc(50% - 20px);
-    left: calc(50% - 20px);
+    top: calc(50% - 2rem);
+    left: calc(50% - 2rem);
     opacity: 0;
     transition: opacity 0.2s;
 
     svg {
-      width: 40px;
-      height: 40px;
+      width: 4rem;
+      height: 4rem;
     }
   }
 
@@ -249,64 +244,45 @@ body {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    min-height: 14vw;
-    margin-top: 0;
-    padding: 1vw 1.5vw;
+    height: 4.8rem;
+    padding: 0.8rem 0.6rem;
   
     a.home {
-      width: 36vw;
-      height: 12vw;
-    }
-  
-    nav {
-      ul {
-        text-align: center;
-  
-        &.content {
-          text-align: left;
-          text-transform: uppercase;
-        }
-      }
-      li {
-        margin: 0 1vw 1vw;
-  
-        a {
-          display: block;
-          padding: 1vw;
-        }
-      }
+      height: 100%;
+      padding: 0 1.2rem;
     }
   
     a.sign-in {
-      @include button(lightGhost, $padding: 2vw 3vw);
-      margin: 1vw 0 0.9vw 1vw;
+      @include button(lightGhost);
+      flex: 0 0 auto;
     }
   
     section.status {
       display: flex;
+      align-items: center;
   
       a.private-topics {
         display: block;
-        width: 10vw;
-        height: 10vw;
-        margin-right: 2vw;
-        padding-top: 10vw;
+        width: 2.8rem;
+        height: 2.8rem;
+        margin-right: 1.2rem;
+        padding-left: 3.2rem;
         overflow: hidden;
         position: relative;
   
         svg {
           position: absolute;
-          top: 1vw;
+          top: 0;
           left: 0;
-          width: 80%;
-          height: 80%;
+          width: 100%;
+          height: 100%;
         }
       }
   
       a.account {
         display: block;
-        width: 10vw;
-        height: 10vw;
+        width: 3.8rem;
+        height: 3.8rem;
   
         img {
           position: absolute;
@@ -319,7 +295,7 @@ body {
 
   // Floating header (see global.js init() for associated scripts)
   &.floating-header > header {
-    margin-top: -80px;
+    margin-top: -4.8rem;
   }
 }
 
@@ -336,19 +312,19 @@ main {
   overflow: hidden;
 
   & > h1:first-child {
-    margin-top: 5vw;
+    margin-top: 1.6rem;
   }
 
   & > p {
-    margin-left: 4vw;
-    margin-right: 4vw;
+    margin-left: 1.2rem;
+    margin-right: 1.2rem;
   }
 }
 
 html.js {
   main {
     // Matches the header height
-    padding-top: 14vw;
+    padding-top: 4.8rem;
   }
 }
 
@@ -369,27 +345,27 @@ html.js {
   }
 
   #main-menu-icon {
-    @include button(light, $padding: 2vw);
+    @include button(light);
     display: flex;
     align-items: center;
 
     svg {
-      width: 5vw;
-      height: 5vw;
-      margin-right: 1.5vw;
+      width: 1.6rem;
+      height: 1.6rem;
+      margin-right: 0.6rem;
     }
   }
 
   .slide-menu {
     position: fixed;
     z-index: 1001;
-    font-size: 125%;
+    font-size: 1.8rem;
 
     &.left {
       top: 0;
-      left: -100vw;
-      width: 75vw;
-      height: 100vh;
+      left: -100%;
+      min-width: 75%;
+      height: 100%;
       text-align: left;
       transition: left 0.4s;
 
@@ -399,25 +375,14 @@ html.js {
     }
     &.right {
       top: 0;
-      right: -100vw;
-      width: 75vw;
-      height: 100vh;
+      right: -100%;
+      min-width: 75%;
+      height: 100%;
       text-align: right;
       transition: right 0.4s;
 
       &.open {
         right: 0;
-      }
-    }
-    &.bottom {
-      bottom: -50vh;
-      width: 100vw;
-      height: 50vh;
-      text-align: center;
-      transition: bottom 0.4s;
-
-      &.open {
-        bottom: 0;
       }
     }
 
@@ -427,7 +392,7 @@ html.js {
 
       a {
         display: block;
-        padding: 5vw;
+        padding: 1.6rem 1.8rem;
       }
     }
   }
@@ -461,7 +426,7 @@ html.js {
 }
 
 nav.breadcrumbs {
-  padding: 4vw 4vw 0;
+  padding: 1.2rem 1.6rem 0;
   @include titleFont(normal, 300);
   text-transform: uppercase;
 
@@ -483,9 +448,9 @@ nav.breadcrumbs {
       display: inline-block;
       width: 0;
       height: 0;
-      margin: 0 2vw 0 0;
+      margin: 0 0.6rem 0 0;
       border-top: 1.5vw solid transparent;
-      border-right: 2vw solid;
+      border-right: 0.6rem solid;
       border-bottom: 1.5vw solid transparent;
       border-radius: 0.5vw;
     }
@@ -503,8 +468,8 @@ section {
   &.summary {
     position: relative;
     overflow: hidden;
-    margin: auto 4vw;
-    padding-bottom: 4vw;
+    margin: auto 1.6rem;
+    padding-bottom: 1.6rem;
 
     & > p {
       &:first-of-type {
@@ -517,7 +482,7 @@ section {
   }
 
   &.notice {
-    padding: 4vw;
+    padding: 1.2rem;
     text-align: center;
     border-top-width: 1px;
     border-top-style: solid;
@@ -530,8 +495,8 @@ section {
     }
 
     svg {
-      width: 8vw;
-      height: 8vw;
+      width: 2.4rem;
+      height: 2.4rem;
     }
 
     &.error,
@@ -547,7 +512,7 @@ section {
     &.success {
       svg {
         display: inline-block;
-        margin-right: 4vw;
+        margin-right: 1.2rem;
         vertical-align: middle;
       }
       p {
@@ -573,19 +538,18 @@ section {
   }
 
   &.announcements {
-    padding: 4vw;
+    padding: 1.2rem 1.6rem;
 
     article {
-      padding: 2vw 0;
+      padding: 0.6rem 0;
       border: none;
     }
   }
 
   &.content {
     width: 100%;
-    margin: 4vw 0;
-    padding: 0 4vw;
-    line-height: 1.6;
+    margin: 1.2rem 0;
+    padding: 0 1.6rem;
     background: none;
 
     & > * {
@@ -600,20 +564,20 @@ section {
       }
     }
     h1 {
-      margin-top: 8vw;
-      margin-bottom: 4vw;
+      margin-top: 2.4rem;
+      margin-bottom: 1.2rem;
       padding: 0;
       font-size: 3.5vw;
     }
     h2 {
-      margin-top: 8vw;
-      margin-bottom: 2vw;
+      margin-top: 2.4rem;
+      margin-bottom: 0.6rem;
       padding: 0;
       background: none;
       text-align: left;
     }
     h3 {
-      margin-top: 8vw;
+      margin-top: 2.4rem;
       margin-bottom: 0;
       padding: 0;
       @include bodyFont(italic);
@@ -636,14 +600,14 @@ section {
       }
     }
     dl, ol, ul {
-      margin-left: 8vw;
+      margin-left: 2.4rem;
     }
     blockquote {
       position: relative;
       overflow: hidden;
       font-size: 90%;
-      margin: 4vw 0;
-      padding: 3vw 4vw;
+      margin: 1.2rem 0;
+      padding: 1rem 1.2rem;
       border-left-width: 1px;
       border-left-style: solid;
 
@@ -670,7 +634,7 @@ section {
         }
       }
       &.nested {
-        padding-top: 8vw;
+        padding-top: 2.4rem;
 
         *:nth-child(n-1) {
           margin-bottom: 0;
@@ -679,9 +643,9 @@ section {
       a.expand {
         @include button('lightGhost');
         position: absolute;
-        top: 2vw;
-        right: 1.6vw;
-        padding: 1.5vw 2vw;
+        top: 0.6rem;
+        right: 0.4rem;
+        padding: 1.5vw 0.6rem;
         font-size: 80%;
       }
       *:first-child {
@@ -691,10 +655,10 @@ section {
         margin-bottom: 0;
       }
       p {
-        margin: 2vw 0;
+        margin: 0.6rem 0;
       }
       dl, ol, ul {
-        margin-left: 8vw;
+        margin-left: 2.4rem;
       }
     }
     span.emoji {
@@ -705,15 +669,15 @@ section {
   }
 
   &.form {
-    margin: 6vw 4vw;
+    margin: 1.8rem 1.2rem;
 
     h2 {
-      margin-bottom: 2vw;
+      margin-bottom: 0.6rem;
     }
   }
 
   &.preview {
-    margin-top: 6vw;
+    margin-top: 1.8rem;
     
     article {
       padding: 0;
@@ -721,7 +685,7 @@ section {
 
       h3.title {
         @include titleFont($weight: normal);
-        margin: 4vw;
+        margin: 1.2rem;
       }
     }
   }
@@ -730,7 +694,7 @@ section {
 // If the page doesn't have breadcrumbs...
 body[data-breadcrumbs="false"] {
   section.summary {
-    padding: 3vw 0 5vw;
+    padding: 1rem 0 1.6rem;
   }
 }
 
@@ -738,7 +702,7 @@ nav.pagination {
   flex: 0 1 auto;
   display: flex;
   justify-content: center;
-  margin: 4vw;
+  margin: 1.2rem;
 
   ul {
     display: flex;
@@ -771,7 +735,7 @@ nav.previous-and-next {
   flex: 1 0 auto;
   justify-content: center;
   display: flex;
-  margin: 8vw 2vw;
+  margin: 2.4rem 0.6rem;
 
   ul {
     display: flex;
@@ -780,10 +744,10 @@ nav.previous-and-next {
     flex: 0 0 auto;
 
     &:first-child {
-      margin-right: 4vw;
+      margin-right: 1.2rem;
     }
     &:last-child {
-      margin-left: 4vw;
+      margin-left: 1.2rem;
     }
     &:only-child {
       margin: 0;
@@ -800,11 +764,12 @@ dl.content-stats {
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  width: 16vw;
-  height: 16vw;
+  width: 5.4rem;
+  height: 5.4rem;
   margin: 0;
   border-radius: 50%;
-  font-size: 4vw;
+  font-size: 1.4rem;
+  line-height: 1;
 
   dt {
     &::after {
@@ -830,8 +795,8 @@ dl.content-stats {
     &:nth-child(n+2) {
       order: 1;
       flex-basis: auto;
+      padding-top: 0.4rem;
       @include titleFont();
-      line-height: 1.5;
     }
     &:nth-child(n+4) {
       position: absolute;
@@ -842,7 +807,7 @@ dl.content-stats {
 
 p.last-post {
   margin: 0;
-  font-size: 85%;
+  font-size: 88%;
 
   a {
     text-decoration: none;
@@ -850,7 +815,7 @@ p.last-post {
   a.avatar {
     display: inline-block;
     vertical-align: middle;
-    margin-right: 3vw;
+    margin-right: 1rem;
   }
 }
 
@@ -858,7 +823,7 @@ article {
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  padding: 4vw 0;
+  padding: 1.2rem 0;
   border-top-width: 1px;
   border-top-style: solid;
 
@@ -874,11 +839,11 @@ article {
     &::before {
       content: '';
       display: block;
-      width: 1vw;
+      width: 0.6rem;
       height: calc(100% - 1px);
       position: absolute;
       top: 0;
-      left: -4vw;
+      left: -1.6rem;
     }
   }
 
@@ -893,7 +858,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  padding: 2vw 0;
+  padding: 0.6rem 0;
   @include titleFont;
 
   span.page {
@@ -905,7 +870,7 @@ h1 {
 
 h2 {
   @include titleFont($weight: 400);
-  margin: 2vw;
+  margin: 0.6rem 0;
   text-transform: uppercase;
   text-align: center;
 }
@@ -915,11 +880,11 @@ h3, h4, h5, h6 {
 }
 
 footer {
-  padding: 4vw;
+  padding: 1.6rem;
 
   a.home {
-    width: 50vw;
-    margin: 8vw auto 10vw;
+    width: 14rem;
+    margin: 2.4rem auto 3rem;
   }
 
   section.stats {
@@ -928,11 +893,11 @@ footer {
     }
   }
   section.copyright {
-    margin-top: 10vw;
-    font-size: 85%;
+    margin-top: 3.6rem;
+    font-size: 88%;
 
     p {
-      margin: 4vw 0;
+      margin: 1.2rem 0;
 
       &:last-child {
         margin-bottom: 0;
@@ -950,12 +915,12 @@ footer {
 form {
   label {
     @include titleFont(normal, 500);
-    margin-bottom: 2vw;
+    margin-bottom: 0.6rem;
     font-size: 120%;
     line-height: 1;
   }
   p.label-note {
-    margin: 1vw 0 2vw;
+    margin: 0.4rem 0 0.6rem;
     font-size: 90%;
     line-height: 1.5;
   }
@@ -963,11 +928,11 @@ form {
   select,
   textarea {
     width: 100%;
-    padding: 4vw;
+    padding: 1.2rem;
     word-wrap: normal;
     border-width: 1px;
     border-style: solid;
-    border-radius: 1vw;
+    border-radius: 0.4rem;
     transition: border-color 0.5s, background-color 0.5s;
 
     &:focus {
@@ -981,7 +946,7 @@ form {
 
   textarea {
     font-family: monospace;
-    padding: 3vw;
+    padding: 1rem;
 
     &[name="title"] {
       height: 18vw;
@@ -994,8 +959,8 @@ form {
   input[type="checkbox"],
   input[type="radio"] {
     display: inline-block;
-    width: 10vw;
-    height: 10vw;
+    width: 3rem;
+    height: 3rem;
     position: relative;
   }
 
@@ -1007,11 +972,11 @@ form {
         top: 0;
         left: 0;
         display: block;
-        width: 10vw;
-        height: 10vw;
+        width: 3rem;
+        height: 3rem;
         background: url('../images/checkmark.svg') center no-repeat;
-        background-size: 8vw;
-        background-position: 1vw;
+        background-size: 2.4rem;
+        background-position: 0.4rem;
       }
     }
   }
@@ -1036,11 +1001,11 @@ form {
     margin: 0;
 
     & > li {
-      margin: 2vw 0 8vw;
+      margin: 0.6rem 0 2.4rem;
       list-style: none;
 
       &:last-child {
-        margin-bottom: 2vw;
+        margin-bottom: 0.6rem;
       }
       &.text,
       &.textarea,
@@ -1055,10 +1020,10 @@ form {
         &::after {
           content: '';
           display: block;
-          width: 4vw;
-          height: 8vw;
+          width: 1.2rem;
+          height: 2.4rem;
           position: absolute;
-          right: 2vw;
+          right: 0.6rem;
           bottom: 3.5vw;
           background: url('../images/select.svg') center no-repeat;
           background-size: cover;
@@ -1070,10 +1035,10 @@ form {
         align-items: center;
 
         input {
-          flex: 0 0 10vw;
+          flex: 0 0 3rem;
         }
         label {
-          margin: 0 0 0 4vw;
+          margin: 0 0 0 1.2rem;
           @include bodyFont;
           font-size: 100%;
           line-height: 1.4;
@@ -1081,16 +1046,16 @@ form {
       }
 
       ul.data {
-        margin: 8vw 0;
+        margin: 2.4rem 0;
 
         ul.data {
           & > li {
             flex-wrap: nowrap;
-            margin: 4vw 0;
+            margin: 1.2rem 0;
 
             ul.checkbox,
             ul.radio {
-              margin-top: 2vw;
+              margin-top: 0.6rem;
             }
           }
         }
@@ -1098,18 +1063,18 @@ form {
       ul.checkbox,
       ul.radio {
         & > li {
-          margin: 1vw 0 2vw;
+          margin: 0.4rem 0 0.6rem;
         }
       }
     }
   }
   ul.actions {
     margin: 0;
-    padding: 8vw 0;
+    padding: 2.4rem 0;
 
     & > li {
       display: block;
-      margin-bottom: 4vw;
+      margin-bottom: 1.2rem;
 
       &:first-child {
         margin-left: 0;
@@ -1127,7 +1092,7 @@ form {
       }
       input[type="submit"],
       a {
-        @include button(light, $size: 110%, $padding: 6vw);
+        @include button(light, $size: 110%, $padding: 1.8rem);
       }
     }
   }
@@ -1146,7 +1111,7 @@ nav.actions {
   }
 
   li {
-    margin: 0 1.5vw 4vw;
+    margin: 0 1.5vw 1.2rem;
 
     &:first-child {
       margin-left: 0;
@@ -1167,7 +1132,7 @@ nav.actions {
 
 table {
   width: 100%;
-  margin: 4vw 0;
+  margin: 1.2rem 0;
 
   th,
   td {
@@ -1187,8 +1152,8 @@ a.avatar {
   display: block;
   position: relative;
   margin: 0;
-  width: 12vw;
-  height: 12vw;
+  width: 3.6rem;
+  height: 3.6rem;
   border-radius: 50%;
   overflow: hidden;
 
@@ -1223,7 +1188,7 @@ a.avatar {
 @media only screen and (min-width: 375px) {
 
   body {
-    font-size: 4vw;
+    font-size: 1.6rem;
   }
 
   // Keep the byline on topic pages from breaking
@@ -1234,7 +1199,7 @@ a.avatar {
     section.summary {
       &::before {
         width: 26vw;
-        height: 20vw;
+        height: 6rem;
       }
     }
   }
@@ -1245,29 +1210,9 @@ a.avatar {
 // Screens wider than 400px
 @media only screen and (min-width: 400px) {
 
-  body {
-    font-size: 3.4vw;
-
-    & > header {
-      a.sign-in {
-        font-size: 100%;
-      }
-    }
-  }
-
-  #main-menu-icon {
-    font-size: 110%;
-  }
-
   a.avatar {
-    width: 10vw;
-    height: 10vw;
-  }
-
-  dl.content-stats {
-    width: 12vw;
-    height: 12vw;
-    font-size: 3vw;
+    width: 3rem;
+    height: 3rem;
   }
 
   // Discussion, discussions, and topic view summaries
@@ -1300,28 +1245,28 @@ a.avatar {
     font-size: 2.2vw;
 
     & > header {
-      min-height: 8vw;
+      min-height: 2.4rem;
 
       a.home {
         width: 24vw;
-        height: 6vw;
+        height: 1.8rem;
       }
       a.sign-in {
         display: none;
       }
       section.status {
         a.private-topics {
-          padding-top: 6vw;
-          width: 6vw;
-          height: 6vw;
+          padding-top: 1.8rem;
+          width: 1.8rem;
+          height: 1.8rem;
 
           svg {
             top: 0.5vw;
           }
         }
         a.account {
-          width: 6vw;
-          height: 6vw;
+          width: 1.8rem;
+          height: 1.8rem;
         }
       }
       nav {
@@ -1376,10 +1321,10 @@ a.avatar {
           nav {
             ul.account {
               position: absolute;
-              top: 12vw;
+              top: 3.6rem;
               right: -50vw;
               margin: 0;
-              padding: 2vw 0;
+              padding: 0.6rem 0;
               border-radius: 0.3rem;
               text-align: center;
               z-index: 4;
@@ -1391,12 +1336,12 @@ a.avatar {
               &::after {
                 content: '';
                 display: block;
-                width: 4vw;
-                height: 4vw;
+                width: 1.2rem;
+                height: 1.2rem;
                 transform: rotate(45deg);
                 position: absolute;
                 top: -1.8vw;
-                right: 1vw;
+                right: 0.4rem;
                 z-index: 1;
               }
 
@@ -1406,7 +1351,7 @@ a.avatar {
                 z-index: 2;
 
                 a {
-                  padding: 1.5vw 3vw;
+                  padding: 1.5vw 1rem;
                 }
               }
             }
@@ -1415,29 +1360,29 @@ a.avatar {
       }
 
       main {
-        padding-top: 8vw;
+        padding-top: 2.4rem;
       }
     }
   }
 
   h1 {
-    padding: 1vw 0;
-    font-size: 4vw;
+    padding: 0.4rem 0;
+    font-size: 1.2rem;
   }
 
   nav.breadcrumbs {
-    padding: 2vw 4vw 0;
+    padding: 0.6rem 1.2rem 0;
     font-size: 2.4vw;
 
     li {
       margin-bottom: 0;
-      margin-top: 1vw;
+      margin-top: 0.4rem;
 
       &::before {
-        margin: 0 1.2vw 0 1.6vw;
-        border-top: 1vw solid transparent;
-        border-right: 1.6vw solid;
-        border-bottom: 1vw solid transparent;
+        margin: 0 1.2vw 0 0.4rem;
+        border-top: 0.4rem solid transparent;
+        border-right: 0.4rem solid;
+        border-bottom: 0.4rem solid transparent;
         border-radius: 0.4vw;
       }
     }
@@ -1456,25 +1401,25 @@ a.avatar {
         max-width: 100%;
       }
       dl, ol, ul {
-        margin-bottom: 4vw;
-        margin-left: 6vw;
+        margin-bottom: 1.2rem;
+        margin-left: 1.8rem;
       }
       blockquote {
-        margin: 3vw 0;
-        padding: 2vw 2.5vw;
+        margin: 1rem 0;
+        padding: 0.6rem 2.5vw;
         border-top-right-radius: .5vw;
         border-bottom-right-radius: .5vw;
 
         &.nested {
-          padding-top: 4vw;
+          padding-top: 1.2rem;
         }
         a.expand {
           top: 1.2vw;
-          right: 1vw;
-          padding: 1vw 1.5vw;
+          right: 0.4rem;
+          padding: 0.4rem 1.5vw;
         }
         dl, ol, ul {
-          margin-left: 6vw;
+          margin-left: 1.8rem;
         }
       }
     }
@@ -1503,51 +1448,51 @@ a.avatar {
     }
     &.notice {
       svg {
-        width: 6vw;
-        height: 6vw;
+        width: 1.8rem;
+        height: 1.8rem;
       }
       p {
-        margin-bottom: 3vw;
+        margin-bottom: 1rem;
       }
     }
     &.form.post {
       ul.data {
         > li {
-          margin-bottom: 4vw;
+          margin-bottom: 1.2rem;
         }
       }
     }
   }
 
   article {
-    padding: 3vw 0;
+    padding: 1rem 0;
 
     &::after {
-      left: 3vw;
-      width: calc(100% - 6vw);
+      left: 1rem;
+      width: calc(100% - 1.8rem);
     }
   }
 
   form {
     & > * {
-      margin-left: 20vw;
-      margin-right: 20vw;
+      margin-left: 6rem;
+      margin-right: 6rem;
     }
     label {
-      margin-bottom: 1vw;
+      margin-bottom: 0.4rem;
     }
     p.label-note {
-      margin-bottom: 1vw;
+      margin-bottom: 0.4rem;
     }
     input,
     select,
     textarea {
       margin: 0;
-      padding: 2vw;
+      padding: 0.6rem;
       border-radius: 0.5vw;
     }
     textarea {
-      padding: 2vw 3vw;
+      padding: 0.6rem 1rem;
 
       &[name="title"] {
         height: 11vw;
@@ -1558,14 +1503,14 @@ a.avatar {
     }
     input[type="checkbox"],
     input[type="radio"] {
-      width: 6vw;
-      height: 6vw;
+      width: 1.8rem;
+      height: 1.8rem;
     }
     input[type="checkbox"] {
       &:checked::after {
-        width: 6vw;
-        height: 6vw;
-        background-size: 5vw;
+        width: 1.8rem;
+        height: 1.8rem;
+        background-size: 1.6rem;
         background-position: 0.5vw;
       }
     }
@@ -1574,32 +1519,32 @@ a.avatar {
         &::after {
           top: 0.8vw;
           left: 0.8vw;
-          width: 4vw;
-          height: 4vw;
+          width: 1.2rem;
+          height: 1.2rem;
         }
       }
     }
     ul.data {
       & > li {
-        margin: 2vw 0 6vw;
+        margin: 0.6rem 0 1.8rem;
 
         &.select {
           &::after {
-            height: 6vw;
-            width: 3vw;
-            bottom: 1vw;
-            right: 1vw;
+            height: 1.8rem;
+            width: 1rem;
+            bottom: 0.4rem;
+            right: 0.4rem;
           }
         }
         &.checkbox,
         &.radio {
-          min-height: 6vw;
+          min-height: 1.8rem;
 
           &:last-child {
-            margin-bottom: 4vw;
+            margin-bottom: 1.2rem;
           }
           input {
-            flex: 0 0 6vw;
+            flex: 0 0 1.8rem;
           }
         }
       }
@@ -1608,15 +1553,15 @@ a.avatar {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2vw 0;
+      padding: 0.6rem 0;
 
       & > li {
         flex: 0 1 auto;
-        margin: 0 2vw;
+        margin: 0 0.6rem;
 
         input[type="submit"],
         a {
-          padding: 2vw 3vw;
+          padding: 0.6rem 1rem;
         }
       }
     }
@@ -1634,28 +1579,28 @@ a.avatar {
       padding: 0;
     }
     li {
-      margin: 0 1vw 2vw;
+      margin: 0 0.4rem 0.6rem;
     }
     a {
-      padding: 1.65vw 2vw;
+      padding: 1.65vw 0.6rem;
     }
   }
 
   nav.pagination,
   nav.actions {
-    margin: 2vw;
+    margin: 0.6rem;
 
     li {
       a {
-        padding: 2vw 3vw;
+        padding: 0.6rem 1rem;
         font-size: 100%;
       }
     }
   }
 
   a.avatar {
-    width: 8vw;
-    height: 8vw;
+    width: 2.4rem;
+    height: 2.4rem;
 
     &.banned {
       &::after {
@@ -1671,9 +1616,9 @@ a.avatar {
     font-size: 100%;
 
     a.avatar {
-      width: 6vw;
-      height: 6vw;
-      margin-right: 2vw;
+      width: 1.8rem;
+      height: 1.8rem;
+      margin-right: 0.6rem;
     }
   }
 
@@ -1690,7 +1635,7 @@ a.avatar {
     }
     section.copyright {
       p {
-        margin: 2vw 0;
+        margin: 0.6rem 0;
       }
     }
   }
@@ -1701,10 +1646,6 @@ a.avatar {
 // Screens wider than 720px
 @media only screen and (min-width: 720px) {
 
-  // New baseline establishing rems over viewport units
-  html {
-    font-size: 62.5%;
-  }
   body {
     font-size: 1.4rem;
   }
@@ -1723,6 +1664,7 @@ a.avatar {
   body {
     > header {
       min-height: 6.4rem;
+      padding: 0 1.2rem;
       font-size: 1.2rem;
 
       > nav {
