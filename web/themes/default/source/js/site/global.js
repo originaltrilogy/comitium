@@ -20,8 +20,9 @@ CF.global = ( function () {
         window.addEventListener('scroll', function () {
           if ( !body.classList.contains('hidden-header') && bodyOffset > body.getBoundingClientRect().top && Math.abs(body.getBoundingClientRect().top) > header.getBoundingClientRect().height ) {
             body.classList.add('hidden-header')
+          // The minus 20 pixels is to keep the header from popping in with only slight movements (happens frequently when using touchscreens and touch input devices)
           // The second half of the statement deals with Safari's bounceback when you scroll past the top of the page
-          } else if ( body.getBoundingClientRect().top >= bodyOffset || Math.abs(body.getBoundingClientRect().top) <= header.getBoundingClientRect().height ) {
+          } else if ( body.getBoundingClientRect().top - 20 >= bodyOffset || Math.abs(body.getBoundingClientRect().top) <= header.getBoundingClientRect().height ) {
             body.classList.remove('hidden-header')
           }
 
