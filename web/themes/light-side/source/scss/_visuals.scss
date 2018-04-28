@@ -12,7 +12,7 @@
 body {
   @include bodyFont;
   color: hsl(0, 0%, 0%);
-  background-color: hsl(0, 0%, 92%);
+  background-color: hsl(227,18%,96%);
 
   // Navigation highlighting
   &[data-controller="index"] nav li.discussions a,
@@ -91,14 +91,14 @@ main {
 nav.breadcrumbs {
   li {
     &::before {
-      border-right-color: hsl(227,18%,75%);
+      border-right-color: hsl(227,18%,60%);
     }
     &::after {
-      border-left-color: hsl(227,18%,75%);
+      border-left-color: hsl(227,18%,60%);
     }
   }
   a {
-    color: hsl(227,18%,60%);
+    color: hsl(227,18%,50%);
   }
 }
 
@@ -211,6 +211,7 @@ nav.actions {
   a {
     color: hsl(0,0%,100%);
     background-image: linear-gradient(180deg,hsl(227,18%,50%),hsl(227,18%,26%) 98%);
+    border-color: hsl(227,20%,50%);
   }
 }
 
@@ -340,15 +341,6 @@ table {
     }
   }
 
-}
-
-// Screens wider than 720px
-@media only screen and (min-width: 720px) {
-  body {
-    > header {
-      box-shadow: 0 0 6px hsl(227, 0%, 10%);
-    }
-  }
 }
 
 

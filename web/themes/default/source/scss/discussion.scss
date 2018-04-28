@@ -27,7 +27,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
   article.topic {
     section.description {
       flex: 1 0 0;
-      order: 1;
       padding-right: 1.2rem;
     }
     h3 {
@@ -40,20 +39,18 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
       order: 3;
       display: flex;
     }
-    a.avatar {
-      flex: 0 0 3.6rem;
-    }
     dl.byline {
+      flex-basis: 50%;
       margin: 0 0 0 1rem;
       font-size: 88%;
 
       dt.author,
       dt.date {
         position: absolute;
-        left: -100vw;
+        left: -100%;
       }
       dd.author {
-        flex-basis: 10rem;
+        flex-basis: 100%;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -101,7 +98,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
     article.topic {
       a.avatar {
-        flex: 0 0 4.2rem;
+        width: 4.2rem;
         height: 4.2rem;
       }
       p.last-post {
@@ -115,76 +112,6 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
           width: calc(100% - 3.8rem);
         }
       }
-    }
-
-  }
-
-  @media only screen and (min-width: 400px) {
-
-    article.topic {
-      section.description {
-        flex-basis: 74vw;
-      }
-      h3 {
-        min-height: 14vw;
-        margin-bottom: 0.6rem;
-      }
-      p.last-post {
-        width: 34vw;
-
-        a:nth-child(2) {
-          width: 24vw;
-        }
-      }
-    }
-
-  }
-
-  @media only screen and (min-width: 600px) {
-    article.topic {
-      section.description {
-        flex-basis: 76vw;
-      }
-      h3,
-      &.has-replies h3 {
-        margin: 0 0 0.6rem 0;
-        min-height: 0;
-      }
-      & > a.avatar {
-        margin: 0 0.6rem 0 1rem;
-      }
-      section.author {
-        flex: 0 0 48vw;
-      }
-      dl.byline {
-        margin: 0.5vw 0 0 0.6rem;
-        width: 26vw;
-        font-size: 100%;
-      }
-      p.last-post {
-        right: 18vw;
-        bottom: 1rem;
-        width: 28vw;
-        font-size: 85%;
-        line-height: 1.6;
-
-        a.avatar {
-          width: 1.8rem;
-          height: 1.8rem;
-          margin-right: 0.4rem;
-        }
-        a:nth-child(2) {
-          display: block;
-          width: auto;
-        }
-      }
-
-      &.announcement {
-        &::after {
-          margin: 0;
-        }
-      }
-
     }
 
   }
@@ -234,23 +161,26 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
           margin-right: 3.2rem;
         }
         h3 {
+          min-height: 0;
           margin: 0 0 0 7.8rem;
         }
         section.author {
-          flex-basis: 44%;
-          margin-left: 7.8rem;
-          font-size: 90%;
+          margin: 0.4rem 0 0 7.8rem;
+          font-size: 88%;
 
           a.avatar {
             position: absolute;
-            top: 1.4rem;
+            top: 1.2rem;
             left: 0;
+            width: 6.4rem;
+            height: 6.4rem;
           }
         }
         dl.byline {
+          flex-basis: 100%;
           flex-wrap: nowrap;
           margin: 0;
-          width: auto;
+          font-size: 100%;
         }
         dd.author {
           display: inline;
@@ -281,7 +211,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
           }
           a:nth-child(2) {
             display: block;
-            margin-top: 0.6rem;
+            margin-top: 0.8rem;
             max-width: 12rem;
           }
         }
@@ -296,41 +226,16 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
 }
 
-body[data-controller="announcements"][data-view="announcements"],
-body[data-controller="private-topics"][data-view="private-topics"],
-body[data-controller="subscriptions"][data-view="subscriptions"] {
-
-  section.summary {
-    &::before {
-      display: none;
-    }
-  }
-
-}
-
 body[data-controller="private-topics"][data-view="private-topics"],
 body[data-controller="subscriptions"][data-view="subscriptions"] {
   article.topic {
-    p.last-post {
-      bottom: 17vw;
-    }
     nav.actions {
-      flex: 1 1 auto;
-      order: 4;
-      margin: 1.2rem 0 0;
+      margin: 1.2rem 0.6rem 0 0;
       display: flex;
       justify-content: flex-end;
   
       li {
         margin: 0;
-      }
-    }
-  }
-
-  @media only screen and (min-width: 600px) {
-    article.topic {
-      p.last-post {
-        bottom: 13vw;
       }
     }
   }
@@ -343,7 +248,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
         li {
           a {
-            padding: 8px 10px;
+            padding: 0.8rem 1rem;
             font-size: 88%;
           }
         }

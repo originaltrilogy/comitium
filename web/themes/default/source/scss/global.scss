@@ -42,9 +42,10 @@
 @mixin button($color: light, $size: 1.4rem, $padding: 0.8rem 1rem) {
   display: block;
 	padding: $padding;
-	font-size: $size;
+  font-size: $size;
+  border-style: solid;
+  border-width: 1px;
   border-radius: 0.3rem;
-  border: none;
 	@include bodyFont();
 	line-height: 1;
   text-align: center;
@@ -63,7 +64,6 @@
   } @else if $color == 'dark' {
 		color: #A5B2D9;
 		background-image: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
-		border: 1px solid #474F66;
 
 		&:hover {
 			color: hsl(227,41%,13%);
@@ -246,6 +246,7 @@ body {
     width: 100%;
     height: 4.8rem;
     padding: 0.8rem 0.6rem;
+    text-transform: uppercase;
   
     a.home {
       height: 100%;
@@ -294,8 +295,8 @@ body {
   }
 
   // Floating header (see global.js init() for associated scripts)
-  &.floating-header > header {
-    margin-top: -4.8rem;
+  &.hidden-header > header {
+    margin-top: -5.4rem; // Header height plus drop shadow depth
   }
 }
 
@@ -359,7 +360,7 @@ html.js {
   .slide-menu {
     position: fixed;
     z-index: 1001;
-    font-size: 1.8rem;
+    text-transform: uppercase;
 
     &.left {
       top: 0;
@@ -410,16 +411,16 @@ html.js {
 
   body.menu-open {
     .menu-shadow {
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       opacity: 1;
     }
   }
 
   body.menu-closing {
     .menu-shadow {
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
     }
   }
 
@@ -428,38 +429,38 @@ html.js {
 nav.breadcrumbs {
   padding: 1.2rem 1.6rem 0;
   @include titleFont(normal, 300);
+  font-size: 1.6rem;
   text-transform: uppercase;
 
   ul {
     display: flex;
-    line-height: 1.4;
   }
   li {
     position: absolute;
-    left: -100vw;
+    left: -100%;
 
     &:last-child {
       position: static;
       display: flex;
       align-items: center;
+      width: 100%;
     }
     &::before {
       content: "";
       display: inline-block;
       width: 0;
       height: 0;
-      margin: 0 0.6rem 0 0;
-      border-top: 1.5vw solid transparent;
-      border-right: 0.6rem solid;
-      border-bottom: 1.5vw solid transparent;
-      border-radius: 0.5vw;
+      margin: 0.4rem .8rem 0 0;
+      border-top: 0.8rem solid transparent;
+      border-right: 1rem solid;
+      border-bottom: 0.8rem solid transparent;
+      border-radius: 0.1rem;
     }
     a {
       display: inline-block;
-      max-width: 86vw;
       overflow: hidden;
-      white-space: nowrap;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }
@@ -567,7 +568,6 @@ section {
       margin-top: 2.4rem;
       margin-bottom: 1.2rem;
       padding: 0;
-      font-size: 3.5vw;
     }
     h2 {
       margin-top: 2.4rem;
@@ -645,8 +645,7 @@ section {
         position: absolute;
         top: 0.6rem;
         right: 0.4rem;
-        padding: 1.5vw 0.6rem;
-        font-size: 80%;
+        font-size: 88%;
       }
       *:first-child {
         margin-top: 0;
@@ -669,7 +668,7 @@ section {
   }
 
   &.form {
-    margin: 1.8rem 1.2rem;
+    margin: 1.8rem 1.6rem;
 
     h2 {
       margin-bottom: 0.6rem;
@@ -767,6 +766,9 @@ dl.content-stats {
   width: 5.4rem;
   height: 5.4rem;
   margin: 0;
+  // Hide the text labels
+  position: relative;
+  overflow: hidden;
   border-radius: 50%;
   font-size: 1.4rem;
   line-height: 1;
@@ -788,7 +790,7 @@ dl.content-stats {
     }
     &:nth-child(n+3) {
       position: absolute;
-      right: 100vw;
+      left: 100%;
     }
   }
   dd {
@@ -800,12 +802,13 @@ dl.content-stats {
     }
     &:nth-child(n+4) {
       position: absolute;
-      left: -100vw;
+      left: -100%;
     }
   }
 }
 
 p.last-post {
+  width: 100%;
   margin: 0;
   font-size: 88%;
 
@@ -850,11 +853,6 @@ article {
   & > *:last-child {
       margin-bottom: 0;
   }
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: normal;
-  line-height: 1.4;
 }
 
 h1 {
@@ -922,14 +920,12 @@ form {
   p.label-note {
     margin: 0.4rem 0 0.6rem;
     font-size: 90%;
-    line-height: 1.5;
   }
   input,
   select,
   textarea {
     width: 100%;
     padding: 1.2rem;
-    word-wrap: normal;
     border-width: 1px;
     border-style: solid;
     border-radius: 0.4rem;
@@ -940,20 +936,8 @@ form {
     }
   }
 
-  select {
-    line-height: 1.5;
-  }
-
   textarea {
     font-family: monospace;
-    padding: 1rem;
-
-    &[name="title"] {
-      height: 18vw;
-    }
-    &[name="content"] {
-      height: 74vw;
-    }
   }
 
   input[type="checkbox"],
@@ -975,7 +959,7 @@ form {
         width: 3rem;
         height: 3rem;
         background: url('../images/checkmark.svg') center no-repeat;
-        background-size: 2.4rem;
+        background-size: 2.2rem;
         background-position: 0.4rem;
       }
     }
@@ -1041,7 +1025,6 @@ form {
           margin: 0 0 0 1.2rem;
           @include bodyFont;
           font-size: 100%;
-          line-height: 1.4;
         }
       }
 
@@ -1211,28 +1194,8 @@ a.avatar {
 @media only screen and (min-width: 400px) {
 
   a.avatar {
-    width: 3rem;
-    height: 3rem;
-  }
-
-  // Discussion, discussions, and topic view summaries
-  body[data-controller="discussions"],
-  body[data-controller="discussion"],
-  body[data-controller="topic"],
-  body[data-controller="post"][data-view="topic"],
-  body[data-controller="announcements"],
-  body[data-controller="announcement"],
-  body[data-controller="post"][data-view="announcement"] {
-    section.summary {
-      &::before {
-        width: 28vw;
-        height: 28vw;
-      }
-    }
-  }
-
-  p.last-post {
-    font-size: 100%;
+    width: 4rem;
+    height: 4rem;
   }
 
 }
@@ -1242,32 +1205,15 @@ a.avatar {
 @media only screen and (min-width: 600px) {
 
   body {
-    font-size: 2.2vw;
-
     & > header {
       min-height: 2.4rem;
 
       a.home {
-        width: 24vw;
-        height: 1.8rem;
+        flex: 0 0 14rem;
+        padding: 0;
       }
       a.sign-in {
         display: none;
-      }
-      section.status {
-        a.private-topics {
-          padding-top: 1.8rem;
-          width: 1.8rem;
-          height: 1.8rem;
-
-          svg {
-            top: 0.5vw;
-          }
-        }
-        a.account {
-          width: 1.8rem;
-          height: 1.8rem;
-        }
       }
       nav {
         display: flex;
@@ -1292,13 +1238,13 @@ a.avatar {
           }
         }
         li {
-          margin: 0 .2vw;
+          margin: 0 0.4rem;
           display: inline-block;
           text-align: center;
 
           a {
             display: block;
-            padding: 0.5vw 1.5vw;
+            padding: 0.4rem 1.2rem;
           }
         }
       }
@@ -1321,7 +1267,7 @@ a.avatar {
           nav {
             ul.account {
               position: absolute;
-              top: 3.6rem;
+              top: 7rem;
               right: -50vw;
               margin: 0;
               padding: 0.6rem 0;
@@ -1336,12 +1282,12 @@ a.avatar {
               &::after {
                 content: '';
                 display: block;
-                width: 1.2rem;
-                height: 1.2rem;
+                width: 2rem;
+                height: 2rem;
                 transform: rotate(45deg);
                 position: absolute;
-                top: -1.8vw;
-                right: 0.4rem;
+                top: -1rem;
+                right: .8rem;
                 z-index: 1;
               }
 
@@ -1358,42 +1304,14 @@ a.avatar {
           }
         }
       }
-
-      main {
-        padding-top: 2.4rem;
-      }
     }
-  }
-
-  h1 {
-    padding: 0.4rem 0;
-    font-size: 1.2rem;
   }
 
   nav.breadcrumbs {
-    padding: 0.6rem 1.2rem 0;
-    font-size: 2.4vw;
-
-    li {
-      margin-bottom: 0;
-      margin-top: 0.4rem;
-
-      &::before {
-        margin: 0 1.2vw 0 0.4rem;
-        border-top: 0.4rem solid transparent;
-        border-right: 0.4rem solid;
-        border-bottom: 0.4rem solid transparent;
-        border-radius: 0.4vw;
-      }
-    }
+    padding: 1.2rem 1.6rem 0.4rem;
   }
 
   section {
-    &.announcements {
-      article {
-        padding: 0.8vw 0;
-      }
-    }
     &.content {
       & > img,
       * > img {
@@ -1424,9 +1342,6 @@ a.avatar {
       }
     }
     &.summary {
-      p {
-        font-size: 2.6vw;
-      }
       > nav {
         display: flex;
         flex-wrap: wrap;
@@ -1581,21 +1496,11 @@ a.avatar {
     li {
       margin: 0 0.4rem 0.6rem;
     }
-    a {
-      padding: 1.65vw 0.6rem;
-    }
   }
 
   nav.pagination,
   nav.actions {
     margin: 0.6rem;
-
-    li {
-      a {
-        padding: 0.6rem 1rem;
-        font-size: 100%;
-      }
-    }
   }
 
   a.avatar {
@@ -1671,7 +1576,7 @@ a.avatar {
         margin-left: 2.4rem;
       }
       a.home {
-        width: 16.8rem;
+        flex-basis: 16.8rem;
         height: 4rem;
         padding: 0;
       }
@@ -1721,6 +1626,10 @@ a.avatar {
           }
         }
       }
+    }
+
+    &.hidden-header > header {
+      margin-top: -7rem;
     }
   }
 
@@ -1794,7 +1703,7 @@ a.avatar {
   }
 
   nav.breadcrumbs {
-    padding: 2.4rem 2.4rem 0;
+    padding: 2rem 2.4rem 0;
     font-size: 1.4rem;
 
     ul {
@@ -1844,24 +1753,6 @@ a.avatar {
 
     li {
       margin: 0 .4rem 0.8rem;
-    }
-    a {
-      padding: 10px 12px;
-    }
-  }
-
-  nav.pagination {
-    li {
-      a {
-        padding: 9px 12px;
-      }
-    }
-  }
-  nav.actions {
-    li {
-      a {
-        padding: 10px 12px;
-      }
     }
   }
 
@@ -1986,7 +1877,6 @@ a.avatar {
 
   article {
     align-items: center;
-    min-height: 9.2rem;
     padding: 1.2rem 0;
 
     &.unread,

@@ -28,7 +28,7 @@ body[data-controller="post"][data-view="announcement"] {
       dt {
         flex-basis: auto;
         position: absolute;
-        left: -100vw;
+        left: -100%;
       }
       dd {
         flex-basis: auto;
@@ -98,9 +98,6 @@ body[data-controller="post"][data-view="announcement"] {
       position: relative;
       text-align: left;
 
-      a.avatar {
-        flex: 0 0 3.6rem;
-      }
       dl {
         flex: 1 1 auto;
         display: flex;
@@ -111,15 +108,15 @@ body[data-controller="post"][data-view="announcement"] {
       }
       dt {
         position: absolute;
-        left: -100vw;
+        left: -100%;
       }
       dd {
         &.author {
-          flex: 1 0 38vw;
+          flex: 1 0 0;
           line-height: 1.2;
         }
         &.time {
-          flex-basis: 34vw;
+          flex-basis: 10rem;
           font-size: 85%;
           text-align: right;
         }
@@ -224,29 +221,6 @@ body[data-controller="post"][data-view="announcement"] {
     }
   }
 
-  @media only screen and (min-width: 375px) {
-    article.post {
-      header {
-        dd.time {
-          flex-basis: 30vw;
-        }
-      }
-    }
-  }
-
-  @media only screen and (min-width: 400px) {
-    article.post {
-      header {
-        a.avatar {
-          flex-basis: 3rem;
-        }
-        dd.time {
-          flex-basis: 26vw;
-        }
-      }
-    }
-  }
-
   @media only screen and (min-width: 600px) {
     section.summary {
       dl.byline {
@@ -340,7 +314,6 @@ body[data-controller="post"][data-view="announcement"] {
         dd.author {
           flex-basis: auto;
           font-size: 90%;
-          line-height: 1.5;
         }
         dd.time {
           flex: 1 1 auto;
