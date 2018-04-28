@@ -41,7 +41,7 @@ function css(options) {
                .pipe(cssnano({ safe: true, colormin: false }))
                .pipe(sourcemaps.write(''))
              .pipe(gulp.dest('web/themes/' + options.theme + '/min'))
-             .pipe(filter('**/*.css'))
+             .pipe(filter('**/*.css*'))
              .pipe(livereload())
 }
 
