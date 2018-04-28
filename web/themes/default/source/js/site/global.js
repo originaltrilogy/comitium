@@ -5,22 +5,30 @@ CF.global = ( function () {
     init: function () {
       var body = document.querySelector('body'),
           bodyOffset = 0,
+          timer = 0,
           header = document.querySelector('body > header'),
           accountNav = header.querySelector('nav ul.account'),
           accountNavTimer,
           menuIcon
 
-      window.addEventListener('scroll', function () {
-        if ( bodyOffset > body.getBoundingClientRect().top && Math.abs(body.getBoundingClientRect().top) > header.getBoundingClientRect().height && !body.classList.contains('floating-header') ) {
-          body.classList.add('floating-header')
-        // The second half of the statement deals with Safari's bounceback when you scroll past the top of the page
-        } else if ( body.getBoundingClientRect().top >= bodyOffset || Math.abs(body.getBoundingClientRect().top) <= header.getBoundingClientRect().height ) {
-          body.classList.remove('floating-header')
-        }
+      // If the URL contains an intra-page anchor (hash) that takes them directly to a specific post, delay the onset of the scroll listener so the header doesn't pop in
+      if ( window.location.hash.length ) {
+        body.classList.add('hidden-header')
+        timer = 1000
+      }
+      setTimeout( function () {
+        window.addEventListener('scroll', function () {
+          if ( !body.classList.contains('hidden-header') && bodyOffset > body.getBoundingClientRect().top && Math.abs(body.getBoundingClientRect().top) > header.getBoundingClientRect().height ) {
+            body.classList.add('hidden-header')
+          // The second half of the statement deals with Safari's bounceback when you scroll past the top of the page
+          } else if ( body.getBoundingClientRect().top >= bodyOffset || Math.abs(body.getBoundingClientRect().top) <= header.getBoundingClientRect().height ) {
+            body.classList.remove('hidden-header')
+          }
 
-        bodyOffset = body.getBoundingClientRect().top
-      })
-
+          bodyOffset = body.getBoundingClientRect().top
+        })
+      }, timer)
+      
       // Create the main menu icon
       menuIcon = document.createElement('div')
 
