@@ -20,7 +20,7 @@ section(class="form post topic-reply #{ url.quote ? 'quote' : ''}")
       li.post-content.textarea.required
         label(for="post-content")
           | Post content
-        textarea(id="post-content" name="content" rows="10" required) #{form.content}
+        textarea(id="post-content" name="content" rows="20" required) #{form.content}
       li.subscribe.checkbox
         input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
         label(for="subscribe")

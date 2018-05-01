@@ -104,8 +104,8 @@ nav.breadcrumbs {
 
 
 // The menu button and sliding nav are used on mobile only. Much easier to limit
-// here than to overwrite within the 600px media query later.
-@media only screen and (max-width: 599px) {
+// here than to overwrite within the 720px media query later.
+@media only screen and (max-width: 719px) {
   .slide-menu {
     background-color: hsl(227,18%, 18%);
 
@@ -329,7 +329,7 @@ table {
           nav {
             ul.account {
               background-color: hsl(227,18%,26%);
-              box-shadow: 0 2px 6px hsl(227,18%,10%);
+              box-shadow: 0 0.2rem 0.4rem hsl(227,10%,40%);
 
               &::after {
                 background-color: hsl(227,18%,26%);
@@ -418,13 +418,13 @@ body[data-controller="post"][data-view="announcement"] {
         
         &.moderator {
           background-image: url(/themes/light-side/images/moderator.png);
-          background-size: 17vw;
-          background-position-x: -3vw;
+          background-size: 5.4rem;
+          background-position-x: -1rem;
         }
         &.administrator {
           background-image: url(/themes/light-side/images/administrator.png);
-          background-size: 16vw;
-          background-position-x: -2.5vw;
+          background-size: 5.6rem;
+          background-position-x: -1rem;
         }
       }
       section.content {
@@ -435,7 +435,7 @@ body[data-controller="post"][data-view="announcement"] {
     }
   }
 
-  @media only screen and (min-width: 600px) {
+  @media only screen and (min-width: 720px) {
 
     // First page
     &[data-page="1"] {
@@ -510,24 +510,6 @@ body[data-controller="post"][data-view="announcement"] {
 
         section.staff {          
           &.moderator {
-            background-size: 11vw;
-            background-position-x: -2vw;
-          }
-          &.administrator {
-            background-size: 12vw;
-            background-position-x: -2.5vw;
-          }
-        }
-      }
-    }
-
-  }
-
-  @media only screen and (min-width: 720px) {
-    article.post {
-      section.signature {
-        section.staff {
-          &.moderator {
             background-position-x: -2rem;
             background-size: 8.8rem;
           }
@@ -584,7 +566,7 @@ body[data-view="user"] {
     }
   }
 
-  @media only screen and (min-width: 600px) {
+  @media only screen and (min-width: 720px) {
     
     article.post {
       border: 1px solid hsl(227,18%,92%);

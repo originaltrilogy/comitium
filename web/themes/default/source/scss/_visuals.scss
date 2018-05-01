@@ -108,8 +108,8 @@ main {
 }
 
 // The menu button and sliding nav are used on mobile only. Much easier to limit
-// here than to overwrite within the 600px media query later.
-@media only screen and (max-width: 599px) {
+// here than to overwrite within the 720px media query later.
+@media only screen and (max-width: 719px) {
   .slide-menu {
     background-color: hsl(227,18%, 18%);
   }
@@ -302,8 +302,8 @@ table {
   }
 }
 
-// Screens wider than 600px
-@media only screen and (min-width: 600px) {
+// Screens wider than 720px
+@media only screen and (min-width: 720px) {
 
   body {
     & > header {
@@ -332,26 +332,6 @@ table {
               &::after {
                 background-color: hsl(227,18%,16%);
               }
-            }
-          }
-        }
-      }
-    }
-  }
-
-}
-
-// Screens wider than 720px
-@media only screen and (min-width: 720px) {
-  body {
-    > header {
-      box-shadow: 0 0 8px hsl(227,0%,10%);
-
-      nav {
-        li {
-          a {
-            &:hover {
-              background-color: hsl(227,18%, 27%);
             }
           }
         }
@@ -454,12 +434,12 @@ body[data-controller="post"][data-view="announcement"] {
         &.moderator {
           background-image: url(/themes/default/images/moderator.png);
           background-size: 4.8rem;
-          background-position-x: -3vw;
+          background-position-x: -0.5rem;
         }
         &.administrator {
           background-image: url(/themes/default/images/administrator.png);
           background-size: 6rem;
-          background-position-x: -3.5vw;
+          background-position-x: -1rem;
         }
       }
       section.content {
@@ -470,7 +450,7 @@ body[data-controller="post"][data-view="announcement"] {
     }
   }
 
-  @media only screen and (min-width: 600px) {
+  @media only screen and (min-width: 720px) {
     article.post {
       header {
         dl {
@@ -495,23 +475,6 @@ body[data-controller="post"][data-view="announcement"] {
         background-color: hsl(227,18%,24%);
 
         section.staff {          
-          &.moderator {
-            background-size: 11vw;
-            background-position-x: -2vw;
-          }
-          &.administrator {
-            background-size: 14vw;
-            background-position-x: -3vw;
-          }
-        }
-      }
-    }
-  }
-
-  @media only screen and (min-width: 720px) {
-    article.post {
-      section.signature {
-        section.staff {
           &.moderator {
             background-size: 9.2rem;
             background-position: -1.4rem 0.8rem;

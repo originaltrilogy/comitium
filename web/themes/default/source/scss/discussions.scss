@@ -26,21 +26,6 @@ body[data-controller="discussions"] {
     }
   }
 
-  @media only screen and (min-width: 600px) {
-    section.categories {
-      article {
-        section.description {
-          flex-basis: 76vw;
-        }
-      }
-    }
-    p.description {
-      margin-bottom: 1rem;
-    }
-    p.last-post {
-      margin: 0;
-    }
-  }
 
   @media only screen and (min-width: 720px) {
     section.categories {
@@ -55,8 +40,7 @@ body[data-controller="discussions"] {
 
         section.description {
           flex: 1 1 auto;
-          order: 1;
-          margin-right: 3.2rem;
+          padding-right: 2.4rem;
 
           p {
             margin: 1rem 0 0;
@@ -64,9 +48,13 @@ body[data-controller="discussions"] {
         }
       }
     }
+    p.description {
+      margin-bottom: 1rem;
+    }
     p.last-post {
       flex: 0 0 20rem;
       order: 2;
+      margin: 0;
       font-size: 90%;
 
       a:nth-child(2) {

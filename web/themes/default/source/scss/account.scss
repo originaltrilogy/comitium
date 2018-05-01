@@ -26,46 +26,22 @@ body[data-controller="account"] {
       margin: 0 1.2rem;
     }
     > p {
-      flex: 0 0 72vw;
+      flex: 1 1 calc(100% - 7.2rem);
       margin: 0;
+    }
+    section.form {
+      width: 100%;
     }
   }
 
-  @media only screen and (min-width: 600px) {
+
+  @media only screen and (min-width: 720px) {
 
     section.form {
       max-width: 32rem;
       margin-right: auto;
       margin-left: auto;
     }
-    form {
-      ul.data {
-        & > li {
-          &.textarea {
-            textarea {
-              padding: 0.6rem 1rem;
-            }
-          }
-        }
-      }
-    }
-    section.avatar {
-      max-width: 32rem;
-
-      a.avatar {
-        margin-left: 0;
-      }
-      > p {
-        flex-basis: 50vw;
-      }
-      form {
-        padding-top: 0;
-      }
-    }
-  }
-
-  @media only screen and (min-width: 720px) {
-
     section.settings {
       display: flex;
       align-items: flex-start;
@@ -99,6 +75,8 @@ body[data-controller="account"] {
       margin-top: 3.2rem;
     }
     section.avatar {
+      max-width: 32rem;
+
       section.notice {
         padding: 1.2rem;
         margin-bottom: 2.4rem;
@@ -107,9 +85,13 @@ body[data-controller="account"] {
         width: 10rem;
         height: 10rem;
         margin-right: 2rem;
+        margin-left: 0;
       }
       > p {
         flex-basis: 20rem;
+      }
+      form {
+        padding-top: 0;
       }
     }
   }

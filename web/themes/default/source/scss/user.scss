@@ -85,61 +85,6 @@ body[data-view="user"] {
     }
   }
 
-  @media only screen and (min-width: 600px) {
-
-    section.summary {
-      a.avatar {
-        width: 4.8rem;
-        height: 4.8rem;
-        margin: 0 auto;
-      }
-      h1 {
-        flex: 1 0 50%;
-        padding: 0.6rem 1.2rem;
-      }
-      dl {
-        margin-bottom: 1.2rem;
-      }
-    }
-    section.user-logs {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      justify-content: space-around;
-
-      h2 {
-        flex: 0 0 100%;
-      }
-      section {
-        flex: 0 0 50%;
-      }
-    }
-    nav.pagination {
-      a {
-        font-size: 100%;
-        padding: 0.4rem 2.4vw;
-      }
-    }
-    article.post {
-      margin: 0.6rem;
-      border-radius: .5vw;
-      background: none;
-
-      header {
-        dl {
-          margin: 0 0.6rem;
-        }
-      }
-      section.content {
-        margin: 0;
-        padding: 1rem;
-      }
-      nav.actions {
-        margin: 0;
-      }
-    }
-
-  }
 
   @media only screen and (min-width: 720px) {
 
@@ -149,8 +94,10 @@ body[data-view="user"] {
       a.avatar {
         width: 12rem;
         height: 12rem;
+        margin: 0 auto;
       }
       h1 {
+        flex: 1 0 50%;
         padding: 1.2rem 0;
       }
       dl {
@@ -170,6 +117,16 @@ body[data-view="user"] {
         padding: 0;
       }
     }
+    section.user-logs {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-around;
+
+      section {
+        flex: 0 0 50%;
+      }
+    }
     h2 {
       flex: 0 0 100%;
       margin-top: 2.4rem;
@@ -180,6 +137,7 @@ body[data-view="user"] {
       margin: 0 auto 1.8rem;
 
       a {
+        font-size: 100%;
         padding: 1rem 1.4rem;
       }
     }
@@ -193,6 +151,7 @@ body[data-view="user"] {
     article.post {
       margin: 1.2rem 2.4rem;
       border-radius: 0.6rem;
+      background: none;
       overflow: hidden;
 
       &:first-of-type {
@@ -215,7 +174,11 @@ body[data-view="user"] {
         }
       }
       section.content {
+        margin: 0;
         padding: 2rem 2.4rem;
+      }
+      nav.actions {
+        margin: 0;
       }
     }
 

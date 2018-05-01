@@ -39,12 +39,10 @@
   text-rendering: optimizeLegibility;
 }
 
-@mixin button($color: light, $size: 1.4rem, $padding: 0.8rem 1rem) {
+@mixin button($color: light, $size: 1.4rem, $padding: 0.8rem 1.4rem) {
   display: block;
 	padding: $padding;
   font-size: $size;
-  border-style: solid;
-  border-width: 1px;
   border-radius: 0.3rem;
 	@include bodyFont();
 	line-height: 1;
@@ -54,7 +52,7 @@
   cursor: pointer;
 
   @if $color == 'light' {
-		color: #373B49;
+    color: #373B49;
 		background-image: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
 
 		&:hover {
@@ -62,7 +60,8 @@
       background-image: linear-gradient(180deg,hsl(227,18%,34%) 0,hsl(227,18%,30%) 98%);
     }
   } @else if $color == 'dark' {
-		color: #A5B2D9;
+    color: #A5B2D9;
+    box-shadow: 0 0 0 1px hsl(227,18%,34%) inset;
 		background-image: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
 
 		&:hover {
@@ -71,16 +70,17 @@
     }
   } @else if $color == 'lightGhost' {
     color: hsl(227,100%,90%);
-		box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
+    box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
   } @else if $color == 'darkGhost' {
     color: hsl(227,18%,25%);
-		box-shadow: 0 0 0 1px hsl(227,18%,25%) inset;
+    box-shadow: 0 0 0 1px hsl(227,18%,25%) inset;
   }
 }
 
 @mixin debutton {
 	text-transform: initial;
-	background: none;
+  background: none;
+  border: none;
 	color: hsl(227,41%,75%);
 }
 
@@ -281,14 +281,10 @@ body {
       }
   
       a.account {
-        display: block;
-        width: 3.8rem;
-        height: 3.8rem;
-  
         img {
           position: absolute;
           top: 0;
-          right: 0;
+          left: 0;
         }
       }
     }
@@ -307,10 +303,8 @@ html.js body > header {
 }
 
 main {
-  flex: 1 0 auto;
+  flex: 1 0 0;
   padding-bottom: 6rem;
-  clear: both;
-  overflow: hidden;
 
   & > h1:first-child {
     margin-top: 1.6rem;
@@ -331,12 +325,12 @@ html.js {
 
 
 // The menu button and sliding nav are used on mobile only. Much easier to limit
-// here than to overwrite within the 600px media query later.
+// here than to overwrite within the 720px media query later.
 #main-menu-icon {
   display: none;
 }
 
-@media only screen and (max-width: 599px) {
+@media only screen and (max-width: 719px) {
   html.js {
     body > header {
       nav {
@@ -437,7 +431,7 @@ nav.breadcrumbs {
   }
   li {
     position: absolute;
-    left: -100%;
+    left: 100%;
 
     &:last-child {
       position: static;
@@ -450,7 +444,7 @@ nav.breadcrumbs {
       display: inline-block;
       width: 0;
       height: 0;
-      margin: 0.4rem .8rem 0 0;
+      margin: 0.1rem .8rem 0 0;
       border-top: 0.8rem solid transparent;
       border-right: 1rem solid;
       border-bottom: 0.8rem solid transparent;
@@ -470,7 +464,7 @@ section {
     position: relative;
     overflow: hidden;
     margin: auto 1.6rem;
-    padding-bottom: 1.6rem;
+    padding: 1.2rem 0 2rem;
 
     & > p {
       &:first-of-type {
@@ -539,7 +533,7 @@ section {
   }
 
   &.announcements {
-    padding: 1.2rem 1.6rem;
+    padding: 1.6rem;
 
     article {
       padding: 0.6rem 0;
@@ -571,15 +565,10 @@ section {
     }
     h2 {
       margin-top: 2.4rem;
-      margin-bottom: 0.6rem;
-      padding: 0;
-      background: none;
       text-align: left;
     }
     h3 {
       margin-top: 2.4rem;
-      margin-bottom: 0;
-      padding: 0;
       @include bodyFont(italic);
     }
     a {
@@ -693,7 +682,7 @@ section {
 // If the page doesn't have breadcrumbs...
 body[data-breadcrumbs="false"] {
   section.summary {
-    padding: 1rem 0 1.6rem;
+    padding: 1.6rem 0;
   }
 }
 
@@ -716,7 +705,6 @@ nav.pagination {
     }
     &:nth-child(n+2) {
       a {
-        border-left: none;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
       }
@@ -728,6 +716,10 @@ nav.pagination {
       }
     }
   }
+}
+
+nav.actions {
+  margin: 1.2rem;
 }
 
 nav.previous-and-next {
@@ -802,7 +794,7 @@ dl.content-stats {
     }
     &:nth-child(n+4) {
       position: absolute;
-      left: -100%;
+      left: 100%;
     }
   }
 }
@@ -849,15 +841,11 @@ article {
       left: -1.6rem;
     }
   }
-
-  & > *:last-child {
-      margin-bottom: 0;
-  }
 }
 
 h1 {
-  padding: 0.6rem 0;
   @include titleFont;
+  margin-bottom: 0.6rem;
 
   span.page {
     display: inline-block;
@@ -868,7 +856,7 @@ h1 {
 
 h2 {
   @include titleFont($weight: 400);
-  margin: 0.6rem 0;
+  margin-bottom: 0.8rem;
   text-transform: uppercase;
   text-align: center;
 }
@@ -893,14 +881,6 @@ footer {
   section.copyright {
     margin-top: 3.6rem;
     font-size: 88%;
-
-    p {
-      margin: 1.2rem 0;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
   }
 }
 
@@ -931,6 +911,9 @@ form {
     border-radius: 0.4rem;
     transition: border-color 0.5s, background-color 0.5s;
 
+    &[type="submit"] {
+      border: none;
+    }
     &:focus {
       outline: none;
     }
@@ -970,14 +953,14 @@ form {
 
     &:checked {
       &::after {
-        position: absolute;
-        top: 1.25vw;
-        left: 1.25vw;
-        display: block;
-        width: 7vw;
-        height: 7vw;
-        border-radius: 50%;
         content: '';
+        display: block;
+        width: 2.4rem;
+        height: 2.4rem;
+        position: absolute;
+        top: 0.2rem;
+        left: 0.2rem;
+        border-radius: 50%;
       }
     }
   }
@@ -1018,9 +1001,6 @@ form {
         display: flex;
         align-items: center;
 
-        input {
-          flex: 0 0 3rem;
-        }
         label {
           margin: 0 0 0 1.2rem;
           @include bodyFont;
@@ -1067,11 +1047,8 @@ form {
       }
       &.cancel {
         a {
-            @include debutton;
+          @include debutton;
         }
-      }
-      input[type="submit"] {
-        box-shadow: none;
       }
       input[type="submit"],
       a {
@@ -1082,9 +1059,6 @@ form {
 }
 
 nav.actions {
-  position: relative;
-  overflow: hidden;
-
   ul {
     display: flex;
     flex-wrap: wrap;
@@ -1094,14 +1068,7 @@ nav.actions {
   }
 
   li {
-    margin: 0 1.5vw 1.2rem;
-
-    &:first-child {
-      margin-left: 0;
-    }
-    &:last-child {
-      margin-right: 0;
-    }
+    margin: 0 0.4rem 0.6rem;
   }
 
   a {
@@ -1201,50 +1168,75 @@ a.avatar {
 }
 
 
-// Screens wider than 600px
-@media only screen and (min-width: 600px) {
+// Screens wider than 720px
+@media only screen and (min-width: 720px) {
 
   body {
-    & > header {
-      min-height: 2.4rem;
+    font-size: 1.4rem;
 
+    > header {
+      min-height: 6.4rem;
+      padding: 0 1.2rem;
+      font-size: 1.2rem;
+
+      > nav {
+        display: flex;
+        flex: 1 1 auto;
+        align-items: center;
+        margin-left: 2.4rem;
+      }
       a.home {
-        flex: 0 0 14rem;
+        flex-basis: 16.8rem;
+        height: 4rem;
         padding: 0;
       }
       a.sign-in {
         display: none;
       }
-      nav {
-        display: flex;
-        flex: 1 1 auto;
-        align-items: center;
-        margin-left: 2.4vw;
+      section.status {
+        a.private-topics {
+          width: 4rem;
+          height: 4rem;
+          padding-left: 4rem;
 
+          svg {
+            top: 0.5rem;
+            width: 3rem;
+            height: 3rem;
+          }
+        }
+        a.account {
+          width: 4.4rem;
+          height: 4.4rem;
+        }
+      }
+      nav {
         ul {
           flex: 1 1 auto;
+        }
+        ul.account {
+          text-align: right;
 
-          &.account {
-            text-align: right;
-
-            li {
-              &.sign-in a {
-                @include button(lightGhost, $size: 100%, $padding: 1.5vw);
-              }
-              &.register a {
-                @include button($size: 100%, $padding: 1.5vw);
-              }
-            }
+          li.sign-in a {
+            @include button(lightGhost);
+            padding: 1.2rem 1.6rem;
+          }
+          li.register a {
+            @include button();
+            padding: 1.2rem 1.6rem;
           }
         }
         li {
-          margin: 0 0.4rem;
+          margin: 0 1.2rem;
           display: inline-block;
           text-align: center;
 
+          &.register {
+            margin: 0;
+          }
           a {
             display: block;
-            padding: 0.4rem 1.2rem;
+            padding: 0.5rem 1rem;
           }
         }
       }
@@ -1254,371 +1246,6 @@ a.avatar {
           ul {
             flex: 0 1 auto;
           }
-        }
-      }
-    }
-
-  }
-
-  html.js {
-    body {
-      & > header {
-        &.authenticated {
-          nav {
-            ul.account {
-              position: absolute;
-              top: 7rem;
-              right: -50vw;
-              margin: 0;
-              padding: 0.6rem 0;
-              border-radius: 0.3rem;
-              text-align: center;
-              z-index: 4;
-
-              &.active {
-                right: 1.4vw;
-              }
-
-              &::after {
-                content: '';
-                display: block;
-                width: 2rem;
-                height: 2rem;
-                transform: rotate(45deg);
-                position: absolute;
-                top: -1rem;
-                right: .8rem;
-                z-index: 1;
-              }
-
-              li {
-                position: relative;
-                display: block;
-                z-index: 2;
-
-                a {
-                  padding: 1.5vw 1rem;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  nav.breadcrumbs {
-    padding: 1.2rem 1.6rem 0.4rem;
-  }
-
-  section {
-    &.content {
-      & > img,
-      * > img {
-        width: auto;
-        max-width: 100%;
-      }
-      dl, ol, ul {
-        margin-bottom: 1.2rem;
-        margin-left: 1.8rem;
-      }
-      blockquote {
-        margin: 1rem 0;
-        padding: 0.6rem 2.5vw;
-        border-top-right-radius: .5vw;
-        border-bottom-right-radius: .5vw;
-
-        &.nested {
-          padding-top: 1.2rem;
-        }
-        a.expand {
-          top: 1.2vw;
-          right: 0.4rem;
-          padding: 0.4rem 1.5vw;
-        }
-        dl, ol, ul {
-          margin-left: 1.8rem;
-        }
-      }
-    }
-    &.summary {
-      > nav {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        position: relative;
-
-        &::before {
-          content: '';
-          display: block;
-          width: 100%;
-          height: 1px;
-          position: absolute;
-          top: 0;
-          left: 0;
-        }
-      }
-    }
-    &.notice {
-      svg {
-        width: 1.8rem;
-        height: 1.8rem;
-      }
-      p {
-        margin-bottom: 1rem;
-      }
-    }
-    &.form.post {
-      ul.data {
-        > li {
-          margin-bottom: 1.2rem;
-        }
-      }
-    }
-  }
-
-  article {
-    padding: 1rem 0;
-
-    &::after {
-      left: 1rem;
-      width: calc(100% - 1.8rem);
-    }
-  }
-
-  form {
-    & > * {
-      margin-left: 6rem;
-      margin-right: 6rem;
-    }
-    label {
-      margin-bottom: 0.4rem;
-    }
-    p.label-note {
-      margin-bottom: 0.4rem;
-    }
-    input,
-    select,
-    textarea {
-      margin: 0;
-      padding: 0.6rem;
-      border-radius: 0.5vw;
-    }
-    textarea {
-      padding: 0.6rem 1rem;
-
-      &[name="title"] {
-        height: 11vw;
-      }
-      &[name="content"] {
-        height: 44vw;
-      }
-    }
-    input[type="checkbox"],
-    input[type="radio"] {
-      width: 1.8rem;
-      height: 1.8rem;
-    }
-    input[type="checkbox"] {
-      &:checked::after {
-        width: 1.8rem;
-        height: 1.8rem;
-        background-size: 1.6rem;
-        background-position: 0.5vw;
-      }
-    }
-    input[type="radio"] {
-      &:checked {
-        &::after {
-          top: 0.8vw;
-          left: 0.8vw;
-          width: 1.2rem;
-          height: 1.2rem;
-        }
-      }
-    }
-    ul.data {
-      & > li {
-        margin: 0.6rem 0 1.8rem;
-
-        &.select {
-          &::after {
-            height: 1.8rem;
-            width: 1rem;
-            bottom: 0.4rem;
-            right: 0.4rem;
-          }
-        }
-        &.checkbox,
-        &.radio {
-          min-height: 1.8rem;
-
-          &:last-child {
-            margin-bottom: 1.2rem;
-          }
-          input {
-            flex: 0 0 1.8rem;
-          }
-        }
-      }
-    }
-    ul.actions {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.6rem 0;
-
-      & > li {
-        flex: 0 1 auto;
-        margin: 0 0.6rem;
-
-        input[type="submit"],
-        a {
-          padding: 0.6rem 1rem;
-        }
-      }
-    }
-  }
-
-  nav.actions {
-    &::before,
-    &::after {
-      display: none;
-    }
-
-    ul {
-      display: flex;
-      justify-content: center;
-      padding: 0;
-    }
-    li {
-      margin: 0 0.4rem 0.6rem;
-    }
-  }
-
-  nav.pagination,
-  nav.actions {
-    margin: 0.6rem;
-  }
-
-  a.avatar {
-    width: 2.4rem;
-    height: 2.4rem;
-
-    &.banned {
-      &::after {
-        top: 3.5vw;
-        left: -3vw;
-        width: 14vw;
-        height: 0.5vw;
-      }
-    }
-  }
-
-  p.last-post {
-    font-size: 100%;
-
-    a.avatar {
-      width: 1.8rem;
-      height: 1.8rem;
-      margin-right: 0.6rem;
-    }
-  }
-
-  footer {
-    a.home {
-      width: 30vw;
-    }
-    section.stats {
-      p {
-        max-width: 72vw;
-        margin: 0 auto;
-        font-size: 125%;
-      }
-    }
-    section.copyright {
-      p {
-        margin: 0.6rem 0;
-      }
-    }
-  }
-
-}
-
-
-// Screens wider than 720px
-@media only screen and (min-width: 720px) {
-
-  body {
-    font-size: 1.4rem;
-  }
-  dl, ol, ul {
-    margin: 3rem 0 3rem 8rem;
-  }
-  dl {
-    margin-right: 4rem;
-    margin-left: 4rem;
-  }
-  p {
-    margin: 2rem 0;
-  }
-
-
-  body {
-    > header {
-      min-height: 6.4rem;
-      padding: 0 1.2rem;
-      font-size: 1.2rem;
-
-      > nav {
-        margin-left: 2.4rem;
-      }
-      a.home {
-        flex-basis: 16.8rem;
-        height: 4rem;
-        padding: 0;
-      }
-      section.status {
-        a.private-topics {
-          width: 4rem;
-          height: 4rem;
-          margin-right: 1rem;
-          padding-top: 4rem;
-
-          svg {
-            top: 0.5rem;
-            width: 3rem;
-            height: 3rem;
-          }
-        }
-        a.account {
-          width: 3.8rem;
-          height: 3.8rem;
-        }
-      }
-      nav {
-        ul.account {
-          li.sign-in a,
-          li.register a {
-            padding: 1.2rem 1.6rem;
-          }
-        }
-        li {
-          margin: 0 1.2rem;
-
-          &.register {
-            margin: 0;
-          }
-          a {
-            padding: 0.5rem 1rem;
-          }
-        }
-      }
-
-      &.authenticated {
-        nav {
           ul.account {
             margin-right: 0;
             max-width: none;
@@ -1639,23 +1266,37 @@ a.avatar {
         &.authenticated {
           nav {
             ul.account {
-              top: 8rem;
+              position: absolute;
+              top: 8.8rem;
+              right: -100%;
+              margin: 0;
               padding: 1.2rem 0;
               border-radius: 0.3rem;
+              text-align: center;
+              z-index: 4;
 
               &.active {
-                right: 1.2rem;
+                right: 1.5rem;
               }
               li {
+                position: relative;
+                display: block;
+                z-index: 2;
+
                 a {
                   padding: 0.8rem 1.6rem;
                 }
               }
               &::after {
-                top: -1.2rem;
-                right: 0.8rem;
+                content: '';
+                display: block;
                 width: 2.4rem;
                 height: 2.4rem;
+                transform: rotate(45deg);
+                position: absolute;
+                top: -1.2rem;
+                right: 0.8rem;
+                z-index: 1;
               }
             }
           }
@@ -1669,15 +1310,22 @@ a.avatar {
   }
 
 
+  dl, ol, ul {
+    margin: 3rem 0 3rem 8rem;
+  }
+  dl {
+    margin-right: 4rem;
+    margin-left: 4rem;
+  }
+  p {
+    margin: 2rem 0;
+  }
 
   h1 {
-    padding: 0 0 0.8rem;
-    font-size: 2.4rem;
+    font-size: 160%;
   }
 
   h2 {
-    margin: 0 0 1.2rem;
-    font-size: 2rem;
     text-align: left;
   }
 
@@ -1758,7 +1406,7 @@ a.avatar {
 
   section {
     &.announcements {
-      padding: 2.4rem;
+      padding: 1.8rem 2.4rem;
 
       & > * {
         max-width: 96rem;
@@ -1813,23 +1461,17 @@ a.avatar {
           margin-left: 4rem;
         }
       }
+      & > img,
+      * > img {
+        width: auto;
+        max-width: 100%;
+      }
     }
     &.summary {
       margin: auto 2.4rem;
-      padding: 1.2rem 0 2rem;
 
       p {
         font-size: 1.6rem;
-      }
-      > nav {
-        margin-top: 2.4rem;
-
-        nav:first-child {
-          margin-left: 0;
-        }
-        nav:last-child {
-          margin-right: 0;
-        }
       }
       nav.pagination,
       nav.actions {
@@ -1865,6 +1507,27 @@ a.avatar {
     &.form {
       max-width: 96rem;
       margin: 2.4rem;
+
+      &.post {
+        ul.data {
+          > li {
+            margin-bottom: 2rem;
+          }
+          li.subscribe {
+            float: left;
+            width: 50%;
+            margin-top: 0;
+          }
+        }
+        ul.actions {
+          justify-content: flex-end;
+          padding: 0;
+  
+          :last-child {
+            margin: 0;
+          }
+        }
+      }
     }
   }
 
@@ -1894,6 +1557,10 @@ a.avatar {
   }
 
   form {
+    & > * {
+      margin-left: 6rem;
+      margin-right: 6rem;
+    }
     label {
       margin-bottom: 0.8rem;
     }
@@ -1905,17 +1572,6 @@ a.avatar {
     textarea {
       padding: 0.8rem 1.2rem;
       border-radius: 0.3rem;
-    }
-    textarea {
-      padding: 2rem 2.4rem;
-      font-size: 1.6rem;
-
-      &[name="title"] {
-        height: 8rem;
-      }
-      &[name="content"] {
-        height: 32rem;
-      }
     }
     input[type="checkbox"],
     input[type="radio"] {
@@ -1947,15 +1603,13 @@ a.avatar {
         &.select {
           &::after {
             right: 0.8rem;
-            bottom: .8rem;
+            bottom: 0.8rem;
             width: 1.2rem;
             height: 2.4rem;
-            bottom: 0.8rem;
           }
         }
         &.checkbox,
         &.radio {
-          min-height: 0;
           margin: 1.2rem 0;
 
           &:last-child {
@@ -1987,7 +1641,7 @@ a.avatar {
         }
 
         ul.data ul.data {
-          margin-left: 4rem;
+          margin-left: 3.6rem;
         }
 
         ul.checkbox,
@@ -1999,40 +1653,20 @@ a.avatar {
       }
     }
     ul.actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 2rem 0;
       text-align: center;
 
       & > li {
-        margin-left: 2rem;
-        margin-right: 2rem;
+        flex: 0 1 auto;
+        margin: 0 2rem;
 
         a,
         input[type="submit"] {
           padding: 1rem 1.2rem;
-          font-size: 91%;
-        }
-      }
-    }
-  }
-
-  section.form.post {
-    form {
-      ul.data {
-        > li {
-          margin-bottom: 2rem;
-        }
-        li.subscribe {
-          float: left;
-          width: 50%;
-          margin-top: 0;
-        }
-      }
-      ul.actions {
-        justify-content: flex-end;
-        padding: 0;
-
-        :last-child {
-          margin: 0;
+          font-size: 88%;
         }
       }
     }
@@ -2056,30 +1690,16 @@ a.avatar {
   }
 
   footer {
-    padding: 4rem;
-
-    a.home {
-      width: 16rem;
-      margin: 4rem auto 6rem;
-    }
     section.stats {
-      max-width: 96rem;
-      margin: auto;
-
       p {
-        max-width: none;
-        font-size: 120%;
+        font-size: 125%;
       }
     }
     section.copyright {
-      max-width: 60rem;
-      margin: 10rem auto 0;
-      font-size: 90%;
+      max-width: 54rem;
+      margin: 3.6rem auto 0;
+      font-size: 88%;
       text-align: center;
-
-      p {
-        margin: 2rem 0;
-      }
     }
   }
 
@@ -2094,7 +1714,6 @@ a.avatar {
           ul.account {
             &.active {
               right: calc((100% - 100.2rem) / 2);
-              top: 9.2rem;
             }
           }
         }
@@ -2142,10 +1761,6 @@ a.avatar {
       margin: auto;
       padding: 0;
     }
-  }
-
-  form textarea[name="title"] {
-    height: 6rem;
   }
 
 }

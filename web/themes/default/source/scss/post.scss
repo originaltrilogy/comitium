@@ -28,8 +28,6 @@ body[data-controller="post"][data-view="post"] {
 article.post {
   nav.actions {
     flex-basis: 100%;
-    margin: 0;
-    background: none;
 
     ul {
       justify-content: flex-end;
@@ -44,15 +42,12 @@ article.post {
       @include button(dark);
     }
   }
+  
 
-  @media only screen and (min-width: 600px) {
+  @media only screen and (min-width: 720px) {
     nav.actions {
-      padding: 0.6rem;
+      padding: 1.2rem;
 
-      &::before,
-      &::after {
-        display: none;
-      }
       ul {
         justify-content: flex-end;
         margin: 0;
@@ -61,18 +56,8 @@ article.post {
         margin-bottom: 0;
       }
       a {
-        padding: 0.4rem 0.6rem;
-      }
-    }
-  }
-
-  @media only screen and (min-width: 720px) {
-    nav.actions {
-      padding: 1.2rem;
-
-      a {
         padding: 0.8rem 1rem;
-        font-size: 85%;
+        font-size: 86%;
       }
     }
   }
