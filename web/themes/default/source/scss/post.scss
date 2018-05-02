@@ -39,7 +39,7 @@ article.post {
       }
     }
     a {
-      @include button(dark);
+      @include button($padding: 0.8rem 1rem, $fontSize: 86%);
     }
   }
   
@@ -54,10 +54,6 @@ article.post {
       }
       li {
         margin-bottom: 0;
-      }
-      a {
-        padding: 0.8rem 1rem;
-        font-size: 86%;
       }
     }
   }

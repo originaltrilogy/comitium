@@ -458,17 +458,17 @@ body[data-controller="post"][data-view="announcement"] {
 
         h1 {
           flex: 0 1 auto;
-          margin-left: 10.8rem;
+          margin: 0 0 0 10.8rem;
         }
         a.avatar {
           position: absolute;
-          top: 1.8rem;
+          top: 1.4rem;
           left: 0;
           width: 8.8rem;
           height: 8.8rem;
         }
         dl.byline {
-          margin: 0.6rem 12.8rem 0 10.8rem;
+          margin: 0 12.8rem 0 10.8rem;
           font-size: 110%;
           flex: 1 1 100%;
         }

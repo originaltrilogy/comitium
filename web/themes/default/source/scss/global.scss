@@ -29,52 +29,33 @@
 	font-family: 'Open Sans', 'sans serif';
 	font-style: $style;
 	font-weight: $weight;
-  text-rendering: optimizeLegibility;
 }
 
 @mixin titleFont($style: normal, $weight: 600) {
 	font-family: 'Titillium Web', 'Open Sans', 'sans serif';
 	font-style: $style;
 	font-weight: $weight;
-  text-rendering: optimizeLegibility;
 }
 
-@mixin button($color: light, $size: 1.4rem, $padding: 0.8rem 1.4rem) {
+@mixin button(
+    $borderRadius: 0.3rem,
+    $fontSize: 100%,
+    $padding: 0.8rem 1.4rem
+  ) {
   display: block;
 	padding: $padding;
-  font-size: $size;
-  border-radius: 0.3rem;
 	@include bodyFont();
+  font-size: $fontSize;
+  border-radius: $borderRadius;
 	line-height: 1;
   text-align: center;
   text-decoration: none;
 	text-transform: uppercase;
   cursor: pointer;
+}
 
-  @if $color == 'light' {
-    color: #373B49;
-		background-image: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
+@mixin ghostButton() {
 
-		&:hover {
-			color: hsla(227,41%,83%,1);
-      background-image: linear-gradient(180deg,hsl(227,18%,34%) 0,hsl(227,18%,30%) 98%);
-    }
-  } @else if $color == 'dark' {
-    color: #A5B2D9;
-    box-shadow: 0 0 0 1px hsl(227,18%,34%) inset;
-		background-image: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
-
-		&:hover {
-			color: hsl(227,41%,13%);
-			background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
-    }
-  } @else if $color == 'lightGhost' {
-    color: hsl(227,100%,90%);
-    box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
-  } @else if $color == 'darkGhost' {
-    color: hsl(227,18%,25%);
-    box-shadow: 0 0 0 1px hsl(227,18%,25%) inset;
-  }
 }
 
 @mixin debutton {
@@ -99,6 +80,7 @@ body {
   position: relative;
   overflow-x: hidden;
   font-size: 1.4rem;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -254,7 +236,7 @@ body {
     }
   
     a.sign-in {
-      @include button(lightGhost);
+      @include button($padding: 0.8rem 1.2rem);
       flex: 0 0 auto;
     }
   
@@ -340,7 +322,7 @@ html.js {
   }
 
   #main-menu-icon {
-    @include button(light);
+    @include button($padding: 0.8rem 1rem);
     display: flex;
     align-items: center;
 
@@ -630,11 +612,10 @@ section {
         }
       }
       a.expand {
-        @include button('lightGhost');
+        @include button($fontSize: 88%);
         position: absolute;
         top: 0.6rem;
         right: 0.4rem;
-        font-size: 88%;
       }
       *:first-child {
         margin-top: 0;
@@ -697,11 +678,10 @@ nav.pagination {
     flex: 1 0 auto;
     justify-content: center;
     font-weight: 300;
-    border-radius: 2px;
   }
   li {
     a {
-      @include button(dark);
+      @include button;
     }
     &:nth-child(n+2) {
       a {
@@ -720,6 +700,22 @@ nav.pagination {
 
 nav.actions {
   margin: 1.2rem;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    z-index: 100;
+  }
+
+  li {
+    margin: 0 0.4rem 0.6rem;
+  }
+
+  a {
+    @include button;
+  }
 }
 
 nav.previous-and-next {
@@ -745,7 +741,7 @@ nav.previous-and-next {
     }
   }
   a {
-    @include button(dark);
+    @include button;
   }
 }
 
@@ -1052,27 +1048,9 @@ form {
       }
       input[type="submit"],
       a {
-        @include button(light, $size: 110%, $padding: 1.8rem);
+        @include button;
       }
     }
-  }
-}
-
-nav.actions {
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 0;
-    z-index: 100;
-  }
-
-  li {
-    margin: 0 0.4rem 0.6rem;
-  }
-
-  a {
-    @include button(light);
   }
 }
 
@@ -1205,12 +1183,10 @@ a.avatar {
           text-align: right;
 
           li.sign-in a {
-            @include button(lightGhost);
-            padding: 1.2rem 1.6rem;
+            @include button($padding: 1.2rem 1.6rem);
           }
           li.register a {
-            @include button();
-            padding: 1.2rem 1.6rem;
+            @include button($padding: 1.2rem 1.6rem);
           }
         }
         li {

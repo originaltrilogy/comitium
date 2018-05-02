@@ -74,32 +74,41 @@ time {
 
 body {
   > header {
-    background-color: hsl(227,18%,16%);
+    // Use a slightly more opaque background if backdrop-filter isn't supported
+    background-color: hsla(227,18%,16%,0.95);
+    @supports(backdrop-filter: saturate(180%) blur(0.5rem)) {
+      background-color: hsla(227,18%,16%,0.9);
+      backdrop-filter: saturate(180%) blur(0.5rem);
+    }
     box-shadow: 0 0 0.6rem hsl(227,0%,10%);
 
-    nav {
-      li {
-        a {
-          color: rgb(204, 216, 255);
+    a.sign-in,
+    li.sign-in a {
+      color: hsl(227,100%,90%);
+      box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
 
-          &:hover {
-            text-decoration: none;
-          }
-        }
+      &:hover {
+        color: hsl(227,18%,25%);
+        background: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
+        box-shadow: none;
       }
     }
+    li.register a {
+      color: hsl(227,18%,25%);
+      background: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
 
-    section.status {
-      a.private-topics {
-        &::before {
-          color: hsl(227,100%,90%);
-        }
+      &:hover {
+        color: hsl(227,18%,95%);
+        background: linear-gradient(180deg,hsl(227,18%,40%),hsl(227,18%,30%) 98%);
       }
     }
-  }
+    a {
+      color: hsl(227,60%,90%);
 
-  &.floating-header-active > header {
-    background-color: hsla(227,18%,16%,0.95);
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 }
 
@@ -194,6 +203,19 @@ nav.pagination {
         color: hsl(227,41%,13%);
         background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
       }
+    }
+  }
+}
+
+nav.actions {
+  a {
+    color: #A5B2D9;
+    box-shadow: 0 0 0 1px hsl(227,18%,34%) inset;
+		background: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
+
+		&:hover {
+			color: hsl(227,41%,13%);
+			background: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
     }
   }
 }
@@ -382,6 +404,12 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 // Global post styles
 article.post {
   background-color: hsl(227,18%,22%);
+
+  nav.actions {
+    a {
+
+    }
+  }
 }
 
 //////////////////////
@@ -542,7 +570,7 @@ body[data-view="user"] {
     }
   }
 
-  @media only screen and (min-width: 600px) {
+  @media only screen and (min-width: 720px) {
     
     article.post {
       border: initial;
