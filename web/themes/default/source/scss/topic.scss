@@ -195,14 +195,14 @@ body[data-controller="post"][data-view="announcement"] {
     }
     h2 {
       position: absolute;
-      left: -100vw;
+      left: 100%;
     }
     li.post-content {
       margin-top: 0;
 
       label {
         position: absolute;
-        left: -100vw;
+        left: 100%;
       }
     }
     textarea {
@@ -454,38 +454,23 @@ body[data-controller="post"][data-view="announcement"] {
         display: flex;
         flex-wrap: wrap;
         align-content: center;
-
-        h1 {
-          flex: 0 1 auto;
-        }
-        a.avatar {
-          margin: 0;
-          position: absolute;
-          top: 1rem;
-          left: 0;
-          width: 14vw;
-          height: 14vw;
-        }
-        dl.byline {
-          margin: 0.5vw 1.2rem 0 17vw;
-          font-size: 110%;
-          flex: 1 1 100%;
-        }
-      }
-
-      section.summary {
         min-height: 12.4rem;
 
         h1 {
+          flex: 0 1 auto;
           margin-left: 10.8rem;
         }
         a.avatar {
+          position: absolute;
           top: 1.8rem;
+          left: 0;
           width: 8.8rem;
           height: 8.8rem;
         }
         dl.byline {
           margin: 0.6rem 12.8rem 0 10.8rem;
+          font-size: 110%;
+          flex: 1 1 100%;
         }
       }
       article.post:first-of-type {

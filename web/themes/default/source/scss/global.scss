@@ -991,7 +991,7 @@ form {
           height: 2.4rem;
           position: absolute;
           right: 0.6rem;
-          bottom: 3.5vw;
+          bottom: 1.5rem;
           background: url('../images/select.svg') center no-repeat;
           background-size: cover;
         }
@@ -1086,7 +1086,7 @@ table {
 
   th,
   td {
-    padding: 2.5vw;
+    padding: 1rem;
     border-width: 1px;
     border-style: solid;
   }
@@ -1139,19 +1139,6 @@ a.avatar {
 
   body {
     font-size: 1.6rem;
-  }
-
-  // Keep the byline on topic pages from breaking
-  body[data-controller="topic"][data-view="topic"],
-  body[data-controller="post"][data-view="topic"],
-  body[data-controller="announcement"][data-view="announcement"],
-  body[data-controller="post"][data-view="announcement"] {
-    section.summary {
-      &::before {
-        width: 26vw;
-        height: 6rem;
-      }
-    }
   }
 
 }
