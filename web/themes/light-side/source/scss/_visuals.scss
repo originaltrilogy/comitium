@@ -81,9 +81,7 @@ body {
       box-shadow: 0 0 0 1px hsl(227,100%,90%) inset;
 
       &:hover {
-        color: hsl(227,18%,25%);
-        background: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
-        box-shadow: none;
+        background: hsl(227,20%,40%);
       }
     }
     li.register a {
@@ -128,17 +126,18 @@ nav.breadcrumbs {
 // here than to overwrite within the 720px media query later.
 @media only screen and (max-width: 719px) {
   #main-menu-icon {
-    color: #373B49;
-    background-image: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
+    color: hsl(227,18%,25%);
+    background: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
   }
   .slide-menu {
-    background-color: hsl(227,18%, 18%);
+    background-color: hsl(227,18%,18%);
 
     a {
       color: hsl(227, 41%, 80%);
 
       &:hover {
         text-decoration: none;
+        background-color: hsl(227,18%,30%);
       }
     }
   }
@@ -221,18 +220,13 @@ nav.pagination {
       border-width: 1px;
       border-style: solid;
       border-top-color: hsl(227,18%,90%);
-      border-right-color: hsl(227,18%,86%);
+      border-right-color: hsl(227,18%,84%);
       border-bottom-color: hsl(227,18%,78%);
-      border-left-color: hsl(227,18%,86%);
+      border-left-color: hsl(227,18%,84%);
     }
     &:nth-child(n+2) {
       a {
         border-left: none;
-      }
-    }
-    &:nth-last-child(n+2) {
-      a {
-        border-right-color: hsl(227,18%,84%);
       }
     }
     &.current a,
@@ -243,18 +237,40 @@ nav.pagination {
   }
 }
 
+nav.previous-and-next {
+  a:hover {
+    background: hsl(227,18%,96%);
+  }
+}
+
 nav.actions {
   a {
     padding: 0.9rem 1.4rem;
     color: hsl(0,0%,100%);
     background: linear-gradient(180deg,hsl(227,18%,50%),hsl(227,18%,26%) 98%);
+
+    &:hover {
+      color: hsl(227,18%,40%);
+      background: linear-gradient(180deg,hsl(227,18%,94%),hsl(227,18%,86%) 98%);
+    }
   }
 }
 
 // Topic counts for forums, post counts for topics
+a.content-stats {
+  &:hover {
+    text-decoration: none;
+  }
+}
 dl.content-stats {
   color: hsl(227,18%,30%);
   background: hsl(227,12%,96%);
+  box-shadow: 0 0 0 1px hsla(227,18%,40%,0);
+  transition: box-shadow 0.1s;
+
+  &:hover {
+    box-shadow: 0 0 0 1px hsla(227,18%,40%,0.5);
+  }
 }
 
 article {
@@ -332,6 +348,10 @@ form {
       a, input[type="submit"] {
         color: hsl(0,0%,100%);
         background-image: linear-gradient(180deg,hsl(227,18%,40%),hsl(227,18%,26%) 98%);
+      }
+      input[type="submit"]:hover {
+        color: hsl(227,18%,40%);
+        background: linear-gradient(180deg,hsl(227,18%,94%),hsl(227,18%,86%) 98%);
       }
     }
   }

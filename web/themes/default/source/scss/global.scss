@@ -87,7 +87,8 @@ a {
   text-decoration: none;
 }
 
-p {
+p,
+label {
   a {
     text-decoration: underline;
   }
@@ -698,6 +699,10 @@ nav.pagination {
   }
 }
 
+main > nav.pagination {
+  margin: 2.4rem auto;
+}
+
 nav.actions {
   margin: 1.2rem;
 
@@ -730,11 +735,35 @@ nav.previous-and-next {
   li {
     flex: 0 0 auto;
 
-    &:first-child {
+    &.previous {
       margin-right: 1.2rem;
+
+      a::before {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin: 0.2rem 1.2rem 0 0;
+        border-top: 0.5rem solid transparent;
+        border-right: 0.8rem solid;
+        border-bottom: 0.5rem solid transparent;
+        border-radius: 0.2rem;
+      }
     }
-    &:last-child {
+    &.next {
       margin-left: 1.2rem;
+
+      a::after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin: 0.2rem 0 0 1.2rem;
+        border-top: 0.5rem solid transparent;
+        border-left: 0.8rem solid;
+        border-bottom: 0.5rem solid transparent;
+        border-radius: 0.2rem;
+      }
     }
     &:only-child {
       margin: 0;
@@ -921,8 +950,7 @@ form {
 
   input[type="checkbox"],
   input[type="radio"] {
-    display: inline-block;
-    width: 3rem;
+    flex: 0 0 3rem;
     height: 3rem;
     position: relative;
   }
@@ -1001,6 +1029,7 @@ form {
           margin: 0 0 0 1.2rem;
           @include bodyFont;
           font-size: 100%;
+          line-height: 1.3;
         }
       }
 
@@ -1048,7 +1077,7 @@ form {
       }
       input[type="submit"],
       a {
-        @include button;
+        @include button($padding: 2rem);
       }
     }
   }
@@ -1345,6 +1374,10 @@ a.avatar {
     }
   }
 
+  main > nav.pagination {
+    margin: 3.2rem auto;
+  }
+
   nav.previous-and-next {
     margin: 3.2rem auto;
   }
@@ -1356,14 +1389,15 @@ a.avatar {
   }
 
   nav.actions {
-    &::before,
-    &::after {
-      width: 4rem;
-      height: 10rem;
-    }
-
     li {
       margin: 0 .4rem 0.8rem;
+
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 
@@ -1538,7 +1572,7 @@ a.avatar {
     }
     input[type="checkbox"],
     input[type="radio"] {
-      width: 2.4rem;
+      flex-basis: 2.4rem;
       height: 2.4rem;
     }
     input[type="checkbox"] {
@@ -1578,15 +1612,7 @@ a.avatar {
           &:last-child {
             margin-bottom: 2.4rem;
           }
-          input {
-            flex: 0 0 2.4rem;
-          }
-          label {
-            margin: 0 0 0 1rem;
-            max-width: none;
-          }
         }
-
         ul.data {
           flex-basis: 100%;
           margin: 0;
@@ -1618,9 +1644,7 @@ a.avatar {
     ul.actions {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 2rem 0;
-      text-align: center;
+      padding: 0.6rem 0;
 
       & > li {
         flex: 0 1 auto;

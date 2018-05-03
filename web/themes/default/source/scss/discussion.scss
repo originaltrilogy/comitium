@@ -244,6 +244,7 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
     article.topic {
       nav.actions {
         flex: 0 0 auto;
+        order: 4;
         margin: 0 0 0 1.6rem;
 
         li {

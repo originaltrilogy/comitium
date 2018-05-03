@@ -119,10 +119,22 @@ main {
 // The menu button and sliding nav are used on mobile only. Much easier to limit
 // here than to overwrite within the 720px media query later.
 @media only screen and (max-width: 719px) {
-  .slide-menu {
-    background-color: hsl(227,18%, 18%);
+  #main-menu-icon {
+    color: hsl(227,41%,13%);
+    background: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
   }
+  .slide-menu {
+    background-color: hsl(227,18%,18%);
 
+    a {
+      color: hsl(227, 41%, 80%);
+
+      &:hover {
+        text-decoration: none;
+        background-color: hsl(227,18%,30%);
+      }
+    }
+  }
   .menu-shadow {
     background-color: hsla(227,1%,0%,0.5);
   }
@@ -194,36 +206,60 @@ section {
 }
 
 nav.pagination {
-  ul {
-    color: #A5B2D9;
-  }
   li {
-    &.current {
+    a {
+      color: hsl(227,40%,75%);
+      background: linear-gradient(180deg,hsl(227,18%,22%),hsl(227,18%,16%) 98%);
+      border: 1px solid hsl(227,18%,34%);
+    }
+    &:nth-child(n+2) {
       a {
-        color: hsl(227,41%,13%);
-        background-image: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
+        border-left: none;
       }
     }
+    &.current a,
+    &:hover a {
+      color: hsl(227,41%,13%);
+      background: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
+    }
+  }
+}
+
+nav.previous-and-next {
+  a:hover {
+    background: hsl(227,18%,26%);
   }
 }
 
 nav.actions {
   a {
-    color: #A5B2D9;
-    box-shadow: 0 0 0 1px hsl(227,18%,34%) inset;
-		background: linear-gradient(180deg, hsl(227,18%,22%) 0%, hsl(227,18%,16%) 98%);
+    padding: 0.9rem 1.4rem;
+    color: hsl(227,41%,13%);
+    background: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
 
 		&:hover {
-			color: hsl(227,41%,13%);
-			background: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
+			color: hsl(227,40%,75%);
+      background: linear-gradient(180deg,hsl(227,18%,22%),hsl(227,18%,16%) 98%);
+      box-shadow: 0 0 0 1px hsl(227,18%,34%) inset;
     }
   }
 }
 
 // Topic counts for forums, post counts for topics
+a.content-stats {
+  &:hover {
+    text-decoration: none;
+  }
+}
 dl.content-stats {
-  background: hsla(227,18%,26%,1);
   color: hsl(227,18%,80%);
+  background: hsla(227,18%,26%,1);
+  box-shadow: 0 0 0 1px hsla(227,18%,70%,0);
+  transition: box-shadow 0.1s;
+
+  &:hover {
+    box-shadow: 0 0 0 1px hsla(227,18%,70%,0.5);
+  }
 }
 
 article {
@@ -297,6 +333,20 @@ form {
     &:checked {
       &::after {
         background-color: hsl(227,100%, 90%);
+      }
+    }
+  }
+
+  ul.actions {
+    > li {
+      a, input[type="submit"] {
+        color: hsl(227,41%,13%);
+        background: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
+      }
+      input[type="submit"]:hover {
+        color: hsl(227,40%,75%);
+        background: linear-gradient(180deg,hsl(227,18%,22%),hsl(227,18%,16%) 98%);
+        box-shadow: 0 0 0 1px hsl(227,18%,34%) inset;
       }
     }
   }
