@@ -260,6 +260,10 @@ nav.actions {
 a.content-stats {
   &:hover {
     text-decoration: none;
+
+    dl.content-stats {
+      box-shadow: 0 0 0 1px hsla(227,18%,40%,0.5);
+    }
   }
 }
 dl.content-stats {
@@ -267,10 +271,6 @@ dl.content-stats {
   background: hsl(227,12%,96%);
   box-shadow: 0 0 0 1px hsla(227,18%,40%,0);
   transition: box-shadow 0.1s;
-
-  &:hover {
-    box-shadow: 0 0 0 1px hsla(227,18%,40%,0.5);
-  }
 }
 
 article {
