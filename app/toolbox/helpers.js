@@ -157,18 +157,20 @@ function previousAndNext(baseUrl, currentPage, itemCount) {
 
   if ( pagination.currentPage > 1 ) {
     pagination.pages.previous = {
+      class: 'previous',
       number: pagination.currentPage - 1,
       url: baseUrl + '/page/' + ( pagination.currentPage - 1 ),
-      text: 'Previous page (' + ( pagination.currentPage - 1 ).toString() + ')'
+      text: 'Page ' + ( pagination.currentPage - 1 )
     };
     output = true;
   }
 
   if ( pagination.currentPage !== pagination.lastPage ) {
     pagination.pages.next = {
+      class: 'next',
       number: pagination.currentPage + 1,
       url: baseUrl + '/page/' + ( pagination.currentPage + 1 ),
-      text: 'Next page (' + ( pagination.currentPage + 1 ).toString() + ')'
+      text: 'Page ' + ( pagination.currentPage + 1 )
     };
     output = true;
   }
