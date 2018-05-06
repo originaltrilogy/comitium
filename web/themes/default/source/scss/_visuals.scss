@@ -457,7 +457,14 @@ article.post {
 
   nav.actions {
     a {
+      color: hsl(227,40%,75%);
+      background: linear-gradient(180deg,hsl(227,18%,22%),hsl(227,18%,16%) 98%);
+      border: 1px solid hsl(227,18%,34%);
 
+      &:hover {
+        color: hsl(227,41%,13%);
+        background: linear-gradient(180deg,hsl(227,64%,86%),hsl(227,32%,68%) 98%);
+      }
     }
   }
 }
