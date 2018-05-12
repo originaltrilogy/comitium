@@ -1,16 +1,20 @@
+// Global styles
 @import 'lib/normalize';
 @import 'baseline';
 @import 'global';
+
+// Pattern styles
+@import 'account';
+@import 'content';
+@import 'Dear-Disney';
 @import 'discussions';
 @import 'discussion';
-@import 'topic';
-@import 'post';
-@import 'account';
-@import 'user';
-@import 'sign-in';
-@import 'register';
 @import 'password-reset';
-@import 'Dear-Disney';
+@import 'post';
+@import 'register';
+@import 'sign-in';
+@import 'topic';
+@import 'user';
 
-// Colors, fonts, etc.
+// Theme styles
 @import '_visuals';

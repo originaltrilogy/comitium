@@ -1,16 +1,20 @@
+// Global styles
 @import '../../../default/source/scss/lib/normalize';
 @import '../../../default/source/scss/baseline';
 @import '../../../default/source/scss/global';
+
+// Pattern styles
+@import '../../../default/source/scss/account';
+@import '../../../default/source/scss/content';
+@import '../../../default/source/scss/Dear-Disney';
 @import '../../../default/source/scss/discussions';
 @import '../../../default/source/scss/discussion';
-@import '../../../default/source/scss/topic';
-@import '../../../default/source/scss/post';
-@import '../../../default/source/scss/account';
-@import '../../../default/source/scss/user';
-@import '../../../default/source/scss/sign-in';
-@import '../../../default/source/scss/register';
 @import '../../../default/source/scss/password-reset';
-@import '../../../default/source/scss/Dear-Disney';
+@import '../../../default/source/scss/post';
+@import '../../../default/source/scss/register';
+@import '../../../default/source/scss/sign-in';
+@import '../../../default/source/scss/topic';
+@import '../../../default/source/scss/user';
 
 // Theme styles
 @import '_visuals';

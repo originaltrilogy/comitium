@@ -4,6 +4,7 @@
 
 module.exports = {
   challenge: challenge,
+  contentEdit: contentEdit,
   discussionPost: discussionPost,
   discussionReply: discussionReply,
   discussionView: discussionView,
@@ -53,6 +54,39 @@ function challenge(args, emitter) {
     }
   }
 
+}
+
+
+
+function contentEdit(args, emitter) {
+  app.listen('waterfall', {
+    content: function (emitter) {
+      app.models.content(args.contentID, emitter)
+    },
+    contentEdit: function (previous, emitter) {
+      if ( previous.content ) {
+        if ( args.user.moderateDiscussions ) {
+          emitter.emit('ready', true)
+        } else {
+          challenge(args, emitter)
+        }
+      } else {
+        emitter.emit('error', {
+          statusCode: 404
+        })
+      }
+    }
+  }, function (output) {
+    if ( output.listen.success ) {
+      if ( output.contentEdit === true ) {
+        emitter.emit('ready', true)
+      } else {
+        challenge(args, emitter)
+      }
+    } else {
+      emitter.emit('error', output.listen)
+    }
+  })
 }
 
 
