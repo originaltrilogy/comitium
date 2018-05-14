@@ -21,10 +21,10 @@ section.categories
               p !{discussion.discussionDescription}
           a.content-stats(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}")
             dl.content-stats
-              dt.topics Topics
+              dt.topics Topic#{ discussion.topics != 1 ? 's' : '' }
               dd.topics
                 = discussion.topicsFormatted
-              dt.posts Posts
+              dt.posts Post#{ discussion.posts != 1 ? 's' : '' }
               dd.posts
                 = discussion.postsFormatted
           if discussion.lastPostCreated
