@@ -233,7 +233,7 @@ body[data-controller="post"][data-view="announcement"] {
         justify-content: space-between;
         max-width: 96rem;
         margin: 3.4rem auto 1.2rem;
-        padding: 0 0.8rem 0 2.4rem;
+        padding: 0 1.2rem 0 2.4rem;
 
         h2 {
           flex: 1 1 auto;
@@ -265,6 +265,7 @@ body[data-controller="post"][data-view="announcement"] {
           }
         }
         section.content.post {
+          max-width: none;
           padding: 1.2rem;
         }
         nav.actions {
@@ -297,7 +298,7 @@ body[data-controller="post"][data-view="announcement"] {
           justify-content: space-between;
           position: relative;
           margin: 0 0 0 2rem;
-          padding: 1rem 1.2rem 0;
+          padding: 1rem 1.4rem 0;
           border-top-left-radius: 0.6rem;
           border-top-right-radius: 0.6rem;
 
@@ -348,6 +349,7 @@ body[data-controller="post"][data-view="announcement"] {
       }
       section.content.post {
         position: relative;
+        max-width: calc(100% - 8.4rem);
         margin: 0 0 0 8.4rem;
         padding: 0 2.4rem 0.8rem;
       }
@@ -380,10 +382,10 @@ body[data-controller="post"][data-view="announcement"] {
           order: 2;
           padding: 1.2rem;
           font-size: 88%;
+          text-align: right;
   
           > * {
             margin: 0 0 1.6rem;
-            max-width: 90%;
           }
   
           blockquote {
@@ -482,7 +484,7 @@ body[data-controller="post"][data-view="announcement"] {
 
           > * {
             // Matches the width of replies
-            max-width: 74.4rem;
+            max-width: 82.8rem;
             margin-right: auto;
             margin-left: auto;
           }

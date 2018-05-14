@@ -814,7 +814,7 @@ dl.content-stats {
     &:nth-child(n+2) {
       order: 1;
       flex-basis: auto;
-      padding-top: 0.4rem;
+      padding-top: 0.2rem;
       @include titleFont();
     }
     &:nth-child(n+4) {
@@ -831,6 +831,10 @@ p.last-post {
 
   a {
     text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
   a.avatar {
     display: inline-block;
@@ -1336,9 +1340,9 @@ a.avatar {
   }
 
   p.last-post a.avatar {
-    width: 4.8rem;
-    height: 4.8rem;
-    margin-right: 1.4rem;
+    width: 4rem;
+    height: 4rem;
+    margin-right: 1rem;
     float: left;
   }
 
@@ -1380,12 +1384,6 @@ a.avatar {
 
   nav.previous-and-next {
     margin: 3.2rem auto;
-  }
-
-  dl.content-stats {
-    width: 6.4rem;
-    height: 6.4rem;
-    font-size: 1.6rem;
   }
 
   nav.actions {
@@ -1537,7 +1535,6 @@ a.avatar {
 
   article {
     align-items: center;
-    min-height: 8.8rem;
     padding: 1.2rem 0;
 
     &.unread,

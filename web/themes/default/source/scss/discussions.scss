@@ -60,11 +60,10 @@ body[data-controller="discussions"] {
       a:nth-child(2) {
         display: block;
         width: 20rem;
-        margin-top: 0.6rem;
+        margin-top: 0.2rem;
       }
     }
     a.content-stats {
-      flex: 0 0 6.4rem;
       order: 3;
     }
   }
