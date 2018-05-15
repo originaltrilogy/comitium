@@ -3,4 +3,11 @@ header
     h1 !{title_html}
     //- p !{summary}
 
+if userCanEdit
+  nav
+    nav.actions
+      ul
+        li.edit
+          a(href="content/#{url.content}/id/#{url.id}/action/edit") Edit
+
 section.content !{content_html}

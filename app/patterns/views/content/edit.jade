@@ -2,7 +2,15 @@ header
   section.summary
     h1 Edit content: #{title_html}
 
-section.content
-  form
-    input(name="title_markdown") #{title_markdown}
-    textarea(name="content_markdown") #{content_markdown}
+section.form.post
+  form(id="content-edit-form" action="content/#{url.content}/id/#{url.id}/action/editForm" method="post" novalidate)
+    ul.data
+      li.content-title.textarea.required
+        label(for="title-markdown") Title
+        textarea(id="title-markdown" name="title_markdown") #{form.title_markdown}
+      li.content-markdown.textarea.required
+        label(for="content-markdown") Text
+        textarea(id="content-markdown" name="content_markdown" rows="25") #{form.content_markdown}
+    ul.actions
+      li.primary.save
+        input(name="save" type="submit" value="Save changes")
