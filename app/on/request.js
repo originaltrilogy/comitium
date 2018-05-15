@@ -126,12 +126,10 @@ function start(params, context, emitter) {
           url = '/password-reset';
           break;
         case 'about':
-          url = '/about.html';
-          statusCode = 302;
+          url = 'content/about/id/1';
           break;
         case 'help':
-          url = '/help.html';
-          statusCode = 302;
+          url = 'content/help/id/2';
           break;
         case 'user-lists':
           url = '/discussions';
@@ -142,8 +140,7 @@ function start(params, context, emitter) {
           break;
         case 'terms-of-service':
         case 'privacy-policy':
-          url = '/terms-of-service.html';
-          statusCode = 302;
+          url = 'content/terms-of-service/id/3';
           break;
       }
 
