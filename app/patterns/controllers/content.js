@@ -102,9 +102,7 @@ function editForm(params, context, emitter) {
       }
     }, function (output) {
       if ( output.listen.success ) {
-        console.log('foo bar')
         if ( output.access === true ) {
-          console.log('foo foo')
           emitter.emit('ready', {
             redirect: 'content/' + output.editContent.title_url + '/id/' + params.url.id
           })
@@ -112,7 +110,6 @@ function editForm(params, context, emitter) {
           emitter.emit('ready', output.access)
         }
       } else {
-        console.log('buzz')
         emitter.emit('error', output.listen)
       }
     })
