@@ -16,7 +16,7 @@ section.categories
         article(class="discussion #{ discussion.unread ? 'unread' : ''}" data-discussion-id="#{discussion.discussionID}")
           section.description
             h3
-              a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") #{discussion.discussionTitle}
+              a(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}") !{discussion.discussionTitle}
             if discussion.discussionDescription
               p !{discussion.discussionDescription}
           a.content-stats(href="discussion/#{discussion.discussionUrl}/id/#{discussion.discussionID}")
