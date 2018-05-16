@@ -1,6 +1,6 @@
 header
   section.summary
-    h1 !{title_html}
+    h1 !{content.title_html}
     //- p !{summary}
 
 if userCanEdit
@@ -10,4 +10,4 @@ if userCanEdit
         li.edit
           a(href="content/#{url.content}/id/#{url.id}/action/edit") Edit
 
-section.content !{content_html}
+section.content !{content.content_html}

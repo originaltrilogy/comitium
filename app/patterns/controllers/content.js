@@ -25,10 +25,22 @@ function handler(params, context, emitter) {
   }, function (output) {
     if ( output.listen.success ) {
       if ( output.content ) {
-        output.content.userCanEdit = output.userCanEdit;
-        emitter.emit('ready', {
-          content: output.content
-        })
+        if ( params.route.descriptor === output.content.url ) {
+          output.content.userCanEdit = output.userCanEdit
+          emitter.emit('ready', {
+            content: {
+              content: output.content,
+              userCanEdit: output.userCanEdit
+            }
+          })
+        } else {
+          emitter.emit('ready', {
+            redirect: {
+              url: app.config.comitium.baseUrl + 'content/' + output.content.url + '/id/' + params.url.id,
+              statusCode: 301
+            }
+          })
+        }
       } else {
         emitter.emit('error', {
           statusCode: 404
@@ -63,7 +75,10 @@ function edit(params, context, emitter) {
         params.form.content_markdown = output.content.content_markdown
 
         emitter.emit('ready', {
-          content: output.content,
+          content: {
+            content: output.content,
+            userCanEdit: output.userCanEdit
+          },
           view: 'edit'
         })
       } else {
@@ -91,7 +106,7 @@ function editForm(params, context, emitter) {
             id: params.url.id,
             title_markdown: params.form.title_markdown,
             title_html: app.toolbox.markdown.title(params.form.title_markdown),
-            title_url: app.toolbox.slug(params.form.title_markdown),
+            url: app.toolbox.slug(params.form.title_markdown),
             content_markdown: params.form.content_markdown,
             content_html: app.toolbox.markdown.content(params.form.content_markdown),
             modified_by_id: params.session.userID
@@ -104,7 +119,7 @@ function editForm(params, context, emitter) {
       if ( output.listen.success ) {
         if ( output.access === true ) {
           emitter.emit('ready', {
-            redirect: 'content/' + output.editContent.title_url + '/id/' + params.url.id
+            redirect: 'content/' + output.editContent.url + '/id/' + params.url.id
           })
         } else {
           emitter.emit('ready', output.access)

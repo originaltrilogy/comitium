@@ -126,10 +126,10 @@ function start(params, context, emitter) {
           url = '/password-reset';
           break;
         case 'about':
-          url = 'content/about/id/1';
+          url = 'content/About/id/1';
           break;
         case 'help':
-          url = 'content/help/id/2';
+          url = 'content/Help/id/2';
           break;
         case 'user-lists':
           url = '/discussions';
@@ -140,7 +140,7 @@ function start(params, context, emitter) {
           break;
         case 'terms-of-service':
         case 'privacy-policy':
-          url = 'content/terms-of-service/id/3';
+          url = 'content/Terms-of-Service/id/3';
           break;
       }
 

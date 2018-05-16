@@ -19,7 +19,7 @@ function getContent(contentID, emitter) {
         emitter.emit('error', err)
       } else {
         client.query(
-          'select id, title_markdown, title_html, title_url, content_markdown, content_html, author_id from content where id = $1;',
+          'select id, title_markdown, title_html, url, content_markdown, content_html, author_id from content where id = $1;',
           [ contentID ],
           function (err, result) {
             done()
@@ -61,8 +61,8 @@ function edit(args, emitter) {
         emitter.emit('error', err);
       } else {
         client.query(
-          'update content set title_markdown = $1, title_html = $2, title_url = $3, content_markdown = $4, content_html = $5, modified = now() at time zone \'utc\', modified_by_id = $6 where id = $7 returning *',
-          [ args.title_markdown, args.title_html, args.title_url, args.content_markdown, args.content_html, args.modified_by_id, args.id ],
+          'update content set title_markdown = $1, title_html = $2, url = $3, content_markdown = $4, content_html = $5, modified = now() at time zone \'utc\', modified_by_id = $6 where id = $7 returning *',
+          [ args.title_markdown, args.title_html, args.url, args.content_markdown, args.content_html, args.modified_by_id, args.id ],
           function (err, result) {
             done();
             if ( err ) {

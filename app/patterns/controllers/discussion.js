@@ -48,71 +48,80 @@ function handler(params, context, emitter) {
               topics = output.topics;
 
           if ( output.listen.success ) {
-            app.listen({
-              viewTimes: function (emitter) {
-                var topicID = [];
-
-                topics.forEach( function (item) {
-                  topicID.push(item.id);
-                })
-
-                announcements.forEach( function (item) {
-                  topicID.push(item.id);
-                })
-
-                app.models.user.topicViewTimes({
-                  userID: params.session.userID,
-                  topicID: topicID.join(', ')
-                }, emitter);
-              }
-            }, function (output) {
-              var viewTimes = {};
-
-              if ( output.listen.success ) {
-                if ( output.viewTimes.length ) {
-                  output.viewTimes.forEach( function (item) {
-                    viewTimes[item.topicID] = item;
-                  });
+            if ( params.route.descriptor === discussion.url ) {
+              app.listen({
+                viewTimes: function (emitter) {
+                  var topicID = [];
+  
+                  topics.forEach( function (item) {
+                    topicID.push(item.id);
+                  })
+  
+                  announcements.forEach( function (item) {
+                    topicID.push(item.id);
+                  })
+  
+                  app.models.user.topicViewTimes({
+                    userID: params.session.userID,
+                    topicID: topicID.join(', ')
+                  }, emitter);
                 }
-
-                announcements.forEach( function (item) {
-                  if ( params.session.groupID > 1 ) {
-                    if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+              }, function (output) {
+                var viewTimes = {};
+  
+                if ( output.listen.success ) {
+                  if ( output.viewTimes.length ) {
+                    output.viewTimes.forEach( function (item) {
+                      viewTimes[item.topicID] = item;
+                    });
+                  }
+  
+                  announcements.forEach( function (item) {
+                    if ( params.session.groupID > 1 ) {
+                      if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+                        item.unread = true;
+                      }
+                    } else {
+                      if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
+                        item.unread = true;
+                      }
+                    }
+                  })
+  
+                  topics.forEach( function (item) {
+                    if ( params.session.groupID > 1 ) {
+                      if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+                        item.unread = true;
+                      }
+                    } else if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
                       item.unread = true;
                     }
-                  } else {
-                    if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
-                      item.unread = true;
+                  })
+  
+                  emitter.emit('ready', {
+                    content: {
+                      discussion: discussion,
+                      announcements: announcements.length ? announcements : false,
+                      topics: topics.length ? topics : false,
+                      breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
+                      page: page,
+                      pagination: app.toolbox.helpers.paginate('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics),
+                      previousAndNext: app.toolbox.helpers.previousAndNext('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics)
                     }
-                  }
-                })
-
-                topics.forEach( function (item) {
-                  if ( params.session.groupID > 1 ) {
-                    if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
-                      item.unread = true;
-                    }
-                  } else if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
-                    item.unread = true;
-                  }
-                })
-
-                emitter.emit('ready', {
-                  content: {
-                    discussion: discussion,
-                    announcements: announcements.length ? announcements : false,
-                    topics: topics.length ? topics : false,
-                    breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
-                    page: page,
-                    pagination: app.toolbox.helpers.paginate('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics),
-                    previousAndNext: app.toolbox.helpers.previousAndNext('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics)
-                  }
-                });
-
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
+                  });
+  
+                } else {
+                  emitter.emit('error', output.listen);
+                }
+              });
+            } else {
+              emitter.emit('ready', {
+                redirect: {
+                  url: app.config.comitium.baseUrl + 'discussion/' + discussion.url + '/id/' + discussion.id + ( params.url.page ? '/page/' + params.url.page : '' ),
+                  statusCode: 301
+                }
+              })
+            }
           } else {
             emitter.emit('error', output.listen);
           }

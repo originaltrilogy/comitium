@@ -92,7 +92,7 @@ function handler(params, context, emitter) {
           emitter.emit('ready', {
             redirect: app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + output.firstUnreadPost.page + '#' + output.firstUnreadPost.post.id
           });
-        } else {
+        } else if ( !topic.private && params.route.descriptor === topic.url ) {
           // If the user has read access, get the posts for the requested page
           app.listen({
             viewTimeUpdate: function (emitter) {
@@ -191,6 +191,13 @@ function handler(params, context, emitter) {
               emitter.emit('error', output.listen);
             }
           });
+        } else {
+          emitter.emit('ready', {
+            redirect: {
+              url: app.config.comitium.baseUrl + url + '/id/' + topic.id + ( params.url.page ? '/page/' + params.url.page : '' ),
+              statusCode: 301
+            }
+          })
         }
       } else {
         emitter.emit('ready', output.access);
