@@ -15,16 +15,16 @@ article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? '
         dd.date
           time
             = topic.postDateFormatted
+  a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
+    dl.content-stats(data-replies="#{topic.replies}")
+      dt.replies
+        if topic.replies != 1
+          | Replies
+        else
+          | Reply
+      dd.replies
+        = topic.repliesFormatted
   if topic.replies
-    a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
-      dl.content-stats(data-replies="#{topic.replies}")
-        dt.replies
-          if topic.replies != 1
-            | Replies
-          else
-            | Reply
-        dd.replies
-          = topic.repliesFormatted
     p.last-post
       a(class="avatar #{ topic.lastPostAuthorGroupID === 6 ? 'banned' : '' }" href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
         img(src="avatars/#{topic.lastPostAuthorID}.jpg")

@@ -1342,7 +1342,7 @@ a.avatar {
   p.last-post a.avatar {
     width: 4rem;
     height: 4rem;
-    margin-right: 1rem;
+    margin-right: 1.2rem;
     float: left;
   }
 
@@ -1534,6 +1534,7 @@ a.avatar {
   }
 
   article {
+    justify-content: space-between;
     align-items: center;
     padding: 1.2rem 0;
 

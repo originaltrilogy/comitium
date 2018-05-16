@@ -27,7 +27,7 @@ section.categories
               dt.posts Post#{ discussion.posts != 1 ? 's' : '' }
               dd.posts
                 = discussion.postsFormatted
-          if discussion.lastPostCreated
+          if discussion.topics
             p.last-post
               a(class="avatar #{ discussion.lastPostAuthorGroupID === 6 ? 'banned' : '' }" href="user/#{discussion.lastPostAuthorUrl}/id/#{discussion.lastPostAuthorID}" rel="author" title="View #{discussion.lastPostAuthor}'s profile.")
                 if discussion.lastPostAuthorGroupID === 6

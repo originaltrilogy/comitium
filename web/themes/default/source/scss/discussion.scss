@@ -157,7 +157,8 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
         flex: 1 0 100%;
 
         section.description {
-          margin-right: 3.2rem;
+          flex: 0 1 70.6rem;
+          padding-right: 2.4rem;
         }
         h3 {
           min-height: 0;
