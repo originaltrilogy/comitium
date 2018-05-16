@@ -13,7 +13,7 @@ module.exports = {
 function categories(groupID, emitter) {
   // See if the category list is already cached
   var cacheKey = 'group-' + groupID,
-      scope = 'discussions-categories',
+      scope = 'categories_discussions',
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -49,7 +49,7 @@ function categories(groupID, emitter) {
 
       if ( output.listen.success ) {
         // Transform the data array into a nested object usable by the view
-        output.categories.forEach( function (category, index, array) {
+        output.categories.forEach( function (category) {
           categories[category.categorySort-1] = {
             categoryID: category.categoryID,
             categorySort: category.categorySort,
@@ -58,27 +58,20 @@ function categories(groupID, emitter) {
             subcategories: []
           };
         });
-        categories.forEach( function (category, index, array) {
-          output.categories.forEach( function (subcategory, index, array) {
+
+        // Remove empty array elements caused by gaps in categorySort
+        categories = categories.filter( function (n) { return n !== undefined } )
+
+        categories.forEach( function (category, categoryIndex) {
+          output.categories.forEach( function (subcategory) {
             if ( subcategory.categoryID === category.categoryID ) {
-              categories[category.categorySort-1].subcategories[subcategory.discussionSort-1] = {
-                discussionID: subcategory.discussionID,
-                discussionSort: subcategory.discussionSort,
-                discussionTitle: subcategory.discussionTitle,
-                discussionUrl: subcategory.discussionUrl,
-                discussionDescription: subcategory.discussionDescription,
-                topics: subcategory.topics,
-                topicsFormatted: app.toolbox.numeral(subcategory.topics).format('0,0'),
-                posts: subcategory.posts,
-                postsFormatted: app.toolbox.numeral(subcategory.posts).format('0,0'),
-                lastPostAuthorID: subcategory.lastPostAuthorID,
-                lastPostCreated: subcategory.lastPostCreated,
-                lastPostCreatedFormatted: app.toolbox.moment.tz(subcategory.lastPostCreated, 'America/New_York').format('D-MMM-YYYY'),
-                lastPostAuthorGroupID: subcategory.lastPostAuthorGroupID,
-                lastPostAuthor: subcategory.lastPostAuthor,
-                lastPostAuthorUrl: subcategory.lastPostAuthorUrl
-              };
+              categories[categoryIndex].subcategories[subcategory.discussionSort-1] = subcategory;
+              categories[categoryIndex].subcategories[subcategory.discussionSort-1].topicsFormatted = app.toolbox.numeral(subcategory.topics).format('0,0')
+              categories[categoryIndex].subcategories[subcategory.discussionSort-1].postsFormatted = app.toolbox.numeral(subcategory.posts).format('0,0')
+              categories[categoryIndex].subcategories[subcategory.discussionSort-1].lastPostCreatedFormatted = app.toolbox.moment.tz(subcategory.lastPostCreated, 'America/New_York').format('D-MMM-YYYY')
             }
+            // Remove empty array elements caused by gaps in discussionSort
+            categories[categoryIndex].subcategories = categories[categoryIndex].subcategories.filter( function (n) { return n !== undefined } )
           });
         });
 
@@ -102,11 +95,10 @@ function categories(groupID, emitter) {
 }
 
 
-
 function categoriesPost(groupID, emitter) {
   // See if the category list is already cached
   var cacheKey = 'group-' + groupID,
-      scope = 'discussions-categoriesPost',
+      scope = 'categories_discussions_post',
       cached = app.cache.get({ scope: scope, key: cacheKey });
 
   // If it's cached, return the cache object
@@ -121,8 +113,8 @@ function categoriesPost(groupID, emitter) {
             emitter.emit('error', err);
           } else {
             client.query({
-              name: 'discussions_categoriesPost',
-              text: 'select c.id as "categoryID", c."sort" as "categorySort", c."title" as "categoryTitle", c."description" as "categoryDescription", d."id" as "discussionID", d."sort" as "discussionSort", d."title" as "discussionTitle", d."url" as "discussionUrl", d."description" as "discussionDescription", d."topics", d."posts", p."userID" as "lastPostAuthorID", p."created" as "lastPostCreated", u."username" as "lastPostAuthor", u."url" as "lastPostAuthorUrl" from "categories" c join "discussions" d on c."id" = d."categoryID" join "discussionPermissions" dp on d."id" = dp."discussionID" and dp."groupID" = $1 and dp."post" = true left join "posts" p on p.id = d.last_post_id left join "users" u on p."userID" = u."id" order by c."sort" asc, d."sort" asc;',
+              name: 'categories_discussions_post',
+              text: 'select c.id as "categoryID", c."sort" as "categorySort", c."title" as "categoryTitle", c."description" as "categoryDescription", d."id" as "discussionID", d."sort" as "discussionSort", d."title" as "discussionTitle", d."url" as "discussionUrl", d."description" as "discussionDescription", d."topics", d."posts", p."userID" as "lastPostAuthorID", p."created" as "lastPostCreated", u."groupID" as "lastPostAuthorGroupID", u."username" as "lastPostAuthor", u."url" as "lastPostAuthorUrl" from "categories" c join "discussions" d on c."id" = d."categoryID" join "discussionPermissions" dp on d."id" = dp."discussionID" and dp."groupID" = $1 and dp."post" = true left join "posts" p on p.id = d.last_post_id left join "users" u on p."userID" = u."id" order by c."sort" asc, d."sort" asc;',
               values: [ groupID ]
             },
               function (err, result) {
@@ -138,33 +130,34 @@ function categoriesPost(groupID, emitter) {
         });
       }
     }, function (output) {
-      var categories = {};
+      var categories = [];
 
       if ( output.listen.success ) {
         // Transform the data array into a nested object usable by the view
-        output.categories.forEach( function (category, index, array) {
-          categories[category.categoryTitle] = {};
-          for ( var property in category ) {
-            if ( category.hasOwnProperty(property) && property.search('category') === 0 ) {
-              categories[category.categoryTitle][property] = category[property];
-            }
-          }
-          categories[category.categoryTitle].discussions = {};
+        output.categories.forEach( function (category) {
+          categories[category.categorySort-1] = {
+            categoryID: category.categoryID,
+            categorySort: category.categorySort,
+            categoryTitle: category.categoryTitle,
+            categoryDescription: category.categoryDescription,
+            subcategories: []
+          };
         });
 
-        output.categories.forEach( function (category, index, array) {
-          categories[category.categoryTitle].discussions[category.discussionTitle] = {};
-          for ( var property in category ) {
-            if ( category.hasOwnProperty(property) && property.search('category') !== 0 ) {
-              if ( property === 'topics' || property === 'posts' ) {
-                categories[category.categoryTitle].discussions[category.discussionTitle][property] = app.toolbox.numeral(category[property]).format('0,0');
-              } else if ( property === 'lastPostCreated' ) {
-                categories[category.categoryTitle].discussions[category.discussionTitle][property] = app.toolbox.moment(category[property]).format('MMMM Do YYYY');
-              } else {
-                categories[category.categoryTitle].discussions[category.discussionTitle][property] = category[property];
-              }
+        // Remove empty array elements caused by gaps in categorySort
+        categories = categories.filter( function (n) { return n !== undefined } )
+
+        categories.forEach( function (category, categoryIndex) {
+          output.categories.forEach( function (subcategory) {
+            if ( subcategory.categoryID === category.categoryID ) {
+              categories[categoryIndex].subcategories[subcategory.discussionSort-1] = subcategory;
+              categories[categoryIndex].subcategories[subcategory.discussionSort-1].topicsFormatted = app.toolbox.numeral(subcategory.topics).format('0,0')
+              categories[categoryIndex].subcategories[subcategory.discussionSort-1].postsFormatted = app.toolbox.numeral(subcategory.posts).format('0,0')
+              categories[categoryIndex].subcategories[subcategory.discussionSort-1].lastPostCreatedFormatted = app.toolbox.moment.tz(subcategory.lastPostCreated, 'America/New_York').format('D-MMM-YYYY')
             }
-          }
+            // Remove empty array elements caused by gaps in discussionSort
+            categories[categoryIndex].subcategories = categories[categoryIndex].subcategories.filter( function (n) { return n !== undefined } )
+          });
         });
 
         // Cache the categories object for future requests
@@ -185,7 +178,6 @@ function categoriesPost(groupID, emitter) {
   }
 
 }
-
 
 
 function breadcrumbs() {

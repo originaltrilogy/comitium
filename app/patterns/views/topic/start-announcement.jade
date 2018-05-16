@@ -50,7 +50,7 @@ section.form.post.topic-write
                 li
                   = category.categoryTitle
                   ul.data.checkbox
-                    each discussion in category.discussions
+                    each discussion in category.subcategories
                       if discussion.discussionID !== 1
                         li.discussion.checkbox
                           input(id="discussion-#{discussion.discussionID}" name="discussions" type="checkbox" value="#{discussion.discussionID}" checked=form.discussions[discussion.discussionID])
