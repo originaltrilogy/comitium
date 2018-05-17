@@ -951,139 +951,133 @@ function move(args, emitter) {
     if ( err ) {
       emitter.emit('error', err);
     } else {
-      app.toolbox.dbPool.connect(function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          app.listen('waterfall', {
-            begin: function (emitter) {
+      app.listen('waterfall', {
+        begin: function (emitter) {
 
-              client.query('begin', function (err) {
-                if ( err ) {
-                  done();
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready');
-                }
-              });
-
-            },
-            moveTopic: function (previous, emitter) {
-
-              client.query(
-                'update "topics" set "discussionID" = $1 where "id" = $2;',
-                [ args.newDiscussionID, args.topicID ],
-                function (err, result) {
-                  done();
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    // If it's not an announcement, skip the next method
-                    emitter.emit( args.discussionID === 2 ? 'ready' : 'skip', {
-                      success: true,
-                      affectedRows: result.rows
-                    });
-                  }
-                }
-              );
-
-            },
-            deleteAnnouncement: function (previous, emitter) {
-
-              client.query(
-                'delete from "announcements" where "topicID" = $1;',
-                [ args.topicID ],
-                function (err, result) {
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      affectedRows: result.rowCount
-                    });
-                  }
-                }
-              );
-
-            },
-            updateOldDiscussionStats: function (previous, emitter) {
-
-              client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ), last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
-                [ args.discussionID ],
-                function (err, result) {
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      affectedRows: result.rowCount
-                    });
-                  }
-                }
-              );
-
-            },
-            updateNewDiscussionStats: function (previous, emitter) {
-
-              client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ), last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
-                [ args.newDiscussionID ],
-                function (err, result) {
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      affectedRows: result.rowCount
-                    });
-                  }
-                }
-              );
-
-            },
-            commit: function (previous, emitter) {
-
-              client.query('commit', function () {
-                done();
-                emitter.emit('ready');
-              });
-
-            }
-          }, function (output) {
-
-            if ( output.listen.success ) {
-
-              // Clear the cache for this topic
-              app.cache.clear({ scope: 'topic-' + args.topicID });
-              app.cache.clear({ scope: 'discussion-' + args.discussionID });
-              app.cache.clear({ scope: 'discussion-' + args.newDiscussionID });
-              app.cache.clear({ scope: 'categories_discussions' });
-              if ( args.discussionID === 2 ) {
-                app.cache.clear({ scope: 'announcements' });
-              }
-
-              emitter.emit('ready', {
-                success: true
-              });
-
+          client.query('begin', function (err) {
+            if ( err ) {
+              done();
+              emitter.emit('error', err);
             } else {
-
-              emitter.emit('error', output.listen);
-
+              emitter.emit('ready');
             }
-
           });
+
+        },
+        moveTopic: function (previous, emitter) {
+
+          client.query(
+            'update "topics" set "discussionID" = $1 where "id" = $2;',
+            [ args.newDiscussionID, args.topicID ],
+            function (err, result) {
+              done();
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                // If it's not an announcement, skip the next method
+                emitter.emit( args.discussionID === 2 ? 'ready' : 'skip', {
+                  success: true,
+                  affectedRows: result.rows
+                });
+              }
+            }
+          );
+
+        },
+        deleteAnnouncement: function (previous, emitter) {
+
+          client.query(
+            'delete from "announcements" where "topicID" = $1;',
+            [ args.topicID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  affectedRows: result.rowCount
+                });
+              }
+            }
+          );
+
+        },
+        updateOldDiscussionStats: function (previous, emitter) {
+
+          client.query(
+            'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ), last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+            [ args.discussionID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  affectedRows: result.rowCount
+                });
+              }
+            }
+          );
+
+        },
+        updateNewDiscussionStats: function (previous, emitter) {
+
+          client.query(
+            'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ), last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+            [ args.newDiscussionID ],
+            function (err, result) {
+              if ( err ) {
+                client.query('rollback', function (err) {
+                  done();
+                });
+                emitter.emit('error', err);
+              } else {
+                emitter.emit('ready', {
+                  affectedRows: result.rowCount
+                });
+              }
+            }
+          );
+
+        },
+        commit: function (previous, emitter) {
+
+          client.query('commit', function () {
+            done();
+            emitter.emit('ready');
+          });
+
         }
+      }, function (output) {
+
+        if ( output.listen.success ) {
+
+          // Clear the cache for this topic
+          app.cache.clear({ scope: 'topic-' + args.topicID });
+          app.cache.clear({ scope: 'discussion-' + args.discussionID });
+          app.cache.clear({ scope: 'discussion-' + args.newDiscussionID });
+          app.cache.clear({ scope: 'categories_discussions' });
+          if ( args.discussionID === 2 ) {
+            app.cache.clear({ scope: 'announcements' });
+          }
+
+          emitter.emit('ready', {
+            success: true
+          });
+
+        } else {
+
+          emitter.emit('error', output.listen);
+
+        }
+
       });
     }
   });
