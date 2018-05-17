@@ -195,14 +195,14 @@ body[data-controller="post"][data-view="announcement"] {
     }
     h2 {
       position: absolute;
-      left: 100%;
+      left: -100%;
     }
     li.post-content {
       margin-top: 0;
 
       label {
         position: absolute;
-        left: 100%;
+        left: -100%;
       }
     }
     textarea {

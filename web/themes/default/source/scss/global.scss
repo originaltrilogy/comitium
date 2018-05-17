@@ -414,7 +414,7 @@ nav.breadcrumbs {
   }
   li {
     position: absolute;
-    left: 100%;
+    left: -100%;
 
     &:last-child {
       position: static;
