@@ -556,15 +556,11 @@ function startAnnouncementForm(params, context, emitter) {
                   params.form.discussions = [ 2 ];
                   break;
                 case 'all':
-                  for ( var category in categories ) {
-                    if ( categories.hasOwnProperty(category) ) {
-                      for ( var discussion in categories[category].discussions ) {
-                        if ( categories[category].discussions.hasOwnProperty(discussion) ) {
-                          params.form.discussions.push(categories[category].discussions[discussion].discussionID);
-                        }
-                      }
-                    }
-                  }
+                  categories.forEach( function (item, index, array) {
+                    item.subcategories.forEach( function (item, index, array) {
+                      params.form.discussions.push(item.discussionID)
+                    })
+                  })
                   break;
               }
 
