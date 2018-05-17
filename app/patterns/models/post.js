@@ -467,7 +467,7 @@ function trash(args, emitter) {
           // Clear the topic and user caches
           app.cache.clear({ scope: 'topic-' + args.topicID });
           app.cache.clear({ scope: 'discussion-' + args.discussionID });
-          app.cache.clear({ scope: 'discussions-categories' });
+          app.cache.clear({ scope: 'categories_discussions' });
           app.cache.clear({ scope: 'user-' + args.authorID });
 
           emitter.emit('ready', {

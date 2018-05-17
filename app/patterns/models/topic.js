@@ -707,7 +707,7 @@ function insert(args, emitter) {
                   });
                 } else {
                   app.cache.clear({ scope: 'discussion-' + args.discussionID });
-                  app.cache.clear({ scope: 'discussions-categories' });
+                  app.cache.clear({ scope: 'categories_discussions' });
                 }
               }
 
@@ -1067,7 +1067,7 @@ function move(args, emitter) {
               app.cache.clear({ scope: 'topic-' + args.topicID });
               app.cache.clear({ scope: 'discussion-' + args.discussionID });
               app.cache.clear({ scope: 'discussion-' + args.newDiscussionID });
-              app.cache.clear({ scope: 'discussions-categories' });
+              app.cache.clear({ scope: 'categories_discussions' });
               if ( args.discussionID === 2 ) {
                 app.cache.clear({ scope: 'announcements' });
               }
@@ -1256,7 +1256,7 @@ function reply(args, emitter) {
                 });
               } else {
                 app.cache.clear({ scope: 'discussion-' + args.discussionID });
-                app.cache.clear({ scope: 'discussions-categories' });
+                app.cache.clear({ scope: 'categories_discussions' });
                 if ( args.discussionID === 2 ) {
                   app.cache.clear({ scope: 'announcements' });
                 }
