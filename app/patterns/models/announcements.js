@@ -22,46 +22,27 @@ function info(discussionID, emitter) {
     emitter.emit('ready', cached);
     // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.listen({
-      discussion: function (emitter) {
-        app.toolbox.dbPool.connect(function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description", d."topics", d."posts" from discussions d left join categories c on d."categoryID" = c.id where d."id" = $1;',
-              [ discussionID ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
-          }
-        });
-      }
-    }, function (output) {
-
-      if ( output.listen.success ) {
-        output.discussion[0]['topicsFormatted'] = app.toolbox.numeral(output.discussion[0].topics).format('0,0');
-        
-        // Cache the discussion info object for future requests
-        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-          app.cache.set({
-            key: cacheKey,
-            scope: scope,
-            value: output.discussion[0]
-          });
-        }
-
-        emitter.emit('ready', output.discussion[0]);
+    app.toolbox.dbPool.connect(function (err, client, done) {
+      if ( err ) {
+        emitter.emit('error', err);
       } else {
-        emitter.emit('error', output.listen);
+        client.query(
+          'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description", d."topics", d."posts" from discussions d left join categories c on d."categoryID" = c.id where d."id" = $1;',
+          [ discussionID ],
+          function (err, result) {
+            done();
+            if ( err ) {
+              emitter.emit('error', err);
+            } else {
+              if ( result.rows.length ) {
+                emitter.emit('ready', result.rows[0]);
+              } else {
+                emitter.emit('ready', false);
+              }
+            }
+          }
+        );
       }
-
     });
   }
 }

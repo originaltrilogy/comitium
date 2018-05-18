@@ -3,13 +3,13 @@
 'use strict'
 
 module.exports = {
-  getContent: getContent,
+  info: info,
   edit: edit,
   mail: mail
 }
 
 
-function getContent(contentID, emitter) {
+function info(contentID, emitter) {
   let cache = app.cache.get({ scope: 'content', key: contentID })
 
   if ( cache ) {
@@ -28,8 +28,6 @@ function getContent(contentID, emitter) {
               emitter.emit('error', err)
             } else {
               if ( result.rows.length ) {
-                emitter.emit('ready', result.rows[0])
-
                 if ( !app.cache.exists({ scope: 'content', key: contentID }) ) {
                   app.cache.set({
                     scope: 'content',
@@ -37,6 +35,8 @@ function getContent(contentID, emitter) {
                     value: result.rows[0]
                   })
                 }
+
+                emitter.emit('ready', result.rows[0])
               } else {
                 emitter.emit('ready', false)
               }

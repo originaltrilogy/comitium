@@ -382,47 +382,39 @@ function info(topicID, emitter) {
     emitter.emit('ready', cached);
     // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.listen({
-      topic: function (emitter) {
-        app.toolbox.dbPool.connect(function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created", t."modified", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", p.text, u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and "draft" = false order by created desc limit 1 ) where t."id" = $1;',
-              [ topicID ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
-          }
-        });
-      }
-    }, function (output) {
-
-      if ( output.listen.success ) {
-        output.topic[0].createdFormatted = app.toolbox.moment.tz(output.topic[0].created, 'America/New_York').format('D-MMM-YYYY');
-        output.topic[0].repliesFormatted = app.toolbox.numeral(output.topic[0].replies).format('0,0');
-
-        // Cache the topic info object for future requests
-        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-          app.cache.set({
-            scope: scope,
-            key: cacheKey,
-            value: output.topic[0]
-          });
-        }
-
-        emitter.emit('ready', output.topic[0]);
+    app.toolbox.dbPool.connect(function (err, client, done) {
+      if ( err ) {
+        emitter.emit('error', err);
       } else {
-        emitter.emit('error', output.listen);
-      }
+        client.query(
+          'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created", t."modified", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", p.text, u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and "draft" = false order by created desc limit 1 ) where t."id" = $1;',
+          [ topicID ],
+          function (err, result) {
+            done();
+            if ( err ) {
+              emitter.emit('error', err);
+            } else {
+              if ( result.rows.length ) {
+                result.rows[0].createdFormatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY');
+                result.rows[0].repliesFormatted = app.toolbox.numeral(result.rows[0].replies).format('0,0');
+        
+                // Cache the topic info object for future requests
+                if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+                  app.cache.set({
+                    scope: scope,
+                    key: cacheKey,
+                    value: result.rows[0]
+                  });
+                }
 
+                emitter.emit('ready', result.rows);
+              } else {
+                emitter.emit('ready', false);
+              }
+            }
+          }
+        );
+      }
     });
   }
 }

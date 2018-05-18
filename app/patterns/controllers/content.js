@@ -13,7 +13,7 @@ module.exports = {
 function handler(params, context, emitter) {
   app.listen({
     content: function (emitter) {
-      app.models.content.getContent(params.url.id, emitter)
+      app.models.content.info(params.url.id, emitter)
     },
     userCanEdit: function (emitter) {
       app.toolbox.access.contentEdit({
@@ -63,7 +63,7 @@ function edit(params, context, emitter) {
     },
     content: function (previous, emitter) {
       if ( previous.access === true ) {
-        app.models.content.getContent(params.url.id, emitter)
+        app.models.content.info(params.url.id, emitter)
       } else {
         emitter.emit('end', false)
       }

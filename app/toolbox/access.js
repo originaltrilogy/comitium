@@ -61,7 +61,7 @@ function challenge(args, emitter) {
 function contentEdit(args, emitter) {
   app.listen('waterfall', {
     content: function (emitter) {
-      app.models.content.getContent(args.contentID, emitter)
+      app.models.content.info(args.contentID, emitter)
     },
     contentEdit: function (previous, emitter) {
       if ( previous.content ) {
