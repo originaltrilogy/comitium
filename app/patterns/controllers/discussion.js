@@ -53,18 +53,22 @@ function handler(params, context, emitter) {
                 viewTimes: function (emitter) {
                   var topicID = [];
   
-                  topics.forEach( function (item) {
-                    topicID.push(item.id);
-                  })
+                  if ( params.session.userID ) {
+                    topics.forEach( function (item) {
+                      topicID.push(item.id);
+                    })
+    
+                    announcements.forEach( function (item) {
+                      topicID.push(item.id);
+                    })
   
-                  announcements.forEach( function (item) {
-                    topicID.push(item.id);
-                  })
-  
-                  app.models.user.topicViewTimes({
-                    userID: params.session.userID,
-                    topicID: topicID.join(', ')
-                  }, emitter);
+                    app.models.user.topicViewTimes({
+                      userID: params.session.userID,
+                      topicID: topicID.join(', ')
+                    }, emitter);
+                  } else {
+                    emitter.emit('ready', false)
+                  }
                 }
               }, function (output) {
                 var viewTimes = {};
