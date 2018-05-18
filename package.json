@@ -17,17 +17,17 @@
     "start-prod": "node ./app/start-prod.js"
   },
   "dependencies": {
-    "bcrypt": "1.0.3",
+    "bcrypt": "^2.0.1",
     "citizen": "0.8.5",
     "gm": "1.23.1",
     "jade": "1.11.0",
     "markdown-it": "8.4.1",
     "markdown-it-emoji": "1.4.0",
-    "moment": "2.21.0",
-    "moment-timezone": "0.5.14",
-    "nodemailer": "4.6.3",
+    "moment": "2.22.0",
+    "moment-timezone": "0.5.17",
+    "nodemailer": "4.6.4",
     "numeral": "2.0.6",
-    "pg": "7.4.1",
+    "pg": "7.4.3",
     "slug": "0.9.1"
   },
   "devDependencies": {
