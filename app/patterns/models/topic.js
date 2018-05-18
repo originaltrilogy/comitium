@@ -407,7 +407,7 @@ function info(topicID, emitter) {
                   });
                 }
 
-                emitter.emit('ready', result.rows);
+                emitter.emit('ready', result.rows[0]);
               } else {
                 emitter.emit('ready', false);
               }
