@@ -52,6 +52,12 @@ app.toolbox.dbPool.on('error', function (err, client) {
   });
 });
 
+// Overwrite slug's character map to avoid funky URLs
+app.toolbox.slug.charmap['~'] = '-';
+app.toolbox.slug.charmap['_'] = '-';
+app.toolbox.slug.charmap['---'] = '-';
+app.toolbox.slug.charmap['--'] = '-';
+
 // Static resources
 app.resources = {
   images: {
