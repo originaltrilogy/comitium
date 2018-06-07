@@ -412,7 +412,7 @@ function trash(args, emitter) {
         updateTopicStats: function (previous, emitter) {
           var sticky;
 
-          if ( previous.sticky > previous.lastPostDate ) {
+          if ( app.toolbox.moment(previous.sticky).isAfter(app.toolbox.moment().utc().valueOf()) ) {
             sticky = previous.sticky;
           } else {
             sticky = previous.lastPostDate;
