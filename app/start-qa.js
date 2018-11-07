@@ -14,7 +14,7 @@ app.toolbox = {
   validate: require('./toolbox/validate'),
 
   // Third party modules
-  bcrypt: require('bcrypt'),
+  bcrypt: require('bcryptjs'),
   // Log e-mails to app/logs/email.txt instead of sending them
   mail: {
     sendMail: function (args) {

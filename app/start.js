@@ -17,7 +17,7 @@ app.toolbox = {
   validate: require('./toolbox/validate'),
 
   // Third party modules
-  bcrypt:   require('bcrypt'),
+  bcrypt:   require('bcryptjs'),
   mail:     require('nodemailer').createTransport(app.config.comitium.mail),
   moment:   require('moment-timezone'),
   numeral:  require('numeral'),
