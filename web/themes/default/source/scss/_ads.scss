@@ -1,0 +1,33 @@
+// Ads
+div.amzn-native-container {
+  padding: 0 1rem 1rem;
+  background: hsl(227,18%,18%);
+  
+  @media only screen and (min-width: 720px) {
+    max-width: 96rem !important;
+    margin-top: 3.4rem !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+}
+
+div#amzn-native-ad-0 div.amzn-native-products-list div.amzn-native-product {
+  color: #ffffff !important;
+  background: hsl(227,18%,18%) !important;
+  background: none !important;
+}
+
+div#amzn-native-ad-0 div.amzn-native-products-list div.amzn-native-product .amzn-native-product-title-container a {
+  color: hsl(227,41%,80%) !important;
+}
+
+body[data-controller="topic"][data-view="topic"],
+body[data-controller="announcement"][data-view="announcement"] {
+  div.amzn-native-container {
+    background: hsl(227,18%,22%);
+
+    @media only screen and (min-width: 720px) {
+      border-radius: .6rem;
+    }
+  }
+}

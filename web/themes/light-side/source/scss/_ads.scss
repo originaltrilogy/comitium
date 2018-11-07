@@ -1,0 +1,24 @@
+// Ads
+div.amzn-native-container {
+  padding: 0 1rem 1rem;
+  background: #ffffff;
+  
+  @media only screen and (min-width: 720px) {
+    max-width: 96rem !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+}
+
+body[data-controller="topic"][data-view="topic"],
+body[data-controller="announcement"][data-view="announcement"] {
+  div.amzn-native-container {
+    border-top: 1px solid hsl(227,18%,90%);
+    border-bottom: 1px solid hsl(227,18%,90%);
+    
+    @media only screen and (min-width: 720px) {
+      border: 1px solid hsl(227,18%,90%);
+      border-radius: .6rem;
+    }
+  }
+}
