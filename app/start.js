@@ -2,9 +2,6 @@
 
 'use strict';
 
-// REMOVE from shipping version
-require('newrelic');
-
 global.app = require('citizen');
 
 var fs = require('fs');
