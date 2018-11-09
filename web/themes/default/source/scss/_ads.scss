@@ -9,17 +9,27 @@ div.amzn-native-container {
     margin-right: auto !important;
     margin-left: auto !important;
   }
+
+  &[data-ad-meta="Native_Compact-manual"] {
+    .amzn-native-product-image-container div {
+      padding: 1rem 0 !important;
+      background: #ffffff !important;
+    }
+  }
 }
 
-div#amzn-native-ad-0 div.amzn-native-products-list div.amzn-native-product {
+div.amzn-native-products-list div.amzn-native-product {
   color: #ffffff !important;
   background: hsl(227,18%,18%) !important;
   background: none !important;
+  border: none !important;
+
+  .amzn-native-product-title-container a {
+    color: hsl(227,41%,80%) !important;
+  }
 }
 
-div#amzn-native-ad-0 div.amzn-native-products-list div.amzn-native-product .amzn-native-product-title-container a {
-  color: hsl(227,41%,80%) !important;
-}
+
 
 body[data-controller="topic"][data-view="topic"],
 body[data-controller="announcement"][data-view="announcement"] {
