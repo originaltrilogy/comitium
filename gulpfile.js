@@ -73,20 +73,20 @@ gulp.task('views', function () {
   return
 })
 
-gulp.task('watch', function() {
+gulp.task('watch', function () {
   livereload.listen()
   themes.forEach( function (item) {
-    gulp.watch('web/themes/default/source/scss/**/**.scss', ['css' + item.name])
+    gulp.watch('web/themes/default/source/scss/**/**.scss', gulp.series('css' + item.name))
   })
   themes.forEach( function (item) {
     if ( item.name !== 'Default') {
-      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', ['css' + item.name])
+      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', gulp.series('css' + item.name))
     }
   })
-  gulp.watch('web/themes/default/source/js/**/**.js', ['js'])
-  gulp.watch('app/patterns/views/**/**.jade', ['views'])
-  gulp.watch('web/**/**.html', ['views'])
+  gulp.watch('web/themes/default/source/js/**/**.js', gulp.series('js'))
+  gulp.watch('app/patterns/views/**/**.jade', gulp.series('views'))
+  gulp.watch('web/**/**.html', gulp.series('views'))
 })
 
-gulp.task('default', ['watch'])
-gulp.task('all', buildTasks)
+gulp.task('default', gulp.series('watch'))
+gulp.task('all', gulp.parallel(buildTasks))
