@@ -1,0 +1,25 @@
+header
+  //- include ../partials/breadcrumbs
+  section.summary
+    h1 Members
+
+section.members
+  section.options
+    form
+      input(type="check" value="Show banned members")
+  table
+    thead
+      tr
+        td Username
+        td Join Date
+        td Last Active
+    tbody
+      each member in members
+        tr
+          td
+            a(href="/user/#{member.url}/id/#{member.id}")
+              = member.username
+          td
+            = member.joinedFormatted
+          td
+            = member.lastActivityFormatted
