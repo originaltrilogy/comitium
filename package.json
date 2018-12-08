@@ -25,6 +25,7 @@
     "markdown-it-emoji": "1.4.0",
     "moment": "2.22.0",
     "moment-timezone": "0.5.17",
+    "node-sass": "^4.10.0",
     "nodemailer": "4.6.4",
     "numeral": "2.0.6",
     "pg": "7.4.3",
@@ -40,7 +41,7 @@
     "gulp-postcss": "*",
     "gulp-sass": "*",
     "gulp-sourcemaps": "*",
-    "gulp-uglify": "*",
+    "gulp-uglify-es": "*",
     "gulp-watch": "*"
   },
   "engines": {
