@@ -1,0 +1,28 @@
+// member list
+
+body[data-controller="members"] {
+  nav.groups {
+    ul {
+      li {
+        a {
+          display: block;
+          padding: 1.2rem 1.8rem;
+        }
+
+        &.current a {
+          background: hsl(227,18%,35%);
+        }
+      }
+    }
+  }
+
+  section.list {
+    width: 100%;
+    overflow-x: scroll;
+  }
+
+  table {
+    margin: 0;
+    white-space: nowrap;
+  }
+}

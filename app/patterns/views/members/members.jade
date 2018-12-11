@@ -1,25 +1,36 @@
 header
   //- include ../partials/breadcrumbs
   section.summary
-    h1 Members
+    h1 Member List
 
-section.members
-  section.options
-    form
-      input(type="check" value="Show banned members")
-  table
-    thead
-      tr
-        td Username
-        td Join Date
-        td Last Active
-    tbody
-      each member in members
+section(class="members group-#{url.group}")
+  nav.groups
+    ul
+      li(class="all-members #{ !url.group ? 'current' : '' }")
+        a(href="members") All Members
+      each group in groups
+        li(class="group-#{group.id} #{group.url} #{ group.id == url.group ? 'current' : '' }")
+          a(href="members/#{group.url}/group/#{group.id}")
+            = group.name
+  h2 #{count} #{ group ? group.name : 'Members'}
+  include ../partials/pagination
+  section.list
+    table
+      thead
         tr
-          td
-            a(href="/user/#{member.url}/id/#{member.id}")
-              = member.username
-          td
-            = member.joinedFormatted
-          td
-            = member.lastActivityFormatted
+          td(class="username #{ !url.order || url.order === 'username' ? 'selected' : '' }") Username (<a href="members/order/username/sort/asc">A-Z</a> / <a href="/members/order/username/sort/desc">Z-A</a>)
+          td.group Group
+          td(class="join-date #{ url.order === 'join-date' ? 'selected' : '' }") Join Date (<a href="/members/order/join-date/sort/desc">Newest</a> / <a href="members/order/join-date/sort/asc">Oldest</a>)
+          td.last-active Last Active (<a href="members/order/last-active/sort/desc">Most Recent</a> / <a href="/members/order/last-active/sort/asc">Least Recent</a>)
+      tbody
+        each member in members
+          tr
+            td.username
+              a(href="user/#{member.url}/id/#{member.id}")
+                = member.username
+            td.group
+              = member.name
+            td.join-date
+              = member.joinedFormatted
+            td.last-active
+              = member.lastActivityFormatted

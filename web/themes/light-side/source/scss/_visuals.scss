@@ -16,6 +16,7 @@ body {
 
   // Navigation highlighting
   &[data-controller="index"] nav li.discussions a,
+  &[data-controller="members"] nav li.members a,
   &[data-controller="discussions"] nav li.discussions a,
   &[data-controller="discussion"] nav li.discussions a,
   &[data-controller="announcements"] nav li.discussions a,

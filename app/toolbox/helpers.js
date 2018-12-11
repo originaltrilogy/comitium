@@ -91,6 +91,9 @@ function paginate(baseUrl, currentPage, itemCount) {
       },
       i;
 
+  // Sanitize URLs to prevent duplicate page values
+  baseUrl = baseUrl.replace(/\/page\/[0-9]+/g, '')
+
   if ( pagination.lastPage <= 5 ) {
     for ( i = 1; i <= pagination.lastPage; i++ ) {
       pagination.pages[i] = {

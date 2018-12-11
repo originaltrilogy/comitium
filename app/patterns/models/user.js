@@ -296,7 +296,7 @@ function ban(args, emitter) {
     } else {
 
       client.query(
-        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Users\' ) where "id" = $1;',
+        'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Members\' ) where "id" = $1;',
         [ args.userID ],
         function (err, result) {
           done();
