@@ -18,10 +18,10 @@ section(class="members group-#{url.group}")
     table
       thead
         tr
-          td(class="username #{ !url.order || url.order === 'username' ? 'selected' : '' }") Username (<a href="members/order/username/sort/asc">A-Z</a> / <a href="/members/order/username/sort/desc">Z-A</a>)
+          td(class="username #{ !url.order || url.order === 'username' ? 'selected' : '' }") Username (<a href="members/#{ url.group ? 'group/' + url.group + '/' : ''}order/username/sort/asc">A-Z</a> / <a href="members/#{ url.group ? 'group/' + url.group + '/' : ''}order/username/sort/desc">Z-A</a>)
           td.group Group
-          td(class="join-date #{ url.order === 'join-date' ? 'selected' : '' }") Join Date (<a href="/members/order/join-date/sort/desc">Newest</a> / <a href="members/order/join-date/sort/asc">Oldest</a>)
-          td.last-active Last Active (<a href="members/order/last-active/sort/desc">Most Recent</a> / <a href="/members/order/last-active/sort/asc">Least Recent</a>)
+          td(class="join-date #{ url.order === 'join-date' ? 'selected' : '' }") Join Date (<a href="members/#{ url.group ? 'group/' + url.group + '/' : ''}order/join-date/sort/desc">Newest</a> / <a href="members/#{ url.group ? 'group/' + url.group + '/' : ''}order/join-date/sort/asc">Oldest</a>)
+          td.last-active Last Active (<a href="members/#{ url.group ? 'group/' + url.group + '/' : ''}order/last-active/sort/desc">Most Recent</a> / <a href="members/#{ url.group ? 'group/' + url.group + '/' : ''}order/last-active/sort/asc">Least Recent</a>)
       tbody
         each member in members
           tr
@@ -31,6 +31,6 @@ section(class="members group-#{url.group}")
             td.group
               = member.name
             td.join-date
-              = member.joinedFormatted
+              = app.toolbox.moment.tz(member.joined, session.timezone).format(session.dateFormat)
             td.last-active
-              = member.lastActivityFormatted
+              = app.toolbox.moment.tz(member.lastActivity, session.timezone).format(session.dateFormat)

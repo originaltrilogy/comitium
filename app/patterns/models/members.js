@@ -16,26 +16,26 @@ module.exports = {
 function all(args, emitter) {
   var start = args.start || 0,
       end = args.end || 25,
-      sortBy = '',
+      orderSort = '',
       cacheKey,
       scope = 'members',
       cached
   
-  switch ( args.sort ) {
+  switch ( args.order ) {
     case 'username':
-      sortBy = 'username ' + ( args.sort || 'asc' )
+      orderSort = 'username ' + ( args.sort || 'asc' )
       break
     case 'join-date':
-      sortBy = 'joined ' + ( args.sort || 'desc' )
+      orderSort = 'joined ' + ( args.sort || 'desc' )
       break
     case 'last-active':
-      sortBy = '"lastActivity" ' + ( args.sort || 'desc' )
+      orderSort = '"lastActivity" ' + ( args.sort || 'desc' )
       break
     default:
-      sortBy = 'username asc'
+      orderSort = 'username asc'
   }
 
-  cacheKey = 'all-' + '-' + start + '-' + end + '-' + sortBy.replace(' ', '-')
+  cacheKey = 'all-' + start + '-' + end + '-' + orderSort.replace(' ', '-')
   cached = app.cache.get({ scope: scope, key: cacheKey })
 
   // If it's cached, return the cache object
@@ -48,8 +48,8 @@ function all(args, emitter) {
         emitter.emit('error', err)
       } else {
         client.query({
-          name: 'members_all_' + sortBy.replace(' ', '_'),
-          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id order by ' + sortBy + ' limit $1 offset $2;',
+          name: 'members_all_' + orderSort.replace(' ', '_'),
+          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id order by ' + orderSort + ' limit $1 offset $2;',
           values: [ end - start, start ]
         }, function (err, result) {
           done()
@@ -97,26 +97,26 @@ function breadcrumbs() {
 function group(args, emitter) {
   var start = args.start || 0,
       end = args.end || 25,
-      sortBy = '',
+      orderSort = '',
       cacheKey,
       scope = 'members',
       cached
   
-  switch ( args.sort ) {
+  switch ( args.order ) {
     case 'username':
-      sortBy = 'username ' + ( args.sort || 'asc' )
+      orderSort = 'username ' + ( args.sort || 'asc' )
       break
     case 'join-date':
-      sortBy = 'joined ' + ( args.sort || 'desc' )
+      orderSort = 'joined ' + ( args.sort || 'desc' )
       break
     case 'last-active':
-      sortBy = '"lastActivity" ' + ( args.sort || 'desc' )
+      orderSort = '"lastActivity" ' + ( args.sort || 'desc' )
       break
     default:
-      sortBy = 'username asc'
+      orderSort = 'username asc'
   }
 
-  cacheKey = 'group-' + args.group + '-' + start + '-' + end + '-' + sortBy.replace(' ', '-')
+  cacheKey = 'group-' + args.group + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-')
   cached = app.cache.get({ scope: scope, key: cacheKey })
 
   // If it's cached, return the cache object
@@ -129,21 +129,14 @@ function group(args, emitter) {
         emitter.emit('error', err)
       } else {
         client.query({
-          name: 'members_group_' + sortBy.replace(' ', '_'),
-          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where g.id = $1 order by ' + sortBy + ' limit $2 offset $3;',
+          name: 'members_group_' + orderSort.replace(' ', '_'),
+          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where g.id = $1 order by ' + orderSort + ' limit $2 offset $3;',
           values: [ args.group, end - start, start ]
         }, function (err, result) {
           done()
           if ( err ) {
             emitter.emit('error', err)
           } else {
-            result.rows.forEach( function (item) {
-              item['joinedFormatted'] = app.toolbox.moment.tz(item['joined'], 'America/New_York').format('D-MMM-YYYY')
-              // item['createdFormatted'] = item['createdFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
-              item['lastActivityFormatted'] = app.toolbox.moment.tz(item['lastActivity'], 'America/New_York').format('D-MMM-YYYY')
-              // item['modifiedFormatted'] = item['modifiedFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
-            })
-
             if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
               app.cache.set({
                 scope: scope,
@@ -151,7 +144,6 @@ function group(args, emitter) {
                 value: result.rows
               })
             }
-
             emitter.emit('ready', result.rows)
           }
         })
@@ -250,26 +242,26 @@ function metaData() {
 function search(args, emitter) {
   var start = args.start || 0,
       end = args.end || 25,
-      sortBy = '',
+      orderSort = '',
       cacheKey,
       scope = 'members',
       cached
   
   switch ( args.sort ) {
     case 'username':
-      sortBy = 'username ' + ( args.sort || 'asc' )
+      orderSort = 'username ' + ( args.sort || 'asc' )
       break
     case 'join-date':
-      sortBy = 'joined ' + ( args.sort || 'desc' )
+      orderSort = 'joined ' + ( args.sort || 'desc' )
       break
     case 'last-active':
-      sortBy = '"lastActivity" ' + ( args.sort || 'desc' )
+      orderSort = '"lastActivity" ' + ( args.sort || 'desc' )
       break
     default:
-      sortBy = 'username asc'
+      orderSort = 'username asc'
   }
 
-  cacheKey = 'all-' + '-' + start + '-' + end + '-' + sortBy.replace(' ', '-')
+  cacheKey = 'all-' + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-')
   cached = app.cache.get({ scope: scope, key: cacheKey })
 
   // If it's cached, return the cache object
@@ -282,21 +274,14 @@ function search(args, emitter) {
         emitter.emit('error', err)
       } else {
         client.query({
-          name: 'members_all_' + sortBy.replace(' ', '_'),
-          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id order by ' + sortBy + ' limit $1 offset $2;',
+          name: 'members_all_' + orderSort.replace(' ', '_'),
+          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id order by ' + orderSort + ' limit $1 offset $2;',
           values: [ end - start, start ]
         }, function (err, result) {
           done()
           if ( err ) {
             emitter.emit('error', err)
           } else {
-            result.rows.forEach( function (item) {
-              item['joinedFormatted'] = app.toolbox.moment.tz(item['joined'], 'America/New_York').format('D-MMM-YYYY')
-              // item['createdFormatted'] = item['createdFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
-              item['lastActivityFormatted'] = app.toolbox.moment.tz(item['lastActivity'], 'America/New_York').format('D-MMM-YYYY')
-              // item['modifiedFormatted'] = item['modifiedFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
-            })
-
             if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
               app.cache.set({
                 scope: scope,
@@ -304,7 +289,6 @@ function search(args, emitter) {
                 value: result.rows
               })
             }
-
             emitter.emit('ready', result.rows)
           }
         })

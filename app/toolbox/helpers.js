@@ -4,12 +4,13 @@
 
 module.exports = {
   activationCode: activationCode,
-  hash: hash,
   compareHash: compareHash,
+  hash: hash,
   ip: ip,
   isoDate: isoDate,
   paginate: paginate,
-  previousAndNext: previousAndNext
+  previousAndNext: previousAndNext,
+  query: query
 };
 
 
@@ -20,10 +21,10 @@ function activationCode() {
 
 
 
-function hash(str, emitter) {
-  app.toolbox.bcrypt.hash(str, 12, function (err, hash) {
+function compareHash(str, hash, emitter) {
+  app.toolbox.bcrypt.compare(str, hash, function (err, result) {
     if ( !err ) {
-      emitter.emit('ready', hash);
+      emitter.emit('ready', result);
     } else {
       emitter.emit('error', err);
     }
@@ -32,10 +33,10 @@ function hash(str, emitter) {
 
 
 
-function compareHash(str, hash, emitter) {
-  app.toolbox.bcrypt.compare(str, hash, function (err, result) {
+function hash(str, emitter) {
+  app.toolbox.bcrypt.hash(str, 12, function (err, hash) {
     if ( !err ) {
-      emitter.emit('ready', result);
+      emitter.emit('ready', hash);
     } else {
       emitter.emit('error', err);
     }
@@ -182,5 +183,54 @@ function previousAndNext(baseUrl, currentPage, itemCount) {
     return pagination;
   } else {
     return false;
+  }
+}
+
+
+function query(options, emitter) {
+
+  // Options:
+  // {
+  //   cache: boolean,
+  //   model: 'model-name',
+  //   method: 'methodName',
+  //   sql: 'select * from blah where something = $1 and otherthing = $2;',
+  //   values: [ value1, value2 ]
+  // }
+
+  let cacheKey = options.method + ( options.values ? '-' + options.values.join('-') : ''),
+      cacheScope = options.model,
+      cached = options.cache ? app.cache.get({ scope: cacheScope, key: cacheKey }) : false
+
+  // If it's cached, return the cache object
+  if ( options.cache && cached ) {
+    emitter.emit('ready', cached)
+  // If it's not cached, retrieve the user count and cache it
+  } else {
+    app.toolbox.dbPool.connect(function (err, client, done) {
+      if ( err ) {
+        emitter.emit('error', err)
+      } else {
+        client.query({
+          name: options.cacheScope + '_' + options.cacheKey,
+          text: options.sql,
+          values: options.values || []
+        }, function (err, result) {
+          done()
+          if ( err ) {
+            emitter.emit('error', err)
+          } else {
+            if ( options.cache && !app.cache.exists({ scope: cacheScope, key: cacheKey }) ) {
+              app.cache.set({
+                scope: cacheScope,
+                key: cacheKey,
+                value: result.rows[0]
+              })
+            }
+            emitter.emit('ready', result.rows[0])
+          }
+        })
+      }
+    })
   }
 }

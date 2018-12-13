@@ -63,41 +63,13 @@ function discussionPermissions(discussionID, groupID, emitter) {
 
 
 function info(groupID, emitter) {
-  var cacheKey = 'info-' + groupID,
-      scope = 'group',
-      cached = app.cache.get({ scope: scope, key: cacheKey })
-
-  // If it's cached, return the cache object
-  if ( cached ) {
-    emitter.emit('ready', cached)
-  // If it's not cached, retrieve the user count and cache it
-  } else {
-    app.toolbox.dbPool.connect(function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err)
-      } else {
-        client.query({
-          name: 'group_info',
-          text: 'select id, name, url, description, login, post, reply, "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", system, locked from groups where id = $1;',
-          values: [ groupID ]
-        }, function (err, result) {
-          done()
-          if ( err ) {
-            emitter.emit('error', err)
-          } else {
-            if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows[0]
-              })
-            }
-            emitter.emit('ready', result.rows[0])
-          }
-        })
-      }
-    })
-  }
+  app.toolbox.helpers.query({
+    cache: true,
+    model: 'group',
+    method: 'info',
+    sql: 'select id, name, url, description, login, post, reply, "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", system, locked from groups where id = $1;',
+    values: [ groupID ]
+  }, emitter)
 }
 
 
