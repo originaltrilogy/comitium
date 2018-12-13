@@ -32,19 +32,6 @@ var themes = [
     ],
     buildTasks = []
 
-
-function css(options) {
-  return gulp.src('web/themes/' + options.theme + '/source/scss/site.scss')
-             .pipe(sourcemaps.init())
-               .pipe(sass().on('error', sass.logError))
-               .pipe(postcss([autoprefixer({ browsers: 'last 2 versions' })]))
-               .pipe(cssnano({ safe: true, colormin: false }))
-               .pipe(sourcemaps.write(''))
-             .pipe(gulp.dest('web/themes/' + options.theme + '/min'))
-             .pipe(filter('**/*.css*'))
-             .pipe(livereload())
-}
-
 themes.forEach( function (item, index) {
   buildTasks[index] = 'css' + item.name
 
