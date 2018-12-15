@@ -5,7 +5,7 @@ header
 
 section(class="members group-#{url.group}")
   nav.groups
-    ul
+    ul#group-menu
       li(class="all-members #{ !url.group ? 'current' : '' }")
         a(href="members") All Members
       each group in groups

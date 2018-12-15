@@ -19,10 +19,28 @@ body[data-controller="members"] {
   section.list {
     width: 100%;
     overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 
   table {
     margin: 0;
     white-space: nowrap;
+  }
+}
+
+
+html.js body[data-controller="members"] {
+  nav.groups {
+    ul {
+      li:not(.current) {
+        position: absolute;
+        left: -100%;
+      }
+
+      &.show-menu li:not(.current) {
+        position: initial;
+        left: initial;
+      }
+    }
   }
 }
