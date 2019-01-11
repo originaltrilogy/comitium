@@ -1,951 +1,511 @@
 // Security checks to verify if users have access to a given controller/action/view
 
-'use strict';
+'use strict'
 
 module.exports = {
-  challenge: challenge,
-  contentEdit: contentEdit,
-  discussionPost: discussionPost,
-  discussionReply: discussionReply,
-  discussionView: discussionView,
-  postEdit: postEdit,
-  postLock: postLock,
-  postReport: postReport,
-  postTrash: postTrash,
-  postView: postView,
-  privateTopicStart: privateTopicStart,
-  privateTopicsView: privateTopicsView,
-  topicEdit: topicEdit,
-  topicLock: topicLock,
-  topicMove: topicMove,
-  topicMoveForm: topicMoveForm,
-  topicReply: topicReply,
-  topicSubscribe: topicSubscribe,
-  topicTrash: topicTrash,
-  topicView: topicView,
-  signInRedirect: signInRedirect,
-  subscriptionsView: subscriptionsView,
-  userBan: userBan,
-  userEdit: userEdit,
-  userIPBan: userIPBan
-};
+  challenge         : challenge,
+  contentEdit       : contentEdit,
+  discussionPost    : discussionPost,
+  discussionReply   : discussionReply,
+  discussionView    : discussionView,
+  postEdit          : postEdit,
+  postLock          : postLock,
+  postReport        : postReport,
+  postTrash         : postTrash,
+  postView          : postView,
+  privateTopicStart : privateTopicStart,
+  privateTopicsView : privateTopicsView,
+  topicEdit         : topicEdit,
+  topicLock         : topicLock,
+  topicMove         : topicMove,
+  topicMoveForm     : topicMoveForm,
+  topicReply        : topicReply,
+  topicSubscribe    : topicSubscribe,
+  topicTrash        : topicTrash,
+  topicView         : topicView,
+  signInRedirect    : signInRedirect,
+  subscriptionsView : subscriptionsView,
+  userBan           : userBan,
+  userIPBan         : userIPBan
+}
 
 
 
 // If they're not logged in, send them to the sign in form. If they are, respond with a 403 Forbidden.
-function challenge(args, emitter) {
-  var emit = args.emit || 'ready';
-
+function challenge(args) {
   if ( args.user.groupID === 1 ) {
-    if ( args.response !== 'boolean' ) {
-      emitter.emit(emit, {
+    if ( args.response === 'boolean' ) {
+      return false
+    } else {
+      return {
         redirect: app.config.comitium.baseUrl + 'sign-in'
-      });
-    } else {
-      emitter.emit('ready', false);
+      }
     }
   } else {
-    if ( args.response !== 'boolean' ) {
-      emitter.emit('error', {
-        statusCode: 403
-      });
+    if ( args.response === 'boolean' ) {
+      return false
     } else {
-      emitter.emit('ready', false);
+      let err = new Error()
+      err.statusCode = 403
+      throw err
     }
   }
-
 }
 
 
+async function contentEdit(args) {
+  let content = await app.models.content.info(args.contentID)
 
-function contentEdit(args, emitter) {
-  app.listen('waterfall', {
-    content: function (emitter) {
-      app.models.content.info(args.contentID, emitter)
-    },
-    contentEdit: function (previous, emitter) {
-      if ( previous.content ) {
-        if ( args.user.moderateDiscussions ) {
-          emitter.emit('ready', true)
-        } else {
-          challenge(args, emitter)
-        }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        })
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.contentEdit === true ) {
-        emitter.emit('ready', true)
-      } else {
-        challenge(args, emitter)
-      }
+  if ( content ) {
+    if ( args.user.moderateDiscussions ) {
+      return true
     } else {
-      emitter.emit('error', output.listen)
+      return challenge(args)
     }
-  })
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
+async function discussionPost(args) {
+  let discussion = await app.models.discussion.info(args.discussionID)
 
-function discussionPost(args, emitter) {
+  if ( discussion ) {
+    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.groupID)
 
-  app.listen('waterfall', {
-    discussion: function (emitter) {
-      app.models.discussion.info(args.discussionID, emitter);
-    },
-    discussionPermissions: function (previous, emitter) {
-      if ( previous.discussion ) {
-        app.models.group.discussionPermissions(args.discussionID, args.user.groupID, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.discussionPermissions.post === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
+    if ( discussionPermissions.post === true ) {
+      return true
     } else {
-      emitter.emit('error', output.listen);
+      return challenge(args)
     }
-  });
-
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
+async function discussionReply(args) {
+  let discussion = await app.models.discussion.info(args.discussionID)
 
-function discussionReply(args, emitter) {
+  if ( discussion ) {
+    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.groupID)
 
-  app.listen('waterfall', {
-    discussion: function (emitter) {
-      app.models.discussion.info(args.discussionID, emitter);
-    },
-    discussionPermissions: function (previous, emitter) {
-      if ( previous.discussion ) {
-        app.models.group.discussionPermissions(args.discussionID, args.user.groupID, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.discussionPermissions.reply === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
+    if ( discussionPermissions.reply === true ) {
+      return true
     } else {
-      emitter.emit('error', output.listen);
+      return challenge(args)
     }
-  });
-
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
+async function discussionView(args) {
+  let discussion = await app.models.discussion.info(args.discussionID)
 
-function discussionView(args, emitter) {
+  if ( discussion ) {
+    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.groupID)
 
-  app.listen('waterfall', {
-    discussion: function (emitter) {
-      app.models.discussion.info(args.discussionID, emitter);
-    },
-    discussionPermissions: function (previous, emitter) {
-      if ( previous.discussion ) {
-        app.models.group.discussionPermissions(args.discussionID, args.user.groupID, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.discussionPermissions.read ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
+    if ( discussionPermissions.read ) {
+      return true
     } else {
-      emitter.emit('error', output.listen);
+      return challenge(args)
     }
-  });
-
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
+async function postEdit(args) {
+  let post = await app.models.post.info(args.postID)
 
-function postEdit(args, emitter) {
+  if ( post ) {
+    if ( ( args.user.username === post.author && !post.lockedByID ) || args.user.moderateDiscussions ) {
+      let topic = await app.models.topic.info(post.topicID)
 
-  app.listen('waterfall', {
-    post: function (emitter) {
-      app.models.post.info(args.postID, emitter);
-    },
-    topic: function (previous, emitter) {
-      if ( previous.post ) {
-        if ( ( args.user.username === previous.post.author && !previous.post.lockedByID ) || args.user.moderateDiscussions ) {
-          app.models.topic.info(previous.post.topicID, emitter);
-        } else {
-          challenge(app.extend(args, { emit: 'end' }), emitter);
-        }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    },
-    topicLocked: function (previous, emitter) {
-      if ( previous.topic ) {
-        if ( !previous.topic.lockedByID || args.user.moderateDiscussions ) {
-          emitter.emit('ready', false);
-        } else {
-          challenge(app.extend(args, { emit: 'end' }), emitter);
-        }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    },
-    topicView: function (previous, emitter) {
-      topicView(app.extend(args, {
-        topicID: previous.topic.id
-      }), emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
+      if ( topic ) {
+        if ( !topic.lockedByID || args.user.moderateDiscussions ) {
+          let topicView = await this.topicView(app.extend(args, { topicID: topic.id }))
 
-}
-
-
-
-function postLock(args, emitter) {
-
-  app.listen('waterfall', {
-    post: function (emitter) {
-      app.models.post.info(args.postID, emitter);
-    },
-    topicView: function (previous, emitter) {
-      if ( previous.post ) {
-        if ( args.user.moderateDiscussions ) {
-          topicView(app.extend(args, {
-            topicID: previous.post.topicID
-          }), emitter);
-        } else {
-          challenge(app.extend(args, { emit: 'end' }), emitter);
-        }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
-
-function postReport(args, emitter) {
-
-  app.listen('waterfall', {
-    userIsLoggedIn: function (emitter) {
-      if ( args.user.userID ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(args.postID, emitter);
-    },
-    postView: function (previous, emitter) {
-      if ( previous.post ) {
-        postView(args, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.postView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
-
-function postTrash(args, emitter) {
-
-  app.listen('waterfall', {
-    post: function (emitter) {
-      app.models.post.info(args.postID, emitter);
-    },
-    topicView: function (previous, emitter) {
-      if ( previous.post ) {
-        if ( previous.post.topicReplies > 0 ) {
-          if ( args.user.moderateDiscussions ) {
-            topicView(app.extend(args, {
-              topicID: previous.post.topicID
-            }), emitter);
+          if ( topicView === true ) {
+            return true
           } else {
-            challenge(app.extend(args, { emit: 'end' }), emitter);
+            return challenge(args)
           }
         } else {
-          emitter.emit('error', {
-            statusCode: 403,
-            message: 'You can\'t delete the only post in a topic. Delete the entire topic instead.'
-          });
+          return challenge(args)
         }
       } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
+        throw new Error({ statusCode: 404 })
       }
     } else {
-      emitter.emit('error', output.listen);
+      return challenge(args)
     }
-  });
-
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
+async function postLock(args) {
+  let post = await app.models.post.info(args.postID)
 
-function postView(args, emitter) {
+  if ( post ) {
+    if ( args.user.moderateDiscussions ) {
+      let topicView = await this.topicView(app.extend(args, { topicID: post.topicID }))
 
-  app.listen('waterfall', {
-    post: function (emitter) {
-      app.models.post.info(args.postID, emitter);
-    },
-    topicView: function (previous, emitter) {
-      if ( previous.post ) {
-        topicView(app.extend(args, {
-          topicID: previous.post.topicID
-        }), emitter);
+      if ( topicView === true ) {
+        return true
       } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
+        return challenge(args)
       }
     } else {
-      emitter.emit('error', output.listen);
+      return challenge(args)
     }
-  });
-
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
+async function postReport(args) {
+  if ( args.user.userID ) {
+    let post = await app.models.post.info(args.postID)
 
-function privateTopicStart(args, emitter) {
+    if ( post ) {
+      let postView = await this.postView(args)
 
-  app.listen('waterfall', {
-    userCanTalkPrivately: function (emitter) {
-      if ( args.user.talkPrivately ) {
-        emitter.emit('ready', true);
+      if ( postView === true ) {
+        return true
       } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
+        return challenge(args)
       }
-    },
-    userIsIgnored: function (previous, emitter) {
-      var methods = {};
-
-      if ( args.invitees && args.invitees.length ) {
-        args.invitees.forEach( function (item, index, array) {
-          methods[item] = function (emitter) {
-            app.models.user.isIgnored({
-              username: args.user.username,
-              ignoredBy: item
-            }, emitter);
-          };
-        });
-
-        app.listen(methods, function (output) {
-          var ignored = false;
-
-          if ( output.listen.success ) {
-            delete output.listen;
-            for ( var property in output ) {
-              if ( property === true ) {
-                ignored = true;
-                emitter.emit('error', {
-                  statusCode: 403,
-                  message: property + ' has you on their ignore list, so you can\'t invite them to a private topic.'
-                });
-              }
-            }
-            if ( !ignored ) {
-              emitter.emit('ready', false);
-            }
-          } else {
-            emitter.emit('error', output.listen);
-          }
-        });
-      } else {
-        emitter.emit('ready', false);
-      }
+    } else {
+      let err = new Error()
+      err.statusCode = 404
+      throw err
     }
-  }, function (output) {
-    var message = '';
+  } else {
+    return challenge(args)
+  }
+}
 
-    if ( output.listen.success ) {
-      if ( output.userCanTalkPrivately === true && output.userIsIgnored === false ) {
-        emitter.emit('ready', true);
-      } else {
-        if ( output.userCanTalkPrivately.redirect ) {
-          emitter.emit('ready', output.userCanTalkPrivately);
+
+async function postTrash(args) {
+  let post = await app.models.post.info(args.postID)
+
+  if ( post ) {
+    if ( post.topicReplies > 0 ) {
+      if ( args.user.moderateDiscussions ) {
+        let topicView = await this.topicView(app.extend(args, { topicID: post.topicID }))
+
+        if ( topicView === true ) {
+          return true
         } else {
-          switch ( args.user.group ) {
-            case 'New Members':
-              message = 'New members require a minimum of 5 posts before they can start private topics.';
-              break;
-            default:
-              message = 'Your private topic privileges have been revoked. Please contact an administrator for details.';
-              break;
-          }
-          emitter.emit('error', {
-            statusCode: 403,
-            message: message
-          });
+          return challenge(args)
         }
+      } else {
+        return challenge(args)
       }
     } else {
-      emitter.emit('error', output.listen);
+      let err = new Error('You can\'t delete the only post in a topic. Delete the parent topic instead.')
+      err.statusCode = 403
+      throw err
     }
-  });
-
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
+async function postView(args) {
+  let post = await app.models.post.info(args.postID)
 
-function privateTopicsView(args, emitter) {
+  if ( post ) {
+    let topicView = await this.topicView(app.extend(args, { topicID: post.topicID }))
 
+    if ( topicView === true ) {
+      return true
+    } else {
+      return challenge(args)
+    }
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
+}
+
+
+async function privateTopicStart(args) {
   if ( args.user.talkPrivately ) {
-    emitter.emit('ready', true);
+    return true
   } else {
-    challenge(args, emitter);
+    return challenge(args)
   }
-
 }
 
 
-
-function topicEdit(args, emitter) {
-  app.listen('waterfall', {
-    topic: function (emitter) {
-      app.models.topic.info(args.topicID, emitter);
-    },
-    topicView: function (previous, emitter) {
-      if ( previous.topic ) {
-        topicView(args, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    },
-    topicEdit: function (previous, emitter) {
-      if ( previous.topicView && ( ( args.user.userID === previous.topic.authorID && !previous.topic.lockedByID ) || args.user.moderateDiscussions ) ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    // Check if the user has posting rights to the topic's current discussion.
-    // If a topic has been moved to a discussion that the user doesn't have
-    // permission to post in, they lose their editing permissions.
-    discussionPost: function (previous, emitter) {
-      if ( !previous.topic.private ) {
-        discussionPost(app.extend(args, {
-          discussionID: previous.topic.discussionID
-        }), emitter);
-      } else {
-        emitter.emit('ready', true);
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicEdit === true && output.discussionPost === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
+function privateTopicsView(args) {
+  if ( args.user.talkPrivately ) {
+    return true
+  } else {
+    return challenge(args)
+  }
 }
 
 
+async function topicEdit(args) {
+  let topic = await app.models.topic.info(args.topicID)
 
-function topicLock(args, emitter) {
+  if ( topic ) {
+    let topicView = await this.topicView(args)
 
-	app.listen('waterfall', {
-    topicModerate: function (emitter) {
-      if ( args.user.moderateDiscussions ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    topicView: function (previous, emitter) {
-      topicView(args, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
+    if ( topicView && ( ( args.user.userID === topic.authorID && !topic.lockedByID ) || args.user.moderateDiscussions ) ) {
+      if ( !topic.private ) {
+        // Check if the user has posting rights to the topic's current discussion.
+        // If a topic has been moved to a discussion that the user doesn't have
+        // permission to post in, they lose their editing permissions.
+        let discussionPost = await this.discussionPost(app.extend(args, { discussionID: topic.discussionID }))
 
-}
-
-
-
-function topicMove(args, emitter) {
-
-	app.listen({
-    topicModerate: function (emitter) {
-      if ( args.user.moderateDiscussions ) {
-        topicView(args, emitter);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicModerate === true) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
-
-function topicMoveForm(args, emitter) {
-
-	app.listen('waterfall', {
-    topicModerate: function (emitter) {
-      if ( args.user.moderateDiscussions ) {
-        topicView(args, emitter);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    newDiscussionView: function (previous, emitter) {
-      discussionView(app.extend(args, {
-        discussionID: args.newDiscussionID
-      }), emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicModerate === true && output.newDiscussionView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
-}
-
-
-
-function topicReply(args, emitter) {
-
-	app.listen({
-    topic: function (emitter) {
-      app.models.topic.info(args.topicID, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      if ( output.topic ) {
-        if ( !output.topic.private ) {
-          if ( output.topic.discussionID !== 2 ) {
-            app.listen('waterfall', {
-              topicNotLocked: function (emitter) {
-                if ( !output.topic.lockedByID || args.user.moderateDiscussions ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(app.extend(args, { emit: 'end' }), emitter);
-                }
-              },
-              discussionReply: function (previous, emitter) {
-                discussionReply(app.extend(args, {
-                  discussionID: output.topic.discussionID
-                }), emitter);
-              }
-            }, function (output) {
-              if ( output.listen.success ) {
-                if ( output.topicNotLocked === true && output.discussionReply === true ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(args, emitter);
-                }
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
-          } else {
-            app.listen('waterfall', {
-              topicNotLocked: function (emitter) {
-                if ( !output.topic.lockedByID || args.user.moderateDiscussions ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(app.extend(args, { emit: 'end' }), emitter);
-                }
-              },
-              announcementReply: function (previous, emitter) {
-                app.models.topic.announcementReply({
-                  topicID: args.topicID,
-                  groupID: args.user.groupID
-                }, emitter);
-              }
-            }, function (output) {
-              if ( output.listen.success ) {
-                if ( output.topicNotLocked === true && output.announcementReply === true ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(args, emitter);
-                }
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
-          }
+        if ( discussionPost === true ) {
+          return true
         } else {
-          app.listen({
-            invitee: function (emitter) {
-              app.models.topic.invitee({
-                topicID: args.topicID,
-                userID: args.user.userID
-              }, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              if ( args.user.talkPrivately && output.invitee && !output.invitee.left ) {
-                emitter.emit('ready', true);
-              } else {
-                challenge(args, emitter);
-              }
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
+          return challenge(args)
         }
       } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
+        return true
       }
     } else {
-      emitter.emit('error', output.listen);
+      return challenge(args)
     }
-
-  });
-
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
+async function topicLock(args) {
+  if ( args.user.moderateDiscussions ) {
+    let topicView = await this.topicView(args)
 
-function topicSubscribe(args, emitter) {
-
-	app.listen('waterfall', {
-    userIsLoggedIn: function (emitter) {
-      if ( args.user.userID ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    },
-    topicView: function (previous, emitter) {
-      topicView(args, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicView === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
+    if ( topicView === true ) {
+      return true
     } else {
-      emitter.emit('error', output.listen);
+      return challenge(args)
     }
-  });
-
+  } else {
+    return challenge(args)
+  }
 }
 
 
-
-function topicTrash(args, emitter) {
-
-	app.listen({
-    topicModerate: function (emitter) {
-      if ( args.user.moderateDiscussions ) {
-        topicView(args, emitter);
-      } else {
-        challenge(app.extend(args, { emit: 'end' }), emitter);
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.topicModerate === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
+async function topicMove(args) {
+  if ( args.user.moderateDiscussions ) {
+    return await this.topicView(args)
+  } else {
+    return challenge(args)
+  }
 }
 
 
+async function topicMoveForm(args) {
+  if ( args.user.moderateDiscussions ) {
+    let topicView = await this.topicView(args)
 
-function topicView(args, emitter) {
+    if ( topicView === true ) {
+      let newDiscussionView = await discussionView(app.extend(args, { discussionID: args.newDiscussionID }))
 
-	app.listen('waterfall', {
-    topic: function (emitter) {
-      app.models.topic.info(args.topicID, emitter);
+      if ( newDiscussionView === true ) {
+        return true
+      } else {
+        return challenge(args)
+      }
+    } else {
+      return challenge(args)
     }
-  }, function (output) {
+  } else {
+    return challenge(args)
+  }
+}
 
-    if ( output.listen.success ) {
 
-      if ( output.topic ) {
-        if ( !output.topic.private ) {
-          if ( output.topic.discussionID !== 2 ) {
-            app.listen({
-              discussionView: function (emitter) {
-                discussionView(app.extend(args, {
-                  discussionID: output.topic.discussionID
-                }), emitter);
-              }
-            }, function (output) {
-              if ( output.listen.success ) {
-                if ( output.discussionView === true ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(args, emitter);
-                }
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
+async function topicReply(args) {
+  let topic = await app.models.topic.info(args.topicID)
+
+  if ( topic ) {
+    if ( !topic.private ) {
+      let topicLocked = topic.lockedByID && !args.user.moderateDiscussions ? true : false
+
+      if ( topicLocked ) {
+        return challenge(args)
+      } else {
+        if ( topic.discussionID !== 2 ) {
+          let discussionReply = await this.discussionReply(app.extend(args, { discussionID: topic.discussionID }))
+
+          if ( topicLocked === false && discussionReply === true ) {
+            return true
           } else {
-            app.listen({
-              announcementView: function (emitter) {
-                app.models.topic.announcementView({
-                  topicID: args.topicID,
-                  groupID: args.user.groupID
-                }, emitter);
-              }
-            }, function (output) {
-              if ( output.listen.success ) {
-                if ( output.announcementView === true ) {
-                  emitter.emit('ready', true);
-                } else {
-                  challenge(args, emitter);
-                }
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
+            return challenge(args)
           }
         } else {
-          app.listen({
-            invitee: function (emitter) {
-              app.models.topic.invitee({
-                topicID: args.topicID,
-                userID: args.user.userID
-              }, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              if ( args.user.talkPrivately && output.invitee && !output.invitee.left ) {
-                emitter.emit('ready', true);
-              } else {
-                challenge(args, emitter);
-              }
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
+          let announcementReply = await app.models.topic.announcementReply({ topicID: args.topicID, groupID: args.user.groupID })
+
+          if ( topicLocked === false && announcementReply === true ) {
+            return true
+          } else {
+            return challenge(args)
+          }
         }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
       }
     } else {
-      emitter.emit('error', output.listen);
+      let invitee = await app.models.topic.invitee({ topicID: args.topicID, userID: args.user.userID })
+
+      if ( args.user.talkPrivately && invitee && !invitee.left ) {
+        return true
+      } else {
+        return challenge(args)
+      }
     }
-
-  });
-
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
+
+async function topicSubscribe(args) {
+  if ( args.user.userID ) {
+    let topicView = await this.topicView(args)
+
+    if ( topicView === true ) {
+      return true
+    } else {
+      return challenge(args)
+    }
+  } else {
+    return challenge(args)
+  }
+}
+
+
+async function topicTrash(args) {
+  if ( args.user.moderateDiscussions ) {
+    let topicView = await this.topicView(args)
+
+    if ( topicView === true ) {
+      return true
+    } else {
+      return challenge(args)
+    }
+  } else {
+    return challenge(args)
+  }
+}
+
+
+async function topicView(args) {
+  let topic = await app.models.topic.info(args.topicID)
+  if ( topic ) {
+    if ( !topic.private ) {
+      if ( topic.discussionID !== 2 ) {
+        let discussionView = await this.discussionView(app.extend(args, { discussionID: topic.discussionID }))
+        if ( discussionView === true ) {
+          return true
+        } else {
+          return challenge(args)
+        }
+      } else {
+        let announcementView = await app.models.topic.announcementView({ topicID: args.topicID, groupID: args.user.groupID })
+        if ( announcementView === true ) {
+          return true
+        } else {
+          return challenge(args)
+        }
+      }
+    } else {
+      let invitee = await app.models.topic.invitee({ topicID: args.topicID, userID: args.user.userID })
+      if ( args.user.talkPrivately && invitee && !invitee.left ) {
+        return true
+      } else {
+        return challenge(args)
+      }
+    }
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
+}
 
 
 function signInRedirect(params, url) {
-
-  return params.request.headers.referer && params.request.headers.referer.search('/sign-in') < 0 ? params.request.headers.referer : url;
-
+  return params.request.headers.referer && params.request.headers.referer.search('/sign-in') < 0 ? params.request.headers.referer : url
 }
 
 
-
-function subscriptionsView(args, emitter) {
-
+function subscriptionsView(args) {
   // If the user is logged in, proceed.
   if ( args.user.userID ) {
-    emitter.emit('ready', true);
+    return true
   // Otherwise, challenge.
   } else {
-    challenge(args, emitter);
+    return challenge(args)
   }
-
 }
 
 
+async function userBan(args) {
+  let target = await app.models.user.info({ userID: args.userID })
 
-function userBan(args, emitter) {
-
-  app.listen('waterfall', {
-    user: function (emitter) {
-      app.models.user.info({
-        userID: args.userID
-      }, emitter);
-    },
-    banUser: function (previous, emitter) {
-      var banTarget = previous.user;
-
-      if ( banTarget ) {
-        if ( args.user.moderateUsers ) {
-          if ( banTarget.group === 'Administrators' ) {
-            emitter.emit('error', {
-              statusCode: 403,
-              message: 'Administrators can\'t be banned.'
-            });
-          } else if ( banTarget.group === 'Moderators' && args.user.group !== 'Administrators' ) {
-            emitter.emit('error', {
-              statusCode: 403,
-              message: 'Only an administrator can ban a moderator or lift an existing ban on a moderator.'
-            });
-          } else {
-            emitter.emit('ready', true);
-          }
-        } else {
-          challenge(app.extend(args, { emit: 'end' }), emitter);
-        }
+  if ( target ) {
+    if ( args.user.moderateUsers ) {
+      if ( target.group === 'Administrators' ) {
+        let err = new Error('Administrators can\'t be banned.')
+        err.statusCode = 403
+        throw err
+      } else if ( target.group === 'Moderators' && args.user.group !== 'Administrators' ) {
+        let err = new Error('Only an administrator can ban a moderator or lift an existing ban on a moderator.')
+        err.statusCode = 403
+        throw err
       } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.banUser === true ) {
-        emitter.emit('ready', true);
-      } else {
-        challenge(args, emitter);
+        return true
       }
     } else {
-      emitter.emit('error', output.listen);
+      return challenge(args)
     }
-  });
-
-}
-
-
-
-function userEdit(args, emitter) {
-
-  if ( args.userID === args.user.userID || args.user.moderateUsers ) {
-    emitter.emit('ready', true);
   } else {
-    emitter.emit('ready', false);
+    let err = new Error()
+    err.statusCode = 404
+    throw err
   }
-
 }
 
 
-
-function userIPBan(args, emitter) {
-
+function userIPBan(args) {
   if ( args.user.moderateUsers ) {
-    emitter.emit('ready', true);
+    return true
   } else {
-    emitter.emit('ready', false);
+    return challenge(args)
   }
-
 }

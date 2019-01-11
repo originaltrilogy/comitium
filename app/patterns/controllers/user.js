@@ -1,313 +1,160 @@
 // user controller
 
-'use strict';
+'use strict'
 
 module.exports = {
-  handler: handler,
-  head: head,
-  activate: activate,
-  ban: ban,
-  liftBan: liftBan,
-  edit: edit,
-  editForm: editForm,
-  banIP: banIP
-};
-
-
-
-function handler(params, context, emitter) {
-
-  params.url.page = params.url.page || 1;
-
-  app.listen('waterfall', {
-    user: function (emitter) {
-      app.models.user.profile({
-        userID: params.url.id
-      }, emitter);
-    },
-    posts: function (previous, emitter) {
-      if ( previous.user ) {
-        var start = ( params.url.page - 1 ) * 25,
-            end = start + 25;
-        app.models.user.posts({
-          userID: previous.user.id,
-          visitorGroupID: params.session.groupID,
-          start: start,
-          end: end
-        }, emitter);
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        });
-      }
-    },
-    // Only call the remaining methods if the current user is a moderator
-    moderateUser: function (previous, emitter) {
-      if ( previous.user.id !== params.session.userID && params.session.moderateUsers ) {
-        emitter.emit('ready', true);
-      } else {
-        emitter.emit('end');
-      }
-    },
-    ipHistory: function (previous, emitter) {
-      app.models.user.ipHistory({
-        userID: params.url.id
-      }, emitter);
-    },
-    matchingUsersByIP: function (previous, emitter) {
-      if ( params.url.logID ) {
-        app.models.user.matchingUsersByIP({
-          logID: params.url.logID
-        }, emitter);
-      } else {
-        emitter.emit('ready');
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      emitter.emit('ready', {
-        content: {
-          talkPrivately: params.session.talkPrivately && output.user.id !== params.session.userID,
-          editProfile: output.user.id === params.session.userID,
-          moderateUser: output.moderateUser,
-          user: output.user,
-          posts: output.posts,
-          ipHistory: output.ipHistory,
-          matchingUsersByIP: output.matchingUsersByIP,
-          pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + output.user.url + '/id/' + output.user.id, params.url.page, output.user.postCount)
-        }
-      });
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
+  handler   : handler,
+  activate  : activate,
+  ban       : ban,
+  banIP     : banIP,
+  head      : head,
+  liftBan   : liftBan
 }
 
 
+async function handler(params) {
+  params.url.page = params.url.page || 1
 
-function head(params, context, emitter) {
-  app.listen({
-    metaData: function (emitter) {
-      app.models.user.metaData({
-        userID: params.url.id
-      }, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.metaData);
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-}
+  let user = await app.models.user.profileByID({ userID: params.url.id })
 
+  if ( user ) {
+    let posts = await ( async () => {
+      var start = ( params.url.page - 1 ) * 25,
+            end = start + 25
+      return await app.models.user.posts({
+        userID: params.url.id,
+        visitorGroupID: params.session.groupID,
+        start: start,
+        end: end
+      })
+    })()
 
+    let ipHistory, matchingUsersByIP
 
-function activate(params, context, emitter) {
-
-  app.listen({
-    activate: function (emitter) {
-      app.models.user.activate({
-        id: params.url.id || false,
-        activationCode: params.url.activationCode || false,
-        reactivation: params.url.reactivation || false
-      }, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.activate.success || ( !output.activate.success && output.activate.reason === 'accountAlreadyActivated' ) ) {
-        emitter.emit('ready', {
-          view: 'activate',
-          content: output,
-          include: {
-            'sign-in': {
-              controller: 'sign-in',
-              view: 'sign-in-partial'
-            }
+    if ( params.url.id !== params.session.userID && params.session.moderateUsers ) {
+      [
+        ipHistory,
+        matchingUsersByIP
+      ] = await Promise.all([
+        app.models.user.ipHistory({ userID: params.url.id }),
+        ( async () => {
+          if ( params.url.logID ) {
+            return await app.models.user.matchingUsersByIP({ logID: params.url.logID })
+          } else {
+            return false
           }
-        });
-      } else {
-        emitter.emit('ready', {
-          view: 'activate',
-          content: output
-        });
-      }
-    } else {
-      emitter.emit('error', output.listen);
+        })()
+      ])
     }
-  });
 
+    return {
+      content: {
+        talkPrivately: params.session.talkPrivately && user.id !== params.session.userID,
+        editProfile: user.id === params.session.userID,
+        moderateUser: params.url.id !== params.session.userID && params.session.moderateUsers,
+        user: user,
+        posts: posts,
+        ipHistory: ipHistory,
+        matchingUsersByIP: matchingUsersByIP,
+        pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + user.url + '/id/' + user.id, params.url.page, user.postCount)
+      }
+    }
+  } else {
+    return {
+      statusCode: 404,
+      message: 'This member doesn\'t exist.'
+    }
+  }
 }
 
 
+async function activate(params) {
+  let activate = await app.models.user.activate({
+    id: params.url.id || false,
+    activationCode: params.url.activationCode || false,
+    reactivation: params.url.reactivation || false
+  })
 
-function ban(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.userBan({
-        userID: params.url.id,
-        user: params.session
-      }, emitter);
-    },
-    proceed: function (previous, emitter) {
-      if ( previous.access === true ) {
-        emitter.emit('ready', true);
-      } else {
-        emitter.emit('end', false);
+  if ( activate.success || ( !activate.success && activate.reason === 'accountAlreadyActivated' ) ) {
+    return {
+      view: 'activate',
+      content: {
+        activate: activate
+      },
+      include: {
+        'sign-in': {
+          controller: 'sign-in',
+          view: 'sign-in-partial'
+        }
       }
-    },
-    banUser: function (previous, emitter) {
-      app.models.user.ban({
-        userID: params.url.id
-      }, emitter);
     }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.access === true ) {
-        // End the banned user's session immediately
-        app.session.end('userID', +params.url.id); // URL params are always strings, so cast to number
-        emitter.emit('ready', {
-          redirect: params.request.headers.referer
-        });
-      } else {
-        emitter.emit('ready', output.access);
+  } else {
+    return {
+      view: 'activate',
+      content: {
+        activate: activate
       }
-    } else {
-      emitter.emit('error', output.listen);
     }
-  });
-
+  }
 }
 
 
+async function ban(params) {
+  let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
 
-function liftBan(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.userBan({
-        userID: params.url.id,
-        user: params.session
-      }, emitter);
-    },
-    proceed: function (previous, emitter) {
-      if ( previous.access === true ) {
-        emitter.emit('ready', true);
-      } else {
-        emitter.emit('end', false);
-      }
-    },
-    user: function (previous, emitter) {
-      app.models.user.info({
-        userID: params.url.id
-      }, emitter);
-    },
-    liftBan: function (previous, emitter) {
-      app.models.user.liftBan({
-        userID: params.url.id
-      }, emitter);
-      // End the user's session immediately
-      app.session.end('userID', previous.user.id);
+  if ( access === true ) {
+    await app.models.user.ban({ userID: params.url.id })
+    // End the banned user's session immediately
+    app.session.end('userID', +params.url.id) // URL params are always strings, so cast to number
+    return {
+      redirect: params.request.headers.referer
     }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.access === true ) {
-        emitter.emit('ready', {
-          redirect: params.request.headers.referer
-        });
-      } else {
-        emitter.emit('ready', output.access);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
+  } else {
+    return access
+  }
 }
 
 
-
-function edit(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.userEdit(params.url.id, params.session, emitter);
-    },
-    user: function (previous, emitter) {
-      if ( previous.access ) {
-        app.models.user.info({
-          userID: params.url.id
-        }, emitter);
-      } else {
-        emitter.emit('end');
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.access === true ) {
-        emitter.emit('ready', {
-          view: 'edit'
-        });
-      } else {
-        emitter.emit('ready', output.access);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
+async function head(params) {
+  return await app.models.user.metaData({ userID: params.url.id })
 }
 
 
+async function liftBan(params) {
+  let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
 
-function banIP(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.userIPBan({
-        user: params.session
-      }, emitter);
-    },
-    proceed: function (previous, emitter) {
-      if ( previous.access === true ) {
-        emitter.emit('ready', true);
-      } else {
-        emitter.emit('end', false);
-      }
-    },
-    log: function (previous, emitter) {
-      app.models.user.logByID({
-        logID: params.url.logID
-      }, emitter);
-    },
-    banIP: function (previous, emitter) {
-      app.models.user.banIP({
-        ip: previous.log.ip,
-        adminUserID: params.session.userID,
-        time: app.toolbox.helpers.isoDate()
-      }, emitter);
-      // End all active sessions with matching IPs
-      app.session.end('ip', previous.log.ip.replace('/32', ''));
+  if ( access === true ) {
+    await app.models.user.liftBan({ userID: params.url.id })
+    // End the user's session immediately
+    app.session.end('userID', +params.url.id) // URL params are always strings, so cast to number
+    return {
+      redirect: params.request.headers.referer
     }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.access === true ) {
-        emitter.emit('ready', {
-          redirect: params.request.headers.referer
-        });
-      } else {
-        emitter.emit('ready', output.access);
-      }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-
+  } else {
+    return access
+  }
 }
 
 
+async function banIP(params) {
+  let access = await app.toolbox.access.userIPBan({ user: params.session })
 
-function editForm(params, context, emitter) {
+  if ( access === true ) {
+    let log = await app.models.user.logByID({ logID: params.url.logID })
 
+    await app.models.user.banIP({
+      ip: log.ip,
+      adminUserID: params.session.userID,
+      time: app.toolbox.helpers.isoDate()
+    })
+
+    // End all active sessions with matching IPs
+    app.session.end('ip', log.ip.replace('/32', ''))
+
+    return {
+      redirect: params.request.headers.referer
+    }
+  } else {
+    return access
+  }
 }

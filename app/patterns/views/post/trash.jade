@@ -3,11 +3,6 @@ header
     h1 Delete a post
     p Deleting a post removes it from its parent topic and places it in the trash. The content of the post and its history remain intact and can be recovered later, unless it's removed from the trash by an administrator, which is permanent.
 
-if trash && trash.message
-  section.notice.error
-    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
-    p !{trash.message}
-
 section.form.post-delete
   form#post-delete-form(action="post/id/#{url.id}/action/trashForm" method="post" novalidate)
     input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

@@ -62,7 +62,7 @@ section.settings
           li.website.text
             label(for="website") Web site
             p.label-note This will appear in your public user profile
-            input#website(name="website" value="#{form.website}" placeholder="http://")
+            input#website(name="website" value="#{form.website ? form.website : ''}" placeholder="Example: http://mysite.com")
 
         ul.actions
           li.primary

@@ -1,60 +1,44 @@
 // group model
 
-'use strict';
+'use strict'
 
 module.exports = {
-  discussionPermissions: discussionPermissions
-};
+  discussionPermissions : discussionPermissions
+}
 
 
-function discussionPermissions(discussionID, groupID, emitter) {
-  // See if this discussion's permissions are already cached
-  var cacheKey = 'models-group-discussionPermissions-' + discussionID,
-      scope = 'group-' + groupID,
-      cached = app.cache.get({ scope: scope, key: cacheKey });
+async function discussionPermissions(discussionID, groupID) {
+  // See if already cached
+  let cacheKey  = 'models-group-discussionPermissions-' + discussionID,
+      scope     = 'group-' + groupID,
+      cached    = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached);
+    return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.listen({
-      discussionPermissions: function (emitter) {
-        app.toolbox.dbPool.connect(function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'select "groupID", "discussionID", "read", "post", "reply" from "discussionPermissions" where "groupID" = $1 and "discussionID" = $2;',
-              [ groupID, discussionID ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-            });
-          }
-        });
-      }
-    }, function (output) {
+    const client = await app.toolbox.dbPool.connect()
 
-      if ( output.listen.success ) {
+    try {
+      const result = await client.query({
+        name: 'group_discussionPermissions',
+        text: 'select "groupID", "discussionID", "read", "post", "reply" from "discussionPermissions" where "groupID" = $1 and "discussionID" = $2;',
+        values: [ groupID, discussionID ]
+      })
 
-        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-          app.cache.set({
-            scope: scope,
-            key: cacheKey,
-            value: output.discussionPermissions[0]
-          });
-        }
-
-        emitter.emit('ready', output.discussionPermissions[0]);
-      } else {
-        emitter.emit('error', output.listen);
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows[0]
+        })
       }
 
-    });
+      return result.rows[0]
+    } finally {
+      client.release()
+    }
   }
 }

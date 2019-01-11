@@ -3,132 +3,105 @@
 'use strict'
 
 module.exports = {
-  handler: handler,
-  edit: edit,
-  editForm: editForm
+  handler   : handler,
+  edit      : edit,
+  editForm  : editForm
 }
 
 
 // default action
-function handler(params, context, emitter) {
-  app.listen({
-    content: function (emitter) {
-      app.models.content.info(params.url.id, emitter)
-    },
-    userCanEdit: function (emitter) {
-      app.toolbox.access.contentEdit({
-        user: params.session,
-        contentID: params.url.id,
-        response: 'boolean'
-      }, emitter)
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.content ) {
-        if ( params.route.descriptor === output.content.url ) {
-          output.content.userCanEdit = output.userCanEdit
-          emitter.emit('ready', {
-            content: {
-              content: output.content,
-              userCanEdit: output.userCanEdit
-            }
-          })
-        } else {
-          emitter.emit('ready', {
-            redirect: {
-              url: app.config.comitium.baseUrl + 'content/' + output.content.url + '/id/' + params.url.id,
-              statusCode: 301
-            }
-          })
+async function handler(params) {
+  let [
+    content,
+    userCanEdit
+  ] = await Promise.all([
+    app.models.content.info(params.url.id),
+    app.toolbox.access.contentEdit({
+      user: params.session,
+      contentID: params.url.id,
+      response: 'boolean'
+    })
+  ])
+
+  if ( content ) {
+    if ( params.route.descriptor === content.url ) {
+      // content.userCanEdit = userCanEdit
+      return {
+        content: {
+          content: content,
+          userCanEdit: userCanEdit
         }
-      } else {
-        emitter.emit('error', {
-          statusCode: 404
-        })
       }
     } else {
-      emitter.emit('error', output.listen)
+      return {
+        redirect: {
+          url: app.config.comitium.baseUrl + 'content/' + content.url + '/id/' + params.url.id,
+          statusCode: 301
+        }
+      }
     }
-  })
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
 }
 
 
-function edit(params, context, emitter) {
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.contentEdit({
-        user: params.session,
-        contentID: params.url.id
-      }, emitter)
-    },
-    content: function (previous, emitter) {
-      if ( previous.access === true ) {
-        app.models.content.info(params.url.id, emitter)
-      } else {
-        emitter.emit('end', false)
-      }
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.access === true ) {
-        params.form.title_markdown = output.content.title_markdown
-        params.form.content_markdown = output.content.content_markdown
+async function edit(params) {
+  let access = await app.toolbox.access.contentEdit({ user: params.session, contentID: params.url.id })
 
-        emitter.emit('ready', {
+  if ( access === true ) {
+    let content = await app.models.content.info(params.url.id)
+
+    params.form.title_markdown = content.title_markdown
+    params.form.content_markdown = content.content_markdown
+
+    return {
+      content: {
+        content: content
+      },
+      view: 'edit'
+    }
+  } else {
+    return access
+  }
+}
+
+
+async function editForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.contentEdit({ user: params.session, contentID: params.url.id })
+
+    if ( access === true ) {
+      let editContent = await app.models.content.edit({
+        id: params.url.id,
+        title_markdown: params.form.title_markdown,
+        title_html: app.toolbox.markdown.title(params.form.title_markdown),
+        url: app.toolbox.slug(params.form.title_markdown),
+        content_markdown: params.form.content_markdown,
+        content_html: app.toolbox.markdown.content(params.form.content_markdown),
+        modified_by_id: params.session.userID
+      })
+
+      if ( editContent.success ) {
+        return {
+          redirect: 'content/' + editContent.url + '/id/' + params.url.id
+        }
+      } else {
+        let content = await app.models.content.info(params.url.id)
+        return {
           content: {
-            content: output.content,
-            userCanEdit: output.userCanEdit
+            content: content,
+            message: editContent.message
           },
           view: 'edit'
-        })
-      } else {
-        emitter.emit('ready', output.access)
+        }
       }
     } else {
-      emitter.emit('error', output.listen)
+      return access
     }
-  })
-}
-
-
-function editForm(params, context, emitter) {
-  if ( params.request.method === 'POST' ) {
-    app.listen('waterfall', {
-      access: function (emitter) {
-        app.toolbox.access.contentEdit({
-          user: params.session,
-          contentID: params.url.id
-        }, emitter)
-      },
-      editContent: function (previous, emitter) {
-        if ( previous.access === true ) {
-          app.models.content.edit({
-            id: params.url.id,
-            title_markdown: params.form.title_markdown,
-            title_html: app.toolbox.markdown.title(params.form.title_markdown),
-            url: app.toolbox.slug(params.form.title_markdown),
-            content_markdown: params.form.content_markdown,
-            content_html: app.toolbox.markdown.content(params.form.content_markdown),
-            modified_by_id: params.session.userID
-          }, emitter)
-        } else {
-          emitter.emit('end', false)
-        }
-      }
-    }, function (output) {
-      if ( output.listen.success ) {
-        if ( output.access === true ) {
-          emitter.emit('ready', {
-            redirect: 'content/' + output.editContent.url + '/id/' + params.url.id
-          })
-        } else {
-          emitter.emit('ready', output.access)
-        }
-      } else {
-        emitter.emit('error', output.listen)
-      }
-    })
   } else {
-    edit(params, context, emitter)
+    edit(params, context)
   }
 }

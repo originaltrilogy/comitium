@@ -1,45 +1,36 @@
 // _header controller
 
-'use strict';
+'use strict'
 
 module.exports = {
-  handler: handler
-};
+  handler : handler
+}
 
 
-function handler(params, context, emitter) {
+async function handler(params) {
   if ( !params.session.username ) {
-    emitter.emit('ready', {
+    return {
       content: {
         logo: app.resources.images.logoHorizontal
       }
-    });
+    }
   } else {
-    app.listen({
-      unreadTopics: function (emitter) {
-        app.models.subscriptions.unread({
-          userID: params.session.userID
-        }, emitter);
-      },
-      unreadPrivateTopics: function (emitter) {
-        app.models['private-topics'].unread({
-          userID: params.session.userID
-        }, emitter);
+    let [
+      unreadTopics,
+      unreadPrivateTopics
+    ] = await Promise.all([
+      app.models.subscriptions.unread({ userID: params.session.userID }),
+      app.models['private-topics'].unread({ userID: params.session.userID })
+    ])
+
+    return {
+      content: {
+        unread: {
+          topics: unreadTopics,
+          privateTopics: unreadPrivateTopics
+        },
+        logo: app.resources.images.logoHorizontal
       }
-    }, function (output) {
-      if ( output.listen.success ) {
-        emitter.emit('ready', {
-          content: {
-            unread: {
-              topics: output.unreadTopics,
-              privateTopics: output.unreadPrivateTopics
-            },
-            logo: app.resources.images.logoHorizontal
-          }
-        });
-      } else {
-        emitter.emit('error', output.listen);
-      }
-    });
+    }
   }
 }

@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "citizen": "0.8.8",
+    "citizen": "github:jaysylvester/citizen#0.9.0",
     "gm": "1.23.1",
     "jade": "1.11.0",
     "markdown-it": "8.4.1",
@@ -28,7 +28,7 @@
     "nodemailer": "4.6.4",
     "numeral": "2.0.6",
     "pg": "7.4.3",
-    "slug": "0.9.1"
+    "slug": "^0.9.3"
   },
   "devDependencies": {
     "autoprefixer": "*",

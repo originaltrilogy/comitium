@@ -32,61 +32,63 @@ var themes = [
     ],
     buildTasks = []
 
-
-function css(options) {
-  return gulp.src('web/themes/' + options.theme + '/source/scss/site.scss')
-             .pipe(sourcemaps.init())
-               .pipe(sass().on('error', sass.logError))
-               .pipe(postcss([autoprefixer({ browsers: 'last 2 versions' })]))
-               .pipe(cssnano({ safe: true, colormin: false }))
-               .pipe(sourcemaps.write(''))
-             .pipe(gulp.dest('web/themes/' + options.theme + '/min'))
-             .pipe(filter('**/*.css*'))
-             .pipe(livereload())
-}
-
 themes.forEach( function (item, index) {
   buildTasks[index] = 'css' + item.name
 
-  gulp.task('css' + item.name, function () {
-    css({ theme: item.path })
+  gulp.task('css' + item.name, function (done) {
+    gulp.src('web/themes/' + item.path + '/source/scss/site.scss')
+        .pipe(sourcemaps.init())
+          .pipe(sass().on('error', sass.logError))
+          .pipe(postcss([autoprefixer({ browsers: 'last 2 versions' })]))
+          .pipe(cssnano({ safe: true, colormin: false }))
+          .pipe(sourcemaps.write(''))
+        .pipe(gulp.dest('web/themes/' + item.path + '/min'))
+        .pipe(filter('**/*.css*'))
+        .pipe(livereload())
+    done()
   })
 })
 
 buildTasks.push('js')
 
-gulp.task('js', function () {
-  return gulp.src(['web/themes/default/source/js/site/immediate.js',
-                   'web/themes/default/source/js/site/**.js',
-                   'web/themes/default/source/js/lib/svgxuse.min.js'
-                  ])
-             .pipe(sourcemaps.init())
-               .pipe(uglify())
-               .pipe(concat('site.js'))
-               .pipe(sourcemaps.write(''))
-             .pipe(gulp.dest('web/themes/default/min'))
-             .pipe(livereload())
+gulp.task('js', function (done) {
+  gulp.src(['web/themes/default/source/js/site/immediate.js',
+            'web/themes/default/source/js/site/**.js',
+            'web/themes/default/source/js/lib/svgxuse.min.js'
+          ])
+      .pipe(sourcemaps.init())
+        .pipe(uglify())
+        .pipe(concat('site.js'))
+        .pipe(sourcemaps.write(''))
+      .pipe(gulp.dest('web/themes/default/min'))
+      .pipe(livereload())
+  done()
 })
 
-gulp.task('views', function () {
-  livereload.reload()
-  return
+gulp.task('reload', function (done) {
+  // Give citizen time to reload the module before refreshing
+  setTimeout(function () {
+    livereload.reload()
+  }, 500)
+  done()
 })
 
-gulp.task('watch', function () {
+gulp.task('watch', function (done) {
   livereload.listen()
   themes.forEach( function (item) {
-    gulp.watch('web/themes/default/source/scss/**/**.scss', gulp.series('css' + item.name))
+    gulp.watch('web/themes/default/source/scss/**/**.scss', gulp.parallel('css' + item.name))
   })
   themes.forEach( function (item) {
     if ( item.name !== 'Default') {
-      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', gulp.series('css' + item.name))
+      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', gulp.parallel('css' + item.name))
     }
   })
-  gulp.watch('web/themes/default/source/js/**/**.js', gulp.series('js'))
-  gulp.watch('app/patterns/views/**/**.jade', gulp.series('views'))
-  gulp.watch('web/**/**.html', gulp.series('views'))
+  gulp.watch('web/themes/default/source/js/**/**.js', gulp.parallel('js'))
+  gulp.watch('app/patterns/**', gulp.parallel('reload'))
+  gulp.watch('app/toolbox/**', gulp.parallel('reload'))
+  gulp.watch('web/**/**.html', gulp.parallel('reload'))
+  done()
 })
 
-gulp.task('default', gulp.series('watch'))
+gulp.task('default', gulp.parallel('watch'))
 gulp.task('all', gulp.parallel(buildTasks))
