@@ -1,7 +1,7 @@
 article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
   section.description
     h3
-      a(href="topic#{ topic.accepted ? '' : '/accept/true' }/id/#{topic.id}") !{topic.titleHtml}
+      a(href="topic/id/#{topic.id}#{ topic.accepted ? '' : '/accept/true' }") !{topic.titleHtml}
     section.author
       a(class="avatar #{ topic.topicStarterGroupID === 6 ? 'banned' : '' }" href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
         if topic.topicStarterGroupID === 6

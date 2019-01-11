@@ -3,10 +3,10 @@ header
     h1 Report a post
     p Use this form to report a post that's in violation of the forum rules. Only moderators will know you've submitted this report.
 
-if report && report.message
+if message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
-    p !{report.message}
+    p !{message}
 
 section.form.post-report
   form#post-report-form(action="post/id/#{url.id}/action/reportForm" method="post" novalidate)

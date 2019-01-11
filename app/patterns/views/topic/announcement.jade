@@ -19,7 +19,6 @@ if topic.lockedByID
 section.posts
   each post in firstPost
     include ../post/_topic-post
-  <div id="amzn-assoc-ad-4ab47a23-5544-4fcd-83f3-c3b09feaf577"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=4ab47a23-5544-4fcd-83f3-c3b09feaf577"></script>
   nav
     h2 #{topic.repliesFormatted} Repl#{ topic.replies === 1 ? 'y' : 'ies' }
     include ../partials/pagination

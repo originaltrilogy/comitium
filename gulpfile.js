@@ -41,10 +41,9 @@ themes.forEach( function (item, index) {
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer({ browsers: 'last 2 versions' })]))
         .pipe(cssnano({ safe: true, colormin: false }))
-        .pipe(concat('site.css'))
         .pipe(sourcemaps.write(''))
         .pipe(gulp.dest('web/themes/' + item.path + '/min'))
-        .pipe(filter('**/*.css'))
+        .pipe(filter('**/*.css*'))
         .pipe(livereload())
     done()
   })
@@ -67,8 +66,11 @@ gulp.task('js', function (done) {
   done()
 })
 
-gulp.task('views', function (done) {
-  livereload.reload()
+gulp.task('reload', function (done) {
+  // Give citizen time to reload the module before refreshing
+  setTimeout(function () {
+    livereload.reload()
+  }, 500)
   done()
 })
 
@@ -83,8 +85,9 @@ gulp.task('watch', function (done) {
     }
   })
   gulp.watch('web/themes/default/source/js/**/**.js', gulp.parallel('js'))
-  gulp.watch('app/patterns/views/**/**.jade', gulp.parallel('views'))
-  gulp.watch('web/**/**.html', gulp.parallel('views'))
+  gulp.watch('app/patterns/**', gulp.parallel('reload'))
+  gulp.watch('app/toolbox/**', gulp.parallel('reload'))
+  gulp.watch('web/**/**.html', gulp.parallel('reload'))
   done()
 })
 

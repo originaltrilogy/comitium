@@ -5,11 +5,6 @@ header
     p
       strong This will only lock an individual post. If you're trying to lock the entire topic, <a href="topic/action/lock/id/#{post.topicID}">click here</a>.
 
-if lock && lock.message
-  section.notice.error
-    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
-    p !{lock.message}
-
 section.form.post-lock
   form#post-lock-form(action="post/id/#{url.id}/action/lockForm" method="post" novalidate)
     input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")

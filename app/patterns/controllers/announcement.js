@@ -1,20 +1,20 @@
 // announcement controller
 
-'use strict';
+'use strict'
 
 module.exports = {
-  handler: handler,
-  head: require('./topic').head
-};
+  handler : handler,
+  head    : require('./topic').head
+}
 
 
 
-function handler(params, context, emitter) {
-  emitter.emit('ready', {
+function handler() {
+  return {
     view: false,
     handoff: {
       controller: 'topic',
       view: 'announcement'
     }
-  });
+  }
 }

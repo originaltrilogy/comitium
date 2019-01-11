@@ -1,23 +1,23 @@
 // layout controller
 
-'use strict';
+'use strict'
 
 module.exports = {
-  handler: handler
-};
+  handler : handler
+}
 
 
-function handler(params, context, emitter) {
+function handler(params) {
   var controllerChain = '';
 
   for ( var i = 0; i < params.route.chain.length; i++ ) {
-    controllerChain += params.route.chain[i].controller;
+    controllerChain += params.route.chain[i].controller
     if ( i < params.route.chain.length-1 ) {
-      controllerChain += ', ';
+      controllerChain += ', '
     }
   }
 
-  emitter.emit('ready', {
+  return {
     content: {
       controllerChain: controllerChain
     },
@@ -33,5 +33,5 @@ function handler(params, context, emitter) {
         controller: '_footer'
       }
     }
-  });
+  }
 }

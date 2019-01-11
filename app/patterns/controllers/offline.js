@@ -1,13 +1,11 @@
 // offline controller
 
-'use strict';
+'use strict'
 
 module.exports = {
-  handler: handler
-};
+  handler : handler
+}
 
 
 // default action
-function handler(params, context, emitter) {
-  emitter.emit('ready');
-}
+function handler() {}

@@ -1,112 +1,106 @@
 // group model
 
-'use strict';
+'use strict'
 
 module.exports = {
-  discussionPermissions: discussionPermissions,
-  info: info,
-  memberCount: memberCount
-};
+  discussionPermissions : discussionPermissions,
+  info                  : info,
+  memberCount           : memberCount
+}
 
 
-function discussionPermissions(discussionID, groupID, emitter) {
-  // See if this discussion's permissions are already cached
-  var cacheKey = 'models-group-discussionPermissions-' + discussionID,
-      scope = 'group-' + groupID,
-      cached = app.cache.get({ scope: scope, key: cacheKey });
+async function discussionPermissions(discussionID, groupID) {
+  // See if already cached
+  let cacheKey  = 'models-group-discussionPermissions-' + discussionID,
+      scope     = 'group-' + groupID,
+      cached    = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached);
+    return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.listen({
-      discussionPermissions: function (emitter) {
-        app.toolbox.dbPool.connect(function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'select "groupID", "discussionID", "read", "post", "reply" from "discussionPermissions" where "groupID" = $1 and "discussionID" = $2;',
-              [ groupID, discussionID ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-            });
-          }
-        });
-      }
-    }, function (output) {
+    const client = await app.toolbox.dbPool.connect()
 
-      if ( output.listen.success ) {
+    try {
+      const result = await client.query({
+        name: 'group_discussionPermissions',
+        text: 'select "groupID", "discussionID", "read", "post", "reply" from "discussionPermissions" where "groupID" = $1 and "discussionID" = $2;',
+        values: [ groupID, discussionID ]
+      })
 
-        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-          app.cache.set({
-            scope: scope,
-            key: cacheKey,
-            value: output.discussionPermissions[0]
-          });
-        }
-
-        emitter.emit('ready', output.discussionPermissions[0]);
-      } else {
-        emitter.emit('error', output.listen);
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows[0]
+        })
       }
 
-    });
+      return result.rows[0]
+    } catch (err) {
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
 
 
-function info(groupID, emitter) {
-  app.toolbox.helpers.query({
-    cache: true,
-    model: 'group',
-    method: 'info',
-    sql: 'select id, name, url, description, login, post, reply, "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", system, locked from groups where id = $1;',
-    values: [ groupID ]
-  }, emitter)
+async function info(groupID) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'group_info',
+      text: 'select id, name, url, description, login, post, reply, "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", system, locked from groups where id = $1;',
+      values: [ groupID ]
+    })
+
+    return result.rows
+  } catch (err) {
+    throw err
+  } finally {
+    client.release()
+  }
 }
 
 
-function memberCount(groupID, emitter) {
-  var cacheKey = 'memberCount-' + groupID,
+async function memberCount(groupID) {
+  // See if already cached
+  let cacheKey = 'memberCount-' + groupID,
       scope = 'group',
       cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached)
-  // If it's not cached, retrieve the user count and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.toolbox.dbPool.connect(function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err)
-      } else {
-        client.query({
-          name: 'group_memberCount',
-          text: 'select count(id) as count from users where "groupID" = $1 and activated = true;',
-          values: [ groupID ]
-        }, function (err, result) {
-          done()
-          if ( err ) {
-            emitter.emit('error', err)
-          } else {
-            if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows[0].count
-              })
-            }
-            emitter.emit('ready', result.rows[0].count)
-          }
+    const client = await app.toolbox.dbPool.connect()
+
+    try {
+      const result = await client.query({
+        name: 'group_memberCount',
+        text: 'select count(id) as count from users where "groupID" = $1 and activated = true;',
+        values: [ groupID ]
+      })
+
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows[0].count
         })
       }
-    })
+
+      return result.rows[0].count
+    } catch (err) {
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }

@@ -9,10 +9,10 @@ if preview
       section.content.post
         != preview.content
 
-if reply && reply.message
+if message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
-    p !{reply.message}
+    p !{message}
 
 section(class="form post topic-reply #{ url.quote ? 'quote' : ''}")
   form#topic-reply-form(action="topic/id/#{url.id}/action/replyForm" method="post" novalidate)

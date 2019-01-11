@@ -3,14 +3,16 @@ header
     h1 Register with OT.com
     p Create an account and we'll send your activation e-mail right away.
 
-if register && register.message
+if message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
-    p !{register.message}
+    p !{message}
 
 section.form.sign-up
   if !session.username
     form(action="register/action/form" method="post" novalidate)
+      input(type="hidden" name="first_int" value="#{verification.firstInt}")
+      input(type="hidden" name="second_int" value="#{verification.secondInt}")
       ul.data
         li.username.text.required
           label(for="username") Username
@@ -24,6 +26,12 @@ section.form.sign-up
           label(for="password") Password
           p.label-note At least 8 characters, no spaces, case-sensitive
           input#password(name="password" type="password" value="#{form.password}" required)
+        li.verification.select
+          label(for="verification") What's #{verification.firstInt} plus #{verification.secondInt}?
+          select(name="verification" id="verification")
+            option(value="0")  
+            each option in verification.options
+              option(value="#{option}") #{option}
         li.tos.checkbox.required
           input#tos(name="tos" type="checkbox" value="true" checked=form.tos required)
           label(for="tos") I have read and agree to the forum <a href="content/Terms-of-Service/id/3">Terms of Service</a>.

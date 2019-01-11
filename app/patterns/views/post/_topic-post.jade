@@ -1,4 +1,4 @@
-article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' } #{ post.authorGroupID === 4 || post.authorGroupID === 5 ? 'signature staff' : ''}" data-post-id="#{post.id}")
+article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' } #{ post.authorGroupID === 4 || post.authorGroupID === 5 ? 'staff' : ''}" data-post-id="#{post.id}")
   header
     a(class="avatar #{ post.authorGroupID === 6 ? 'banned' : '' }" href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
       if post.authorGroupID === 6
