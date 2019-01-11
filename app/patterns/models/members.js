@@ -3,23 +3,20 @@
 'use strict'
 
 module.exports = {
-  all: all,
-  breadcrumbs: breadcrumbs,
-  group: group,
-  groupCount: groupCount,
-  groups: groups,
-  metaData: metaData,
-  search: search
+  all         : all,
+  breadcrumbs : breadcrumbs,
+  group       : group,
+  groupCount  : groupCount,
+  groups      : groups,
+  metaData    : metaData,
+  search      : search
 }
 
 
-function all(args, emitter) {
+async function all(args) {
   var start = args.start || 0,
       end = args.end || 25,
-      orderSort = '',
-      cacheKey,
-      scope = 'members',
-      cached
+      orderSort = ''
   
   switch ( args.order ) {
     case 'username':
@@ -35,47 +32,47 @@ function all(args, emitter) {
       orderSort = 'username asc'
   }
 
-  cacheKey = 'all-' + start + '-' + end + '-' + orderSort.replace(' ', '-')
-  cached = app.cache.get({ scope: scope, key: cacheKey })
+  // See if already cached
+  let cacheKey = 'all-' + start + '-' + end + '-' + orderSort.replace(' ', '-'),
+      scope = 'members',
+      cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached)
-  // If it's not cached, retrieve the user count and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.toolbox.dbPool.connect(function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err)
-      } else {
-        client.query({
-          name: 'members_all_' + orderSort.replace(' ', '_'),
-          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id order by ' + orderSort + ' limit $1 offset $2;',
-          values: [ end - start, start ]
-        }, function (err, result) {
-          done()
-          if ( err ) {
-            emitter.emit('error', err)
-          } else {
-            result.rows.forEach( function (item) {
-              item['joinedFormatted'] = app.toolbox.moment.tz(item['joined'], 'America/New_York').format('D-MMM-YYYY')
-              // item['createdFormatted'] = item['createdFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
-              item['lastActivityFormatted'] = app.toolbox.moment.tz(item['lastActivity'], 'America/New_York').format('D-MMM-YYYY')
-              // item['modifiedFormatted'] = item['modifiedFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
-            })
+    const client = await app.toolbox.dbPool.connect()
 
-            if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows
-              })
-            }
+    try {
+      const result = await client.query({
+        name: 'members_all_' + orderSort.replace(' ', '_'),
+        text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where u.activated = true order by ' + orderSort + ' limit $1 offset $2;',
+        values: [ end - start, start ]
+      })
 
-            emitter.emit('ready', result.rows)
-          }
+      result.rows.forEach( function (item) {
+        item['joinedFormatted'] = app.toolbox.moment.tz(item['joined'], 'America/New_York').format('D-MMM-YYYY')
+        // item['createdFormatted'] = item['createdFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
+        item['lastActivityFormatted'] = app.toolbox.moment.tz(item['lastActivity'], 'America/New_York').format('D-MMM-YYYY')
+        // item['modifiedFormatted'] = item['modifiedFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
+      })
+
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows
         })
       }
-    })
+
+      return result.rows
+    } catch (err) {
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
 
@@ -94,13 +91,10 @@ function breadcrumbs() {
 }
 
 
-function group(args, emitter) {
+async function group(args) {
   var start = args.start || 0,
       end = args.end || 25,
-      orderSort = '',
-      cacheKey,
-      scope = 'members',
-      cached
+      orderSort = ''
   
   switch ( args.order ) {
     case 'username':
@@ -116,116 +110,117 @@ function group(args, emitter) {
       orderSort = 'username asc'
   }
 
-  cacheKey = 'group-' + args.group + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-')
-  cached = app.cache.get({ scope: scope, key: cacheKey })
+  // See if already cached
+  let cacheKey = 'group-' + args.group + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-'),
+      scope = 'members',
+      cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached)
-  // If it's not cached, retrieve the user count and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.toolbox.dbPool.connect(function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err)
-      } else {
-        client.query({
-          name: 'members_group_' + orderSort.replace(' ', '_'),
-          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where g.id = $1 order by ' + orderSort + ' limit $2 offset $3;',
-          values: [ args.group, end - start, start ]
-        }, function (err, result) {
-          done()
-          if ( err ) {
-            emitter.emit('error', err)
-          } else {
-            if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows
-              })
-            }
-            emitter.emit('ready', result.rows)
-          }
+    const client = await app.toolbox.dbPool.connect()
+
+    try {
+      const result = await client.query({
+        name: 'members_group_' + orderSort.replace(' ', '_'),
+        text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where g.id = $1 and u.activated = true order by ' + orderSort + ' limit $2 offset $3;',
+        values: [ args.group, end - start, start ]
+      })
+
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows
         })
       }
-    })
+
+      return result.rows
+    } catch (err) {
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
 
 
-function groupCount(groupID, emitter) {
-  var cacheKey = 'count-' + groupID,
+async function groupCount(groupID) {
+  // See if already cached
+  let cacheKey = 'count-' + groupID,
       scope = 'members',
       cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached)
-  // If it's not cached, retrieve the user count and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.toolbox.dbPool.connect(function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err)
-      } else {
-        client.query({
-          name: 'members_groupCount',
-          text: 'select count(id) as count from users where "groupID" = $1;',
-          values: [ groupID ]
-        }, function (err, result) {
-          done()
-          if ( err ) {
-            emitter.emit('error', err)
-          } else {
-            if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows[0].count
-              })
-            }
-            emitter.emit('ready', result.rows[0].count)
-          }
+    const client = await app.toolbox.dbPool.connect()
+
+    try {
+      const result = await client.query({
+        name: 'members_groupCount',
+        text: 'select count(id) as count from users where "groupID" = $1;',
+        values: [ groupID ]
+      })
+
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows[0].count
         })
       }
-    })
+
+      return result.rows[0].count
+    } catch (err) {
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
 
 
-function groups(emitter) {
-  var cacheKey = 'groups',
+async function groups() {
+  // See if already cached
+  let cacheKey = 'groups',
       scope = 'members',
       cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached)
-  // If it's not cached, retrieve the user count and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.toolbox.dbPool.connect(function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err)
-      } else {
-        client.query({
-          name: 'members_groups',
-          text: 'select * from groups where id <> 1 order by id asc',
-        }, function (err, result) {
-          done()
-          if ( err ) {
-            emitter.emit('error', err)
-          } else {
-            if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows
-              })
-            }
-            emitter.emit('ready', result.rows)
-          }
+    const client = await app.toolbox.dbPool.connect()
+
+    try {
+      const result = await client.query({
+        name: 'members_groups',
+        text: 'select * from groups where id <> 1 order by id asc'
+      })
+
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows
         })
       }
-    })
+
+      return result.rows
+    } catch (err) {
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
 
@@ -239,13 +234,10 @@ function metaData() {
 }
 
 
-function search(args, emitter) {
+async function search(args) {
   var start = args.start || 0,
       end = args.end || 25,
-      orderSort = '',
-      cacheKey,
-      scope = 'members',
-      cached
+      orderSort = ''
   
   switch ( args.sort ) {
     case 'username':
@@ -261,38 +253,39 @@ function search(args, emitter) {
       orderSort = 'username asc'
   }
 
-  cacheKey = 'all-' + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-')
-  cached = app.cache.get({ scope: scope, key: cacheKey })
+  // See if already cached
+  let cacheKey = 'all-' + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-'),
+      scope = 'members',
+      cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached)
-  // If it's not cached, retrieve the user count and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.toolbox.dbPool.connect(function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err)
-      } else {
-        client.query({
-          name: 'members_all_' + orderSort.replace(' ', '_'),
-          text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id order by ' + orderSort + ' limit $1 offset $2;',
-          values: [ end - start, start ]
-        }, function (err, result) {
-          done()
-          if ( err ) {
-            emitter.emit('error', err)
-          } else {
-            if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-              app.cache.set({
-                scope: scope,
-                key: cacheKey,
-                value: result.rows
-              })
-            }
-            emitter.emit('ready', result.rows)
-          }
+    const client = await app.toolbox.dbPool.connect()
+
+    try {
+      const result = await client.query({
+        name: 'members_all_' + orderSort.replace(' ', '_'),
+        text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id order by ' + orderSort + ' limit $1 offset $2;',
+        values: [ end - start, start ]
+      })
+
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows
         })
       }
-    })
+
+      return result.rows
+    } catch (err) {
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }

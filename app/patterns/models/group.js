@@ -58,7 +58,7 @@ async function info(groupID) {
       values: [ groupID ]
     })
 
-    return result.rows
+    return result.rows[0]
   } catch (err) {
     throw err
   } finally {
