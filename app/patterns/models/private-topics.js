@@ -106,6 +106,8 @@ async function topics(args) {
     const client = await app.toolbox.dbPool.connect()
 
     try {
+      // Baffled as to why the query planner insists on a much slower sequence scan
+      await client.query('SET enable_seqscan = OFF;')
       const result = await client.query({
         name: 'private_topics_topics',
         text: 'select t.id, t."sticky", t."replies", t."titleHtml", ti.accepted, ti.left, p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."groupID" as "topicStarterGroupID", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
@@ -123,6 +125,7 @@ async function topics(args) {
         'limit $2 offset $3;',
         values: [ args.userID, end - start, start ]
       })
+      await client.query('SET enable_seqscan = ON;')
 
       result.rows.forEach( function (item) {
         item['repliesFormatted']          = app.toolbox.numeral(item['replies']).format('0,0')
