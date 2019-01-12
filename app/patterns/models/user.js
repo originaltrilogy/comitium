@@ -59,11 +59,16 @@ async function activate(args) {
         if ( !args.reactivation ) {
           await writeFile(app.config.citizen.directories.web + '/avatars/' + args.id + '.jpg', app.resources.images.defaultAvatar)
         }
+
+        // Clear the member cache
+        app.cache.clear({ scope: 'members' })
     
         return {
           success: true,
           message: 'Your account has been activated! You can now sign in.'
         }
+      } catch (err) {
+        throw err
       } finally {
         client.release()
       }

@@ -14,9 +14,14 @@ module.exports = {
 
 
 async function all(args) {
-  var start = args.start || 0,
+  let start = args.start || 0,
       end = args.end || 25,
       orderSort = ''
+  
+  // Protect against bad URL parameters
+  if ( args.sort !== 'asc' && args.sort !== 'desc' ) {
+    args.sort = 'asc'
+  }
   
   switch ( args.order ) {
     case 'username':
@@ -28,6 +33,7 @@ async function all(args) {
     case 'last-active':
       orderSort = '"lastActivity" ' + ( args.sort || 'desc' )
       break
+    // Protect against bad URL parameters
     default:
       orderSort = 'username asc'
   }
@@ -47,7 +53,7 @@ async function all(args) {
     try {
       const result = await client.query({
         name: 'members_all_' + orderSort.replace(' ', '_'),
-        text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where u.activated = true order by ' + orderSort + ' limit $1 offset $2;',
+        text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where u.activated = true order by ' + orderSort + ' limit $1 offset $2;',
         values: [ end - start, start ]
       })
 
@@ -92,9 +98,14 @@ function breadcrumbs() {
 
 
 async function group(args) {
-  var start = args.start || 0,
+  let start = args.start || 0,
       end = args.end || 25,
       orderSort = ''
+  
+  // Protect against bad URL parameters
+  if ( args.sort !== 'asc' && args.sort !== 'desc' ) {
+    args.sort = 'asc'
+  }
   
   switch ( args.order ) {
     case 'username':
@@ -106,6 +117,7 @@ async function group(args) {
     case 'last-active':
       orderSort = '"lastActivity" ' + ( args.sort || 'desc' )
       break
+    // Protect against bad URL parameters
     default:
       orderSort = 'username asc'
   }
@@ -125,7 +137,7 @@ async function group(args) {
     try {
       const result = await client.query({
         name: 'members_group_' + orderSort.replace(' ', '_'),
-        text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where g.id = $1 and u.activated = true order by ' + orderSort + ' limit $2 offset $3;',
+        text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where g.id = $1 and u.activated = true order by ' + orderSort + ' limit $2 offset $3;',
         values: [ args.group, end - start, start ]
       })
 
@@ -235,11 +247,16 @@ function metaData() {
 
 
 async function search(args) {
-  var start = args.start || 0,
+  let start = args.start || 0,
       end = args.end || 25,
       orderSort = ''
   
-  switch ( args.sort ) {
+  // Protect against bad URL parameters
+  if ( args.sort !== 'asc' && args.sort !== 'desc' ) {
+    args.sort = 'asc'
+  }
+  
+  switch ( args.order ) {
     case 'username':
       orderSort = 'username ' + ( args.sort || 'asc' )
       break
@@ -249,37 +266,38 @@ async function search(args) {
     case 'last-active':
       orderSort = '"lastActivity" ' + ( args.sort || 'desc' )
       break
+    // Protect against bad URL parameters
     default:
       orderSort = 'username asc'
   }
 
-  // See if already cached
-  let cacheKey = 'all-' + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-'),
-      scope = 'members',
-      cached = app.cache.get({ scope: scope, key: cacheKey })
+  // // See if already cached
+  // let cacheKey = 'search-' + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-'),
+  //     scope = 'members',
+  //     cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache item
-  if ( cached ) {
-    return cached
-  // If it's not cached, retrieve it from the database and cache it
-  } else {
+  // // If it's cached, return the cache item
+  // if ( cached ) {
+  //   return cached
+  // // If it's not cached, retrieve it from the database and cache it
+  // } else {
     const client = await app.toolbox.dbPool.connect()
 
     try {
       const result = await client.query({
-        name: 'members_all_' + orderSort.replace(' ', '_'),
-        text: 'select u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id order by ' + orderSort + ' limit $1 offset $2;',
-        values: [ end - start, start ]
+        name: 'members_search_' + orderSort.replace(' ', '_'),
+        text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id and u.activated = true and u.username ilike \'%\' || $1 || \'%\' order by ' + orderSort + ' limit $2 offset $3;',
+        values: [ args.term, end - start, start ]
       })
 
-      // Cache the result for future requests
-      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: result.rows
-        })
-      }
+      // // Cache the result for future requests
+      // if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+      //   app.cache.set({
+      //     key: cacheKey,
+      //     scope: scope,
+      //     value: result.rows
+      //   })
+      // }
 
       return result.rows
     } catch (err) {
@@ -287,5 +305,5 @@ async function search(args) {
     } finally {
       client.release()
     }
-  }
+  // }
 }
