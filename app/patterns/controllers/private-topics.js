@@ -21,6 +21,7 @@ async function handler(params) {
           start: start,
           end: end
         }),
+        count = topics.length ? topics[0].full_count : 0,
         viewTimes
     
     for ( let topic in topics ) {
@@ -44,12 +45,11 @@ async function handler(params) {
 
     return {
       content: {
-        count: topics[0].full_count,
-        countFormatted: topics[0].full_count_formatted,
+        count: count,
         topics: topics.length ? topics : false,
         breadcrumbs: app.models['private-topics'].breadcrumbs(),
-        pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, topics[0].full_count),
-        previousAndNext: app.toolbox.helpers.previousAndNext('private-topics', params.url.page, topics[0].full_count)
+        pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, count),
+        previousAndNext: app.toolbox.helpers.previousAndNext('private-topics', params.url.page, count)
       }
     } 
   } else {
