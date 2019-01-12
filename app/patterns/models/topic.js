@@ -603,11 +603,12 @@ async function reply(args) {
         if ( args.discussionID === 2 ) {
           app.cache.clear({ scope: 'announcements' })
         }
-        const subscribers = await this.subscribers({ topicID: args.topicID })
-        subscribers.forEach( function (item) {
-          app.cache.clear({ scope: 'subscriptions-' + item.id })
-        })
       }
+
+      const subscribers = await this.subscribers({ topicID: args.topicID })
+      subscribers.forEach( function (item) {
+        app.cache.clear({ scope: 'subscriptions-' + item.id })
+      })
     }
 
     return {
