@@ -35,11 +35,10 @@ function handler(params) {
   return {
     view: params.url.password ? 'password' : 'sign-in'
   }
-
 }
 
 
-async function submit(params) {
+async function submit(params, context) {
   // If it's a POST, authenticate the user
   if ( params.request.method === 'POST' ) {
     let authenticate = await app.models.user.authenticate({ email: params.form.email || params.session.email, password: params.form.password }),
@@ -85,8 +84,6 @@ async function submit(params) {
     }
   // If it's a GET, fall back to the default action
   } else {
-    return {
-      redirect: app.config.baseUrl + '/sign-in'
-    }
+    return handler(params, context)
   }
 }

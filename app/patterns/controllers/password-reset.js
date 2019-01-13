@@ -75,7 +75,7 @@ async function form(params, context) {
       redirect: app.config.comitium.basePath + 'password-reset/action/confirmation'
     }
   } else {
-    handler(params, context)
+    return handler(params, context)
   }
 }
 

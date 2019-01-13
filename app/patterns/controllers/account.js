@@ -170,7 +170,7 @@ async function generalForm(params, context) {
       }
     // If it's a GET, fall back to the default topic start action
     } else {
-      handler(params, context)
+      return handler(params, context)
     }
   } else {
     return {
@@ -263,7 +263,7 @@ async function avatarForm(params, context) {
         }
       }
     } else {
-      handler(params, context)
+      return handler(params, context)
     }
   } else {
     return {

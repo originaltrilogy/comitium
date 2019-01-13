@@ -304,7 +304,7 @@ async function startForm(params, context) {
     }
   // If it's a GET, fall back to the default topic start action
   } else {
-    start(params, context)
+    return start(params, context)
   }
 }
 
@@ -446,7 +446,7 @@ async function startAnnouncementForm(params, context) {
     }
   // If it's a GET, fall back to the default announcement start action
   } else {
-    start(params, context)
+    return start(params, context)
   }
 }
 
@@ -589,7 +589,7 @@ async function startPrivateForm(params, context) {
     }
   // If it's a GET, fall back to the default topic start action
   } else {
-    startPrivate(params, context)
+    return startPrivate(params, context)
   }
 }
 
@@ -727,7 +727,7 @@ async function replyForm(params, context) {
     }
   // If it's a GET, fall back to the default topic reply action
   } else {
-    reply(params, context)
+    return reply(params, context)
   }
 }
 
@@ -831,7 +831,7 @@ async function leaveForm(params, context) {
     }
   // If it's a GET, fall back to the default leave action
   } else {
-    leave(params, context)
+    return leave(params, context)
   }
 }
 
@@ -889,7 +889,7 @@ async function lockForm(params, context) {
       return access
     }
   } else {
-    lock(params, context)
+    return lock(params, context)
   }
 }
 
@@ -996,7 +996,7 @@ async function editForm(params, context) {
       return access
     }
   } else {
-    edit(params, context)
+    return edit(params, context)
   } 
 }
 
@@ -1068,7 +1068,7 @@ async function moveForm(params, context) {
       return access
     }
   } else {
-    move(params, context)
+    return move(params, context)
   }
 }
 
@@ -1125,6 +1125,6 @@ async function trashForm(params, context) {
       return access
     }
   } else {
-    trash(params, context)
+    return trash(params, context)
   }
 }
