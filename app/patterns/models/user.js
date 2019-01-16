@@ -220,7 +220,7 @@ async function ban(args) {
   try {
     await client.query({
       name: 'user_ban',
-      text: 'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Members\' ) where "id" = $1;',
+      text: 'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Members\' ), signature = null, "signatureHtml" = null, website = null where "id" = $1;',
       values: [ args.userID ]
     })
 
