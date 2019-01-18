@@ -162,9 +162,10 @@ async function topics(args) {
       })
 
       result.rows.forEach( function (item) {
-        item['repliesFormatted'] = app.toolbox.numeral(item['replies']).format('0,0')
-        item['postDateFormatted'] = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY')
-        item['lastPostCreatedFormatted'] = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY')
+        item.replies                  = parseInt(item.replies, 10)
+        item.repliesFormatted         = app.toolbox.numeral(item.replies).format('0,0')
+        item.postDateFormatted        = app.toolbox.moment.tz(item.postDate, 'America/New_York').format('D-MMM-YYYY')
+        item.lastPostCreatedFormatted = app.toolbox.moment.tz(item.lastPostCreated, 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests
