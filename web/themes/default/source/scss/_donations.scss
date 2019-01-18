@@ -24,10 +24,10 @@ section.donate {
         margin: 0 0.6rem;
       }
       section.donate {
+        flex: 1 1 auto;
         order: 2;
 
         input[type="submit"] {
-          margin-right: 2.4rem;
           padding-right: 1.6rem;
           padding-left: 1.6rem;
         }
