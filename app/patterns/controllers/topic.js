@@ -23,8 +23,8 @@ module.exports = {
   unlock                : unlock,
   edit                  : edit,
   editForm              : editForm,
-  // merge: merge,
-  // mergeForm: mergeForm,
+  // merge                 : merge,
+  // mergeForm             : mergeForm,
   move                  : move,
   moveForm              : moveForm,
   trash                 : trash,
@@ -172,8 +172,8 @@ async function handler(params) {
           userIsSubscribed: subscriptionExists,
           userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 1,
           userCanReply: userCanReply,
-          pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
-          previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),
+          pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies++),
+          previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies++),
           breadcrumbs: app.models.topic.breadcrumbs(topic)
         }
       }

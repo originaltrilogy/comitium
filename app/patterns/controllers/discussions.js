@@ -9,13 +9,7 @@ module.exports = {
 
 
 async function handler(params) {
-  let [
-    categories,
-    topicCount
-  ] = await Promise.all([
-    app.models.discussions.categories(params.session.groupID),
-    app.models.stats.topics()
-  ])
+  let categories = await app.models.discussions.categories(params.session.groupID)
 
   categories.forEach( function (item) {
     item.subcategories.forEach( function (item) {
@@ -27,8 +21,7 @@ async function handler(params) {
 
   return {
     content: {
-      categories: categories,
-      topicCount: app.toolbox.numeral(topicCount).format('0,0')
+      categories: categories
       // Breadcrumbs will return when the today/home page is done
       // breadcrumbs: app.models.discussions.breadcrumbs()
     },

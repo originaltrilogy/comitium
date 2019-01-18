@@ -1,14 +1,13 @@
 // announcements model
 
-'use strict';
+'use strict'
 
 module.exports = {
-  info: info,
-  topics: topics,
-  breadcrumbs: breadcrumbs,
-  metaData: metaData
-};
-
+  info        : info,
+  topics      : topics,
+  breadcrumbs : breadcrumbs,
+  metaData    : metaData
+}
 
 
 async function info(discussionID) {
@@ -27,7 +26,7 @@ async function info(discussionID) {
     try {
       const result = await client.query({
         name: 'announcements_info',
-        text: 'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description", d."topics", d."posts" from discussions d left join categories c on d."categoryID" = c.id where d."id" = $1;',
+        text: 'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description",  ( select count(*) from topics t where "discussionID" = d.id and t.draft = false ) as topics, ( select count(*) from posts p join topics t on p."topicID" = t.id and t.draft = false where t."discussionID" = d.id ) as posts from discussions d left join categories c on d."categoryID" = c.id where d."id" = $1;',
         values: [ discussionID ]
       })
 
@@ -48,7 +47,6 @@ async function info(discussionID) {
 }
 
 
-
 async function topics(args) {
   // See if already cached
   var start = args.start || 0,
@@ -67,7 +65,7 @@ async function topics(args) {
     try {
       const result = await client.query({
         name: 'announcements_topics',
-        text: 'select distinct t."id", t."titleHtml", t."url", t."sticky", t."replies", p."id" as "firstPostID", p2."id" as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+        text: 'select distinct t."id", t."titleHtml", t."url", t."sticky", ( select count(*) from posts where "topicID" = t."id" ) - 1 as replies, p."id" as "firstPostID", p2."id" as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
         'from topics t ' +
         'join announcements a on t."id" = a."topicID" ' +
         'join "discussionPermissions" dp on dp."discussionID" = a."discussionID" ' +
@@ -82,9 +80,9 @@ async function topics(args) {
       })
 
       result.rows.forEach( function (item) {
-        item['repliesFormatted'] = app.toolbox.numeral(item['replies']).format('0,0');
-        item['postDateFormatted'] = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY');
-        item['lastPostCreatedFormatted'] = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY');
+        item['repliesFormatted'] = app.toolbox.numeral(item['replies']).format('0,0')
+        item['postDateFormatted'] = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY')
+        item['lastPostCreatedFormatted'] = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests
@@ -104,8 +102,7 @@ async function topics(args) {
 }
 
 
-
-function breadcrumbs(discussionTitle) {
+function breadcrumbs() {
   return {
     a: {
       name: 'Home',
@@ -115,9 +112,8 @@ function breadcrumbs(discussionTitle) {
       name: 'Discussion Categories',
       url: app.config.comitium.basePath + 'discussions'
     }
-  };
+  }
 }
-
 
 
 function metaData() {
@@ -125,5 +121,5 @@ function metaData() {
     title: 'Original Trilogy - Discussion Forum: Announcements',
     description: 'Important news and updates for the Original Trilogy community.',
     keywords: 'news, announcements'
-  };
+  }
 }

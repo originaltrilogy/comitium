@@ -9,12 +9,13 @@ module.exports = {
 
 
 async function handler(params) {
-  let access  = await app.toolbox.access.discussionView({ discussionID: params.url.id, user: params.session }),
-      page    = parseInt(params.url.page, 10) || 1,
-      start   = ( page - 1 ) * 25,
-      end     = start + 25
+  let access  = await app.toolbox.access.discussionView({ discussionID: params.url.id, user: params.session })
 
   if ( access === true ) {
+    let page    = parseInt(params.url.page, 10) || 1,
+        start   = ( page - 1 ) * 25,
+        end     = start + 25
+        
     let [
       discussion,
       topics,

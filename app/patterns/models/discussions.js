@@ -36,7 +36,7 @@ async function categories(groupID) {
     try {
       const result = await client.query({
         name: 'categories_discussions',
-        text: 'select c.id as "categoryID", c."sort" as "categorySort", c."title" as "categoryTitle", c."description" as "categoryDescription", d."id" as "discussionID", d."sort" as "discussionSort", d."title" as "discussionTitle", d."url" as "discussionUrl", d."description" as "discussionDescription", d."topics", d."posts", p."userID" as "lastPostAuthorID", p."created" as "lastPostCreated", u."groupID" as "lastPostAuthorGroupID", u."username" as "lastPostAuthor", u."url" as "lastPostAuthorUrl" from "categories" c join "discussions" d on c."id" = d."categoryID" join "discussionPermissions" dp on d."id" = dp."discussionID" and dp."groupID" = $1 and dp."read" = true left join "posts" p on p.id = d.last_post_id left join "users" u on p."userID" = u."id" order by c."sort" asc, d."sort" asc;',
+        text: 'select c.id as "categoryID", c."sort" as "categorySort", c."title" as "categoryTitle", c."description" as "categoryDescription", d."id" as "discussionID", d."sort" as "discussionSort", d."title" as "discussionTitle", d."url" as "discussionUrl", d."description" as "discussionDescription", ( select count(*) from topics where "discussionID" = d.id and draft = false and private = false ) as topics, p."userID" as "lastPostAuthorID", p."created" as "lastPostCreated", u."groupID" as "lastPostAuthorGroupID", u."username" as "lastPostAuthor", u."url" as "lastPostAuthorUrl" from "categories" c join "discussions" d on c."id" = d."categoryID" join "discussionPermissions" dp on d."id" = dp."discussionID" and dp."groupID" = $1 and dp."read" = true left join "posts" p on p.id = d.last_post_id left join "users" u on p."userID" = u."id" order by c."sort" asc, d."sort" asc;',
         values: [ groupID ]
       })
 
@@ -61,7 +61,6 @@ async function categories(groupID) {
           if ( subcategory.categoryID === category.categoryID ) {
             categories[categoryIndex].subcategories[subcategory.discussionSort-1] = subcategory
             categories[categoryIndex].subcategories[subcategory.discussionSort-1].topicsFormatted = app.toolbox.numeral(subcategory.topics).format('0,0')
-            categories[categoryIndex].subcategories[subcategory.discussionSort-1].postsFormatted = app.toolbox.numeral(subcategory.posts).format('0,0')
             categories[categoryIndex].subcategories[subcategory.discussionSort-1].lastPostCreatedFormatted = app.toolbox.moment.tz(subcategory.lastPostCreated, 'America/New_York').format('D-MMM-YYYY')
           }
           // Remove empty array elements caused by gaps in discussionSort

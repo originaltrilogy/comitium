@@ -274,11 +274,12 @@ async function info(topicID) {
     try {
       const result = await client.query({
         name: 'topic_info',
-        text: 'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created", t."modified", t."replies", t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", p.text, u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and "draft" = false order by created desc limit 1 ) where t."id" = $1;',
+        text: 'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created", t."modified", ( select count(*) from posts where "topicID" = t.id and draft = false ) - 1 as replies, t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", p.text, u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and "draft" = false order by created desc limit 1 ) where t."id" = $1;',
         values: [ topicID ]
       })
 
       if ( result.rows.length ) {
+        result.rows[0].replies = parseInt(result.rows[0].replies, 10)
         result.rows[0].createdFormatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY')
         result.rows[0].repliesFormatted = app.toolbox.numeral(result.rows[0].replies).format('0,0')
 
@@ -384,7 +385,7 @@ async function insert(args) {
       }
 
       await client.query(
-        'update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = $1 and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = $1 and t.draft = false ), last_post_id = $2 where "id" = $1;',
+        'update discussions set last_post_id = $2 where "id" = $1;',
         [ args.discussionID, insertPost.rows[0].id ])
       await client.query(
         'update "users" set "lastActivity" = $1 where "id" = $2;',
@@ -543,10 +544,10 @@ async function move(args) {
     await client.query('update "topics" set "discussionID" = $1 where "id" = $2;', [ args.newDiscussionID, args.topicID ])
     await client.query('delete from "announcements" where "topicID" = $1;', [ args.topicID ])
     await client.query(
-      'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ), last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
       [ args.discussionID ])
     await client.query(
-      'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and t."draft" = false and p."draft" = false ), last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
       [ args.newDiscussionID ])
     await client.query('commit')
 
@@ -583,7 +584,7 @@ async function reply(args) {
     // Update topic stats
     await client.query('update topics set replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, sticky = $2 where "id" = $1;', [ args.topicID, sticky ])
     // Update discussion stats
-    await client.query('update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ), last_post_id = $2 where "id" = $1', [ args.discussionID, post.rows[0].id ])
+    await client.query('update "discussions" set last_post_id = $2 where "id" = $1', [ args.discussionID, post.rows[0].id ])
     // Update user stats
     await client.query('update "users" set "lastActivity" = $1 where "id" = $2;', [ args.time, args.userID ])
     await client.query('COMMIT')
