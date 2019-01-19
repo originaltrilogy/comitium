@@ -119,6 +119,9 @@ async function edit(args) {
       // Clear the topic cache
       app.cache.clear({ scope: 'topic-' + args.currentPost.topicID })
       app.cache.clear({ scope: 'discussion-' + args.discussionID })
+      if ( args.discussionID === 2 ) {
+        app.cache.clear({ scope: 'announcements' })
+      }
 
       return {
         success: true
