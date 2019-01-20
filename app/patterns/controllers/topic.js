@@ -172,8 +172,8 @@ async function handler(params) {
           userIsSubscribed: subscriptionExists,
           userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 1,
           userCanReply: userCanReply,
-          pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies++),
-          previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies++),
+          pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
+          previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),
           breadcrumbs: app.models.topic.breadcrumbs(topic)
         }
       }
