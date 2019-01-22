@@ -13,23 +13,15 @@ async function handler(params) {
   if ( access === true ) {
     params.url.page = params.url.page || 1
 
-    let [
-      stats,
-      topics
-    ] = await Promise.all([
-      app.models.subscriptions.stats(params.session.userID),
-      ( async () => {
-        let start = ( params.url.page - 1 ) * 25,
-            end = start + 25
-        return await app.models.subscriptions.topics({
+    let start = ( params.url.page - 1 ) * 25,
+        end = start + 25,
+        topicID = [],
+        topics = await app.models.subscriptions.topics({
           userID: params.session.userID,
           start: start,
           end: end
-        })
-      })()
-    ])
-    
-    let topicID = [],
+        }),
+        count = topics.length ? topics[0].full_count : 0,
         viewTimes
 
     for ( let topic in topics ) {
@@ -40,9 +32,6 @@ async function handler(params) {
 
     if ( topicID.length ) {
       viewTimes = await app.models.user.topicViewTimes({ userID: params.session.userID, topicID: topicID.join(', ') })
-    }
-
-    if ( viewTimes ) {
       viewTimes.forEach( function (item) {
         viewTimes[item.topicID] = item
       })
@@ -56,7 +45,7 @@ async function handler(params) {
 
     return {
       content: {
-        stats: stats,
+        count: count,
         topics: topics.length ? topics : false,
         breadcrumbs: {
           a: {
@@ -64,8 +53,8 @@ async function handler(params) {
             url: app.config.comitium.basePath
           }
         },
-        pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, stats.topics),
-        previousAndNext: app.toolbox.helpers.previousAndNext('subscriptions', params.url.page, stats.topics),
+        pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, count),
+        previousAndNext: app.toolbox.helpers.previousAndNext('subscriptions', params.url.page, count),
       }
     }
   } else {

@@ -68,7 +68,7 @@ async function form(params, context) {
     }
   // If it's a GET, fall back to the default action
   } else {
-    handler(params, context)
+    return handler(params, context)
   }
 }
 

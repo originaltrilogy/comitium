@@ -228,7 +228,7 @@ async function editForm(params, context) {
           }
       }
     } else {
-      edit(params, context)
+      return edit(params, context)
     }
   } else {
     return access
@@ -309,7 +309,7 @@ async function lockForm(params, context) {
       return access
     }
   } else {
-    lock(params, context)
+    return lock(params, context)
   }
 }
 
@@ -393,7 +393,7 @@ async function reportForm(params, context) {
       return access
     }
   } else {
-    report(params, context)
+    return report(params, context)
   }
 }
 
@@ -500,7 +500,7 @@ async function trashForm(params, context) {
       return access
     }
   } else {
-    trash(params, context)
+    return trash(params, context)
   }
 }
 

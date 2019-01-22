@@ -26,7 +26,6 @@ app.toolbox = {
           subject: args.subject,
           text: args.text
         },
-        toFile: true,
         file: 'email.txt'
       })
     }

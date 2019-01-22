@@ -225,11 +225,11 @@ async function ban(args) {
   try {
     await client.query({
       name: 'user_ban',
-      text: 'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Members\' ) where "id" = $1;',
+      text: 'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Banned Members\' ), signature = null, "signatureHtml" = null, website = null where "id" = $1;',
       values: [ args.userID ]
     })
 
-    app.cache.clear({ scope: 'user', key: 'profileByID-user-' + args.userID })
+    app.cache.clear({ scope: 'user-' + args.userID })
   } catch (err) {
     throw err
   } finally {
@@ -248,7 +248,7 @@ async function liftBan(args) {
       values: [ args.userID ]
     })
 
-    app.cache.clear({ scope: 'user', key: 'profileByID-user-' + args.userID })
+    app.cache.clear({ scope: 'user-' + args.userID })
   } catch (err) {
     throw err
   } finally {
@@ -478,16 +478,16 @@ async function info(args) {
   let sql, arg
 
   if ( args.userID ) {
-    sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1'
+    sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1'
     arg = args.userID
   } else if ( args.username ) {
-    sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where lower("username") = lower($1) ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."username") = lower($1)'
+    sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."username") = lower($1)'
     arg = args.username
   } else if ( args.usernameHash ) {
-    sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where "usernameHash" = $1 ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."usernameHash") = lower($1)'
+    sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."usernameHash") = lower($1)'
     arg = args.usernameHash
   } else if ( args.email ) {
-    sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown", ( select count("id") from "posts" where "userID" = ( select "id" from "users" where lower("email") = lower($1) ) and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."email") = lower($1)'
+    sql = 'select u."id", u."groupID", u."username", u."usernameHash", u."passwordHash", u."url", u."email", u."timezone", u."dateFormat", u."theme", u."signature", u."signatureHtml", u."lastActivity", u."joined", u."website", u."privateTopicEmailNotification", u."subscriptionEmailNotification", u."activated", u."activationCode", u."system", u."locked", g."name" as "group", g."login", g."post", g."reply", g."talkPrivately", g."moderateDiscussions", g."administrateDiscussions", g."moderateUsers", g."administrateUsers", g."administrateApp", g."bypassLockdown" from "users" u join "groups" g on u."groupID" = g."id" where lower(u."email") = lower($1)'
     arg = args.email
   }
 
@@ -700,8 +700,8 @@ async function posts(args) {
 
 async function profileByID(args) {
   // See if already cached
-  let cacheKey = 'profileByID-user-' + args.userID,
-      scope = 'user',
+  let cacheKey = 'profileByID-visitorGroupID-' + args.visitorGroupID,
+      scope = 'user-' + args.userID,
       cached = app.cache.get({ scope: scope, key: cacheKey })
 
   // If it's cached, return the cache item
@@ -714,8 +714,8 @@ async function profileByID(args) {
     try {
       const result = await client.query({
         name: 'user_profileByID',
-        text: 'select u."id", u."groupID", u."username", u."url", u."signatureHtml", u."lastActivity", u."joined", u."website", g."name" as "group", ( select count("id") from "posts" where "userID" = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1',
-        values: [ args.userID ]
+        text: 'select u."id", u."groupID", u."username", u."url", u."signatureHtml", u."lastActivity", u."joined", u."website", g."name" as "group", ( select count(*) from "posts" p join topics t on p."topicID" = t."id" where "userID" = $1 and t.draft = false and p."draft" = false and t."discussionID" in ( select "discussionID" from "discussionPermissions" where "groupID" = $2 and "read" = true ) ) as "postCount" from "users" u join "groups" g on u."groupID" = g."id" where u."id" = $1',
+        values: [ args.userID, args.visitorGroupID ]
       })
 
       if ( result.rows.length ) {

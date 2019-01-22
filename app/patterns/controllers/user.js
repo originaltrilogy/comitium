@@ -15,7 +15,7 @@ module.exports = {
 async function handler(params) {
   params.url.page = params.url.page || 1
 
-  let user = await app.models.user.profileByID({ userID: params.url.id })
+  let user = await app.models.user.profileByID({ userID: params.url.id, visitorGroupID: params.session.groupID })
 
   if ( user ) {
     let posts = await ( async () => {

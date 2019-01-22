@@ -102,6 +102,6 @@ async function editForm(params, context) {
       return access
     }
   } else {
-    edit(params, context)
+    return edit(params, context)
   }
 }
