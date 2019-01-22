@@ -6,7 +6,7 @@ CF.members = ( function () {
       init: function () {
         document.querySelector('#group-menu li.current a').addEventListener('click', function (e) {
           e.preventDefault()
-          e.target.parentNode.parentNode.classList.add('show-menu')
+          e.target.parentNode.parentNode.classList.toggle('show-menu')
         })
       }
 

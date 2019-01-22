@@ -271,33 +271,42 @@ async function search(args) {
       orderSort = 'username asc'
   }
 
-  // // See if already cached
-  // let cacheKey = 'search-' + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-'),
-  //     scope = 'members',
-  //     cached = app.cache.get({ scope: scope, key: cacheKey })
+  // See if already cached
+  let cacheKey = 'search-' + args.term + '-' + start + '-' + end + '-' + orderSort.replace(' ', '-') + '-groupID-' + args.groupID,
+      scope = 'members',
+      cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // // If it's cached, return the cache item
-  // if ( cached ) {
-  //   return cached
-  // // If it's not cached, retrieve it from the database and cache it
-  // } else {
+  // If it's cached, return the cache item
+  if ( cached ) {
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
+  } else {
     const client = await app.toolbox.dbPool.connect()
 
     try {
-      const result = await client.query({
-        name: 'members_search_' + orderSort.replace(' ', '_'),
-        text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id and u.activated = true and u.username ilike \'%\' || $1 || \'%\' order by ' + orderSort + ' limit $2 offset $3;',
-        values: [ args.term, end - start, start ]
-      })
-
-      // // Cache the result for future requests
-      // if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-      //   app.cache.set({
-      //     key: cacheKey,
-      //     scope: scope,
-      //     value: result.rows
-      //   })
-      // }
+      let result
+      if ( args.groupID ) {
+        result = await client.query({
+          name: 'members_search_group' + orderSort.replace(' ', '_'),
+          text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id and u.activated = true and u.username ilike \'%\' || $2 || \'%\' where u."groupID" = $1 order by ' + orderSort + ' limit $3 offset $4;',
+          values: [ args.groupID, decodeURI(args.term), end - start, start ]
+        })
+      } else {
+        result = await client.query({
+          name: 'members_search_' + orderSort.replace(' ', '_'),
+          text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id and u.activated = true and u.username ilike \'%\' || $1 || \'%\' order by ' + orderSort + ' limit $2 offset $3;',
+          values: [ decodeURI(args.term), end - start, start ]
+        })
+      }
+      
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+        app.cache.set({
+          key: cacheKey,
+          scope: scope,
+          value: result.rows
+        })
+      }
 
       return result.rows
     } catch (err) {
@@ -305,5 +314,5 @@ async function search(args) {
     } finally {
       client.release()
     }
-  // }
+  }
 }

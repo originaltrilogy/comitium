@@ -73,7 +73,7 @@ function head() {
 function search(params) {
   if ( params.request.method === 'POST' ) {
     return {
-      redirect: app.config.comitium.baseUrl + 'members/action/searchResults/term/' + encodeURI(params.form.term)
+      redirect: app.config.comitium.baseUrl + 'members/action/searchResults/term/' + encodeURI(params.form.term) + ( params.url.group ? '/group/' + params.url.group : '' ) + ( params.url.order ? '/order/' + params.url.order : '' ) + ( params.url.sort ? '/sort/' + params.url.sort : '' )
     }
   } else {
     return {
@@ -97,7 +97,8 @@ async function searchResults(params) {
           end = start + 25
 
       return await app.models.members.search({
-        term: decodeURI(params.url.term),
+        term: params.url.term,
+        groupID: params.url.group || 0,
         order: params.url.order,
         sort: params.url.sort,
         start: start,
@@ -114,6 +115,7 @@ async function searchResults(params) {
       count: count,
       groups: groups,
       members: members,
+      urlParams: ( params.url.action === 'searchResults' ? '/action/searchResults/term/' + params.url.term + '/' : '/' ) + ( params.url.group ? 'group/' + params.url.group + '/' : '' ),
       pagination: app.toolbox.helpers.paginate(params.route.pathname, params.url.page || 1, count)
     }
   }
