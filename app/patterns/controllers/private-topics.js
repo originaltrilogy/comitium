@@ -31,7 +31,7 @@ async function handler(params) {
     }
 
     if ( topicID.length ) {
-      viewTimes = await app.models.user.topicViewTimes({ userID: params.session.userID, topicID: topicID.join(', ') })
+      viewTimes = await app.models.user.topicViewTimes({ userID: params.session.userID, topicID: topicID.join(', ') }) || []
       viewTimes.forEach( function (item) {
         viewTimes[item.topicID] = item
       })
