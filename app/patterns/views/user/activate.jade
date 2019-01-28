@@ -3,4 +3,5 @@ header
     h1 User account activation
     p !{activate.message}
 
-!= include['sign-in']
+if include
+  != include['sign-in']
