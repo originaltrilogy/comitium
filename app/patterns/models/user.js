@@ -287,7 +287,7 @@ async function bannedIPs() {
 
     try {
       const result = await client.query({
-        name: 'modelName_methodName',
+        name: 'user_bannedIPs',
         text: 'select id, ip, admin_user_id, time from banned_ip_addresses order by time asc;'
       })
 
