@@ -116,7 +116,7 @@ async function page(postID) {
 
   try {
     const result = await client.query({
-      name: 'modelName_methodName',
+      name: 'post_page',
       text: 'select ceiling(row_number::real/25::real) as page from ( select id, row_number() over (order by created asc) from posts where "topicID" = ( select "topicID" from posts where id = $1 ) and draft = false ) posts where posts.id = $1;',
       values: [ postID ]
     })
