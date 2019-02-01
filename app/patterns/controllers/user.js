@@ -60,10 +60,9 @@ async function handler(params) {
       }
     }
   } else {
-    return {
-      statusCode: 404,
-      message: 'This member doesn\'t exist.'
-    }
+    let err = new Error
+    err.statusCode = 404
+    throw err
   }
 }
 
