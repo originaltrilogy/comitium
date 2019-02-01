@@ -4,17 +4,17 @@
 
 global.app = require('citizen')
 
-var fs = require('fs')
+const fs = require('fs')
 
 app.toolbox = {
   // Native modules
-  access: require('./toolbox/access'),
-  helpers: require('./toolbox/helpers'),
-  markdown: require('./toolbox/markdown'),
-  validate: require('./toolbox/validate'),
+  access    : require('./toolbox/access'),
+  helpers   : require('./toolbox/helpers'),
+  markdown  : require('./toolbox/markdown'),
+  validate  : require('./toolbox/validate'),
 
   // Third party modules
-  bcrypt: require('bcryptjs'),
+  bcrypt    : require('bcryptjs'),
   // Log e-mails to app/logs/email.txt instead of sending them
   mail: {
     sendMail: function (args) {
@@ -30,10 +30,10 @@ app.toolbox = {
       })
     }
   },
-  moment: require('moment-timezone'),
-  numeral: require('numeral'),
-  pg: require('pg'),
-  slug: require('slug')
+  moment    : require('moment-timezone'),
+  numeral   : require('numeral'),
+  pg        : require('pg'),
+  slug      : require('slug')
 }
 
 // Overwrite pg's default date handler to convert to GMT
@@ -52,6 +52,7 @@ app.toolbox.dbPool.on('error', function (err) {
 })
 
 // Overwrite slug's character map to avoid funky URLs
+app.toolbox.slug.charmap['.'] = '-'
 app.toolbox.slug.charmap['~'] = '-'
 app.toolbox.slug.charmap['_'] = '-'
 app.toolbox.slug.charmap['---'] = '-'
