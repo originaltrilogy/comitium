@@ -713,7 +713,7 @@ async function profileByID(args) {
         values: [ args.userID, args.visitorGroupID ]
       })
 
-      if ( result.rows.length ) {
+      if ( result.rows && result.rows.length ) {
         result.rows[0].joinedFormatted        = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
         result.rows[0].lastActivityFormatted  = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY')
 
@@ -757,7 +757,7 @@ async function profileByUsername(args) {
         values: [ args.username ]
       })
 
-      if ( result.rows.length ) {
+      if ( result.rows && result.rows.length ) {
         result.rows[0].joinedFormatted        = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
         result.rows[0].lastActivityFormatted  = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY')
 
