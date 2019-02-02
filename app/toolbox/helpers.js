@@ -153,6 +153,9 @@ function previousAndNext(baseUrl, currentPage, itemCount) {
       },
       output = false
 
+  // Sanitize URLs to prevent duplicate page values
+  baseUrl = baseUrl.replace(/\/page\/[0-9]+/g, '')
+
   if ( pagination.currentPage > 1 ) {
     pagination.pages.previous = {
       class: 'previous',
