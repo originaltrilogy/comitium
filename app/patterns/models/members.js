@@ -57,13 +57,6 @@ async function all(args) {
         values: [ end - start, start ]
       })
 
-      result.rows.forEach( function (item) {
-        item['joinedFormatted'] = app.toolbox.moment.tz(item['joined'], 'America/New_York').format('D-MMM-YYYY')
-        // item['createdFormatted'] = item['createdFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
-        item['lastActivityFormatted'] = app.toolbox.moment.tz(item['lastActivity'], 'America/New_York').format('D-MMM-YYYY')
-        // item['modifiedFormatted'] = item['modifiedFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
-      })
-
       // Cache the result for future requests
       if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
         app.cache.set({

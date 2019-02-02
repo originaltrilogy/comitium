@@ -59,7 +59,9 @@ async function handler(params) {
       group: group,
       groups: groups,
       members: members,
-      pagination: app.toolbox.helpers.paginate(params.route.pathname, params.url.page || 1, count)
+      pagination: app.toolbox.helpers.paginate(params.route.pathname, params.url.page || 1, count),
+      previousAndNext: app.toolbox.helpers.previousAndNext(params.route.pathname, params.url.page || 1, count),
+      urlParams: '/'
     }
   }
 }
@@ -115,8 +117,9 @@ async function searchResults(params) {
       count: count,
       groups: groups,
       members: members,
-      urlParams: ( params.url.action === 'searchResults' ? '/action/searchResults/term/' + params.url.term + '/' : '/' ) + ( params.url.group ? 'group/' + params.url.group + '/' : '' ),
-      pagination: app.toolbox.helpers.paginate(params.route.pathname, params.url.page || 1, count)
+      pagination: app.toolbox.helpers.paginate(params.route.pathname, params.url.page || 1, count),
+      previousAndNext: app.toolbox.helpers.previousAndNext(params.route.pathname, params.url.page || 1, count),
+      urlParams: '/action/searchResults/term/' + params.url.term + '/' + ( params.url.group ? 'group/' + params.url.group + '/' : '' )
     }
   }
 }

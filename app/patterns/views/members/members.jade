@@ -25,10 +25,10 @@ section(class="members group-#{url.group}")
     table
       thead
         tr
-          td(class="username #{ !url.order || url.order === 'username' ? 'selected' : '' }") Username (<a href="members#{urlParams}order/username/sort/asc">A-Z</a> / <a href="members#{urlParams}order/username/sort/desc">Z-A</a>)
-          td.group Group
-          td(class="join-date #{ url.order === 'join-date' ? 'selected' : '' }") Join Date (<a href="members#{urlParams}order/join-date/sort/desc">Newest</a> / <a href="members#{urlParams}order/join-date/sort/asc">Oldest</a>)
-          td.last-active Last Active (<a href="members#{urlParams}order/last-active/sort/desc">Most Recent</a> / <a href="members#{urlParams}order/last-active/sort/asc">Least Recent</a>)
+          th(class="username #{ !url.order || url.order === 'username' ? 'selected' : '' }") Username (<a href="members#{urlParams}order/username/sort/asc">A-Z</a> / <a href="members#{urlParams}order/username/sort/desc">Z-A</a>)
+          th.group Group
+          th(class="join-date #{ url.order === 'join-date' ? 'selected' : '' }") Join Date (<a href="members#{urlParams}order/join-date/sort/desc">Newest</a> / <a href="members#{urlParams}order/join-date/sort/asc">Oldest</a>)
+          th.last-active Last Active (<a href="members#{urlParams}order/last-active/sort/desc">Most Recent</a> / <a href="members#{urlParams}order/last-active/sort/asc">Least Recent</a>)
       tbody
         each member in members
           tr
@@ -41,3 +41,4 @@ section(class="members group-#{url.group}")
               = app.toolbox.moment.tz(member.joined, session.timezone).format(session.dateFormat)
             td.last-active
               = app.toolbox.moment.tz(member.lastActivity, session.timezone).format(session.dateFormat)
+    include ../partials/previous-and-next
