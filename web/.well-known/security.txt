@@ -1,0 +1,4 @@
+Contact: admin@originaltrilogy.com
+Encryption: https://originaltrilogy.com/ot-pgp.asc
+Preferred-Languages: en
+Canonical: https://originaltrilogy.com/.well-known/security.txt
