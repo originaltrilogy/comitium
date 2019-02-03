@@ -483,7 +483,7 @@ async function leave(args) {
 
   try {
     await client.query('BEGIN')
-    await client.query('update "topicInvitations" set "left" = true where "userID" = $1 and "toopicID" = $2;', [ args.userID, args.topicID ])
+    await client.query('update "topicInvitations" set "left" = true where "userID" = $1 and "topicID" = $2;', [ args.userID, args.topicID ])
     await client.query('delete from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;', [ args.userID, args.topicID ])
     await client.query('COMMIT')
 
