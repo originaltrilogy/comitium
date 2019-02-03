@@ -6,7 +6,6 @@ module.exports = {
   all         : all,
   breadcrumbs : breadcrumbs,
   group       : group,
-  groupCount  : groupCount,
   groups      : groups,
   metaData    : metaData,
   search      : search
@@ -153,45 +152,6 @@ async function group(args) {
 }
 
 
-async function groupCount(groupID) {
-  // See if already cached
-  let cacheKey = 'count-' + groupID,
-      scope = 'members',
-      cached = app.cache.get({ scope: scope, key: cacheKey })
-
-  // If it's cached, return the cache item
-  if ( cached ) {
-    return cached
-  // If it's not cached, retrieve it from the database and cache it
-  } else {
-    const client = await app.toolbox.dbPool.connect()
-
-    try {
-      const result = await client.query({
-        name: 'members_groupCount',
-        text: 'select count(id) as count from users where "groupID" = $1;',
-        values: [ groupID ]
-      })
-
-      // Cache the result for future requests
-      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: result.rows[0].count
-        })
-      }
-
-      return result.rows[0].count
-    } catch (err) {
-      throw err
-    } finally {
-      client.release()
-    }
-  }
-}
-
-
 async function groups() {
   // See if already cached
   let cacheKey = 'groups',
@@ -208,7 +168,7 @@ async function groups() {
     try {
       const result = await client.query({
         name: 'members_groups',
-        text: 'select * from groups where id <> 1 order by id asc'
+        text: 'select * from groups g where g.id <> 1 and ( select count(*) from users where "groupID" = g.id and activated = true ) > 0 order by g.id asc'
       })
 
       // Cache the result for future requests

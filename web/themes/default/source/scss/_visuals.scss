@@ -127,6 +127,11 @@ main {
   .slide-menu {
     background-color: hsl(227,18%,18%);
 
+    section.donate {
+      border-bottom: 1px solid hsl(227,18%,28%);
+      background: hsl(227,18%,22%);
+    }
+
     a {
       color: hsl(227, 41%, 80%);
 

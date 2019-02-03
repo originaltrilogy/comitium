@@ -33,6 +33,7 @@ async function handler(params) {
 
       if ( !params.url.group ) {
         return await app.models.members.all({
+          visitorGroupID: params.session.groupID,
           order: params.url.order,
           sort: params.url.sort,
           start: start,
