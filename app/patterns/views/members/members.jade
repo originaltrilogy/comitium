@@ -5,6 +5,7 @@ header
 
 section(class="members group-#{url.group}")
   h2 #{app.toolbox.numeral(count).format('0,0')} #{ group ? group.name : 'Total Members'}
+  include ../partials/pagination
   nav.groups
     ul#group-menu
       li(class="all-members #{ !url.group ? 'current' : '' }")
@@ -20,7 +21,6 @@ section(class="members group-#{url.group}")
       ul.actions
         li.primary
           input(id="submit" name="submit" type="submit" value="Search")
-  include ../partials/pagination
   section.list
     table
       thead
@@ -29,7 +29,6 @@ section(class="members group-#{url.group}")
           th.group Group
           th(class="join-date #{ url.order === 'join-date' ? 'selected' : '' }") Join Date (<a href="members#{urlParams}order/join-date/sort/desc">Newest</a> / <a href="members#{urlParams}order/join-date/sort/asc">Oldest</a>)
           th.last-active Last Active (<a href="members#{urlParams}order/last-active/sort/desc">Most Recent</a> / <a href="members#{urlParams}order/last-active/sort/asc">Least Recent</a>)
-          th.post-count Post Count
       tbody
         each member in members
           tr
@@ -42,6 +41,4 @@ section(class="members group-#{url.group}")
               = app.toolbox.moment.tz(member.joined, session.timezone).format(session.dateFormat)
             td.last-active
               = app.toolbox.moment.tz(member.lastActivity, session.timezone).format(session.dateFormat)
-            td.post-count
-              = app.toolbox.numeral(member.postCount).format(0,0)
     include ../partials/previous-and-next

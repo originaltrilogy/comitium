@@ -1178,7 +1178,7 @@ a.avatar {
         display: flex;
         flex: 1 1 auto;
         align-items: center;
-        margin-left: 2.4rem;
+        margin: 0 2.4rem;
       }
       a.home {
         flex-basis: 16.8rem;
@@ -1551,7 +1551,7 @@ a.avatar {
   }
 
   form {
-    & > * {
+    > * {
       margin-left: 6rem;
       margin-right: 6rem;
     }
