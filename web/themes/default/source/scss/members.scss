@@ -4,6 +4,7 @@ body[data-controller="members"] {
   section.members {
     padding-top: 2rem;
   }
+
   nav.groups {
     margin: 1rem 1.6rem;
 
@@ -40,28 +41,28 @@ body[data-controller="members"] {
         }
       }
     }
+  }
 
-    form {
-      display: flex;
+  form {
+    display: flex;
 
-      ul.data {
-        flex: 1 1 auto;
-        
-        > li {
-          margin: 0;
-        }
+    ul.data {
+      flex: 1 1 auto;
+      
+      > li {
+        margin: 0;
       }
+    }
 
-      ul.actions {
-        margin-left: 1rem;
-        padding: 0;
+    ul.actions {
+      margin-left: 1rem;
+      padding: 0;
 
-        > li {
-          margin: 0;
+      > li {
+        margin: 0;
 
-          input[type="submit"] {
-            padding: 1.6rem;
-          }
+        input[type="submit"] {
+          padding: 1.6rem;
         }
       }
     }
@@ -82,6 +83,67 @@ body[data-controller="members"] {
     margin: 0;
     white-space: nowrap;
   }
+
+  @media only screen and (min-width: 720px) {
+    section.members {
+      padding: 2.4rem 2.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      > * {
+        margin-right: 0;
+        margin-left: 0;
+      }
+    }
+
+    form {
+      ul.actions {
+        > li {
+          input[type="submit"] {
+            padding: 1.2rem;
+          }
+        }
+      }
+    }
+
+    nav.pagination {
+      margin: 0;
+    }
+
+    nav.groups {
+      flex: 0 0 100%;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      #group-menu {
+        display: flex;
+        margin: 0;
+        background: none;
+        border: none;
+
+        &::after {
+          display: none;
+        }
+      }
+    }
+
+    section.list {
+      padding: 0;
+    }
+  }
+
+  @media only screen and (min-width: 1024px) {
+    section.members {
+      max-width: 96rem;
+      margin: auto;
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
 }
 
 
@@ -95,6 +157,15 @@ html.js body[data-controller="members"] {
     &.show-menu li:not(.current) {
       position: initial;
       left: initial;
+    }
+  }
+
+  @media only screen and (min-width: 720px) {
+    #group-menu {
+      li:not(.current) {
+        position: initial;
+        left: initial;
+      }
     }
   }
 }
