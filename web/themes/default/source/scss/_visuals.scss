@@ -16,6 +16,7 @@ body {
 
   // Navigation highlighting
   &[data-controller="index"] nav li.discussions a,
+  &[data-controller="members"] nav li.members a,
   &[data-controller="discussions"] nav li.discussions a,
   &[data-controller="discussion"] nav li.discussions a,
   &[data-controller="announcements"] nav li.discussions a,
@@ -80,7 +81,7 @@ body {
       background-color: hsla(227,18%,16%,0.9);
       backdrop-filter: saturate(180%) blur(0.5rem);
     }
-    box-shadow: 0 0 0.6rem hsl(227,0%,10%);
+    box-shadow: 0 0 0.6rem hsl(227,18%,12%);
 
     a.sign-in,
     li.sign-in a {
@@ -125,6 +126,11 @@ main {
   }
   .slide-menu {
     background-color: hsl(227,18%,18%);
+
+    section.donate {
+      border-bottom: 1px solid hsl(227,18%,28%);
+      background: hsl(227,18%,22%);
+    }
 
     a {
       color: hsl(227, 41%, 80%);
@@ -353,7 +359,7 @@ form {
 }
 
 ::placeholder {
-  color: hsla(0,0%,100%,0.5);
+  color: hsla(227,18%,75%,0.5);
 }
 
 
@@ -366,11 +372,24 @@ table {
 
   th,
   td {
-    border-color: hsl(227,18%,50%);
+    border-color: hsl(227,18%,30%);
   }
 
   th {
     background: hsl(227,18%,30%);
+
+    a:hover {
+      background: hsl(227,18%,48%);
+      color: hsl(227,18%,88%);
+    }
+
+    &.selected {
+      background: hsl(227,18%,48%);
+
+      a {
+        color: hsl(227,18%,88%);
+      }
+    }
   }
 }
 
@@ -610,6 +629,40 @@ body[data-controller="post"][data-view="private-topic"] {
         &::after {
           color: hsl(0,0%,85%);
         }
+      }
+    }
+  }
+}
+
+/////////////////////
+//   member list   //
+/////////////////////
+
+body[data-controller="members"] {
+  nav.groups {
+    #group-menu {
+      border-color: hsl(227,18%,30%);
+      background-color: hsl(227,18%,32%);
+      
+      li {
+        a {
+          &:hover {
+            background: hsl(227,18%,28%);
+          }
+        }
+
+        &.current a {
+          background: hsl(227,18%,28%);
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 720px) {
+    nav.groups {
+      #group-menu {
+        background: none;
+        border: none;
       }
     }
   }

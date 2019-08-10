@@ -283,7 +283,7 @@ async function info(topicID) {
 
       if ( result.rows.length ) {
         result.rows[0].replies = parseInt(result.rows[0].replies, 10)
-        result.rows[0].createdFormatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].createdFormatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A')
         result.rows[0].repliesFormatted = app.toolbox.numeral(result.rows[0].replies).format('0,0')
 
         // Cache the topic info object for future requests

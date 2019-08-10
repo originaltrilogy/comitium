@@ -3,7 +3,8 @@
 'use strict'
 
 module.exports = {
-  discussionPermissions : discussionPermissions
+  discussionPermissions : discussionPermissions,
+  info                  : info
 }
 
 
@@ -37,8 +38,29 @@ async function discussionPermissions(discussionID, groupID) {
       }
 
       return result.rows[0]
+    } catch (err) {
+      throw err
     } finally {
       client.release()
     }
+  }
+}
+
+
+async function info(groupID) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'group_info',
+      text: 'select id, name, url, description, login, post, reply, "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", system, locked from groups where id = $1;',
+      values: [ groupID ]
+    })
+
+    return result.rows[0]
+  } catch (err) {
+    throw err
+  } finally {
+    client.release()
   }
 }

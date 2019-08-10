@@ -7,12 +7,15 @@ header(class="authenticated #{ updates ? 'updates' : '' }")
       | <input type="hidden" name="cmd" value="_donations" />
       | <input type="hidden" name="business" value="donations@originaltrilogy.com" />
       | <input type="hidden" name="currency_code" value="USD" />
-      | <input type="submit" name="submit" value="Donate with PayPal" />
+      | <input class="brief" type="submit" name="submit" value="Donate" />
+      | <input class="verbose" type="submit" name="submit" value="Donate with PayPal" />
       | <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
       | </form>
     ul.content
       li.discussions
         a(href="discussions") Discussions
+      li.members
+        a(href="members") Members
       li.about
         a(href="content/About/id/1") About
       li.help

@@ -59,11 +59,16 @@ async function activate(args) {
         if ( !args.reactivation ) {
           await writeFile(app.config.citizen.directories.web + '/avatars/' + args.id + '.jpg', app.resources.images.defaultAvatar)
         }
+
+        // Clear the member cache
+        app.cache.clear({ scope: 'members' })
     
         return {
           success: true,
           message: 'Your account has been activated! You can now sign in.'
         }
+      } catch (err) {
+        throw err
       } finally {
         client.release()
       }
@@ -238,8 +243,8 @@ async function liftBan(args) {
 
   try {
     await client.query({
-      name: 'user_liftBat',
-      text: 'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Trusted Members\' ) where "id" = $1;',
+      name: 'user_liftBan',
+      text: 'update "users" set "groupID" = ( select "id" from "groups" where "name" = \'Members\' ) where "id" = $1;',
       values: [ args.userID ]
     })
 
@@ -359,7 +364,7 @@ async function create(args) {
 
       let user = await insert({
         // New members will eventually go into groupID 2 (New Members).
-        // Until new member logic is in place, new members are Trusted Members.
+        // Until new member logic is in place, new members are Members.
         groupID: 3,
         username: username,
         usernameHash: usernameHash,

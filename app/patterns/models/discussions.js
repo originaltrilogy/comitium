@@ -77,6 +77,8 @@ async function categories(groupID) {
         })
       }
       return categories
+    } catch (err) {
+      throw err
     } finally {
       client.release()
     }
@@ -142,6 +144,8 @@ async function categoriesPost(groupID) {
       }
 
       return categories
+    } catch (err) {
+      throw err
     } finally {
       client.release()
     }

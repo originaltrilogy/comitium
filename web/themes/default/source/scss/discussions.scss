@@ -59,8 +59,11 @@ body[data-controller="discussions"] {
 
       a:nth-child(2) {
         display: block;
-        width: 20rem;
-        margin-top: 0.2rem;
+        width: 14rem;
+        margin-top: .2rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     a.content-stats {

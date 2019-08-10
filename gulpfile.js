@@ -1,15 +1,15 @@
 'use strict'
 
 var autoprefixer  = require('autoprefixer'),
-    gulp          = require('gulp'),
     concat        = require('gulp-concat'),
     cssnano       = require('gulp-cssnano'),
     filter        = require('gulp-filter'),
+    gulp          = require('gulp'),
     livereload    = require('gulp-livereload'),
     postcss       = require('gulp-postcss'),
     sass          = require('gulp-sass'),
     sourcemaps    = require('gulp-sourcemaps'),
-    uglify        = require('gulp-uglify')
+    uglify        = require('gulp-uglify-es').default
 
 var themes = [
       {
@@ -38,10 +38,10 @@ themes.forEach( function (item, index) {
   gulp.task('css' + item.name, function (done) {
     gulp.src('web/themes/' + item.path + '/source/scss/site.scss')
         .pipe(sourcemaps.init())
-          .pipe(sass().on('error', sass.logError))
-          .pipe(postcss([autoprefixer({ browsers: 'last 2 versions' })]))
-          .pipe(cssnano({ safe: true, colormin: false }))
-          .pipe(sourcemaps.write(''))
+        .pipe(sass().on('error', sass.logError))
+        .pipe(postcss([autoprefixer({ browsers: 'last 2 versions' })]))
+        .pipe(cssnano({ safe: true, colormin: false }))
+        .pipe(sourcemaps.write(''))
         .pipe(gulp.dest('web/themes/' + item.path + '/min'))
         .pipe(filter('**/*.css*'))
         .pipe(livereload())
@@ -52,14 +52,15 @@ themes.forEach( function (item, index) {
 buildTasks.push('js')
 
 gulp.task('js', function (done) {
-  gulp.src(['web/themes/default/source/js/site/immediate.js',
+  gulp.src([
+            'web/themes/default/source/js/site/immediate.js',
             'web/themes/default/source/js/site/**.js',
             'web/themes/default/source/js/lib/svgxuse.min.js'
           ])
       .pipe(sourcemaps.init())
-        .pipe(uglify())
-        .pipe(concat('site.js'))
-        .pipe(sourcemaps.write(''))
+      .pipe(uglify())
+      .pipe(concat('site.js'))
+      .pipe(sourcemaps.write(''))
       .pipe(gulp.dest('web/themes/default/min'))
       .pipe(livereload())
   done()

@@ -4,3 +4,6 @@ UPDATE "public"."groups" SET "name"='Banned Members', "url"='Banned-Members' WHE
 UPDATE "public"."groups" SET "url"='Public' WHERE "id"=1 RETURNING "id", "name", "description", "login", "post", "reply", "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", "system", "locked", "url";
 UPDATE "public"."groups" SET "url"='Administrators' WHERE "id"=5 RETURNING "id", "name", "description", "login", "post", "reply", "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", "system", "locked", "url";
 UPDATE "public"."groups" SET "url"='Moderators' WHERE "id"=4 RETURNING "id", "name", "description", "login", "post", "reply", "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", "system", "locked", "url";
+
+
+UPDATE "public"."groups" SET "name"='Members', "url"='Members' WHERE "id"=3 RETURNING "id", "name", "description", "login", "post", "reply", "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", "system", "locked", "url";

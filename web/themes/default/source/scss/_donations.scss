@@ -4,6 +4,9 @@ section.donate {
   display: flex;
   justify-content: center;
   
+  form > * {
+    margin: auto;
+  }
   input[type="submit"] {
     width: auto;
     margin: 2rem auto;
@@ -12,6 +15,10 @@ section.donate {
     color: hsl(227,18%,25%);
     background: linear-gradient(180deg,hsl(227,75%,90%),hsl(227,40%,75%) 98%);
     border-radius: 20px;
+
+    &.brief {
+      display: none;
+    }
   }
 }
 
@@ -23,20 +30,41 @@ section.donate {
       li {
         margin: 0 0.6rem;
       }
-      section.donate {
-        flex: 1 1 auto;
-        order: 2;
-
-        input[type="submit"] {
-          padding-right: 1.6rem;
-          padding-left: 1.6rem;
-        }
-      }
       ul.content {
         order: 1;
       }
       ul.account {
         order: 3;
+      }
+    }
+  }
+
+  section.donate {
+    flex: 1 1 auto;
+    order: 2;
+
+    input[type="submit"] {
+      padding-right: 1.6rem;
+      padding-left: 1.6rem;
+
+      &.brief {
+        display: initial;
+      }
+      &.verbose {
+        display: none;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 840px) {
+  section.donate {
+    input[type="submit"] {
+      &.brief {
+        display: none;
+      }
+      &.verbose {
+        display: initial;
       }
     }
   }

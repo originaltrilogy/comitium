@@ -28,19 +28,19 @@
     "nodemailer": "4.6.4",
     "numeral": "2.0.6",
     "pg": "7.4.3",
-    "slug": "^0.9.3"
+    "slug": "^0.9.4"
   },
   "devDependencies": {
-    "autoprefixer": "*",
-    "gulp": "4.0.0",
+    "autoprefixer": "^9.6.1",
+    "gulp": "^4.0.2",
     "gulp-concat": "*",
     "gulp-cssnano": "*",
-    "gulp-filter": "*",
+    "gulp-filter": "^6.0.0",
     "gulp-livereload": "*",
     "gulp-postcss": "*",
     "gulp-sass": "*",
-    "gulp-sourcemaps": "*",
-    "gulp-uglify": "*",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify-es": "*",
     "gulp-watch": "*"
   },
   "engines": {
