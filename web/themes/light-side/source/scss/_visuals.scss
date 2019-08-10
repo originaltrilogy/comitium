@@ -364,15 +364,28 @@ form {
 /////////////////////////
 
 table {
-  color: hsl(0,0%,85%);
+  color: hsl(227,0%,30%);
 
   th,
   td {
-    border-color: hsl(0,18%,50%);
+    border-color: hsl(227,18%,88%);
   }
 
   th {
-    background: hsl(0,18%,30%);
+    background: hsl(227,18%,88%);
+
+    a:hover {
+      background: hsl(227,18%,58%);
+      color: hsl(227,18%,100%);
+    }
+
+    &.selected {
+      background: hsl(227,18%,58%);
+
+      a {
+        color: hsl(227,18%,100%);
+      }
+    }
   }
 }
 
@@ -611,6 +624,38 @@ body[data-controller="post"][data-view="announcement"] {
   }
 }
 
+/////////////////////
+//   member list   //
+/////////////////////
+
+body[data-controller="members"] {
+  nav.groups {
+    #group-menu {
+      border-color: hsl(227,18%,88%);
+
+      li {
+        a {
+          &:hover {
+            background: hsl(227,18%,88%);
+          }
+        }
+
+        &.current a {
+          background: hsl(227,18%,88%);
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 720px) {
+    nav.groups {
+      #group-menu {
+        background: none;
+        border: none;
+      }
+    }
+  }
+}
 
 ///////////////////
 //   user view   //

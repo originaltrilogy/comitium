@@ -372,11 +372,24 @@ table {
 
   th,
   td {
-    border-color: hsl(227,18%,50%);
+    border-color: hsl(227,18%,30%);
   }
 
   th {
     background: hsl(227,18%,30%);
+
+    a:hover {
+      background: hsl(227,18%,48%);
+      color: hsl(227,18%,88%);
+    }
+
+    &.selected {
+      background: hsl(227,18%,48%);
+
+      a {
+        color: hsl(227,18%,88%);
+      }
+    }
   }
 }
 
@@ -616,6 +629,40 @@ body[data-controller="post"][data-view="private-topic"] {
         &::after {
           color: hsl(0,0%,85%);
         }
+      }
+    }
+  }
+}
+
+/////////////////////
+//   member list   //
+/////////////////////
+
+body[data-controller="members"] {
+  nav.groups {
+    #group-menu {
+      border-color: hsl(227,18%,30%);
+      background-color: hsl(227,18%,32%);
+      
+      li {
+        a {
+          &:hover {
+            background: hsl(227,18%,28%);
+          }
+        }
+
+        &.current a {
+          background: hsl(227,18%,28%);
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 720px) {
+    nav.groups {
+      #group-menu {
+        background: none;
+        border: none;
       }
     }
   }

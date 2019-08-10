@@ -213,6 +213,9 @@ async function search(args) {
     case 'username':
       orderSort = 'username ' + ( args.sort || 'asc' )
       break
+    case 'group':
+      orderSort = 'name ' + ( args.sort || 'asc' )
+      break
     case 'join-date':
       orderSort = 'joined ' + ( args.sort || 'desc' )
       break

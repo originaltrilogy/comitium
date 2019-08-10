@@ -13,8 +13,6 @@ body[data-controller="members"] {
       border-width: 1px;
       border-style: solid;
       border-radius: .4rem;
-      border-color: hsl(227,18%,30%);
-      background-color: hsl(227,18%,32%);
       position: relative;
 
       &::after {
@@ -35,7 +33,6 @@ body[data-controller="members"] {
           padding: 1.2rem;
 
           &:hover {
-            background: hsl(227,18%,28%);
             text-decoration: none;
           }
         }
@@ -82,6 +79,19 @@ body[data-controller="members"] {
   table {
     margin: 0;
     white-space: nowrap;
+
+    th {
+      padding: 0;
+
+      a {
+        display: block;
+        padding: 1rem;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
   }
 
   @media only screen and (min-width: 720px) {
@@ -122,11 +132,15 @@ body[data-controller="members"] {
       #group-menu {
         display: flex;
         margin: 0;
-        background: none;
-        border: none;
 
         &::after {
           display: none;
+        }
+      }
+
+      li {
+        a {
+          border-radius: 0.4rem;
         }
       }
     }
@@ -142,6 +156,11 @@ body[data-controller="members"] {
       margin: auto;
       padding-right: 0;
       padding-left: 0;
+    }
+
+    nav.groups #group-menu li a {
+      padding-right: 1.6rem;
+      padding-left: 1.6rem;
     }
   }
 }
