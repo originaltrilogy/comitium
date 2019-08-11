@@ -129,7 +129,7 @@ async function group(args) {
     try {
       const result = await client.query({
         name: 'members_group_' + orderSort.replace(' ', '_'),
-        text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id where g.id = $1 and u.activated = true order by ' + orderSort + ' limit $2 offset $3;',
+        text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url as group_url from users u join groups g on u."groupID" = g.id where g.id = $1 and u.activated = true order by ' + orderSort + ' limit $2 offset $3;',
         values: [ args.group, end - start, start ]
       })
 
@@ -244,13 +244,13 @@ async function search(args) {
       if ( args.groupID ) {
         result = await client.query({
           name: 'members_search_group' + orderSort.replace(' ', '_'),
-          text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id and u.activated = true and u.username ilike \'%\' || $2 || \'%\' where u."groupID" = $1 order by ' + orderSort + ' limit $3 offset $4;',
+          text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url as group_url from users u join groups g on u."groupID" = g.id and u.activated = true and u.username ilike \'%\' || $2 || \'%\' where u."groupID" = $1 order by ' + orderSort + ' limit $3 offset $4;',
           values: [ args.groupID, decodeURI(args.term), end - start, start ]
         })
       } else {
         result = await client.query({
           name: 'members_search_' + orderSort.replace(' ', '_'),
-          text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url from users u join groups g on u."groupID" = g.id and u.activated = true and u.username ilike \'%\' || $1 || \'%\' order by ' + orderSort + ' limit $2 offset $3;',
+          text: 'select count(*) OVER() AS full_count, u.id, u.username, u.url, u.joined, u."lastActivity", g.name, g.url as group_url from users u join groups g on u."groupID" = g.id and u.activated = true and u.username ilike \'%\' || $1 || \'%\' order by ' + orderSort + ' limit $2 offset $3;',
           values: [ decodeURI(args.term), end - start, start ]
         })
       }
