@@ -1,20 +1,24 @@
 // sign out controller
 
-'use strict';
+'use strict'
 
 module.exports = {
-  handler: handler
-};
+  handler : handler
+}
 
 
-function handler(params, context, emitter) {
-  emitter.emit('ready', {
+function handler(params) {
+
+  if ( params.session.userID ) {
+    app.models.user.log({
+      userID: params.session.userID,
+      action: 'Sign out',
+      ip: app.toolbox.helpers.ip(params.request)
+    })
+  }
+
+  return {
     view: params.url.reason || 'sign-out',
-    cache: {
-      controller: {
-        directives: ['cookie', 'session']
-      }
-    },
     cookie: {
       comitium_id: {
         expires: 'now'
@@ -23,5 +27,5 @@ function handler(params, context, emitter) {
     session: {
       expires: 'now'
     }
-  });
+  }
 }

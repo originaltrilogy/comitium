@@ -3,26 +3,51 @@
 /////////////////////////
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  font-size: 4vw;
-	line-height: 1.75;
+	line-height: 1;
   word-wrap: break-word;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: normal;
+  line-height: 1.4;
 }
 
 h1 { font-size: 140%; }
 h2 { font-size: 130%; }
-h3 { font-size: 110%; }
+h3 { font-size: 105%; }
+h4, h5, h6 { font-size: 100%; }
 
 ul,
 ol {
-	margin-left: 8vw;
+  margin: 1.2rem 0 1.8rem 3rem;
+  line-height: 1.5;
+}
+
+dl {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 1.2rem 1.8rem;
+  line-height: 1.5;
+}
+dt {
+  flex: 0 0 30%;
+
+  &::after {
+    content: ':';
+  }
+}
+dd {
+  flex: 0 0 70%;
+  word-break: break-word;
 }
 
 nav {
@@ -33,7 +58,8 @@ nav {
 }
 
 p {
-  margin: 4vw 0 6vw;
+  margin: 1rem 0;
+  line-height: 1.5;
 }
 
 table {
@@ -46,36 +72,44 @@ img {
   -ms-interpolation-mode: bicubic;
 }
 
-q:before,
-q:after {
+q::before,
+q::after {
   content: '';
 }
 
 input,
+select,
 textarea {
-  -moz-appearance: none;
-  -webkit-appearance: none;
+  appearance: none;
+  border: none;
   border-radius: 0;
+}
+
+input:not([type="checkbox"]),
+input:not([type="radio"]) {
+  line-height: 1;
 }
 
 b,
 strong {
-  font-weight: normal;
-  font-family: $boldFont;
+  font-weight: 600;
+  font-style: normal;
 
   i,
   em {
-    font-family: $boldItalicFont;
+    font-weight: 600;
+    font-style: italic;
   }
 }
 
 i,
 em {
-  font-style: normal;
-  font-family: $italicFont;
+  font-weight: 400;
+  font-style: italic;
 
   b,
   strong {
-    font-family: $boldItalicFont;
+    font-weight: 600;
+    font-style: italic;
   }
 }

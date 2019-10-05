@@ -1,6 +1,6 @@
 {
   "name": "comitium",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Forum software for Node.js",
   "author": {
     "name": "Jay Sylvester",
@@ -13,35 +13,37 @@
   },
   "main": "index",
   "scripts": {
-    "start": "node ./app/start.js",
-    "test": "./node_modules/.bin/mocha -u tdd",
-    "coverage": "./node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- -R spec"
+    "start-dev": "node ./app/start-dev.js",
+    "start-prod": "node ./app/start-prod.js"
   },
   "dependencies": {
-    "bcrypt": "*",
-    "citizen": "~0.6.9",
-    "moment": "*",
-    "moment-timezone": "*",
-    "nodemailer": "*",
-    "numeral": "*",
-    "pg": "*",
-    "remarkable": "*",
-    "slug": "*",
-    "to-markdown": "*"
+    "bcryptjs": "^2.4.3",
+    "citizen": "github:jaysylvester/citizen#0.9.0",
+    "gm": "1.23.1",
+    "jade": "1.11.0",
+    "markdown-it": "8.4.1",
+    "markdown-it-emoji": "1.4.0",
+    "moment": "2.22.0",
+    "moment-timezone": "0.5.17",
+    "nodemailer": "4.6.4",
+    "numeral": "2.0.6",
+    "pg": "7.4.3",
+    "slug": "^0.9.4"
   },
   "devDependencies": {
-    "grunt": "*",
-    "grunt-autoprefixer": "*",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-cssmin": "*",
-    "grunt-contrib-imagemin": "*",
-    "grunt-contrib-sass": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-watch": "*",
-    "load-grunt-tasks": "*"
+    "autoprefixer": "^9.6.1",
+    "gulp": "^4.0.2",
+    "gulp-concat": "*",
+    "gulp-cssnano": "*",
+    "gulp-filter": "^6.0.0",
+    "gulp-livereload": "*",
+    "gulp-postcss": "*",
+    "gulp-sass": "*",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify-es": "*",
+    "gulp-watch": "*"
   },
   "engines": {
-    "node": ">= 0.10.x"
+    "node": ">= 6.0.0"
   }
 }

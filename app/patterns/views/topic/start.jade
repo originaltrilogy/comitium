@@ -1,41 +1,42 @@
-h1 Start a new topic in #{discussion.title}
+header
+  include ../partials/breadcrumbs
+  section.summary
+    h1 Start a new topic in #{discussion.title}
 
 if preview
   section.preview
     h2 Topic preview:
     article.post
-      .title
+      h3.title
         != preview.title
-      .content
+      section.content.post
         != preview.content
-          
-section.topic-write-form
+
+if topic && topic.message
+  section.notice.error
+    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
+    p !{topic.message}
+
+section.form.post.topic-write
   form#topic-write-form(action="topic/action/startForm/id/#{discussion.id}" method="post" novalidate)
-    if topic && topic.message
-      .messages
-        ul
-          li #{topic.message}
-    .data
-      ul
-        li.topic-title.text.required
-          label(for="topic-title")
-            | Topic title
-          textarea(id="topic-title" name="title" rows="2" required) #{form.title}
-        li.post-content.textarea.required
-          label(for="post-content")
-            | Post content
-          textarea(id="post-content" name="content" rows="10" required) #{form.content}
-        li.subscribe.checkbox
-          input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
-          label(for="subscribe")
-            | Notify me when someone replies
-    .actions
-      ul
-        li.secondary.preview
-          input(name="formAction" type="submit" value="Preview")
-        li.primary.post
-          input(name="formAction" type="submit" value="Post your topic")
-        //- li.tertiary.draft
-        //-   input(name="formAction" type="submit" value="Save as draft")
-        li.quaternary.cancel
-          a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
+    ul.data
+      li.topic-title.textarea.required
+        label(for="topic-title")
+          | Topic title
+        textarea(id="topic-title" name="title" rows="2" required) #{form.title}
+      li.post-content.textarea.required
+        label(for="post-content")
+          | Post content
+        textarea(id="post-content" name="content" rows="20" required) #{form.content}
+      li.subscribe.checkbox
+        input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
+        label(for="subscribe")
+          | Notify me when someone replies
+
+    ul.actions
+      li.secondary.preview
+        input(name="formAction" type="submit" value="Preview post")
+      li.primary.post
+        input(name="formAction" type="submit" value="Post your topic")
+      //- li.tertiary.draft
+      //-   input(name="formAction" type="submit" value="Save as draft")

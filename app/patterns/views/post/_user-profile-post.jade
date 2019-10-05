@@ -1,0 +1,39 @@
+article.post(id="#{post.id}" data-post-id="#{post.id}")
+  header
+    dl
+      dt.post Post
+      dd.post
+        a(href="post/id/#{post.id}") ##{post.id}
+      dt.topic Topic
+      dd.topic <a href="topic/#{post.topicUrl}/id/#{post.topicID}">#{post.topicTitle}</a>
+      dt.link Link
+      dd.link <a href="post/id/#{post.id}/action/topic##{post.id}">#{config.comitium.baseUrl}post/id/#{post.id}/action/topic##{post.id}</a>
+      dt.time Time
+      dd.time
+        if !post.editorID
+          time #{post.createdFormatted}
+        else
+          time #{post.createdFormatted} <span class="edited">— <a href="post/id/#{post.id}">Edited #{post.modifiedFormatted}</a></span>
+  section.content.post
+    != post.html
+  nav.actions
+    ul
+      if ( session.username === post.author && !post.lockedByID ) || session.moderateDiscussions
+        li.edit
+          a(href="post/action/edit/id/#{post.id}") Edit
+      //- li.bookmark
+      //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
+      if post.authorID !== session.userID && !session.moderateDiscussions
+        li.report
+          a(href="post/action/report/id/#{post.id}") Report
+      if session.moderateDiscussions
+        if !post.lockedByID
+          li.lock
+            a(href="post/action/lock/id/#{post.id}") Lock
+        else
+          li.unlock
+            a(href="post/action/unlock/id/#{post.id}") Unlock
+        // Don't allow the only post in the topic to be deleted
+        if post.topicReplies > 0
+          li.delete
+            a(href="post/action/trash/id/#{post.id}") Delete

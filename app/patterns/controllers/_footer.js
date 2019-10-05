@@ -1,32 +1,47 @@
 // _footer controller
 
-'use strict';
+'use strict'
 
 module.exports = {
-  handler: handler
-};
+  handler : handler
+}
 
 
-function handler(params, context, emitter) {
-  app.listen({
-    topics: function (emitter) {
-      app.models.stats.topics(emitter);
+async function handler() {
+  let [
+    topics,
+    posts,
+    users,
+    firstPost
+  ] = await Promise.all([
+    app.models.stats.topics(),
+    app.models.stats.posts(),
+    app.models.stats.users(),
+    app.models.stats.firstPost()
+  ])
+
+  let copyrightYear = new Date(firstPost).getFullYear(),
+      year = new Date().getFullYear()
+
+  if ( copyrightYear !== year ) {
+    copyrightYear += '-' + year
+  }
+
+  return {
+    content: {
+      logo: app.resources.images.logoVertical,
+      stats: {
+        topics: app.toolbox.numeral(topics).format('0,0'),
+        posts: app.toolbox.numeral(posts).format('0,0'),
+        users: app.toolbox.numeral(users).format('0,0'),
+        firstPostCreated: app.toolbox.moment.tz(firstPost, 'America/New_York').format('MMMM D, YYYY')
+      },
+      copyrightYear: copyrightYear
     },
-    posts: function (emitter) {
-      app.models.stats.posts(emitter);
-    },
-    users: function (emitter) {
-      app.models.stats.users(emitter);
-    }
-  }, function (output) {
-    emitter.emit('ready', {
-      content: {
-        stats: {
-          topics: app.toolbox.numeral(output.topics).format('0,0'),
-          posts: app.toolbox.numeral(output.posts).format('0,0'),
-          users: app.toolbox.numeral(output.users).format('0,0')
-        }
+    cache: {
+      controller: {
+        lifespan: 'application'
       }
-    });
-  });
+    }
+  }
 }

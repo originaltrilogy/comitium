@@ -1,56 +1,90 @@
-h1 Your Account
+header
+  section.summary
+    h1 Your Account
+    p Update your account information and adjust your settings.
 
-section#general
-  h2 General info and settings
-  form.general(action="account/action/generalForm" method="post" autocomplete="off" novalidate)
+section.settings
+  section.general#general
+    h2 Info and settings
     if general && general.messages
-      .messages
-        ul
-          each message in general.messages
-            li
-              = message
-    .data
-      ul
-        li.email.text.required
-          label(for="email") E-mail address
-          p.label-note Your account will require reactivation if you update your address (we'll send you an activation e-mail)
-          input#email(name="email" type="email" value="#{form.email}" autocomplete="off" required)
-        li.password.text
-          label(for="password") Password
-          p.label-note At least 8 characters, anything but spaces, case-sensitive
-          input#password(name="password" type="password" autocomplete="off" value="#{form.password}")
-        li.signature.textarea
-          label(for="signature") Signature
-          p.label-note Your signature appears beneath your forum posts
-          textarea#signature(name="signature" rows="2") #{form.signature}
-        li.timezone.select
-          label(for="timezone") Time zone
-          select#timezone(name="timezone")
-            each timezone in timezones
-              if timezone !== form.timezone
-                option
-                  = timezone
-              else
-                option(selected)
-                  = timezone
-        li.theme.select
-          label(for="theme") Theme
-          select#theme(name="theme")
-            each theme in themes
-              if theme.name !== form.theme
-                option
-                  = theme.name
-              else
-                option(selected)
-                  = theme.name
-        li.private-topic-notification.checkbox
-          input#private-topic-email-notification(name="privateTopicEmailNotification" type="checkbox" value="true" checked=form.privateTopicEmailNotification)
-          label(for="private-topic-email-notification") Send me an e-mail when I'm invited to participate in a private topic
-    .actions
-      ul
-        li.primary
-          input(name="formAction" type="submit" value="Save changes")
-  
-section#avatar
-  h2 Upload or delete your avatar
-  p Your avatar is an image that appears next to your posts to help identify you to other members.
+      section(class="notice #{ general.success ? 'success' : 'error' }")
+        <svg class="icon #{ general.success ? 'success' : 'error' }"><use xlink:href="themes/default/images/symbols.svg#icon-#{ general.success ? 'success' : 'error' }"></use></svg>
+        each message in general.messages
+          p #{message}
+    section.form
+      form.general(action="account/action/generalForm#general" method="post" autocomplete="off" novalidate)
+        ul.data
+          li.email.text.required
+            label(for="email") E-mail address
+            p.label-note Your account will require reactivation if you update your address (we'll send you an activation e-mail)
+            //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
+            //- DO NOT REMOVE
+            input(type="email" name="chromeIsStupidEmail" style="display: none;")
+            input#email(name="email" type="email" value="#{form.email}" autocomplete="off" required)
+          li.password.text
+            label(for="password") Password
+            p.label-note At least 8 characters, no spaces, case-sensitive
+            //- Chrome ignores the autocomplete flag. This is a hack to subvert autocomplete.
+            //- DO NOT REMOVE
+            input(type="password" name="chromeIsStupidPassword" style="display: none;")
+            input#password(name="password" type="password" autocomplete="off" value="#{form.password}")
+          li.timezone.select
+            label(for="timezone") Time zone
+            p.label-note Doesn't do anything right now, sorry. All times are in Eastern US for now regardless of this setting.
+            select#timezone(name="timezone")
+              each timezone in timezones
+                if timezone !== form.timezone
+                  option
+                    = timezone
+                else
+                  option(selected)
+                    = timezone
+          li.theme.select
+            label(for="theme") Theme
+            select#theme(name="theme")
+              each theme in themes
+                if theme.name !== form.theme
+                  option
+                    = theme.name
+                else
+                  option(selected)
+                    = theme.name
+          li.subscription-notification.checkbox
+            input#subscription-email-notification(name="subscriptionEmailNotification" type="checkbox" value="true" checked=form.subscriptionEmailNotification)
+            label(for="subscription-email-notification") Send me an e-mail when a topic I'm subscribed to receives an update
+          li.private-topic-notification.checkbox
+            input#private-topic-email-notification(name="privateTopicEmailNotification" type="checkbox" value="true" checked=form.privateTopicEmailNotification)
+            label(for="private-topic-email-notification") Send me an e-mail when I'm invited to participate in a private topic
+          li.signature.textarea
+            label(for="signature") Post signature
+            p.label-note This content appears beneath your forum posts
+            textarea#signature(name="signature" rows="4") #{form.signature}
+          li.website.text
+            label(for="website") Web site
+            p.label-note This will appear in your public user profile
+            input#website(name="website" value="#{form.website ? form.website : ''}" placeholder="Example: http://mysite.com")
+
+        ul.actions
+          li.primary
+            input(name="formAction" type="submit" value="Save changes")
+
+  section.avatar#avatar
+    h2 Avatar
+    if avatarForm && avatarForm.message
+      section(class="notice #{ avatarForm.success ? 'success' : 'error' }")
+        <svg class="icon #{ avatarForm.success ? 'success' : 'error' }"><use xlink:href="themes/default/images/symbols.svg#icon-#{ avatarForm.success ? 'success' : 'error' }"></use></svg>
+        p #{avatarForm.message}
+    a.avatar(href="user/#{session.url}/id/#{session.userID}" rel="author")
+      img(src="avatars/#{session.userID}.jpg?v=#{ Math.random() }")
+    p Your avatar is an image that appears next to your posts to help identify you to other members.
+    section.form
+      form(action="account/action/avatarForm/#avatar" enctype="multipart/form-data" method="post")
+        ul.data
+          li.avatar.file.required
+            label(for="avatar-file") Choose an image to upload
+            p.label-note Most file formats are supported except for animated GIFs. File sizes up to 5MB accepted.
+            input#avatar-file(name="avatar" type="file")
+
+        ul.actions
+          li.primary
+            input(name="formAction" type="submit" value="Upload image")

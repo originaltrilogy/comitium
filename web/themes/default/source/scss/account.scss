@@ -4,6 +4,96 @@
 
 body[data-controller="account"] {
 
+  section.settings {
+    > section {
+      margin: 1.8rem auto;
+    }
+  }
+  section.avatar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
 
+    section.notice {
+      flex-basis: 100%;
+    }
+    h2 {
+      flex: 0 0 100%;
+    }
+    a.avatar {
+      width: 4.8rem;
+      height: 4.8rem;
+      margin: 0 1.2rem;
+    }
+    > p {
+      flex: 1 1 calc(100% - 7.2rem);
+      margin: 0;
+    }
+    section.form {
+      width: 100%;
+    }
+  }
+
+
+  @media only screen and (min-width: 720px) {
+
+    section.form {
+      max-width: 32rem;
+      margin-right: auto;
+      margin-left: auto;
+    }
+    section.settings {
+      display: flex;
+      align-items: flex-start;
+      max-width: 96rem;
+      margin: auto;
+
+      > section {
+        margin: 3.2rem auto;
+      }
+    }
+    section.general,
+    section.avatar {
+      flex: 0 0 32rem;
+      margin: 0 auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    form {
+      ul.data {
+        & > li {
+          &.textarea {
+            textarea {
+              padding: 2rem;
+            }
+          }
+        }
+      }
+    }
+    li.signature {
+      margin-top: 3.2rem;
+    }
+    section.avatar {
+      max-width: 32rem;
+
+      section.notice {
+        padding: 1.2rem;
+        margin-bottom: 2.4rem;
+      }
+      a.avatar {
+        width: 10rem;
+        height: 10rem;
+        margin-right: 2rem;
+        margin-left: 0;
+      }
+      > p {
+        flex-basis: 20rem;
+      }
+      form {
+        padding-top: 0;
+      }
+    }
+  }
 
 }

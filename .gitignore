@@ -1,6 +1,18 @@
+
+# comitium
+app/newrelic.js
 app/config/*
 app/logs/*
+web/avatars/*
+newrelic_agent.log
+
+# Mac
 .DS_Store
+
+# node/npm
 node_modules
-.sass-cache
 npm-debug.log
+.sass-cache
+
+# VS Code
+.vscode

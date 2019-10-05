@@ -1,11 +1,9 @@
 doctype html
-html
+html(lang="en")
   != include._head
-  body(data-chain="#{controllerChain}" data-controller="#{route.controller}" data-action="#{route.action}" data-view="#{route.view}" data-renderer="#{route.renderer}" data-rendered-view="#{route.renderedView}" data-show="#{route.show}" data-task="#{route.task}" data-type="#{route.type}" data-mode="#{config.citizen.mode}")
+  body(data-chain="#{controllerChain}" data-controller="#{route.controller}" data-action="#{route.action}" data-view="#{route.view}" data-renderer="#{route.renderer}" data-rendered-view="#{route.renderedView}" data-show="#{route.show}" data-task="#{route.task}" data-type="#{route.type}" data-mode="#{config.citizen.mode}" data-breadcrumbs="#{ breadcrumbs ? 'true' : 'false' }" data-page="#{ url.page || 1 }")
     != include._header
     main
-      if breadcrumbs
-        include ../partials/breadcrumbs
       each controller in route.chain
         if controller.viewContent
           | <!-- controller: #{controller.controller}, action: #{controller.action}, view: #{controller.view} -->

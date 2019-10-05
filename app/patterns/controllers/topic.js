@@ -1,1207 +1,1130 @@
 // topic controller
 
-'use strict';
-
-var Remarkable = require('remarkable');
+'use strict'
 
 module.exports = {
-  handler: handler,
-  start: start,
-  startForm: startForm,
-  startPrivate: startPrivate,
-  startPrivateForm: startPrivateForm,
-  reply: reply,
-  replyForm: replyForm,
-  subscribe: subscribe,
-  unsubscribe: unsubscribe,
-  lock: lock,
-  lockForm: lockForm,
-  unlock: unlock,
-  // merge: merge,
-  // mergeForm: mergeForm,
-  move: move,
-  moveForm: moveForm,
-  trash: trash,
-  trashForm: trashForm
-};
+  handler               : handler,
+  head                  : head,
+  notifySubscribers     : notifySubscribers,
+  start                 : start,
+  startForm             : startForm,
+  startAnnouncement     : startAnnouncement,
+  startAnnouncementForm : startAnnouncementForm,
+  startPrivate          : startPrivate,
+  startPrivateForm      : startPrivateForm,
+  reply                 : reply,
+  replyForm             : replyForm,
+  subscribe             : subscribe,
+  unsubscribe           : unsubscribe,
+  leave                 : leave,
+  leaveForm             : leaveForm,
+  lock                  : lock,
+  lockForm              : lockForm,
+  unlock                : unlock,
+  edit                  : edit,
+  editForm              : editForm,
+  // merge                 : merge,
+  // mergeForm             : mergeForm,
+  move                  : move,
+  moveForm              : moveForm,
+  trash                 : trash,
+  trashForm             : trashForm
+}
 
 
-function handler(params, context, emitter) {
+async function handler(params) {
   // Verify the user's group has read access to the topic's parent discussion
-  app.listen({
-    access: function (emitter) {
-      app.toolbox.access.topicView(params.url.id, params.session, emitter);
-    }
-  }, function (output) {
+  let access = await app.toolbox.access.topicView({ topicID: params.url.id, user: params.session })
 
-    if ( output.listen.success ) {
-
-      if ( !output.access.redirect ) {
-
-        if ( params.url.unread && params.session.userID ) {
-
-          app.listen({
-            firstUnreadPost: function (emitter) {
-              app.models.topic.firstUnreadPost({
-                topicID: params.url.id,
-                userID: params.session.userID
-              }, emitter);
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              var urlTopic = params.url.topic || '',
-                  urlPage = output.firstUnreadPost.page !== 1 ? '/page/' + output.firstUnreadPost.page : '',
-                  urlPost = output.firstUnreadPost.post ? '/#' + output.firstUnreadPost.post.id : '';
-
-              emitter.emit('ready', {
-                redirect: params.route.parsed.protocol + app.config.comitium.baseUrl + 'topic/' + urlTopic + '/id/' + params.url.id + urlPage + urlPost
-              });
-            } else {
-              emitter.emit('error', output.listen);
-            }
-          });
-
+  if ( access === true ) {
+    let [
+      topic,
+      firstUnreadPost
+    ] = await Promise.all([
+      app.models.topic.info(params.url.id),
+      ( async () => {
+        if ( !params.url.page ) {
+          return await app.models.topic.firstUnreadPost({
+            topicID: params.url.id,
+            userID: params.session.userID,
+            viewTime: params.session.lastActivity
+          })
         } else {
-
-          params.url.page = params.url.page || 1;
-
-          // If the user has read access, get the posts for the requested page
-          app.listen({
-            topic: function (emitter) {
-              app.models.topic.info(params.url.id, emitter);
-            },
-            posts: function (emitter) {
-              var start = ( params.url.page - 1 ) * 25,
-                  end = start + 25;
-
-              app.models.topic.posts({
-                topicID: params.url.id,
-                start: start,
-                end: end
-              }, emitter);
-            },
-            invitees: function (emitter) {
-              app.models.topic.invitees({
-                topicID: params.url.id
-              }, emitter);
-            },
-            subscriptionExists: function (emitter) {
-              if ( params.session.userID ) {
-                app.models.topic.subscriptionExists({
-                  userID: params.session.userID,
-                  topicID: params.url.id
-                }, emitter);
-              } else {
-                emitter.emit('ready', false);
-              }
-            }
-          }, function (output) {
-
-            if ( output.listen.success ) {
-
-              if ( params.session.username ) {
-                app.models.topic.viewTimeUpdate({
-                  userID: params.session.userID,
-                  topicID: output.topic.id,
-                  time: app.toolbox.helpers.isoDate()
-                });
-              }
-
-              emitter.emit('ready', {
-                view: output.topic.private ? 'private-topic' : 'topic',
-                content: {
-                  topic: output.topic,
-                  posts: output.posts,
-                  invitees: output.invitees,
-                  userIsSubscribed: output.subscriptionExists,
-                  pagination: app.toolbox.helpers.paginate('topic/' + output.topic.url + '/id/' + output.topic.id, params.url.page, output.topic.replies + 1),
-                  breadcrumbs: app.models.topic.breadcrumbs(output.topic.discussionTitle || 'Private Topics', output.topic.discussionUrl || 'private-topics', output.topic.discussionID)
-                }
-              });
-
-            } else {
-              emitter.emit('error', output.listen);
-            }
-
-          });
+          return false
         }
+      })()
+    ])
 
-      } else {
+    let page = parseInt(params.url.page, 10) || 1,
+        type,
+        url
 
-        emitter.emit('ready', output.access);
-
-      }
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
+    switch ( topic.discussionID ) {
+      case 0:
+        type = 'private-topic'
+        break
+      case 2:
+        type = 'announcement'
+        break
+      default:
+        type = 'topic'
+        break
     }
 
-  });
-}
+    url = topic.private ? 'topic' : type + '/' + topic.url
 
-
-function start(params, context, emitter) {
-
-  // Verify the user's group has post access to the discussion
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.discussionPost(params.url.id, params.session, emitter);
-    },
-    discussion: function (previous, emitter) {
-      app.models.discussion.info(params.url.id, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      params.form.title = '';
-      params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
-      params.form.subscribe = true;
-
-      emitter.emit('ready', {
-        content: {
-          discussion: output.discussion,
-          breadcrumbs: app.models.topic.breadcrumbs(output.discussion.title, output.discussion.url, output.discussion.id)
-        },
-        view: 'start'
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-}
-
-
-function startForm(params, context, emitter) {
-
-  if ( params.request.method === 'POST' ) {
-    params.form.subscribe = params.form.subscribe || false;
-
-    // Verify the user's group has post access to the discussion
-    app.listen('waterfall', {
-      access: function (emitter) {
-        app.toolbox.access.discussionPost(params.url.id, params.session, emitter);
-      },
-      discussion: function (previous, emitter) {
-        app.models.discussion.info(params.url.id, emitter);
+    // If there are unread posts, the first unread post isn't the first post in the topic,
+    // and a specific page hasn't been requested, redirect the user to the first unread post.
+    if ( firstUnreadPost && firstUnreadPost.post.id !== topic.firstPostID ) {
+      return {
+        redirect: app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + firstUnreadPost.page + '#' + firstUnreadPost.post.id
       }
-    }, function (output) {
-      var discussion = output.discussion,
-          titleMarkdown = new Remarkable(),
-          contentMarkdown = new Remarkable({
-            breaks: true,
-            linkify: true
-          }),
-          parsedTitle,
-          parsedContent,
-          url,
-          draft = false,
-          time = app.toolbox.helpers.isoDate();
+    } else if ( params.route.descriptor === topic.url || topic.private ) {
+      let [
+        posts,
+        subscriptionExists,
+        userCanReply
+      ] = await Promise.all([
+        // posts
+        ( async () => {
+          var start = ( page - 1 ) * 25,
+              end = start + 25
 
-      // If the group has post access, process the topic form
-      if ( output.listen.success ) {
-
-        parsedTitle = titleMarkdown.render(params.form.title);
-        // Get rid of the paragraph tags and line break added by Remarkable
-        parsedTitle = parsedTitle.replace(/<p>(.*)<\/p>\n$/, '$1');
-
-        parsedContent = contentMarkdown.render(params.form.content);
-
-        url = app.toolbox.slug(params.form.title);
-
-        switch ( params.form.formAction ) {
-          case 'Preview':
-            emitter.emit('ready', {
-              content: {
-                preview: {
-                  title: parsedTitle,
-                  content: parsedContent
-                },
-                discussion: discussion,
-                breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url)
-              },
-              view: 'start'
-            });
-            break;
-          case 'Save as draft':
-          case 'Post your topic':
-            if ( params.form.formAction === 'Save as draft' ) {
-              draft = true;
-            }
-            app.listen({
-              saveTopic: function (emitter) {
-                app.models.topic.insert({
-                  discussionID: discussion.id,
-                  userID: params.session.userID,
-                  titleMarkdown: params.form.title,
-                  titleHtml: parsedTitle,
-                  url: url,
-                  markdown: params.form.content,
-                  html: parsedContent,
-                  draft: draft,
-                  private: false,
-                  time: time
-                }, emitter);
-              }
-            }, function (output) {
-              var topic = output.saveTopic;
-
-              if ( output.listen.success && output.saveTopic.success ) {
-                if ( params.form.subscribe ) {
-                  app.listen({
-                    subscribe: function (emitter) {
-                      app.models.topic.subscribe({
-                        userID: params.session.userID,
-                        topicID: topic.id,
-                        time: time
-                      }, emitter);
-                    }
-                  }, function (output) {
-
-                    if ( output.listen.success ) {
-                      emitter.emit('ready', {
-                        redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
-                      });
-                    } else {
-                      emitter.emit('error', output.listen);
-                    }
-
-                  });
-                } else {
-                  emitter.emit('ready', {
-                    redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
-                  });
-                }
-              } else {
-
-                if ( !output.listen.success ) {
-                  emitter.emit('error', output.listen);
-                } else {
-                  emitter.emit('ready', {
-                    content: {
-                      topic: output.saveTopic,
-                      discussion: discussion,
-                      breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url, discussion.id)
-                    },
-                    view: 'start'
-                  });
-                }
-
-              }
-            });
-            break;
-        }
-
-      } else {
-
-        emitter.emit('error', output.listen);
-
-      }
-
-    });
-  // If it's a GET, fall back to the default topic start action
-  } else {
-    start(params, context, emitter);
-  }
-}
-
-
-function startPrivate(params, context, emitter) {
-
-  // Verify the user can start a private topic with the invitee(s)
-  app.listen('waterfall', {
-    invitees: function (emitter) {
-      if ( params.url.invitee ) {
-        app.listen({
-          invitees: function (emitter) {
-            app.models.user.info({
-              user: params.url.invitee
-            }, emitter);
-          }
-        }, function (output) {
-          if ( output.listen.success ) {
-            emitter.emit('ready', [ output.invitees.username ]);
+          return await app.models.topic.posts({
+            topicID: topic.id,
+            start: start,
+            end: end
+          })
+        })(),
+        // subscriptionExists
+        ( async () => {
+          if ( params.session.userID ) {
+            return await app.models.topic.subscriptionExists({
+              userID: params.session.userID,
+              topicID: topic.id
+            })
           } else {
-            emitter.emit('error', output.listen);
+            return false
           }
-        });
-      } else if ( params.form.invitees ) {
-        emitter.emit('ready', params.form.invitees.split('\n'));
-      } else {
-        emitter.emit('ready');
-      }
-    },
-    access: function (previous, emitter) {
-      app.toolbox.access.privateTopicStart({
-        userID: params.session.userID,
-        username: params.session.username,
-        invitees: previous.invitees
-      }, emitter);
-    }
-  }, function (output) {
+        })(),
+        // userCanReply
+        app.toolbox.access.topicReply({
+          topicID: topic.id,
+          user: params.session,
+          response: 'boolean'
+        }),
+        // viewTimeUpdate
+        ( async () => {
+          if ( params.session.userID ) {
+            return await app.models.topic.viewTimeUpdate({
+              userID: params.session.userID,
+              topic: topic,
+              time: app.toolbox.helpers.isoDate()
+            })
+          } else {
+            return false
+          }
+        })()
+      ])
 
-    if ( output.listen.success ) {
+      let left, participants
 
-      params.form.invitees = output.invitees ? output.invitees.join('\n') : '';
-      params.form.title = '';
-      params.form.content = 'We\'ve replaced the old forum script with Markdown, making it easy to add formatting like *italics*, __bold__, and lists:\n\n1. Item one\n2. Item two\n3. Item three\n\nFor more details, tap or click the help button above this form field, or see the [Markdown web site](http://markdown.com).';
-      params.form.subscribe = true;
-
-      emitter.emit('ready', {
-        content: {
-          invitees: output.invitees
-        },
-        view: 'start-private'
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-}
-
-
-function startPrivateForm(params, context, emitter) {
-  var inviteesArray;
-
-  if ( params.request.method === 'POST' ) {
-    inviteesArray = params.form.invitees.split('\r\n');
-    params.form.subscribe = params.form.subscribe || false;
-
-    // Verify the user can start a private topic with the invitees
-    app.listen({
-      access: function (emitter) {
-        app.toolbox.access.privateTopicStart({
-          userID: params.session.userID,
-          username: params.session.username,
-          invitees: inviteesArray
-        }, emitter);
-      }
-    }, function (output) {
-      var titleMarkdown = new Remarkable(),
-          contentMarkdown = new Remarkable({
-            breaks: true,
-            linkify: true
+      if ( topic.private ) {
+        [
+          participants,
+          left
+        ] = await Promise.all([
+          // participants
+          app.models.topic.invitees({
+            topicID: topic.id
           }),
-          parsedTitle,
-          parsedContent,
-          url,
-          draft = false,
-          time = app.toolbox.helpers.isoDate();
-
-      // If the user has permission, process the topic form
-      if ( output.listen.success ) {
-
-        parsedTitle = titleMarkdown.render(params.form.title);
-        // Get rid of the paragraph tags and line break added by Remarkable
-        parsedTitle = parsedTitle.replace(/<p>(.*)<\/p>\n$/, '$1');
-
-        parsedContent = contentMarkdown.render(params.form.content);
-
-        url = app.toolbox.slug(params.form.title);
-
-        switch ( params.form.formAction ) {
-          case 'Preview':
-            emitter.emit('ready', {
-              content: {
-                preview: {
-                  title: parsedTitle,
-                  content: parsedContent
-                }
-              },
-              view: 'start-private'
-            });
-            break;
-          case 'Save as draft':
-          case 'Post your topic':
-            if ( params.form.formAction === 'Save as draft' ) {
-              draft = true;
+          // left
+          app.models.topic.invitees({
+            topicID: topic.id,
+            left: true
+          }),
+          // acceptInvitation
+          ( async () => {
+            if ( params.url.accept ) {
+              await app.models.topic.acceptInvitation({
+                userID: params.session.userID,
+                topicID: topic.id
+              })
             }
-            app.listen({
-              saveTopic: function (emitter) {
-                app.models.topic.insert({
-                  userID: params.session.userID,
-                  username: params.session.username,
-                  invitees: inviteesArray,
-                  discussionID: 0,
-                  titleMarkdown: params.form.title,
-                  titleHtml: parsedTitle,
-                  url: url,
-                  markdown: params.form.content,
-                  html: parsedContent,
-                  draft: draft,
-                  private: true,
-                  time: time
-                }, emitter);
-              }
-            }, function (output) {
-              var topic = output.saveTopic,
-                  methods = {};
-
-              if ( output.listen.success && output.saveTopic.success ) {
-
-                if ( !draft ) {
-                  inviteesArray.forEach( function (item, index, array) {
-                    methods[item] = function (emitter) {
-                      app.models.user.info({
-                        username: item
-                      }, emitter);
-                    };
-                  });
-
-                  app.listen(methods, function (output) {
-                    if ( output.listen.success ) {
-                      delete output.listen;
-                      for ( var invitee in output ) {
-                        if ( invitee.privateTopicEmailNotification ) {
-                          app.mail.sendMail({
-                            from: app.config.comitium.email,
-                            to: invitee.email,
-                            subject: 'New private topic started by ' + params.session.username,
-                            text: app.config.comitium.baseUrl + '/topic/id/' + topic.id
-                          });
-                        }
-                      }
-                    } else {
-                      emitter.emit('error', output.listen);
-                    }
-                  });
-                }
-
-                if ( params.form.subscribe ) {
-                  app.listen({
-                    subscribe: function (emitter) {
-                      app.models.topic.subscribe({
-                        userID: params.session.userID,
-                        topicID: topic.id,
-                        time: time
-                      }, emitter);
-                    }
-                  }, function (output) {
-
-                    if ( output.listen.success ) {
-                      emitter.emit('ready', {
-                        redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/id/' + topic.id
-                      });
-                    } else {
-                      emitter.emit('error', output.listen);
-                    }
-
-                  });
-                } else {
-                  emitter.emit('ready', {
-                    redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/id/' + topic.id
-                  });
-                }
-              } else {
-
-                if ( !output.listen.success ) {
-                  emitter.emit('error', output.listen);
-                } else {
-                  emitter.emit('ready', {
-                    content: {
-                      topic: topic
-                    },
-                    view: 'start-private'
-                  });
-                }
-
-              }
-            });
-            break;
-        }
-
-      } else {
-
-        emitter.emit('error', output.listen);
-
+          })()
+        ])
       }
 
-    });
-  // If it's a GET, fall back to the default topic start action
+      let firstPost = []
+      if ( page === 1 ) {
+        firstPost[0] = posts.shift()
+      }
+
+      return {
+        view: type,
+        content: {
+          topic: topic,
+          firstPost: firstPost,
+          posts: posts,
+          page: page,
+          participants: participants,
+          left: left,
+          userIsSubscribed: subscriptionExists,
+          userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 1,
+          userCanReply: userCanReply,
+          pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
+          previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),
+          breadcrumbs: app.models.topic.breadcrumbs(topic)
+        }
+      }
+    } else {
+      return {
+        redirect: {
+          url: app.config.comitium.baseUrl + url + '/id/' + topic.id + ( params.url.page ? '/page/' + params.url.page : '' ),
+          statusCode: 301
+        }
+      }
+    }
   } else {
-    start(params, context, emitter);
+    return access
   }
 }
 
 
-function reply(params, context, emitter) {
-
-  // Verify the user's group has reply access to the topic
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicReply(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
-    },
-    quote: function (previous, emitter) {
-      if ( params.url.quote && app.isNumeric(params.url.quote) ) {
-        app.models.post.info(params.url.quote, emitter);
-      } else {
-        emitter.emit('ready');
-      }
-    }
-  }, function (output) {
-    var message = '';
-
-    // If the group has reply access, display the topic reply form
-    if ( output.listen.success ) {
-
-      params.form.content = '';
-      params.form.subscribe = false;
-
-      // If the quoted post exists and its topic ID matches this topic ID, add the
-      // quote to the post content (this is a security measure, don't remove it).
-      if ( output.quote && output.quote.topicID === output.topic.id && output.quote.markdown ) {
-        params.form.content = '> [' + output.quote.author + ' said:](post/' + output.quote.id + ')\n>\n> ' + output.quote.markdown.replace(/\n/g, '\n> ') + '\n\n';
-      } else if ( params.url.quote && !output.quote ) {
-        message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.';
-      }
-
-      emitter.emit('ready', {
-        content: {
-          topic: output.topic,
-          breadcrumbs: app.models.topic.breadcrumbs(output.topic.discussionTitle, output.topic.discussionUrl, output.topic.discussionID),
-          reply: {
-            message: message
-          }
-        },
-        view: 'reply'
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
+async function head(params) {
+  return await app.models.topic.metaData({ topicID: params.url.id })
 }
 
 
-function replyForm(params, context, emitter) {
+async function start(params) {
+  let access = await app.toolbox.access.discussionPost({ discussionID: params.url.id, user: params.session })
 
+  if ( access === true ) {
+    let discussion = await app.models.discussion.info(params.url.id)
+
+    params.form.title = ''
+    params.form.content = app.config.comitium.editorIntro
+    params.form.subscribe = true
+
+    return {
+      view: 'start',
+      content: {
+        discussion: discussion,
+        breadcrumbs: app.models.topic.breadcrumbs({
+          discussionTitle : discussion.title,
+          discussionUrl   : discussion.url,
+          discussionID    : discussion.id
+        })
+      }
+    }
+  } else {
+    return access
+  }
+}
+
+
+async function startForm(params, context) {
   if ( params.request.method === 'POST' ) {
-    params.form.subscribe = params.form.subscribe || false;
+    let access = await app.toolbox.access.discussionPost({ discussionID: params.url.id, user: params.session })
 
-    // Verify the user's group has reply access to the topic
-    app.listen('waterfall', {
-      access: function (emitter) {
-        app.toolbox.access.topicReply(params.url.id, params.session, emitter);
-      },
-      topic: function (previous, emitter) {
-        app.models.topic.info(params.url.id, emitter);
-      }
-    }, function (output) {
-      var topic = output.topic,
-          contentMarkdown = new Remarkable({
-            breaks: true,
-            linkify: true
-          }),
-          parsedContent,
+    if ( access === true ) {
+      let discussion = await app.models.discussion.info(params.url.id),
+          parsedTitle = app.toolbox.markdown.title(params.form.title),
+          parsedContent = app.toolbox.markdown.content(params.form.content),
+          url = app.toolbox.slug(params.form.title),
           draft = false,
-          time = app.toolbox.helpers.isoDate();
+          time = app.toolbox.helpers.isoDate(),
+          saveTopic
+      
+      url = url.length ? url : 'untitled'
 
-      // If the group has reply access, process the form
-      if ( output.listen.success ) {
-
-        parsedContent = contentMarkdown.render(params.form.content);
-
-        switch ( params.form.formAction ) {
-          case 'Preview':
-            emitter.emit('ready', {
-              content: {
-                preview: {
-                  content: parsedContent
-                },
-                topic: topic,
-                breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID)
+      switch ( params.form.formAction ) {
+        default:
+          throw new Error('No valid form action received')
+        case 'Preview post':
+          return {
+            view: 'start',
+            content: {
+              preview: {
+                title: parsedTitle,
+                content: parsedContent
               },
-              view: 'reply'
-            });
-            break;
-          case 'Save as draft':
-          case 'Post your reply':
-            if ( params.form.formAction === 'Save as draft' ) {
-              draft = true;
+              discussion: discussion,
+              breadcrumbs: app.models.topic.breadcrumbs({
+                discussionTitle: discussion.title,
+                discussionUrl: discussion.url,
+                discussionID: discussion.id
+              })
             }
-            app.listen({
-              reply: function (emitter) {
-                app.models.topic.reply({
-                  topicID: topic.id,
-                  discussionID: topic.discussionID,
-                  userID: params.session.userID,
-                  html: parsedContent,
-                  markdown: params.form.content,
-                  draft: draft,
-                  private: topic.private,
-                  time: time
-                }, emitter);
+          }
+        case 'Save as draft':
+        case 'Post your topic':
+          if ( params.form.formAction === 'Save as draft' ) {
+            draft = true
+          }
+
+          saveTopic = await app.models.topic.insert({
+            discussionID: discussion.id,
+            userID: params.session.userID,
+            title: params.form.title,
+            titleHtml: parsedTitle,
+            url: url,
+            text: params.form.content,
+            html: parsedContent,
+            draft: draft,
+            private: false,
+            time: time
+          })
+
+          if ( saveTopic.success ) {
+            if ( params.form.subscribe ) {
+              app.models.topic.subscribe({
+                userID: params.session.userID,
+                topicID: saveTopic.id,
+                time: time
+              })
+            }
+
+            return {
+              redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + saveTopic.id
+            }
+          } else {
+            return {
+              view: 'start',
+              content: {
+                topic: saveTopic,
+                discussion: discussion,
+                breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url, discussion.id)
               }
-            }, function (output) {
-              var page = Math.ceil( ( topic.replies + 2 ) / 25 ),
-                  pageParameter = page !== 1 ? '/page/' + page : '',
-                  replyUrl = params.route.parsed.protocol + app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id + pageParameter + '/#' + output.reply.id,
-                  forwardToUrl = draft ? params.route.parsed.protocol + app.config.comitium.baseUrl + '/drafts' : replyUrl;
-
-              if ( output.listen.success ) {
-
-                if ( output.reply.success ) {
-                  if ( params.form.subscribe ) {
-                    app.listen({
-                      subscribe: function (emitter) {
-                        app.models.topic.subscribe({
-                          userID: params.session.userID,
-                          topicID: topic.id,
-                          time: time
-                        }, emitter);
-                      }
-                    }, function (output) {
-
-                      if ( output.listen.success ) {
-
-                        emitter.emit('ready', {
-                          content: output.reply,
-                          redirect: forwardToUrl
-                        });
-
-                      } else {
-
-                        emitter.emit('error', output.listen);
-
-                      }
-
-                    });
-                  } else {
-                    emitter.emit('ready', {
-                      content: output.reply,
-                      redirect: forwardToUrl
-                    });
-                  }
-
-                  // If it's not a draft post, notify the topic subscribers
-                  if ( !draft ) {
-                    notifySubscribers({
-                      replyAuthorID: params.session.userID,
-                      topicID: topic.id,
-                      time: time,
-                      url: replyUrl
-                    });
-                  }
-                } else {
-                  emitter.emit('ready', {
-                    content: {
-                      reply: output.reply,
-                      topic: topic,
-                      breadcrumbs: app.models.topic.breadcrumbs(topic.discussionTitle, topic.discussionUrl, topic.discussionID)
-                    },
-                    view: 'reply'
-                  });
-                }
-
-              } else {
-
-                emitter.emit('error', output.listen);
-
-              }
-
-            });
-            break;
-        }
-
-      } else {
-
-        emitter.emit('error', output.listen);
-
+            }
+          }
       }
+    } else {
+      return access
+    }
+  // If it's a GET, fall back to the default topic start action
+  } else {
+    return start(params, context)
+  }
+}
 
-    });
 
+async function startAnnouncement(params) {
+  let access = await app.toolbox.access.discussionPost({ discussionID: 2, user: params.session })
+
+  if ( access === true ) {
+    let categories = await app.models.discussions.categoriesPost(params.session.groupID)
+
+    params.form.title = ''
+    params.form.content = app.config.comitium.editorIntro
+    params.form.displayDiscussions = 'none'
+    params.form.discussions = []
+    params.form.subscribe = true
+
+    return {
+      view: 'start-announcement',
+      content: {
+        categories: categories,
+        breadcrumbs: app.models.topic.breadcrumbs({
+          discussionTitle: 'Announcements',
+          discussionUrl: 'announcements',
+          discussionID: 2
+        })
+      }
+    }
+  } else {
+    return access
+  }
+}
+
+
+async function startAnnouncementForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.discussionPost({ discussionID: 2, user: params.session })
+
+    if ( access === true ) {
+      params.form.subscribe = params.form.subscribe || false
+      params.form.displayDiscussions = params.form.displayDiscussions || 'none'
+      params.form.discussions = params.form.discussions || []
+      let discussions = []
+      params.form.discussions.forEach( function (item) {
+        discussions.push(item)
+      })
+
+      let categories = await app.models.discussions.categoriesPost(params.session.groupID),
+          parsedTitle = app.toolbox.markdown.title(params.form.title),
+          parsedContent = app.toolbox.markdown.content(params.form.content),
+          url = app.toolbox.slug(params.form.title),
+          draft = false,
+          time = app.toolbox.helpers.isoDate(),
+          saveTopic
+
+      url = url.length ? url : 'untitled'
+
+      switch ( params.form.formAction ) {
+        default:
+          throw new Error('No valid form action received')
+        case 'Preview post':
+          return {
+            view: 'start-announcement',
+            content: {
+              preview: {
+                title: parsedTitle,
+                content: parsedContent
+              },
+              categories: categories,
+              breadcrumbs: app.models.topic.breadcrumbs({
+                discussionTitle: 'Announcements',
+                discussionUrl: 'announcements',
+                discussionID: 2
+              })
+            }
+          }
+        case 'Save as draft':
+        case 'Post your announcement':
+          if ( params.form.formAction === 'Save as draft' ) {
+            draft = true
+          }
+
+          switch ( params.form.displayDiscussions ) {
+            case 'none':
+              discussions = [ 2 ]
+              break
+            case 'all':
+              categories.forEach( function (item) {
+                item.subcategories.forEach( function (item) {
+                  discussions.push(item.discussionID)
+                })
+              })
+              break
+          }
+
+          saveTopic = await app.models.topic.insert({
+            announcement: true,
+            discussionID: 2,
+            discussions: discussions,
+            userID: params.session.userID,
+            title: params.form.title,
+            titleHtml: parsedTitle,
+            url: url,
+            text: params.form.content,
+            html: parsedContent,
+            draft: draft,
+            private: false,
+            time: time
+          })
+
+          if ( saveTopic.success ) {
+            if ( params.form.subscribe ) {
+              app.models.topic.subscribe({
+                userID: params.session.userID,
+                topicID: saveTopic.id,
+                time: time
+              })
+            }
+
+            return {
+              redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + saveTopic.id
+            }
+          } else {
+            return {
+              view: 'start-announcement',
+              content: {
+                topic: saveTopic,
+                categories: categories,
+                breadcrumbs: app.models.topic.breadcrumbs({
+                  discussionTitle: 'Announcements',
+                  discussionUrl: 'announcements',
+                  discussionID: 2
+                })
+              }
+            }
+          }
+      }
+    } else {
+      return access
+    }
+  // If it's a GET, fall back to the default announcement start action
+  } else {
+    return start(params, context)
+  }
+}
+
+
+async function startPrivate(params) {
+  let invitees = await ( async () => {
+    let inviteesArray = []
+
+    if ( params.url.invitee ) {
+      let inviteesArray = await app.models.user.info({ userID: params.url.invitee })
+      inviteesArray = [ inviteesArray.username ]
+
+      return inviteesArray
+    } else if ( params.form.invitees ) {
+      inviteesArray = params.form.invitees.split(',')
+
+      for ( var i = 0; i < inviteesArray.length; i += 1 ) {
+        inviteesArray[i] = inviteesArray[i].trim()
+      }
+      return inviteesArray
+    } else {
+      return false
+    }
+  })()
+
+  let access = await app.toolbox.access.privateTopicStart({ user: params.session })
+
+  if ( access === true ) {
+    params.form.invitees = invitees ? invitees.join(', ') : ''
+    params.form.title = ''
+    params.form.content = app.config.comitium.editorIntro
+    params.form.subscribe = true
+
+    return {
+      view: 'start-private',
+      content: {
+        invitees: invitees
+      }
+    }
+  } else {
+    return access
+  }
+}
+
+
+async function startPrivateForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.privateTopicStart({ user: params.session })
+
+    if ( access === true ) {
+      let url = app.toolbox.slug(params.form.title),
+          draft = false,
+          time = app.toolbox.helpers.isoDate(),
+          parsedTitle = app.toolbox.markdown.title(params.form.title),
+          parsedContent = app.toolbox.markdown.content(params.form.content),
+          saveTopic
+
+      url = url.length ? url : 'untitled'
+
+      switch ( params.form.formAction ) {
+        default:
+          return {
+            message: 'No valid form action received'
+          }
+        case 'Preview post':
+          return {
+            view: 'start-private',
+            content: {
+              preview: {
+                title: parsedTitle,
+                content: parsedContent
+              }
+            }
+          }
+        case 'Save as draft':
+        case 'Post your topic':
+          if ( params.form.formAction === 'Save as draft' ) {
+            draft = true
+          }
+
+          saveTopic = await app.models.topic.insert({
+            private: true,
+            invitees: params.form.invitees,
+            userID: params.session.userID,
+            username: params.session.username,
+            discussionID: 0,
+            title: params.form.title,
+            titleHtml: parsedTitle,
+            url: url,
+            text: params.form.content,
+            html: parsedContent,
+            draft: draft,
+            time: time
+          })
+
+          if ( saveTopic.success ) {
+            if ( !draft ) {
+              let mail = await app.models.content.mail({
+                template: 'Topic Invitation',
+                replace: {
+                  topicUrl: app.config.comitium.baseUrl + 'topic/id/' + saveTopic.id + '/accept/true',
+                  author: params.session.username
+                }
+              })
+
+              saveTopic.invited.forEach(item => {
+                if ( item.privateTopicEmailNotification ) {
+                  app.toolbox.mail.sendMail({
+                    from    : app.config.comitium.email,
+                    to      : item.email,
+                    subject : mail.subject,
+                    text    : mail.text
+                  })
+                }
+              })
+            }
+
+            if ( params.form.subscribe ) {
+              app.models.topic.subscribe({
+                userID: params.session.userID,
+                topicID: saveTopic.id,
+                time: time
+              })
+            }
+
+            return {
+              redirect: draft ? app.config.comitium.baseUrl + 'drafts' : app.config.comitium.baseUrl + 'topic/id/' + saveTopic.id
+            }
+          } else {
+            return {
+              view: 'start-private',
+              content: {
+                topic: saveTopic
+              }
+            }
+          }
+      }
+    } else {
+      return access
+    }
+  // If it's a GET, fall back to the default topic start action
+  } else {
+    return startPrivate(params, context)
+  }
+}
+
+
+async function reply(params) {
+  let access = await app.toolbox.access.topicReply({ topicID: params.url.id, user: params.session })
+
+  if ( access === true ) {
+    let [
+      topic,
+      quote
+    ] = await Promise.all([
+      app.models.topic.info(params.url.id),
+      ( async () => {
+        if ( params.url.quote && app.isNumeric(params.url.quote) ) {
+          return await app.models.post.info(params.url.quote)
+        } else {
+          return false
+        }
+      })()
+    ])
+
+    params.form.content = app.config.comitium.editorIntro
+    let message
+
+    // If the quoted post exists and its topic ID matches this topic ID, add the
+    // quote to the post content (this is a security measure, don't remove it).
+    if ( quote && quote.topicID === topic.id && quote.text ) {
+      params.form.content = '> [**' + quote.author + '** said:](post/id/' + quote.id + ')\n>\n> ' + quote.text.replace(/\n/g, '\n> ') + '\n>\n\n'
+    } else if ( params.url.quote && !quote ) {
+      message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.'
+    }
+
+    return {
+      view: 'reply',
+      content: {
+        topic: topic,
+        message: message
+      }
+    }
+  } else {
+    return access
+  }
+}
+
+
+async function replyForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.topicReply({ topicID: params.url.id, user: params.session })
+
+    if ( access === true ) {
+      let topic         = await app.models.topic.info(params.url.id),
+          parsedContent = app.toolbox.markdown.content(params.form.content),
+          draft         = false,
+          time          = app.toolbox.helpers.isoDate(),
+          reply, page, pageParameter, controller, urlTitle, replyUrl, forwardToUrl
+
+      switch ( params.form.formAction ) {
+        default:
+          throw new Error('No valid form action received')
+        case 'Preview post':
+          return {
+            view: 'reply',
+            content: {
+              preview: {
+                content: parsedContent
+              },
+              topic: topic
+            }
+          }
+        case 'Save as draft':
+        case 'Submit your reply':
+          if ( params.form.formAction === 'Save as draft' ) {
+            draft = true
+          }
+
+          if ( !params.form.content.trim().length ) {
+            return {
+              view: 'reply',
+              content: {
+                message: 'All fields are required.',
+                topic: topic
+              }
+            }
+          }
+
+          reply = await app.models.topic.reply({
+            topicID: topic.id,
+            discussionID: topic.discussionID,
+            userID: params.session.userID,
+            html: parsedContent,
+            text: params.form.content,
+            draft: draft,
+            private: topic.private,
+            time: time
+          })
+
+          page = Math.ceil( ( topic.replies + 2 ) / 25 ),
+          pageParameter = page === 1 ? '' : '/page/' + page,
+          controller = topic.discussionID === 2 ? 'announcement' : 'topic',
+          urlTitle = topic.private ? '' : '/' + topic.url,
+          replyUrl = app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '#' + reply.id,
+          forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : replyUrl
+
+          if ( params.form.subscribe ) {
+            await app.models.topic.subscribe({
+              userID: params.session.userID,
+              topicID: topic.id,
+              time: time
+            })
+          }
+
+          // If it's not a draft post, notify the topic subscribers
+          if ( !draft ) {
+            notifySubscribers({
+              topicID: topic.id,
+              scope: 'updates',
+              skip: [ params.session.userID ],
+              time: time,
+              template: 'Topic Reply',
+              replace: {
+                replyAuthor: params.session.username,
+                replyUrl: replyUrl,
+                topicTitle: topic.private ? 'Private Topic (title withheld for your privacy)' : topic.title,
+                unsubscribeUrl: app.config.comitium.baseUrl + 'topic/action/unsubscribe/id/' + topic.id
+              }
+            })
+          }
+
+          return {
+            content: reply,
+            redirect: forwardToUrl
+          }
+      }
+    }
   // If it's a GET, fall back to the default topic reply action
   } else {
-    reply(params, context, emitter);
+    return reply(params, context)
   }
 }
 
 
-function notifySubscribers(args, emitter) {
+async function notifySubscribers(args) {
+  let subscribersToNotify = await app.models.topic.subscribersToUpdate({ topicID: args.topicID, skip: args.skip })
 
-  app.listen({
-    subscribersToNotify: function (emitter) {
-      app.models.topic.subscribersToNotify({
-        topicID: args.topicID,
-        replyAuthorID: args.replyAuthorID
-      }, emitter);
-    }
-  }, function (output) {
-    if ( output.listen.success && output.subscribersToNotify.length ) {
-      for ( var i = 0; i < output.subscribersToNotify.length; i++ ) {
-        app.mail.sendMail({
-          from: app.config.comitium.email,
-          to: output.subscribersToNotify[i].email,
-          subject: 'Forum topic update',
-          text: args.url
-        });
-      }
-      app.models.topic.subscriptionNotificationSentUpdate({
-        topicID: args.topicID,
-        time: args.time
-      });
-    } else if ( !output.listen.success && emitter ) {
-      emitter.emit('error', output.listen);
-    }
-  });
+  if ( subscribersToNotify.length ) {
+    let mail = await app.models.content.mail({ template: args.template, replace: args.replace })
 
+    for ( var i = 0; i < subscribersToNotify.length; i++ ) {
+      app.toolbox.mail.sendMail({
+        from: app.config.comitium.email,
+        to: subscribersToNotify[i].email,
+        subject: mail.subject,
+        text: mail.text
+      })
+    }
+    if ( args.scope === 'updates' ) {
+      app.models.topic.subscriptionNotificationSentUpdate({ topicID: args.topicID, time: args.time })
+    }
+  }
 }
 
 
-function subscribe(params, context, emitter) {
+async function subscribe(params) {
+  let access = await app.toolbox.access.topicSubscribe({ topicID: params.url.id, user: params.session })
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicView(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
-    },
-    subscribe: function (previous, emitter) {
+  if ( access === true ) {
+    let [
+      topic
+    ] = await Promise.all([
+      app.models.topic.info(params.url.id),
       app.models.topic.subscribe({
         userID: params.session.userID,
-        topicID: previous.topic.id,
+        topicID: params.url.id,
         time: app.toolbox.helpers.isoDate()
-      }, emitter);
+      })
+    ])
+
+    return {
+      redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
     }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
-      });
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-
+  } else {
+    return access
+  }
 }
 
 
-function unsubscribe(params, context, emitter) {
+async function unsubscribe(params) {
+  let access = await app.toolbox.access.topicSubscribe({ topicID: params.url.id, user: params.session })
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicView(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
-    },
-    unsubscribe: function (previous, emitter) {
+  if ( access === true ) {
+    await Promise.all([
+      app.models.topic.info(params.url.id),
       app.models.topic.unsubscribe({
         userID: params.session.userID,
-        topicID: previous.topic.id
-      }, emitter);
+        topicID: params.url.id
+      })
+    ])
+
+    return {
+      redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'subscriptions')
     }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', {
-        redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + output.topic.url + '/id/' + output.topic.id)
-      });
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-
+  } else {
+    return access
+  }
 }
 
 
+async function leave(params) {
+  let access = await app.toolbox.access.topicView({ topicID: params.url.id, user: params.session })
 
-function lock(params, context, emitter) {
+  if ( access === true ) {
+    params.form.forwardToUrl = app.config.comitium.baseUrl + 'private-topics'
+    let topic = await app.models.topic.info(params.url.id)
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + params.url.id);
-  params.form.reason = '';
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
+    return {
+      view: 'leave',
+      content: {
+        topic: topic
+      }
     }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          topic: output.topic
-        },
-        view: 'lock'
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
+  } else {
+    return access
+  }
 }
 
 
+async function leaveForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.topicView({ topicID: params.form.topicID, user: params.session })
 
-function lockForm(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
+    if ( access === true ) {
+      await app.models.topic.leave({ topicID: params.form.topicID, userID: params.session.userID })
+      return {
+        redirect: params.form.forwardToUrl
+      }
+    } else {
+      return access
     }
-  }, function (output) {
-    var topic = output.topic,
-        markdown = new Remarkable({
-          breaks: true,
-          linkify: true
-        }),
-        parsedReason;
+  // If it's a GET, fall back to the default leave action
+  } else {
+    return leave(params, context)
+  }
+}
 
-    if ( output.listen.success ) {
 
-      parsedReason = markdown.render(params.form.reason);
-      // Get rid of the paragraph tags and line break added by Remarkable
-      parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
+async function lock(params) {
+  let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
-      app.listen({
-        lock: function (emitter) {
-          app.models.topic.lock({
-            topicID: topic.id,
-            lockedByID: params.session.userID,
-            lockReason: parsedReason
-          }, emitter);
-        }
-      }, function (output) {
+  if ( access === true ) {
+    let topic = await app.models.topic.info(params.url.id)
 
-        if ( output.listen.success ) {
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
+    params.form.reason = ''
 
-          if ( output.lock.success ) {
+    return {
+      view: 'lock',
+      content: {
+        topic: topic
+      }
+    }
+  } else {
+    return access
+  }
+}
 
-            if ( params.form.notify ) {
 
-              // notify subscribers (if the author isn't subscribed, they probably don't care)
+async function lockForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
-            }
+    if ( access === true ) {
+      let topic = await app.models.topic.info(params.url.id)
 
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
+      await app.models.topic.lock({
+        topicID: topic.id,
+        lockedByID: params.session.userID,
+        lockReason: app.toolbox.markdown.inline(params.form.reason)
+      })
 
-          } else {
-
-            emitter.emit('ready', {
-              content: {
-                topic: topic,
-                lock: output.lock
-              },
-              view: 'lock'
-            });
-
+      if ( params.form.notify ) {
+        notifySubscribers({
+          topicID: topic.id,
+          template: 'Topic Lock',
+          replace: {
+            topicTitle: topic.title,
+            topicUrl: app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
+            reason: params.form.reason
           }
+        })
+      }
 
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
+      return {
+        redirect: params.form.forwardToUrl
+      }
     } else {
-
-      emitter.emit('error', output.listen);
-
+      return access
     }
-
-  });
-
+  } else {
+    return lock(params, context)
+  }
 }
 
 
+async function unlock(params) {
+  let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
-function unlock(params, context, emitter) {
+  if ( access === true ) {
+    await app.models.topic.unlock({ topicID: params.url.id })
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicLock(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
+    return {
+      redirect: params.request.headers.referer
     }
-  }, function (output) {
-    var topic = output.topic;
-
-    if ( output.listen.success ) {
-
-      app.listen({
-        unlock: function (emitter) {
-          app.models.topic.unlock({
-            topicID: topic.id
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          emitter.emit('ready', {
-            redirect: params.request.headers.referer
-          });
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
+  } else {
+    return access
+  }
 }
 
 
+async function edit(params) {
+  let access = await app.toolbox.access.topicEdit({ topicID: params.url.id, user: params.session })
 
-function move(params, context, emitter) {
+  if ( access === true ) {
+    let topic = await app.models.topic.info(params.url.id)
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/' + topic.id + '/' + topic.url)
+    params.form.title = topic.title
+    params.form.content = topic.text
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicMove(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
-    },
-    categories: function (previous, emitter) {
-      app.models.discussions.categories(params.session.groupID, emitter);
+    return {
+      view: 'edit',
+      content: {
+        topic: topic
+      }
     }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          topic: output.topic,
-          categories: output.categories
-        },
-        view: 'move'
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
+  } else {
+    return access
+  }
 }
 
 
+async function editForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.topicEdit({ topicID: params.url.id, user: params.session })
 
-function moveForm(params, context, emitter) {
+    if ( access === true ) {
+      let topic         = await app.models.topic.info(params.url.id),
+          firstPost     = await app.models.post.info(topic.firstPostID),
+          announcement  = topic.discussionID === 2 ? true : false,
+          parsedTitle   = app.toolbox.markdown.title(params.form.title),
+          parsedContent = app.toolbox.markdown.content(params.form.content),
+          parsedReason  = app.toolbox.markdown.inline(params.form.reason),
+          time          = app.toolbox.helpers.isoDate(),
+          url           = app.toolbox.slug(params.form.title),
+          edit, err
+          
+      url = url.length ? url : 'untitled'
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicMoveForm(params.url.id, params.form.destination, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
-    }
-  }, function (output) {
-    var topic = output.topic;
-
-    if ( output.listen.success ) {
-
-      app.listen('waterfall', {
-        newDiscussion: function (emitter) {
-          app.models.discussion.info(params.form.destination, emitter);
-        },
-        move: function (previous, emitter) {
-          app.models.topic.move({
+      switch ( params.form.formAction ) {
+        default:
+          err = new Error('No valid form action received')
+          throw err
+        case 'Preview changes':
+          return {
+            view: 'edit',
+            content: {
+              preview: {
+                title: parsedTitle,
+                content: parsedContent
+              },
+              topic: topic
+            }
+          }
+        case 'Save changes':
+          edit = await app.models.topic.edit({
             topicID: topic.id,
-            topicUrl: topic.url,
             discussionID: topic.discussionID,
-            discussionUrl: topic.discussionUrl,
-            newDiscussionID: previous.newDiscussion.id
-          }, emitter);
-        }
-      }, function (output) {
+            postID: topic.firstPostID,
+            editorID: params.session.userID,
+            currentPost: firstPost,
+            title: params.form.title,
+            titleHtml: parsedTitle,
+            url: url,
+            text: params.form.content,
+            html: parsedContent,
+            reason: parsedReason,
+            time: time
+          })
 
-        if ( output.listen.success ) {
-
-          if ( output.move.success ) {
-
-            if ( params.form.notify ) {
-
-              // notify subscribers (if the author isn't subscribed, they probably don't care)
-
+          if ( edit.success ) {
+            return {
+              redirect: announcement ? app.config.comitium.baseUrl + 'announcement/' + url + '/id/' + topic.id : app.config.comitium.baseUrl + 'topic/' + url + '/id/' + topic.id
             }
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
           } else {
-
-            emitter.emit('ready', {
+            return {
+              view: 'edit',
               content: {
-                topic: topic,
-                move: output.move
-              },
-              view: 'move'
-            });
-
+                topic: edit
+              }
+            }
           }
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
+      }
     } else {
-
-      emitter.emit('error', output.listen);
-
+      return access
     }
-
-  });
-
+  } else {
+    return edit(params, context)
+  } 
 }
 
 
+async function move(params) {
+  let access = await app.toolbox.access.topicMove({ topicID: params.url.id, user: params.session })
 
-function trash(params, context, emitter) {
+  if ( access === true ) {
+    let [
+      topic,
+      categories
+    ] = await Promise.all([
+      app.models.topic.info(params.url.id),
+      app.models.discussions.categories(params.session.groupID)
+    ])
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/' + params.route.controller + '/' + params.url[params.route.controller] + '/id/' + params.url.id);
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'topic/action/move/id/' + topic.id)
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicTrash(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
+    return {
+      view: 'move',
+      content: {
+        topic: topic,
+        categories: categories
+      }
     }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          topic: output.topic
-        },
-        view: 'trash'
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
+  } else {
+    return access
+  }
 }
 
 
+async function moveForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.topicMoveForm({
+          topicID: params.url.id,
+          newDiscussionID: params.form.destination,
+          user: params.session
+        })
 
-function trashForm(params, context, emitter) {
+    if ( access === true ) {
+      let topic         = await app.models.topic.info(params.url.id),
+          newDiscussion = await app.models.discussion.info(params.form.destination)
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.topicTrash(params.url.id, params.session, emitter);
-    },
-    topic: function (previous, emitter) {
-      app.models.topic.info(params.url.id, emitter);
-    }
-  }, function (output) {
-    var topic = output.topic;
-
-    if ( output.listen.success ) {
-
-      app.listen({
-        trash: function (emitter) {
-          app.models.topic.move({
-            topicID: topic.id,
-            topicUrl: topic.url,
-            discussionID: topic.discussionID,
-            newDiscussionID: 1,
-            newDiscussionUrl: 'Trash'
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          if ( output.trash.success ) {
-
-            if ( params.form.notify ) {
-
-              // notify subscribers (if the author isn't subscribed, they probably don't care)
-
-            }
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
-          } else {
-
-            emitter.emit('ready', {
-              content: {
-                topic: topic,
-                trash: output.trash
-              },
-              view: 'trash'
-            });
-
+      await app.models.topic.move({
+              topicID: topic.id,
+              topicUrl: topic.url,
+              discussionID: topic.discussionID,
+              discussionUrl: topic.discussionUrl,
+              newDiscussionID: newDiscussion.id
+            })
+      
+      if ( params.form.notify ) {
+        notifySubscribers({
+          topicID: topic.id,
+          template: 'Topic Move',
+          replace: {
+            topicTitle: topic.title,
+            topicUrl: app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
+            oldDiscussionTitle: topic.discussionTitle,
+            newDiscussionTitle: newDiscussion.title
           }
+        })
+      }
 
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
+      return {
+        redirect: params.form.forwardToUrl
+      }
     } else {
-
-      emitter.emit('error', output.listen);
-
+      return access
     }
+  } else {
+    return move(params, context)
+  }
+}
 
-  });
 
+async function trash(params) {
+  let access = await app.toolbox.access.topicTrash({ topicID: params.url.id, user: params.session })
+
+  if ( access === true ) {
+    let topic = await app.models.topic.info(params.url.id)
+
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'topic/action/trash/id/' + topic.id)
+    params.form.reason = ''
+
+    return {
+      view: 'trash',
+      content: {
+        topic: topic
+      }
+    }
+  } else {
+    return access
+  }
+}
+
+
+async function trashForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.topicTrash({ topicID: params.url.id, user: params.session })
+
+    if ( access === true ) {
+      let topic = await app.models.topic.info(params.url.id)
+
+      await app.models.topic.move({
+        topicID: topic.id,
+        discussionID: topic.discussionID,
+        newDiscussionID: 1
+      })
+
+      if ( params.form.notify ) {
+        notifySubscribers({
+          topicID: topic.id,
+          template: 'Topic Delete',
+          replace: {
+            topicTitle: topic.title,
+            reason: params.form.reason
+          }
+        })
+      }
+
+      return {
+        redirect: params.form.forwardToUrl
+      }
+    } else {
+      return access
+    }
+  } else {
+    return trash(params, context)
+  }
 }

@@ -1,0 +1,36 @@
+article(class="topic #{ topic.replies ? 'has-replies' : '' } #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
+  section.description
+    h3
+      a(href="topic#{ topic.discussionID > 0 ? '/' + topic.url : '' }/id/#{topic.id}") !{topic.titleHtml}
+    section.author
+      a(class="avatar #{ topic.topicStarterGroupID === 6 ? 'banned' : '' }" href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.")
+        img(src="avatars/#{topic.topicStarterID}.jpg")
+      dl.byline
+        dt.author Author
+        dd.author
+          a(href="user/#{topic.topicStarterUrl}/id/#{topic.topicStarterID}" rel="author" title="View #{topic.topicStarter}'s profile.") #{topic.topicStarter}
+        dt.date Date
+        dd.date
+          time
+            = topic.postDateFormatted
+  nav.actions
+    ul
+      li.unsubscribe
+          a(href="topic/action/unsubscribe/id/#{topic.id}" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
+  a.content-stats(href="topic/#{topic.url}/id/#{topic.id}")
+    dl.content-stats(data-replies="#{topic.replies}")
+      dt.replies
+        if topic.replies != 1
+          | Replies
+        else
+          | Reply
+      dd.replies
+        = topic.repliesFormatted
+  if topic.replies
+    p.last-post
+      a(class="avatar #{ topic.lastPostAuthorGroupID === 6 ? 'banned' : '' }" href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+        img(src="avatars/#{topic.lastPostAuthorID}.jpg")
+      a(href="user/#{topic.lastPostAuthorUrl}/id/#{topic.lastPostAuthorID}" rel="author" title="View #{topic.lastPostAuthor}'s profile.")
+        = topic.lastPostAuthor
+      |  replied 
+      time #{topic.lastPostCreatedFormatted}

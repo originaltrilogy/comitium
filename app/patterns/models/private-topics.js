@@ -1,165 +1,127 @@
 // private topics model
 
-'use strict';
+'use strict'
 
 module.exports = {
-  stats: stats,
-  topics: topics,
-  breadcrumbs: breadcrumbs,
-  metaData: metaData
-};
+  topics      : topics,
+  unread      : unread,
+  breadcrumbs : breadcrumbs,
+  metaData    : metaData
+}
 
 
-function stats(userID, emitter) {
-  // See if this user's private topic stats are already cached
-  var cacheKey = 'models-private-topics-stats',
-      scope = 'user-' + userID,
-      cached = app.cache.get({ scope: scope, key: cacheKey });
+async function unread(args) {
+  // See if already cached
+  let cacheKey = 'private-topics-unread',
+      scope = 'private-topics-' + args.userID,
+      cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached);
-    // If it's not cached, retrieve it from the database and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.listen({
-      stats: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'select count("topicID") as "privateTopicCount" from "topicInvitations" where "userID" = $1;',
-              [ userID ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
-          }
-        });
-      }
-    }, function (output) {
+    const client = await app.toolbox.dbPool.connect()
 
-      if ( output.listen.success ) {
-        // Cache the discussion info object for future requests
-        app.cache.set({
-          key: cacheKey,
-          scope: scope,
-          value: output.stats[0]
-        });
+    try {
+      const result = await client.query({
+        name: 'private_topics_unread',
+        text: 'select p."topicID" from posts p join "topicInvitations" ti on ti."userID" = $1 and ti."left" = false and p."topicID" = ti."topicID" and p.id = ( select id from posts where "topicID" = ti."topicID" and "userID" <> $1 order by created desc limit 1 ) left join "topicViews" tv on ti."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
+        values: [ args.userID ]
+      })
 
-        emitter.emit('ready', output.stats[0]);
+      if ( result.rows.length ) {
+        // Cache the result for future requests
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            key: cacheKey,
+            scope: scope,
+            value: result.rows
+          })
+        }
+        return result.rows
       } else {
-        emitter.emit('error', output.listen);
+        return false
       }
-
-    });
+    } finally {
+      client.release()
+    }
   }
 }
 
 
-
-function topics(args, emitter) {
-  // See if this topic subset is already cached
-  var start = args.start || 0,
+async function topics(args) {
+  // See if already cached
+  let start = args.start || 0,
       end = args.end || 25,
       cacheKey = 'topics-' + start + '-' + end,
       scope = 'private-topics-' + args.userID,
-      cached = app.cache.get({ scope: scope, key: cacheKey });
+      cached = app.cache.get({ scope: scope, key: cacheKey })
 
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached);
-  // If it's not cached, retrieve the subset and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.listen({
-      topics: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'select distinct t.id, t."sortDate", t."replies", t."titleHtml", t."url", p."dateCreated" as "postDate", p2.id as "lastPostID", p2."dateCreated" as "lastPostDate", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
-              'from topics t ' +
-              'join "topicInvitations" ti on ti."userID" = $1 ' +
-              'join posts p on p."topicID" = t.id ' +
-              'and p."id" = t."firstPostID" ' +
-              'join users u on u.id = p."userID" ' +
-              'join posts p2 on p2."topicID" = t.id ' +
-              'and p2."id" = t."lastPostID" ' +
-              'join users u2 on u2.id = p2."userID" ' +
-              'and t.draft = false and t.private = true ' +
-              'order by t."sortDate" desc ' +
-              'limit $2 offset $3;',
-              [ args.userID, end - start, start ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
-          }
-        });
-      }
-    }, function (output) {
-      var subset = {};
+    const client = await app.toolbox.dbPool.connect()
 
-      if ( output.listen.success ) {
-        // Build a view-ready object containing only the posts in the requested subset
-        for ( var i = 0; i < end - start; i += 1 ) {
-          if ( output.topics[i] ) {
-            subset[i] = {};
-            for ( var property in output.topics[i] ) {
-              if ( output.topics[i].hasOwnProperty(property) ) {
-                if ( property === 'replies' ) {
-                  subset[i][property + 'Formatted'] = app.toolbox.numeral(output.topics[i][property]).format('0,0');
-                } else if ( property === 'postDate' || property === 'lastPostDate' ) {
-                  subset[i][property + 'Formatted'] = app.toolbox.moment.tz(output.topics[i][property], 'America/New_York').format('MMMM Do YYYY');
-                } else {
-                  subset[i][property] = output.topics[i][property];
-                }
-              }
-            }
-          } else {
-            break;
-          }
-        }
+    try {
+      // Baffled as to why the query planner insists on a much slower sequence scan
+      await client.query('SET enable_seqscan = OFF;')
+      const result = await client.query({
+        name: 'private_topics_topics',
+        text: 'select count(*) over() as full_count, t.id, t."sticky", t."replies", t."titleHtml", ti.accepted, ti.left, p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."groupID" as "topicStarterGroupID", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+        'from topics t ' +
+        'join "topicInvitations" ti on ti."userID" = $1 ' +
+        'and ti.left = false ' +
+        'join posts p on p."topicID" = ti."topicID" ' +
+        'and p."id" = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +
+        'join users u on u.id = p."userID" ' +
+        'join posts p2 on p2."topicID" = ti."topicID" ' +
+        'and p2."id" = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
+        'join users u2 on u2.id = p2."userID" ' +
+        'and t.draft = false and t.private = true ' +
+        'order by p2.created desc ' +
+        'limit $2 offset $3;',
+        values: [ args.userID, end - start, start ]
+      })
+      await client.query('SET enable_seqscan = ON;')
 
-        // Cache the subset for future requests
+      result.rows.forEach( function (item) {
+        item['full_count_formatted']      = app.toolbox.numeral(item['full_count']).format('0,0')
+        item['repliesFormatted']          = app.toolbox.numeral(item['replies']).format('0,0')
+        item['postDateFormatted']         = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY')
+        item['lastPostCreatedFormatted']  = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY')
+      })
+
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: subset
-        });
-
-        emitter.emit('ready', subset);
-      } else {
-        emitter.emit('error', output.listen);
+          value: result.rows
+        })
       }
 
-    });
+      return result.rows
+    } finally {
+      client.release()
+    }
   }
 }
 
 
-function breadcrumbs(discussionTitle) {
+function breadcrumbs() {
   return {
     a: {
-      name: 'Forum Home',
+      name: 'Home',
       url: app.config.comitium.basePath
     },
     b: {
       name: 'Discussion Categories',
-      url: app.config.comitium.basePath + 'discussions'
+      url: 'discussions'
     }
-  };
+  }
 }
 
 
@@ -168,5 +130,5 @@ function metaData() {
     title: 'Discussion View',
     description: 'This is the discussion view template.',
     keywords: 'discussion, view'
-  };
+  }
 }

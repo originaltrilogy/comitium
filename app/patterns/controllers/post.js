@@ -1,95 +1,92 @@
 // post controller
 
-'use strict';
-
-var Remarkable = require('remarkable');
+'use strict'
 
 module.exports = {
-  handler: handler,
-  bookmark: bookmark,
-  bookmarkForm: bookmarkForm,
-  edit: edit,
-  editForm: editForm,
-  lock: lock,
-  lockForm: lockForm,
-  unlock: unlock,
-  report: report,
-  reportForm: reportForm,
-  trash: trash,
-  trashForm: trashForm
-};
+  handler       : handler,
+  bookmark      : bookmark,
+  bookmarkForm  : bookmarkForm,
+  edit          : edit,
+  editForm      : editForm,
+  lock          : lock,
+  lockForm      : lockForm,
+  report        : report,
+  reportForm    : reportForm,
+  topic         : topic,
+  trash         : trash,
+  trashForm     : trashForm,
+  unlock        : unlock
+}
 
 
 // default action
-function handler(params, context, emitter) {
+async function handler(params) {
+  let access = await app.toolbox.access.postView({ postID: params.url.id, user: params.session })
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
+  if ( access === true ) {
+    let post  = await app.models.post.info(params.url.id),
+        topic = await app.models.topic.info(post.topicID),
+        topicController = topic.discussionID !== 2 ? 'topic' : 'announcement',
+        topicUrlTitle = topic.private ? '' : '/' + topic.url
+
+    topic.url = topicController + topicUrlTitle + '/id/' + post.topicID,
+    post.url = 'post/id/' + post.id + '/action/topic#' + post.id
+
+    return {
+      content: {
+        post: post,
+        topic: topic
+      }
     }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      
-      output.post.topicLink = output.post.discussionID !== 2 ? 'topic' : 'announcement';
-      output.post.topicLink += '/' + output.post.topicUrl + '/id/' + output.post.topicID;
-
-      emitter.emit('ready', {
-        content: {
-          post: output.post
-        }
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
+  } else {
+    return access
+  }
 }
-
 
 
 function bookmark(params, context, emitter) {
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'bookmarks');
-  params.form.notes = '';
-
   app.listen('waterfall', {
     access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session, emitter);
+      app.toolbox.access.postView({
+        postID: params.url.id,
+        user: params.session
+      }, emitter)
+    },
+    proceed: function (previous, emitter) {
+      if ( previous.access === true ) {
+        emitter.emit('ready', true)
+      } else {
+        emitter.emit('end', false)
+      }
     },
     post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
+      app.models.post.info(params.url.id, emitter)
     }
   }, function (output) {
-
     if ( output.listen.success ) {
+      if ( output.access === true ) {
+        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'bookmarks')
+        params.form.notes = ''
 
-      emitter.emit('ready', {
-        content: {
-          post: output.post
-        },
-        view: 'bookmark',
-        include: {
-          post: {
-            route: '/post/' + params.url.post
+        emitter.emit('ready', {
+          view: 'bookmark',
+          content: {
+            post: output.post
+          },
+          include: {
+            post: {
+              route: '/post/id/' + output.post.id
+            }
           }
-        }
-      });
-
+        })
+      } else {
+        emitter.emit('ready', output.access)
+      }
     } else {
-
-      emitter.emit('error', output.listen);
-
+      emitter.emit('error', output.listen)
     }
-
-  });
+  })
 
 }
 
@@ -97,655 +94,429 @@ function bookmark(params, context, emitter) {
 
 function bookmarkForm(params, context, emitter) {
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      app.listen({
-        saveBookmark: function (emitter) {
-          app.models.post.saveBookmark({
-            userID: params.session.userID,
-            postID: output.post.id,
-            notes: params.form.notes
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          emitter.emit('ready', {
-            redirect: params.form.forwardToUrl
-          });
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function edit(params, context, emitter) {
-
-  // Verify the user has edit rights
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postEdit(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
-    }
-  }, function (output) {
-
-    // If the user has access rights, display the post edit form
-    if ( output.listen.success ) {
-
-      params.form.forwardToUrl = params.form.forwardToUrl || params.session.loginReferrer || params.request.headers.referer || app.config.comitium.baseUrl + '/post/' + params.url.post;
-      params.form.content = output.post.markdown;
-      params.form.reason = '';
-
-      emitter.emit('ready', {
-        content: {
-          post: output.post
-        },
-        view: 'edit'
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-}
-
-
-
-function editForm(params, context, emitter) {
-
   if ( params.request.method === 'POST' ) {
-    // Verify the user's group has reply access to the topic
     app.listen('waterfall', {
       access: function (emitter) {
-        app.toolbox.access.postEdit(params.url.post, params.session, emitter);
+        app.toolbox.access.postView({
+          postID: params.url.id,
+          user: params.session
+        }, emitter)
+      },
+      proceed: function (previous, emitter) {
+        if ( previous.access === true ) {
+          emitter.emit('ready', true)
+        } else {
+          emitter.emit('end', false)
+        }
       },
       post: function (previous, emitter) {
-        app.models.post.info(params.url.post, emitter);
+        app.models.post.info(params.url.id, emitter)
       }
     }, function (output) {
-      var post = output.post,
-          markdown = new Remarkable({
-            breaks: true,
-            linkify: true
-          }),
-          parsedContent,
-          parsedReason,
-          draft = false,
-          time = app.toolbox.helpers.isoDate();
-
       if ( output.listen.success ) {
-
-        parsedContent = markdown.render(params.form.content);
-        parsedReason = markdown.render(params.form.reason);
-        // Get rid of the paragraph tags and line break added by Remarkable
-        parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
-
-        switch ( params.form.formAction ) {
-          case 'Preview':
-            emitter.emit('ready', {
-              content: {
-                preview: {
-                  content: parsedContent
-                },
-                post: post
-              },
-              view: 'edit'
-            });
-            break;
-          case 'Save as draft':
-          case 'Save changes':
-            if ( params.form.formAction === 'Save as draft' ) {
-              draft = true;
+        if ( output.access === true ) {
+          app.listen({
+            saveBookmark: function (emitter) {
+              app.models.post.saveBookmark({
+                userID: params.session.userID,
+                postID: output.post.id,
+                notes: params.form.notes
+              }, emitter)
             }
-            app.listen({
-              edit: function (emitter) {
-                app.models.post.edit({
-                  id: post.id,
-                  editorID: params.session.userID,
-                  html: parsedContent,
-                  markdown: params.form.content,
-                  reason: parsedReason,
-                  currentPost: post,
-                  draft: draft,
-                  time: time
-                }, emitter);
-              }
-            }, function (output) {
-              var forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : params.form.forwardToUrl;
-
-              if ( output.listen.success ) {
-
-                if ( output.edit.success ) {
-                  emitter.emit('ready', {
-                    redirect: forwardToUrl
-                  });
-                } else {
-                  emitter.emit('ready', {
-                    content: {
-                      edit: output.edit,
-                      post: post
-                    },
-                    view: 'edit'
-                  });
-                }
-
-              } else {
-
-                emitter.emit('error', output.listen);
-
-              }
-
-            });
-            break;
+          }, function (output) {
+            if ( output.listen.success ) {
+              emitter.emit('ready', {
+                redirect: params.form.forwardToUrl
+              })
+            } else {
+              emitter.emit('error', output.listen)
+            }
+          })
+        } else {
+          emitter.emit('ready', output.access)
         }
-
       } else {
-
-        emitter.emit('error', output.listen);
-
+        emitter.emit('error', output.listen)
       }
-
-    });
-
-  // If it's a GET, fall back to the default topic edit action
+    })
   } else {
-    edit(params, context, emitter);
+    bookmark(params, context, emitter)
+  }
+
+}
+
+
+async function edit(params) {
+  let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
+
+  if ( access === true ) {
+    let post = await app.models.post.info(params.url.id)
+
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + post.id)
+    params.form.content = post.text
+    params.form.reason = ''
+
+    return {
+      view: 'edit',
+      content: {
+        post: post
+      }
+    }
+  } else {
+    return access
   }
 }
 
 
+async function editForm(params, context) {
+  let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
 
-function lock(params, context, emitter) {
-
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + params.url.post);
-  params.form.reason = '';
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postLock(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          post: output.post
-        },
-        view: 'lock',
-        include: {
-          post: {
-            route: '/post/' + params.url.post
+  if ( access === true ) {
+    if ( params.request.method === 'POST' ) {
+      let post = await app.models.post.info(params.url.id),
+          postEdit,
+          parsedContent = app.toolbox.markdown.content(params.form.content),
+          parsedReason = app.toolbox.markdown.inline(params.form.reason),
+          draft = false,
+          time = app.toolbox.helpers.isoDate(),
+          forwardToUrl
+  
+      switch ( params.form.formAction ) {
+        default:
+          throw new Error('No valid form action received')
+        case 'Preview post':
+          return {
+            content: {
+              preview: {
+                content: parsedContent
+              },
+              post: post
+            },
+            view: 'edit'
           }
-        }
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function lockForm(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postLock(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
-    }
-  }, function (output) {
-    var post = output.post,
-        markdown = new Remarkable({
-          breaks: true,
-          linkify: true
-        }),
-        parsedReason;
-
-    if ( output.listen.success ) {
-
-      parsedReason = markdown.render(params.form.reason);
-      // Get rid of the paragraph tags and line break added by Remarkable
-      parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
-
-      app.listen({
-        lock: function (emitter) {
-          app.models.post.lock({
-            postID: post.id,
-            topicUrl: post.topicUrl,
-            lockedByID: params.session.userID,
-            lockReason: parsedReason
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          if ( output.lock.success ) {
-
-            if ( params.form.notify ) {
-
-              app.listen({
-                user: function (emitter) {
-                  app.models.user.info({
-                    user: post.authorUrl
-                  }, emitter);
-                }
-              }, function (output) {
-                var mailText = 'The following post has been locked by a moderator: ' + params.route.parsed.protocol + app.config.comitium.baseUrl + '/post/' + post.id;
-
-                if ( parsedReason.length ) {
-                  mailText += '\n\n' + 'Reason: ' + parsedReason;
-                }
-
-                app.mail.sendMail({
-                  from: app.config.comitium.email,
-                  to: output.user.email,
-                  subject: 'Forum post lock notification',
-                  text: mailText
-                });
-              });
-
+        case 'Save as draft':
+        case 'Save changes':
+          if ( params.form.formAction === 'Save as draft' ) {
+            draft = true
+          }
+  
+          postEdit = await app.models.post.edit({
+            id: post.id,
+            editorID: params.session.userID,
+            text: params.form.content,
+            html: parsedContent,
+            reason: parsedReason,
+            currentPost: post,
+            draft: draft,
+            time: time
+          })
+  
+          forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : params.form.forwardToUrl
+  
+          if ( postEdit.success ) {
+            return {
+              redirect: forwardToUrl.indexOf('/topic/') >= 0 ? forwardToUrl + '#' + post.id : forwardToUrl
             }
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
           } else {
-
-            emitter.emit('ready', {
+            return {
               content: {
                 post: post,
-                lock: output.lock
+                message: postEdit.message
               },
-              view: 'lock',
-              include: {
-                post: {
-                  route: '/post/' + params.url.post
-                }
-              }
-            });
-
+              view: 'edit'
+            }
           }
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
+      }
     } else {
-
-      emitter.emit('error', output.listen);
-
+      return edit(params, context)
     }
-
-  });
-
+  } else {
+    return access
+  }
 }
 
 
+async function lock(params) {
+  let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
-function unlock(params, context, emitter) {
+  if ( access === true ) {
+    let post = await app.models.post.info(params.url.id)
+    
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.reason = ''
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postLock(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
-    }
-  }, function (output) {
-    var post = output.post;
-
-    if ( output.listen.success ) {
-
-      app.listen({
-        unlock: function (emitter) {
-          app.models.post.unlock({
-            postID: post.id,
-            topicUrl: post.topicUrl,
-          }, emitter);
+    return {
+      view: 'lock',
+      content: {
+        post: post
+      },
+      include: {
+        post: {
+          route: '/post/id/' + post.id
         }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          emitter.emit('ready', {
-            redirect: params.request.headers.referer
-          });
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
+      }
     }
-
-  });
-
+  } else {
+    return access
+  }
 }
 
 
+async function lockForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
-function report(params, context, emitter) {
+    if ( access === true ) {
+      let post = await app.models.post.info(params.url.id)
+      
+      await app.models.post.lock({
+        postID: post.id,
+        topicID: post.topicID,
+        lockedByID: params.session.userID,
+        lockReason: app.toolbox.markdown.inline(params.form.reason)
+      })
 
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + params.url.post);
-  params.form.reason = '';
+      if ( params.form.notify ) {
+        let [
+          user,
+          mail
+        ] = await Promise.all([
+          app.models.user.info({ userID: post.authorID }),
+          app.models.content.mail({
+            template: 'Post Lock',
+            replace: {
+              postUrl: app.config.comitium.baseUrl + 'post/id/' + post.id,
+              postText: post.text,
+              topicTitle: post.topicTitle,
+              topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+              reason: params.form.reason
+            }
+          })
+        ])
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
-    }
-  }, function (output) {
+        app.toolbox.mail.sendMail({
+          from: app.config.comitium.email,
+          to: user.email,
+          subject: mail.subject,
+          text: mail.text
+        })
+      }
 
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          post: output.post
-        },
-        view: 'report',
-        include: {
-          post: {
-            route: '/post/' + params.url.post
-          }
-        }
-      });
-
+      return {
+        redirect: params.form.forwardToUrl
+      }
     } else {
-
-      emitter.emit('error', output.listen);
-
+      return access
     }
-
-  });
-
+  } else {
+    return lock(params, context)
+  }
 }
 
 
+async function report(params) {
+  let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
 
-function reportForm(params, context, emitter) {
+  if ( access === true ) {
+    let post = await app.models.post.info(params.url.id)
 
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postView(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.reason = ''
+
+    return {
+      view: 'report',
+      content: {
+        post: post
+      },
+      include: {
+        post: {
+          route: '/post/id/' + post.id
+        }
+      }
     }
-  }, function (output) {
-    var post = output.post,
-        markdown = new Remarkable({
-          breaks: true,
-          linkify: true
-        }),
-        parsedReason;
+  } else {
+    return access
+  }
+}
 
-    if ( output.listen.success ) {
 
-      parsedReason = markdown.render(params.form.reason);
-      // Get rid of the paragraph tags and line break added by Remarkable
-      parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
-
-      app.listen({
-        saveReport: function (emitter) {
-          app.models.post.saveReport({
+async function reportForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
+  
+    if ( access === true ) {
+      let post = await app.models.post.info(params.url.id),
+          saveReport = await app.models.post.saveReport({
             userID: params.session.userID,
-            postID: post.id,
-            reason: parsedReason
-          }, emitter);
-        }
-      }, function (output) {
+            postID: params.url.id,
+            reason: app.toolbox.markdown.inline(params.form.reason)
+          })
 
-        if ( output.listen.success ) {
-
-          if ( output.saveReport.success ) {
-
-            app.mail.sendMail({
-              from: app.config.comitium.email,
-              to: app.config.comitium.email,
-              subject: 'Forum post report',
-              text: 'Submitted by: ' + params.session.username + '\n\n' + 'Post: ' + params.route.parsed.protocol + app.config.comitium.baseUrl + '/post/' + post.id + '\n\n' + 'Reason: ' + params.form.reason
-            });
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
-          } else {
-
-            emitter.emit('ready', {
-              content: {
-                post: post,
-                report: output.saveReport
-              },
-              view: 'report',
-              include: {
-                post: {
-                  route: '/post/' + params.url.post
-                }
-              }
-            });
-
+      if ( saveReport.success ) {
+        let mail = await app.models.content.mail({
+          template: 'Post Report',
+          replace: {
+            reporter: params.session.username,
+            postUrl: app.config.comitium.baseUrl + 'post/id/' + post.id,
+            postText: post.text,
+            topicTitle: post.topicTitle,
+            topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+            reason: params.form.reason
           }
+        })
 
-        } else {
-
-          emitter.emit('error', output.listen);
-
+        app.toolbox.mail.sendMail({
+          from: app.config.comitium.email,
+          to: app.config.comitium.email,
+          subject: mail.subject,
+          text: mail.text
+        })
+    
+        return {
+          redirect: params.form.forwardToUrl
         }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function trash(params, context, emitter) {
-
-  params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + params.url.post);
-  params.form.reason = '';
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postTrash(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-
-      emitter.emit('ready', {
-        content: {
-          post: output.post
-        },
-        view: 'trash',
-        include: {
-          post: {
-            route: '/post/' + params.url.post
-          }
-        }
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
-    }
-
-  });
-
-}
-
-
-
-function trashForm(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postTrash(params.url.post, params.session, emitter);
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.post, emitter);
-    }
-  }, function (output) {
-    var post = output.post,
-        markdown = new Remarkable({
-          breaks: true,
-          linkify: true
-        }),
-        parsedReason;
-
-    if ( output.listen.success ) {
-
-      parsedReason = markdown.render(params.form.reason);
-      // Get rid of the paragraph tags and line break added by Remarkable
-      parsedReason = parsedReason.replace(/<p>(.*)<\/p>\n$/, '$1');
-
-      app.listen({
-        trash: function (emitter) {
-          app.models.post.trash({
-            postID: post.id,
-            topicID: post.topicID,
-            topicUrl: post.topicUrl,
-            discussionID: post.discussionID,
-            discussionUrl: post.discussionUrl,
-            deletedByID: params.session.userID,
-            deleteReason: parsedReason
-          }, emitter);
-        }
-      }, function (output) {
-
-        if ( output.listen.success ) {
-
-          if ( output.trash.success ) {
-
-            if ( params.form.notify ) {
-
-              app.listen({
-                user: function (emitter) {
-                  app.models.user.info({
-                    user: post.authorUrl
-                  }, emitter);
-                }
-              }, function (output) {
-                var mailText = 'Your post has been deleted by a moderator.';
-
-                if ( parsedReason.length ) {
-                  mailText += '\n\n' + 'Reason: ' + parsedReason;
-                }
-
-                mailText += '\n\n' + post.html;
-
-                app.mail.sendMail({
-                  from: app.config.comitium.email,
-                  to: output.user.email,
-                  subject: 'Your forum post was deleted',
-                  text: mailText
-                });
-              });
-
+      } else {
+        return {
+          view: 'report',
+          content: {
+            message: saveReport.message,
+            post: post
+          },
+          include: {
+            post: {
+              route: '/post/id/' + post.id
             }
-
-            emitter.emit('ready', {
-              redirect: params.form.forwardToUrl
-            });
-
-          } else {
-
-            emitter.emit('ready', {
-              content: {
-                post: post,
-                trash: output.trash
-              },
-              view: 'lock',
-              include: {
-                post: {
-                  route: '/post/' + params.url.post
-                }
-              }
-            });
-
           }
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
         }
-
-      });
-
+      }
     } else {
-
-      emitter.emit('error', output.listen);
-
+      return access
     }
+  } else {
+    return report(params, context)
+  }
+}
 
-  });
 
+async function topic(params) {
+  let [
+    post,
+    page
+  ] = await Promise.all([
+    app.models.post.info(params.url.id),
+    app.models.post.page(params.url.id)
+  ])
+
+  if ( post ) {
+    params.url.id = post.topicID
+    params.url.page = page
+
+    return {
+      handoff: {
+        controller: 'topic'
+      },
+      view: false
+    }
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
+  }
+}
+
+
+async function trash(params) {
+  let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
+
+  if ( access === true ) {
+    let post = await app.models.post.info(params.url.id)
+
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.reason = ''
+
+    return {
+      view: 'trash',
+      content: {
+        post: post
+      },
+      include: {
+        post: {
+          route: '/post/id/' + post.id
+        }
+      }
+    }
+  } else {
+    return access
+  }
+}
+
+
+async function trashForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
+
+    if ( access === true ) {
+      let post = await app.models.post.info(params.url.id)
+
+      await app.models.post.trash({
+        postID: post.id,
+        topicID: post.topicID,
+        discussionID: post.discussionID,
+        authorID: post.userID,
+        deletedByID: params.session.userID,
+        deleteReason: app.toolbox.markdown.inline(params.form.reason)
+      })
+
+      if ( params.form.notify ) {
+        let [
+          user,
+          mail
+        ] = await Promise.all([
+          app.models.user.info({ userID: post.authorID }),
+          app.models.content.mail({
+            template: 'Post Delete',
+            replace: {
+              postID: post.id,
+              postText: post.text,
+              topicTitle: post.topicTitle,
+              topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+              reason: params.form.reason
+            }
+          })
+        ])
+
+        app.toolbox.mail.sendMail({
+          from: app.config.comitium.email,
+          to: user.email,
+          subject: mail.subject,
+          text: mail.text
+        })
+      }
+
+      return {
+        redirect: params.form.forwardToUrl
+      }
+    } else {
+      return access
+    }
+  } else {
+    return trash(params, context)
+  }
+}
+
+
+async function unlock(params) {
+  let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
+
+  if ( access === true ) {
+    let post = await app.models.post.info(params.url.id)
+
+    await app.models.post.unlock({ postID: post.id, topicID: post.topicID })
+
+    return {
+      redirect: params.request.headers.referer
+    }
+  } else {
+    return access
+  }
 }

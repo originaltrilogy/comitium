@@ -1,22 +1,24 @@
-h1 Report a Post
-    
-section.post-report-form
-  if report && report.message
-    p.message
-      = report.message
-  form#post-report-form(action="post/#{url.post}/action/reportForm" method="post" novalidate)
-    .data
-      input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
-      ul
-        li.report-reason.textarea.required
-          label(for="reason")
-            | Why are you reporting this post?
-          textarea#reason(name="reason" rows="4" required) #{form.reason}
-    .actions
-      ul
-        li.primary.report
-          input(name="formAction" type="submit" value="Send report")
-        li.secondary.cancel
-          a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
+header
+  section.summary
+    h1 Report a post
+    p Use this form to report a post that's in violation of the forum rules. Only moderators will know you've submitted this report.
+
+if message
+  section.notice.error
+    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
+    p !{message}
+
+section.form.post-report
+  form#post-report-form(action="post/id/#{url.id}/action/reportForm" method="post" novalidate)
+    input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
+    ul.data
+      li.report-reason.textarea.required
+        label(for="reason")
+          | Why are you reporting this post?
+        textarea#reason(name="reason" rows="4" required) #{form.reason}
+
+    ul.actions
+      li.primary.report
+        input(name="formAction" type="submit" value="Send report")
 
 != include.post

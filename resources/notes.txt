@@ -3,7 +3,8 @@
 ****   DON'T PUT ANYTHING SENSITIVE IN HERE   ****
 **************************************************
 
+Get the current database size:
 
-"password" hashed with SHA-512:
+select pg_size_pretty(pg_database_size('dbname'));
 
-	b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86
+update users set "passwordHash" = '$2a$12$BUs.SDPtAxSkSAjJGf6G2eb348JbZPVR0OmnXySJs2M5IDDh0Wf62';

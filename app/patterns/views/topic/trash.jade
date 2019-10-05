@@ -1,19 +1,26 @@
-h1 Delete a Topic
-    
-section.topic-trash-form
-  if trash && trash.message
-    p.message
-      = trash.message
+header
+  section.summary
+    h1 Delete a topic
+    p Deleting a topic moves it to the <a href="discussion/Trash/id/1">trash</a>, where it can be recovered later if necessary. Once removed from the trash by an administrator, a topic is permanently deleted.
+    p Announcements moved to the trash are removed from all discussions in which they appear.
+
+if trash && trash.message
+  section.notice.error
+    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
+    p !{trash.message}
+
+section.form.topic-trash
   form#topic-trash-form(action="topic/id/#{url.id}/action/trashForm" method="post" novalidate)
-    .data
-      input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
-      //- ul
-      //-   li.notify.checkbox
-      //-     input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
-      //-     label(for="notify") Notify the author
-    .actions
-      ul
-        li.primary.report
-          input(name="formAction" type="submit" value="Move this topic to the trash")
-        li.secondary.cancel
-          a(href="#{request.headers.referer}" title="Return to the page you came from.") Cancel and go back
+    input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
+    ul.data
+      li.reason.textarea
+        label(for="reason") Why are you deleting this topic?
+        p.label-note Optional
+        textarea(id="reason" name="reason" rows="4") #{form.reason}
+      li.notify.checkbox
+        input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
+        label(for="notify") Notify members following this topic
+
+    ul.actions
+      li.primary.report
+        input(name="formAction" type="submit" value="Move this topic to the trash")

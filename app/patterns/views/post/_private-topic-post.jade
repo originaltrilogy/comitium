@@ -1,20 +1,41 @@
-article.post(id="#{post.id}" data-post-id="#{post.id}")
-  h2
-    img(src="#{config.comitium.staticAssetUrl}avatars/#{post.authorUrl}-#{post.authorID}.png")
-    a(href="user/#{post.authorUrl}/id/#{post.authorID}")
-      = post.author
-    time
-      = post.dateCreated
-  .content
+article(id="#{post.id}" class="post #{ post.authorSignature ? 'signature' : '' } #{ post.authorGroupID === 4 || post.authorGroupID === 5 ? 'staff' : ''}" data-post-id="#{post.id}")
+  header
+    a(class="avatar #{ post.authorGroupID === 6 ? 'banned' : '' }" href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author")
+      if post.authorGroupID === 6
+        <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
+      img(src="avatars/#{post.authorID}.jpg")
+    dl
+      dt.author Author
+      dd.author
+        a.author(href="user/#{post.authorUrl}/id/#{post.authorID}" rel="author") #{post.author}
+      dd.time
+        if !post.editorID
+          time
+            != post.createdFormatted
+        else
+          time
+            != post.createdFormatted
+          span.edited &nbsp;<a href="post/id/#{post.id}">(Edited)</a>
+      dt.link Post link
+      dd.link
+        a.post(href="post/id/#{post.id}/action/topic##{post.id}" title="Jump directly to this post.")
+          | <svg class="icon link"><use xlink:href="themes/default/images/symbols.svg#icon-link"></use></svg>
+  section.content.post
     != post.html
   nav.actions
     ul
-      //- li.reply
-      //-   a(href="#{route.pathname}/action/reply") Reply
       li.quote
-        a(href="#{route.pathname}/action/reply/quote/#{post.id}") Quote
-      if ( session.username === post.author && post.lockedByID === 0 ) || session.moderateDiscussions
+        a(href="topic/action/reply/id/#{url.id}/quote/#{post.id}") Quote
+      if session.username === post.author
         li.edit
-          a(href="post/#{post.id}/action/edit") Edit
-      li.bookmark
-        a(href="post/#{post.id}/action/bookmark") Bookmark
+          a(href="post/action/edit/id/#{post.id}") Edit
+      //- li.bookmark
+      //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
+  if post.authorSignature
+    section.signature
+      if post.authorGroupID === 4
+        section.staff.moderator originaltrilogy.com Moderator
+      else if post.authorGroupID === 5
+        section.staff.administrator originaltrilogy.com Administrator
+      section.content
+        != post.authorSignature

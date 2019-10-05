@@ -1,89 +1,61 @@
-/*-------------------
-post view (shared)
--------------------*/
+//////////////////////////////
+//        post styles       //
+//////////////////////////////
 
+// Post view styles
+body[data-controller="post"][data-view="post"] {
+
+  section.summary {
+    dl {
+      margin: 0;
+    }
+  }
+
+  @media only screen and (min-width: 720px) {
+
+    section.summary {
+      dt {
+        flex-basis: 16rem;
+      }
+    }
+
+  }
+
+}
+
+
+// Global post styles
 article.post {
-  padding: 0;
+  nav.actions {
+    flex-basis: 100%;
 
-  h2 {
-    position: relative;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    padding-top: 4vw;
-    padding-bottom: 4vw;
-    padding-left: 28vw;
-    text-align: left;
-    @include background-color(14%, 30%);
-
-    img {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    time {
-      display: block;
-      font-family: $defaultFont;
-      font-size: 4vw;
-    }
-  }
-
-  .content {
-    margin-bottom: 8vw;
-  }
-
-  .actions {
     ul {
-      text-align: right;
+      justify-content: flex-end;
+      margin-right: 1.2rem;
     }
     li {
-      margin-right: 0.6vw;
-
       &:last-child {
         margin-right: 0;
       }
     }
     a {
-      @include button('small', 'dark');
+      @include button($padding: 0.8rem 1rem, $fontSize: 86%);
     }
   }
-}
+  
 
+  @media only screen and (min-width: 720px) {
+    nav.actions {
+      padding: 1.2rem;
 
-/*-------------------
-bookmark view
--------------------*/
-
-body[data-controller="post"][data-view="bookmark"] {
-
-  textarea {
-    height: 10.2rem;
-  }
-
-}
-
-
-/*-------------------
-lock view
--------------------*/
-
-body[data-controller="post"][data-view="lock"] {
-
-  textarea {
-    height: 10.2rem;
-  }
-
-}
-
-
-/*-------------------
-report view
--------------------*/
-
-body[data-controller="post"][data-view="report"] {
-
-  textarea {
-    height: 10.2rem;
+      ul {
+        justify-content: flex-end;
+        margin: 0;
+      }
+      li {
+        margin-bottom: 0;
+      }
+    }
   }
 
 }

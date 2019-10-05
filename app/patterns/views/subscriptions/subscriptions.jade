@@ -1,0 +1,20 @@
+header
+  include ../partials/breadcrumbs
+  section.summary
+    h1 Topic Subscriptions
+    p This is a list of topics you're following, sorted by most recent activity.
+
+section.topics
+  header
+    h2 #{app.toolbox.numeral(count).format('0,0')} Topic#{ count != 1 ? 's' : '' }
+    include ../partials/pagination
+  if topics
+    each topic in topics
+      if topic.discussionID !== 2
+        include ../partials/subscribed-topic
+      else
+        include ../partials/subscribed-announcement
+  else
+    p You're not subscribed to any topics.
+
+include ../partials/previous-and-next

@@ -1,0 +1,30 @@
+if !topic.lockedByID || session.moderateDiscussions
+  nav.topic.actions
+    ul
+      if topic.discussionID !== 1
+        //- Everyone (including the public) should see the reply button.
+        //- Only exception: the topic is locked and the user isn't a mod.
+        if !topic.lockedByID || session.moderateDiscussions
+          li.reply
+            a(href="topic/action/reply/id/#{url.id}") Reply
+        if !userIsSubscribed
+          li.subscribe
+            a(href="topic/action/subscribe/id/#{topic.id}" title="Receive an e-mail notification when people reply to this topic.") Subscribe
+        else
+          li.unsubscribe
+            a(href="topic/action/unsubscribe/id/#{topic.id}" title="Stop receiving e-mail notifications about this topic.") Unsubscribe
+      if userCanEdit
+        li.edit
+          a(href="topic/action/edit/id/#{topic.id}" title="Edit this topic.") Edit
+      if session.moderateDiscussions
+        li.move
+          a(href="topic/action/move/id/#{topic.id}" title="Move this topic to another discussion forum.") Move
+        if topic.discussionID !== 1
+          if !topic.lockedByID
+            li.lock
+              a(href="topic/action/lock/id/#{topic.id}" title="Lock this topic (no replies or edits).") Lock
+          else
+            li.unlock
+              a(href="topic/action/unlock/id/#{topic.id}" title="Unlock this topic.") Unlock
+          li.delete
+            a(href="topic/action/trash/id/#{topic.id}" title="Move this topic to the trash.") Delete

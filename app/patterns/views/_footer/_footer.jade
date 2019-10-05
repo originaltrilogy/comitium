@@ -1,4 +1,9 @@
-a.to-the-top(href="#{route.url}#top") To the top
-
 footer(data-view="/views/partials/footer")
-  section.stats <strong>#{stats.users}</strong> members have started <strong>#{stats.topics}</strong> topics containing <strong>#{stats.posts}</strong> posts
+  a.home(href="/" title="Go to our home page.")
+    <svg class="logo"><use xlink:href="themes/default/images/symbols.svg#logo-vertical"></use></svg>
+  section.stats
+    p <strong>#{stats.users}</strong> members have started <strong>#{stats.topics}</strong> topics with <strong>#{stats.posts}</strong> posts since <strong>#{stats.firstPostCreated}</strong>
+  section.copyright
+    p Site content Copyright © #{copyrightYear} TEH Innernets LLC. Please read our <a href="content/Terms-of-Service/id/3">Terms of Service</a>.
+    p originaltrilogy.com is not affiliated with Lucasfilm, 20th Century Fox, or Disney. All Star Wars content, images, and likenesses are the property of their respective copyright owner.
+    p We ❤️ Star Wars and give it all the moneys. Please don't sue us.

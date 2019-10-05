@@ -1,41 +1,258 @@
 ////////////////////////////
-//   discussion pattern   //
+//    discussion pages    //
 ////////////////////////////
 
-body[data-controller="discussion"],
-body[data-controller="announcements"],
-body[data-controller="private-topics"] {
+body[data-controller="discussion"][data-view="discussion"],
+body[data-controller="announcements"][data-view="announcements"],
+body[data-controller="private-topics"][data-view="private-topics"],
+body[data-controller="subscriptions"][data-view="subscriptions"] {
 
   main > p {
-    margin: 4vw 4vw 6vw;
-    color: white;
+    margin: 1.2rem 1.2rem 1.8rem;
   }
-  p.details {
-    margin-top: 0.4rem;
-    margin-bottom: 1.2rem;
+  section.topics {
+    margin-top: 1.6rem;
+    padding: 0 1.6rem;
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+
+      h2 {
+        flex: 1 0 100%;
+      }
+    }
   }
-  p.stats {
-    margin-top: 0.8rem;
+  article.topic {
+    section.description {
+      flex: 1 0 0;
+      padding-right: 1.2rem;
+    }
+    h3 {
+      display: flex;
+      align-items: center;
+      min-height: 4.6rem;
+      margin-bottom: 1.2rem;
+    }
+    section.author {
+      order: 3;
+      display: flex;
+    }
+    dl.byline {
+      flex-basis: 50%;
+      margin: 0 0 0 1rem;
+      font-size: 88%;
+
+      dt.author,
+      dt.date {
+        position: absolute;
+        left: -100%;
+      }
+      dd.author {
+        flex-basis: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      dd.date {
+        flex-basis: 10rem;
+      }
+    }
+    a.content-stats {
+      order: 2;
+    }
+    p.last-post {
+      position: absolute;
+      right: 0;
+      bottom: 1.2rem;
+      width: 14rem;
+      font-size: 75%;
+      line-height: 1.3;
+
+      a.avatar {
+        width: 3rem;
+        height: 3rem;
+        margin-right: 0.6rem;
+        float: left;
+      }
+      a:nth-child(2) {
+        display: inline-block;
+        width: calc(100% - 3.6rem);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+
+    &.announcement {
+      h3 {
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+      }
+    }
   }
-  span.replies {
-    font-family: $boldFont;
+
+  @media only screen and (min-width: 375px) {
+
+    article.topic {
+      a.avatar {
+        width: 4.2rem;
+        height: 4.2rem;
+      }
+      p.last-post {
+        width: 15.5rem;
+
+        a.avatar {
+          width: 3.2rem;
+          height: 3.2rem;
+        }
+        a:nth-child(2) {
+          width: calc(100% - 3.8rem);
+        }
+      }
+    }
+
+  }
+
+  @media only screen and (min-width: 720px) {
+
+    section.announcements {
+      & > * {
+        max-width: 96rem;
+      }
+    }
+
+    section.topics {
+      margin: 1.2rem 0 2.4rem;
+      padding: 0 2.4rem;
+
+      > * {
+        max-width: 96rem;
+        margin: auto;
+      }
+      header {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        margin-bottom: 1.2rem;
+
+        h2 {
+          flex: 1 1 auto;
+          display: flex;
+          align-items: center;
+          margin: 1.2rem 0;
+        }
+        nav.pagination {
+          flex: 0 1 auto;
+          margin: 1.2rem 0 0 1.2rem;
+        }
+        nav.actions {
+          flex: 0 1 auto;
+          margin: 1.2rem 0 0 2.4rem;
+        }
+      }
+      article.topic {
+        flex-wrap: nowrap;
+        flex: 1 0 100%;
+
+        section.description {
+          flex: 0 1 70.6rem;
+          padding-right: 2.4rem;
+        }
+        h3 {
+          min-height: 0;
+          margin: 0 0 0 6.8rem;
+        }
+        section.author {
+          margin: 0.4rem 0 0 6.8rem;
+          font-size: 88%;
+
+          a.avatar {
+            position: absolute;
+            top: 1.2rem;
+            left: 0;
+            width: 5.4rem;
+            height: 5.4rem;
+          }
+        }
+        dl.byline {
+          flex-basis: 100%;
+          flex-wrap: nowrap;
+          margin: 0;
+          font-size: 100%;
+        }
+        dd.author {
+          display: inline;
+          flex-basis: auto;
+        }
+        dd.date {
+          flex-basis: auto;
+
+          &::before {
+            content: '–';
+            display: inline-block;
+            margin: 0 0.4rem;
+          }
+        }
+        p.last-post {
+          right: initial;
+          bottom: initial;
+          position: static;
+          width: auto;
+          flex: 0 0 20rem;
+          order: 2;
+          font-size: 90%;
+
+          a.avatar {
+            width: 4rem;
+            height: 4rem;
+            margin-right: 1rem;
+          }
+          a:nth-child(2) {
+            display: block;
+            margin-top: 0.4rem;
+            max-width: 12rem;
+          }
+        }
+        a.content-stats {
+          order: 3;
+        }
+      }
+    }
+
   }
 
 }
 
-body[data-controller="discussion"] {
-
-  nav.actions {
-    padding: 0;
-  }
-
-}
-
-body[data-controller="announcements"],
-body[data-controller="private-topics"] {
-
-  nav.actions {
-    padding-bottom: 0;
-  }
+body[data-controller="private-topics"][data-view="private-topics"],
+body[data-controller="subscriptions"][data-view="subscriptions"] {
+  article.topic {
+    nav.actions {
+      margin: 1.2rem 0.6rem 0 0;
+      display: flex;
+      justify-content: flex-end;
   
+      li {
+        margin: 0;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 720px) {
+    article.topic {
+      nav.actions {
+        flex: 0 0 auto;
+        order: 4;
+        margin: 0 0 0 1.6rem;
+
+        li {
+          a {
+            padding: 0.8rem 1rem;
+            font-size: 88%;
+          }
+        }
+      }
+    }
+  }
 }

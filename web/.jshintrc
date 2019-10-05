@@ -1,6 +1,0 @@
-{
-  "extends":        "../.jshintrc",
-  "node":           false,
-  "browser":        true,
-  "predef":         [ "OT", "Modernizr", "console" ]
-}

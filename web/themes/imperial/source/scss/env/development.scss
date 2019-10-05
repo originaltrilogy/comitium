@@ -1,0 +1,26 @@
+@import '../../../../default/source/scss/lib/normalize';
+@import '../../../../default/source/scss/baseline';
+
+@font-face {
+  font-family: 'glyphs';
+  src: // url('../../default/fonts/glyphs/icomoon.woff2') format('woff2'),
+       url('../../default/fonts/glyphs/icomoon.woff') format('woff'),
+       url('../../default/fonts/glyphs/icomoon.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-feature-settings: 'liga';
+}
+
+@import '../../../../default/source/scss/global';
+@import '../../../../default/source/scss/discussions';
+@import '../../../../default/source/scss/discussion';
+@import '../../../../default/source/scss/topic';
+@import '../../../../default/source/scss/post';
+@import '../../../../default/source/scss/account';
+@import '../../../../default/source/scss/user';
+@import '../../../../default/source/scss/sign-in';
+@import '../../../../default/source/scss/register';
+@import '../../../../default/source/scss/password-reset';
+
+// Theme styles
+@import '../_visuals';

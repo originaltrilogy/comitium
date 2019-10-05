@@ -1,1168 +1,839 @@
 // topic model
 
-'use strict';
+'use strict'
 
 module.exports = {
+  acceptInvitation: acceptInvitation,
+  announcementView: announcementView,
+  announcementReply: announcementReply,
+  edit: edit,
   exists: exists,
   firstUnreadPost: firstUnreadPost,
-  hasInvitee: hasInvitee,
+  invitee: invitee,
   invitees: invitees,
   info: info,
   insert: insert,
   posts: posts,
+  newPosts: newPosts,
+  leave: leave,
   lock: lock,
   unlock: unlock,
   move: move,
   reply: reply,
   subscriptionExists: subscriptionExists,
-  subscribersToNotify: subscribersToNotify,
+  subscribers: subscribers,
+  subscribersToUpdate: subscribersToUpdate,
   subscriptionNotificationSentUpdate: subscriptionNotificationSentUpdate,
   subscribe: subscribe,
   unsubscribe: unsubscribe,
   viewTimeUpdate: viewTimeUpdate,
   breadcrumbs: breadcrumbs,
   metaData: metaData
-};
+}
+
+
+async function acceptInvitation(args) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    await client.query({
+      name: 'topic_acceptInvitation',
+      text: 'update "topicInvitations" set accepted = true where "userID" = $1 and "topicID" = $2;',
+      values: [ args.userID, args.topicID ]
+    })
+
+    // Clear related caches
+    app.cache.clear({ scope: 'topic-' + args.topicID })
+    app.cache.clear({ scope: 'private-topics-' + args.userID })
+  } finally {
+    client.release()
+  }
+}
+
+
+async function announcementView(args) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'topic_announcementView',
+      text: 'select dp."discussionID" from "discussionPermissions" dp join "announcements" a on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and a."topicID" = $2 and dp."read" = true;',
+      values: [ args.groupID, args.topicID ]
+    })
+
+    if ( result.rows.length ) {
+      return true
+    } else {
+      return false
+    }
+  } finally {
+    client.release()
+  }
+}
+
+
+async function announcementReply(args) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'topic_announcementReply',
+      text: 'select dp."discussionID" from "discussionPermissions" dp join "announcements" a on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and a."topicID" = $2 and dp."reply" = true;',
+      values: [ args.groupID, args.topicID ]
+    })
+
+    if ( result.rows.length ) {
+      return true
+    } else {
+      return false
+    }
+  } finally {
+    client.release()
+  }
+}
+
+
+async function edit(args) {
+  if ( !args.title.length || !args.text.length ) {
+    return {
+      success: false,
+      reason: 'requiredFieldsEmpty',
+      message: 'The topic title and content are both required.'
+    }
+  } else {
+    const client = await app.toolbox.dbPool.connect()
+  
+    try {
+      await client.query('begin')
+      await client.query(
+        'update "posts" set "text" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "modified" = $5 where "id" = $6;',
+        [ args.text, args.html, args.editorID, args.reason, args.time, args.postID ])
+      await client.query(
+        'insert into "postHistory" ( "postID", "editorID", "editReason", "text", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 );',
+        [ args.postID, !args.currentPost.editorID ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ])
+      await client.query(
+        'update "topics" set "title" = $1, "titleHtml" = $2, "url" = $3, "editedByID" = $4, "editReason" = $5 where "id" = $6;',
+        [ args.title, args.titleHtml, args.url, args.editorID, args.reason, args.topicID ])
+      await client.query('commit')
+
+      // Clear the topic cache
+      app.cache.clear({ scope: 'topic-' + args.currentPost.topicID })
+      app.cache.clear({ scope: 'discussion-' + args.discussionID })
+      if ( args.discussionID === 2 ) {
+        app.cache.clear({ scope: 'announcements' })
+      }
+
+      return {
+        success: true
+      }
+    } catch (err) {
+      await client.query('rollback')
+      throw err
+    } finally {
+      client.release()
+    }
+  }
+}
 
 
 function exists(topicID, emitter) {
   app.listen({
     exists: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
+      app.toolbox.dbPool.connect(function (err, client, done) {
         if ( err ) {
-          emitter.emit('error', err);
+          emitter.emit('error', err)
         } else {
           client.query(
             'select id from topics where id = $1;',
             [ topicID ],
             function (err, result) {
-              done();
+              done()
               if ( err ) {
-                emitter.emit('error', err);
+                emitter.emit('error', err)
               } else {
                 if ( result.rows.length ) {
-                  emitter.emit('ready', true);
+                  emitter.emit('ready', true)
                 } else {
-                  emitter.emit('ready', false);
+                  emitter.emit('ready', false)
                 }
               }
             }
-          );
+          )
         }
-      });
+      })
     }
   }, function (output) {
 
     if ( output.listen.success ) {
-      emitter.emit('ready', output.exists);
+      emitter.emit('ready', output.exists)
     } else {
-      emitter.emit('error', output.listen);
+      emitter.emit('error', output.listen)
     }
 
-  });
+  })
 }
 
 
-function firstUnreadPost(args, emitter) {
-  app.listen('waterfall', {
-    viewTime: function (emitter) {
-      app.models.user.topicViewTimes({
-        userID: args.userID,
-        topicID: args.topicID
-      }, emitter);
-    },
-    topic: function (previous, emitter) {
-      if ( previous.viewTime ) {
-        info(args.topicID, emitter);
-      } else {
-        emitter.emit('end', {
-          page: 1
-        });
-      }
-    },
-    posts: function (previous, emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'select * from "posts" where "topicID" = $2 and "dateCreated" > ( select "time" from "topicViews" where "userID" = $1 and "topicID" = $2 ) order by "dateCreated" asc;',
-            [ args.userID, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                if ( result.rows.length ) {
-                  emitter.emit('ready', {
-                    post: result.rows[0],
-                    page: Math.ceil(( previous.topic.replies + 1 - result.rows.length ) / 25)
-                  });
-                } else {
-                  emitter.emit('ready', {
-                    page: Math.ceil(( previous.topic.replies + 1 ) / 25)
-                  });
-                }
-              }
-            }
-          );
-        }
-      });
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.posts || output.topic );
-    } else {
-      emitter.emit('error', output.listen);
-    }
-  });
-}
+async function newPosts(args) {
+  // See if already cached
+  let cacheKey = 'key',
+      scope = 'scope',
+      cached = app.cache.get({ scope: scope, key: cacheKey })
 
-
-
-function hasInvitee(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'select "topicID" from "topicInvitations" where "topicID" = $1 and "userID" = $2;',
-        [ args.topicID, args.userID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            if ( result.rows.length ) {
-              emitter.emit('ready', true);
-            } else {
-              emitter.emit('ready', false);
-            }
-          }
-        }
-      );
-    }
-  });
-}
-
-
-function invitees(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'select ti."topicID", u."id", u."username", u."url" from "topicInvitations" ti join "users" u on ti."userID" = u."id" where "topicID" = $1 order by u."username" asc;',
-        [ args.topicID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            emitter.emit('ready', result.rows);
-          }
-        }
-      );
-    }
-  });
-}
-
-
-function info(topicID, emitter) {
-  // See if this topic info is already cached
-  var cacheKey = 'info',
-      scope = 'topic-' + topicID,
-      cached = app.cache.get({ scope: scope, key: cacheKey });
-
-  // If it's cached, return the cache object
+  // If it's cached, return the cache item
   if ( cached ) {
-    emitter.emit('ready', cached);
-    // If it's not cached, retrieve it from the database and cache it
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
   } else {
-    app.listen({
-      topic: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'select d."id" as "discussionID", d."title" as "discussionTitle", d."url" as "discussionUrl", t."sortDate" as "time", t."id", t."url", t."replies", t."titleHtml", t."titleMarkdown", t."draft", t."private", t."lockedByID", t."lockReason", p."userID" as "authorID", u."username" as "author", u."url" as "authorUrl" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = t."firstPostID" join "users" u on u."id" = p."userID" where t."id" = $1;',
-              [ topicID ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
-          }
-        });
+    const client = await app.toolbox.dbPool.connect()
+
+    try {
+      const result = await client.query({
+        name: 'topic_newPosts',
+        text: 'select "id" from "posts" where "topicID" = $1 and "draft" = false and "created" > $2 order by "created" asc;',
+        values: [ args.topicID, args.time ]
+      })
+
+      return {
+        post: result.rows[0],
+        page: Math.ceil(( args.replies + 1.5 - result.rows.length ) / 25)
       }
-    }, function (output) {
-
-      if ( output.listen.success ) {
-        // Cache the topic info object for future requests
-        app.cache.set({
-          scope: scope,
-          key: cacheKey,
-          value: output.topic[0]
-        });
-
-        emitter.emit('ready', output.topic[0]);
-      } else {
-        emitter.emit('error', output.listen);
-      }
-
-    });
+    } finally {
+      client.release()
+    }
   }
 }
 
 
+async function firstUnreadPost(args) {
+  let viewTime = args.userID ? await app.models.user.topicViewTimes({ userID: args.userID, topicID: args.topicID }) : [ { time: args.viewTime } ]
 
-function insert(args, emitter) {
-  var title = args.titleMarkdown.trim() || '',
-      content = args.markdown.trim() || '';
+  if ( viewTime ) {
+    let topic = await this.info(args.topicID)
+
+    if ( app.toolbox.moment(topic.lastPostCreated).isAfter(viewTime[0].time) ) {
+      return await this.newPosts({ topicID: args.topicID, time: viewTime[0].time, replies: topic.replies })
+    } else {
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
+
+async function invitee(args) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'topic_invitee',
+      text: 'select "topicID", accepted, "left" from "topicInvitations" where "topicID" = $1 and "userID" = $2;',
+      values: [ args.topicID, args.userID ]
+    })
+
+    if ( result.rows.length ) {
+      return result.rows[0]
+    } else {
+      return false
+    }
+  } finally {
+    client.release()
+  }
+}
+
+
+async function invitees(args) {
+  args.left = args.left || false
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'topic_invitees',
+      text: 'select ti."topicID", ti.accepted, ti.left, u."id", u."username", u."url" from "topicInvitations" ti join "users" u on ti."userID" = u."id" where "topicID" = $1 and ti.left = $2 order by u."username" asc;',
+      values: [ args.topicID, args.left ]
+    })
+
+    return result.rows
+  } finally {
+    client.release()
+  }
+}
+
+
+async function info(topicID) {
+  // See if already cached
+  let cacheKey = 'info',
+      scope = 'topic-' + topicID,
+      cached = app.cache.get({ scope: scope, key: cacheKey })
+
+  // If it's cached, return the cache item
+  if ( cached ) {
+    return cached
+  // If it's not cached, retrieve it from the database and cache it
+  } else {
+    const client = await app.toolbox.dbPool.connect()
+
+    try {
+      const result = await client.query({
+        name: 'topic_info',
+        text: 'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created", t."modified", ( select count(*) from posts where "topicID" = t.id and draft = false ) - 1 as replies, t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", p.text, u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and "draft" = false order by created desc limit 1 ) where t."id" = $1;',
+        values: [ topicID ]
+      })
+
+      if ( result.rows.length ) {
+        result.rows[0].replies = parseInt(result.rows[0].replies, 10)
+        result.rows[0].createdFormatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A')
+        result.rows[0].repliesFormatted = app.toolbox.numeral(result.rows[0].replies).format('0,0')
+
+        // Cache the topic info object for future requests
+        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
+          app.cache.set({
+            scope: scope,
+            key: cacheKey,
+            value: result.rows[0]
+          })
+        }
+
+        return result.rows[0]
+      } else {
+        return false
+      }
+    } finally {
+      client.release()
+    }
+  }
+}
+
+
+async function insert(args) {
+  let title   = args.title.trim() || '',
+      content = args.text.trim() || ''
 
   if ( !title.length || !content.length || ( args.private && !args.invitees.length ) ) {
-    emitter.emit('ready', {
+    return {
       success: false,
       reason: 'requiredFieldsEmpty',
       message: 'All fields are required.'
-    });
+    }
+  } else if ( title.length > 120 ) {
+    return {
+      success: false,
+      reason: 'titleLength',
+      message: 'Topic titles can\'t be longer than 120 characters.'
+    }
   } else {
+    const client = await app.toolbox.dbPool.connect()
+  
+    try {
+      await client.query('BEGIN')
+      const insertTopic = await client.query(
+        'insert into topics ( "discussionID", "title", "titleHtml", "url", "created", "sticky", "draft", "private" ) values ( $1, $2, $3, $4, $5, $5, $6, $7 ) returning id;',
+        [ args.discussionID, args.title, args.titleHtml, args.url, args.time, args.draft, args.private ])
+      const insertPost = await client.query(
+        'insert into posts ( "topicID", "userID", "text", "html", "created", "draft" ) values ( $1, $2, $3, $4, $5, $6 ) returning id;',
+        [ insertTopic.rows[0].id, args.userID, args.text, args.html, args.time, args.draft ])
+      
+      let invited = []
+      if ( args.private && args.invitees ) {
+        let invitees = [],
+            inviteesList = args.invitees.replace(/(^[,\s]+)|([,\s]+$)/g, '')
 
-    app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err);
-      } else {
-        app.listen('waterfall', {
-          begin: function (emitter) {
+        if ( inviteesList.length ) {
+          invitees = inviteesList.split(',')
 
-            client.query('begin', function (err) {
-              if ( err ) {
-                done();
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready');
-              }
-            });
-
-          },
-          insertTopic: function (previous, emitter) {
-
-            client.query(
-              'insert into topics ( "discussionID", "firstPostID", "lastPostID", "titleMarkdown", "titleHtml", "url", "sortDate", "replies", "draft", "private", "lockedByID" ) ' +
-              'values ( $1, 0, 0, $2, $3, $4, $5, 0, $6, $7, 0 ) returning id;',
-              [ args.discussionID, args.titleMarkdown, args.titleHtml, args.url, args.time, args.draft, args.private ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    id: result.rows[0].id
-                  });
-                }
-              }
-            );
-
-          },
-          insertPost: function (previous, emitter) {
-
-            client.query(
-              'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified" ) ' +
-              'values ( $1, $2, $3, $4, $5, $6, $7, $8 ) returning id;',
-              [ previous.insertTopic.id, args.userID, args.html, args.markdown, args.time, args.draft, args.userID, args.time ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    id: result.rows[0].id
-                  });
-                }
-              }
-            );
-
-          },
-          updateTopic: function (previous, emitter) {
-
-            client.query(
-              'update topics set "firstPostID" = $1, "lastPostID" = $1 where id = $2;',
-              [ previous.insertPost.id, previous.insertTopic.id ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  if ( args.private ) {
-                    emitter.emit('ready');
-                  } else {
-                    emitter.emit('skip');
-                  }
-                }
-              }
-            );
-
-          },
-          insertInvitation: function (previous, emitter) {
-            var userMethods = {};
-
-            args.invitees.forEach( function (item, indext, array) {
-              userMethods[item] = function (emitter) {
-                client.query(
-                  'select id from users where username = $1;',
-                  [ item ],
-                  function (err, result) {
-                    if ( err ) {
-                      client.query('rollback', function (err) {
-                        done();
-                      });
-                      emitter.emit('error', err);
-                    } else {
-                      emitter.emit('ready', result.rows[0]);
-                    }
-                  }
-                );
-              };
-            });
-
-            app.listen(userMethods, function (output) {
-              var userIDs = [ args.userID ],
-                  insertIDs = '( ' + previous.insertTopic.id + ', ' + args.userID + ' )',
-                  insert = true;
-
-              if ( output.listen.success ) {
-                delete output.listen;
-                for ( var property in output ) {
-                  if ( output[property] ) {
-                    userIDs.push(output[property].id);
-                    insertIDs += ', ( ' + previous.insertTopic.id + ', ' + output[property].id + ' )';
-                  } else {
-                    insert = false;
-                    break;
-                  }
-                }
-
-                if ( insert ) {
-                  app.listen({
-                    insert: function (emitter) {
-                      client.query(
-                        'insert into "topicInvitations" ( "topicID", "userID" ) values ' + insertIDs + ';',
-                        function (err, result) {
-                          if ( err ) {
-                            client.query('rollback', function (err) {
-                              done();
-                            });
-                            emitter.emit('error', err);
-                          } else {
-                            emitter.emit('ready');
-                          }
-                        }
-                      );
-                    }
-                  }, function (output) {
-                    if ( output.listen.success ) {
-                      emitter.emit('skip', {
-                        userIDs: userIDs
-                      });
-                    } else {
-                      emitter.emit('error', output.listen);
-                    }
-                  });
-                } else {
-                  client.query('rollback', function (err) {
-                    done();
-                    emitter.emit('error', {
-                      message: 'The user you specified (' + property + ') doesn\'t exist.'
-                    });
-                  });
-                }
-
-              } else {
-                emitter.emit('error', output.listen);
-              }
-            });
-
-          },
-          updateDiscussionStats: function (previous, emitter) {
-
-            client.query(
-              'update discussions set posts = ( select count(p.id) from posts p join topics t on p."topicID" = t.id where t."discussionID" = $1 and p.draft = false ), topics = ( select count(t.id) from topics t where t."discussionID" = $1 and t.draft = false ) where "id" = $1;',
-              [ args.discussionID ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    affectedRows: result.rowCount
-                  });
-                }
-              }
-            );
-
-          },
-          updateAuthorStats: function (previous, emitter) {
-
-            client.query(
-              'update "users" set "lastActivity" = $1 where "id" = $2;',
-              [ args.time, args.userID ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    affectedRows: result.rowCount
-                  });
-                }
-              }
-            );
-
-          },
-          commit: function (previous, emitter) {
-
-            client.query('commit', function () {
-              done();
-              emitter.emit('ready');
-            });
-
+          for ( let i = 0; i < invitees.length; i += 1 ) {
+            invitees[i] = invitees[i].trim()
           }
-        }, function (output) {
+        }
 
-          if ( output.listen.success ) {
-
-            emitter.emit('ready', {
-              success: true,
-              id: output.insertTopic.id
-            });
-
-            if ( !args.draft ) {
-              if ( args.private ) {
-                output.insertInvitation.userIDs.forEach( function (item, index, array) {
-                  app.cache.clear({ scope: 'private-topics-' + item });
-                });
-              } else {
-                app.cache.clear({ scope: 'discussion-' + args.discussionID });
-                app.cache.clear({ scope: 'discussions-categories' });
+        let invitations = []
+        invitees.forEach((item, index, array) => {
+          invitations.push(
+            ( async () => {
+              const invitee = await client.query('select id, email, "privateTopicEmailNotification" from users where lower(username) = lower($1)', [ item ])
+              if ( !invitee.rowCount ) {
+                throw new Error(item + ' isn\'t a member.')
               }
-            }
+              if ( array.length === 1 && invitee.rows[0].id === args.userID ) {
+                throw new Error('You don\'t need to invite yourself, but you do need to invite at least one other person.')
+              }
+              await client.query('insert into "topicInvitations" ( "topicID", "userID", "accepted" ) values ( $1, $2, false );',
+              [ insertTopic.rows[0].id, invitee.rows[0].id ])
+              invited.push(invitee.rows[0])
+            })()
+          )
+        })
 
-          } else {
+        invitations.push(
+          client.query(
+            'insert into "topicInvitations" ( "topicID", "userID", "accepted" ) values ( $1, $2, true );',
+            [ insertTopic.rows[0].id, args.userID ])
+        )
 
-            emitter.emit('error', output.listen);
-
-          }
-
-        });
+        await Promise.all(invitations)
       }
-    });
 
+      if ( args.announcement ) {
+        let announcements = []
+        args.discussions.forEach((item) => {
+          announcements.push(
+            client.query(
+              'insert into "announcements" ( "discussionID", "topicID" ) values ( $1, $2 );',
+              [ item, insertTopic.rows[0].id ])
+          )
+        })
+
+        await Promise.all(announcements)
+      }
+
+      await client.query(
+        'update discussions set last_post_id = $2 where "id" = $1;',
+        [ args.discussionID, insertPost.rows[0].id ])
+      await client.query(
+        'update "users" set "lastActivity" = $1 where "id" = $2;',
+        [ args.time, args.userID ])
+      await client.query('COMMIT')
+
+      if ( !args.draft ) {
+        if ( args.private ) {
+          invited.forEach( function (item) {
+            app.cache.clear({ scope: 'private-topics-' + item.id })
+          })
+        } else if ( args.announcement ) {
+          app.cache.clear({ scope: 'discussion-2' })
+          args.discussions.forEach( function (item) {
+            app.cache.clear({ scope: 'announcements', key: 'discussion-' + item })
+          })
+        } else {
+          app.cache.clear({ scope: 'discussion-' + args.discussionID })
+          app.cache.clear({ scope: 'categories_discussions' })
+        }
+      }
+
+      return {
+        success: true,
+        id: insertTopic.rows[0].id,
+        invited: invited
+      }
+    } catch (err) {
+      await client.query('ROLLBACK')
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
 
 
 
-function posts(args, emitter) {
-  // See if this topic subset is already cached
-  var start = args.start || 0,
+async function posts(args) {
+  // See if this post subset is already cached
+  let start = args.start || 0,
       end = args.end || 25,
       cacheKey = 'posts-' + start + '-' + end,
       scope = 'topic-' + args.topicID,
-      cached = app.cache.get({ scope: scope, key: cacheKey });
+      cached = app.cache.get({ scope: scope, key: cacheKey })
 
   // If it's cached, return the cache object
   if ( cached ) {
-    emitter.emit('ready', cached);
+    return cached
   // If it's not cached, retrieve the subset and cache it
   } else {
-    app.listen({
-      posts: function (emitter) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'select p."id", p."html", p."dateCreated", p."lockedByID", p."lockReason", u."id" as "authorID", u."username" as "author", u."url" as "authorUrl" ' +
-              'from posts p ' +
-              'inner join users u on p."userID" = u.id ' +
-              'where p."topicID" = $1 and p.draft = false ' +
-              'order by p."dateCreated" asc ' +
-              'limit $2 offset $3;',
-              [ args.topicID, end - start, start ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', result.rows);
-                }
-              }
-            );
-          }
-        });
-      }
-    }, function (output) {
-      var subset = {};
+    const client = await app.toolbox.dbPool.connect()
+    
+    try {
+      const result = await client.query({
+        name: 'topic_posts',
+        text: 'select p."id", p."html", p."created", p."modified", p."editorID", p."lockedByID", p."lockReason", u."id" as "authorID", u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
+        'from posts p ' +
+        'join users u on p."userID" = u.id ' +
+        'where p."topicID" = $1 and p.draft = false ' +
+        'order by p."created" asc ' +
+        'limit $2 offset $3;',
+        values: [ args.topicID, end - start, start ]
+      })
 
-      if ( output.listen.success ) {
-        // Build a view-ready object containing only the posts in the requested subset
-        for ( var i = 0; i < end - start; i += 1 ) {
-          if ( output.posts[i] ) {
-            subset[i] = {};
-            for ( var property in output.posts[i] ) {
-              if ( output.posts[i].hasOwnProperty(property) ) {
-                if ( property !== 'dateCreated' ) {
-                  subset[i][property] = output.posts[i][property];
-                } else {
-                  subset[i][property] = app.toolbox.moment.tz(output.posts[i][property], 'America/New_York').format('MMMM Do YYYY [at] h:mm A');
-                }
+      result.rows.forEach( function (item) {
+        item['createdFormatted'] = app.toolbox.moment.tz(item['created'], 'America/New_York').format('D-MMM-YYYY h:mm A')
+        item['createdFormatted'] = item['createdFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
+        item['modifiedFormatted'] = app.toolbox.moment.tz(item['modified'], 'America/New_York').format('D-MMM-YYYY h:mm A')
+        item['modifiedFormatted'] = item['modifiedFormatted'].replace(/ (AM|PM)/, '&nbsp;$1')
+      })
 
-              }
-            }
-          } else {
-            break;
-          }
-        }
-
-        // Cache the subset for future requests
+      // Cache the result for future requests
+      if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
         app.cache.set({
-          scope: scope,
           key: cacheKey,
-          value: subset
-        });
-
-        emitter.emit('ready', subset);
-      } else {
-        emitter.emit('error', output.listen);
+          scope: scope,
+          value: result.rows
+        })
       }
 
-    });
+      return result.rows
+    } finally {
+      client.release()
+    }
   }
 }
 
 
+async function leave(args) {
+  const client = await app.toolbox.dbPool.connect()
 
-function lock(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'update "topics" set "lockedByID" = $1, "lockReason" = $2 where "id" = $3',
-        [ args.lockedByID, args.lockReason, args.topicID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            // Clear the cache for this topic
-            app.cache.clear({ scope: 'topic-' + args.topicID });
+  try {
+    await client.query('BEGIN')
+    await client.query('update "topicInvitations" set "left" = true where "userID" = $1 and "topicID" = $2;', [ args.userID, args.topicID ])
+    await client.query('delete from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;', [ args.userID, args.topicID ])
+    await client.query('COMMIT')
 
-            emitter.emit('ready', {
-              success: true,
-              affectedRows: result.rows
-            });
-          }
-        }
-      );
-    }
-  });
+    app.cache.clear({ scope: 'topic-' + args.topicID })
+    app.cache.clear({ scope: 'subscriptions-' + args.userID })
+    app.cache.clear({ scope: 'private-topics-' + args.userID })
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
 }
 
 
+async function lock(args) {
+  const client = await app.toolbox.dbPool.connect()
 
-function unlock(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      client.query(
-        'update "topics" set "lockedByID" = 0, "lockReason" = null where "id" = $1',
-        [ args.topicID ],
-        function (err, result) {
-          done();
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            // Clear the cache for this topic
-            app.cache.clear({ scope: 'topic-' + args.topicID });
+  try {
+    await client.query({
+      name: 'topic_lock',
+      text: 'update "topics" set "lockedByID" = $1, "lockReason" = $2 where "id" = $3',
+      values: [ args.lockedByID, args.lockReason, args.topicID ]
+    })
 
-            emitter.emit('ready', {
-              success: true,
-              affectedRows: result.rows
-            });
-          }
-        }
-      );
-    }
-  });
+    // Clear the cache for this topic
+    app.cache.clear({ scope: 'topic-' + args.topicID })
+  } catch (err) {
+    throw err
+  } finally {
+    client.release()
+  }
 }
 
 
+async function unlock(args) {
+  const client = await app.toolbox.dbPool.connect()
 
-function move(args, emitter) {
-  app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-    if ( err ) {
-      emitter.emit('error', err);
-    } else {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          app.listen('waterfall', {
-            begin: function (emitter) {
+  try {
+    await client.query({
+      name: 'topic_unlock',
+      text: 'update "topics" set "lockedByID" = null, "lockReason" = null where "id" = $1',
+      values: [ args.topicID ]
+    })
 
-              client.query('begin', function (err) {
-                if ( err ) {
-                  done();
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready');
-                }
-              });
-
-            },
-            moveTopic: function (previous, emitter) {
-
-              client.query(
-                'update "topics" set "discussionID" = $1 where "id" = $2;',
-                [ args.newDiscussionID, args.topicID ],
-                function (err, result) {
-                  done();
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      success: true,
-                      affectedRows: result.rows
-                    });
-                  }
-                }
-              );
-
-            },
-            updateOldDiscussionStats: function (previous, emitter) {
-
-              client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
-                [ args.discussionID ],
-                function (err, result) {
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      affectedRows: result.rowCount
-                    });
-                  }
-                }
-              );
-
-            },
-            updateNewDiscussionStats: function (previous, emitter) {
-
-              client.query(
-                'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
-                [ args.newDiscussionID ],
-                function (err, result) {
-                  if ( err ) {
-                    client.query('rollback', function (err) {
-                      done();
-                    });
-                    emitter.emit('error', err);
-                  } else {
-                    emitter.emit('ready', {
-                      affectedRows: result.rowCount
-                    });
-                  }
-                }
-              );
-
-            },
-            commit: function (previous, emitter) {
-
-              client.query('commit', function () {
-                done();
-                emitter.emit('ready');
-              });
-
-            }
-          }, function (output) {
-
-            if ( output.listen.success ) {
-
-              // Clear the cache for this topic
-              app.cache.clear({ scope: 'topic-' + args.topicID });
-              app.cache.clear({ scope: 'discussion-' + args.discussionID });
-              app.cache.clear({ scope: 'discussion-' + args.newDiscussionID });
-              app.cache.clear({ scope: 'discussions-categories' });
-
-              emitter.emit('ready', {
-                success: true
-              });
-
-            } else {
-
-              emitter.emit('error', output.listen);
-
-            }
-
-          });
-        }
-      });
-    }
-  });
+    // Clear the cache for this topic
+    app.cache.clear({ scope: 'topic-' + args.topicID })
+  } catch (err) {
+    throw err
+  } finally {
+    client.release()
+  }
 }
 
 
+async function move(args) {
+  const client = await app.toolbox.dbPool.connect()
 
-function reply(args, emitter) {
-  var content = args.markdown.trim() || '';
+  try {
+    await client.query('begin')
+    await client.query('update "topics" set "discussionID" = $1 where "id" = $2;', [ args.newDiscussionID, args.topicID ])
+    await client.query('delete from "announcements" where "topicID" = $1;', [ args.topicID ])
+    await client.query(
+      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+      [ args.discussionID ])
+    await client.query(
+      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+      [ args.newDiscussionID ])
+    await client.query('commit')
 
-  if ( !content.length ) {
-    emitter.emit('ready', {
-      success: false,
-      reason: 'requiredFieldsEmpty',
-      message: 'All fields are required.'
-    });
+    // Clear the cache
+    app.cache.clear({ scope: 'topic-' + args.topicID })
+    app.cache.clear({ scope: 'discussion-' + args.discussionID })
+    app.cache.clear({ scope: 'discussion-' + args.newDiscussionID })
+    app.cache.clear({ scope: 'categories_discussions' })
+    if ( args.discussionID === 2 ) {
+      app.cache.clear({ scope: 'announcements' })
+    }
+  } catch (err) {
+    await client.query('rollback')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
+
+async function reply(args) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    let sticky = await client.query('select sticky from topics where id = $1;', [ args.topicID ])
+    if ( sticky.rows[0].sticky > args.time ) {
+      sticky = sticky.rows[0].sticky
+    } else {
+      sticky = args.time
+    }
+    await client.query('BEGIN')
+    // Insert the new post
+    const post = await client.query('insert into posts ( "topicID", "userID", "text", "html", "created", "draft" ) values ( $1, $2, $3, $4, $5, $6 ) returning id;', [ args.topicID, args.userID, args.text, args.html, args.time, args.draft ])
+    // Update topic stats
+    await client.query('update topics set replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, sticky = $2 where "id" = $1;', [ args.topicID, sticky ])
+    // Update discussion stats
+    await client.query('update "discussions" set last_post_id = $2 where "id" = $1', [ args.discussionID, post.rows[0].id ])
+    // Update user stats
+    await client.query('update "users" set "lastActivity" = $1 where "id" = $2;', [ args.time, args.userID ])
+    await client.query('COMMIT')
+
+    if ( !args.draft ) {
+      // Clear the cache for this topic and discussion
+      app.cache.clear({ scope: 'topic-' + args.topicID })
+
+      if ( args.private ) {
+        const invitees = await this.invitees({ topicID: args.topicID })
+        invitees.forEach( function (item) {
+          app.cache.clear({ scope: 'private-topics-' + item.id })
+        })
+      } else {
+        app.cache.clear({ scope: 'discussion-' + args.discussionID })
+        app.cache.clear({ scope: 'categories_discussions' })
+        if ( args.discussionID === 2 ) {
+          app.cache.clear({ scope: 'announcements' })
+        }
+      }
+
+      const subscribers = await this.subscribers({ topicID: args.topicID })
+      subscribers.forEach( function (item) {
+        app.cache.clear({ scope: 'subscriptions-' + item.id })
+      })
+    }
+
+    return {
+      success: true,
+      id: post.rows[0].id
+    }
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
+
+async function subscriptionExists(args) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'topic_subscriptionExists',
+      text: 'select "userID" from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;',
+      values: [ args.userID, args.topicID ]
+    })
+
+    if ( result.rows.length ) {
+      return true
+    } else {
+      return false
+    }
+  } finally {
+    client.release()
+  }
+}
+
+
+async function subscribers(args) {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'topic_subscribers',
+      text: 'select u.id, u.email from users u join "topicSubscriptions" s on u.id = s."userID" where s."topicID" = $1;',
+      values: [ args.topicID ]
+    })
+
+    return result.rows
+  } finally {
+    client.release()
+  }
+}
+
+
+async function subscribersToUpdate(args) {
+  const client = await app.toolbox.dbPool.connect()
+
+  let name, sql
+  if ( args.skip ) {
+    name = 'topic_subscribersToUpdateSkip'
+    sql = 'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" and u.id not in ( ' + args.skip + ' ) and u."subscriptionEmailNotification" = true where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );'
   } else {
+    name = 'topic_subscribersToUpdate'
+    sql = 'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" and u."subscriptionEmailNotification" = true where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );'
+  }
 
-    app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-      if ( err ) {
-        emitter.emit('error', err);
-      } else {
-        app.listen('waterfall', {
-          begin: function (emitter) {
+  try {
+    const result = await client.query({
+      name: name,
+      text: sql,
+      values: [ args.topicID ]
+    })
 
-            client.query('begin', function (err) {
-              if ( err ) {
-                done();
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready');
-              }
-            });
-
-          },
-          insertPost: function (previous, emitter) {
-
-            client.query(
-              'insert into posts ( "topicID", "userID", "html", "markdown", "dateCreated", "draft", "editorID", "lastModified" ) ' +
-              'values ( $1, $2, $3, $4, $5, $6, $2, $5 ) returning id;',
-              [ args.topicID, args.userID, args.html, args.markdown, args.time, args.draft ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    id: result.rows[0].id
-                  });
-                }
-              }
-            );
-
-          },
-          updateTopicStats: function (previous, emitter) {
-
-            client.query(
-              'update topics set "sortDate" = $3, replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, "lastPostID" = $2 where "id" = $1;',
-              [ args.topicID, previous.insertPost.id, args.time ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  if ( !args.private ) {
-                    emitter.emit('ready', {
-                      affectedRows: result.rowCount
-                    });
-                  } else {
-                    emitter.emit('skip', {
-                      affectedRows: result.rowCount
-                    });
-                  }
-                }
-              }
-            );
-
-          },
-          updateDiscussionStats: function (previous, emitter) {
-
-            client.query(
-              'update "discussions" set "topics" = ( select count("id") from "topics" where "discussionID" = $1 and "draft" = false ), "posts" = ( select count(p."id") from "posts" p join "topics" t on p."topicID" = t."id" where t."discussionID" = $1 and p."draft" = false ) where "id" = $1',
-              [ args.discussionID ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    affectedRows: result.rowCount
-                  });
-                }
-              }
-            );
-
-          },
-          updateAuthorStats: function (previous, emitter) {
-
-            client.query(
-              'update "users" set "lastActivity" = $1 where "id" = $2;',
-              [ args.time, args.userID ],
-              function (err, result) {
-                if ( err ) {
-                  client.query('rollback', function (err) {
-                    done();
-                  });
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    affectedRows: result.rowCount
-                  });
-                }
-              }
-            );
-
-          },
-          commit: function (previous, emitter) {
-            client.query('commit', function () {
-              done();
-              emitter.emit('ready');
-            });
-          }
-        }, function (output) {
-
-          if ( output.listen.success ) {
-
-            emitter.emit('ready', {
-              success: true,
-              id: output.insertPost.id
-            });
-
-            if ( !args.draft ) {
-              // Clear the cache for this topic and discussion
-              app.cache.clear({ scope: 'topic-' + args.topicID });
-
-              if ( args.private ) {
-                app.listen({
-                  invitees: function (emitter) {
-                    invitees(args.topicID, emitter);
-                  }
-                }, function (output) {
-                  output.invitees.forEach( function (item, index, array) {
-                    app.cache.clear({ scope: 'private-topics-' + item });
-                  });
-                });
-              } else {
-                app.cache.clear({ scope: 'discussion-' + args.discussionID });
-                app.cache.clear({ scope: 'discussions-categories' });
-              }
-            }
-
-          } else {
-            emitter.emit('error', output.listen);
-          }
-
-        });
-      }
-    });
-
+    return result.rows
+  } catch (err) {
+    throw err
+  } finally {
+    client.release()
   }
 }
 
 
+async function subscriptionNotificationSentUpdate(args) {
+  const client = await app.toolbox.dbPool.connect()
 
-function subscriptionExists(args, emitter) {
-  app.listen({
-    subscriptionExists: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'select "id" from subscriptions where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                if ( result.rows.length ) {
-                  emitter.emit('ready', true);
-                } else {
-                  emitter.emit('ready', false);
-                }
-              }
-            }
-          );
-        }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.subscriptionExists);
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
+  try {
+    await client.query({
+      name: 'topic_subscriptionNotificationSentUpdate',
+      text: 'update "topicSubscriptions" set "notificationSent" = $1 where "topicID" = $2;',
+      values: [ args.time, args.topicID ]
+    })
+  } catch (err) {
+    throw err
+  } finally {
+    client.release()
+  }
 }
 
 
+async function subscribe(args) {
+  let subscriptionExists = await this.subscriptionExists(args)
 
-function subscribersToNotify(args, emitter) {
-  app.listen({
-    subscribersToNotify: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'select u.email from users u join subscriptions s on u.id = s."userID" and u.id <> $1 where s."topicID" = $2 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );',
-            [ args.replyAuthorID, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready', result.rows);
-              }
-            }
-          );
-        }
-      });
+  if ( !subscriptionExists ) {
+    const client = await app.toolbox.dbPool.connect()
+
+    try {
+      const result = await client.query({
+        name: 'topic_subscribe',
+        text: 'insert into "topicSubscriptions" ( "userID", "topicID", "notificationSent" ) values ( $1, $2, $3 );',
+        values: [ args.userID, args.topicID, args.time ]
+      })
+
+      app.cache.clear({ scope: 'subscriptions-' + args.userID })
+  
+      return result.rows
+    } finally {
+      client.release()
     }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.subscribersToNotify);
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
+  } else {
+    return true
+  }
 }
 
 
+async function unsubscribe(args) {
+  const client = await app.toolbox.dbPool.connect()
 
-function subscriptionNotificationSentUpdate(args, emitter) {
-  app.listen({
-    subscriptionNotificationSentUpdate: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'update "subscriptions" set "notificationSent" = $1 where "topicID" = $2;',
-            [ args.time, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready', result.affectedRows);
-              }
-            }
-          );
-        }
-      });
-    }
-  }, function (output) {
+  try {
+    const result = await client.query({
+      name: 'topic_unsubscribe',
+      text: 'delete from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;',
+      values: [ args.userID, args.topicID ]
+    })
 
-    if ( output.listen.success && emitter ) {
-      emitter.emit('ready', {
-        success: true
-      });
-    } else if ( emitter ) {
-      emitter.emit('error', output.listen);
-    }
+    app.cache.clear({ scope: 'subscriptions-' + args.userID })
 
-  });
+    return result.rows
+  } finally {
+    client.release()
+  }
 }
 
 
+async function viewTimeUpdate(args) {
+  const client = await app.toolbox.dbPool.connect()
 
-function subscribe(args, emitter) {
-  app.listen({
-    subscriptionExists: function (emitter) {
-      app.models.topic.subscriptionExists(args, emitter);
+  try {
+    await client.query('BEGIN')
+    const result = await client.query('update "topicViews" set time = $3 where "userID" = $1 and "topicID" = $2;', [ args.userID, args.topic.id, args.time ])
+    if ( !result.rowCount ) {
+      await client.query('insert into "topicViews" ( "userID", "topicID", "time" ) values ( $1, $2, $3 );', [ args.userID, args.topic.id, args.time ])
     }
-  }, function (output) {
+    await client.query('COMMIT')
 
-    if ( output.listen.success ) {
-      if ( !output.subscriptionExists ) {
-        app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-          if ( err ) {
-            emitter.emit('error', err);
-          } else {
-            client.query(
-              'insert into subscriptions ( "userID", "topicID", "notificationSent" ) values ( $1, $2, $3 ) returning id;',
-              [ args.userID, args.topicID, args.time ],
-              function (err, result) {
-                done();
-                if ( err ) {
-                  emitter.emit('error', err);
-                } else {
-                  emitter.emit('ready', {
-                    success: true,
-                    id: result.rows[0].id
-                  });
-                }
-              }
-            );
-          }
-        });
-      } else {
-        emitter.emit('ready', {
-          success: true
-        });
+    app.cache.clear({ scope: 'subscriptions-' + args.userID, key: 'models-subscriptions-unread' })
+    app.cache.clear({ scope: 'private-topics-' + args.userID, key: 'private-topics-unread' })
+  } catch (err) {
+    await client.query('ROLLBACK')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
+
+function breadcrumbs(topic) {
+  var title, url
+
+  switch ( topic.discussionID ) {
+    case 0:
+      return {
+        a: {
+          name: 'Home',
+          url: app.config.comitium.basePath
+        },
+        c: {
+          name: 'Private Topics',
+          url: 'private-topics'
+        }
       }
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-}
-
-
-function unsubscribe(args, emitter) {
-  app.listen({
-    subscriptionDelete: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'delete from subscriptions where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID ],
-            function (err, result) {
-              done();
-              if ( err ) {
-                emitter.emit('error', err);
-              } else {
-                emitter.emit('ready');
-              }
-            }
-          );
+    case 2:
+      title = 'Announcements'
+      url = 'announcements'
+      return {
+        a: {
+          name: 'Home',
+          url: app.config.comitium.basePath
+        },
+        b: {
+          name: 'Discussion Categories',
+          url: 'discussions'
+        },
+        c: {
+          name: 'Announcements',
+          url: 'announcements'
         }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', {
-        success: true
-      });
-    } else {
-      emitter.emit('error', output.listen);
-    }
-
-  });
-}
-
-
-function viewTimeUpdate(args, emitter) {
-  app.listen({
-    viewTimeUpdate: function (emitter) {
-      app.toolbox.pg.connect(app.config.db.connectionString, function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err);
-        } else {
-          client.query(
-            'update "topicViews" set time = $3 where "userID" = $1 and "topicID" = $2;',
-            [ args.userID, args.topicID, args.time ],
-            function (err, result) {
-              if ( err ) {
-                done();
-                emitter.emit('error', err);
-              } else {
-                if ( result.rowCount ) {
-                  done();
-                  emitter.emit('ready', result.rowCount);
-                } else {
-                  client.query(
-                    'insert into "topicViews" ( "userID", "topicID", "time" ) values ( $1, $2, $3 ) returning id;',
-                    [ args.userID, args.topicID, args.time ],
-                    function (err, result) {
-                      done();
-                      if ( err ) {
-                        emitter.emit('error', err);
-                      } else {
-                        emitter.emit('ready', result.rows[0].id);
-                      }
-                    }
-                  );
-                }
-              }
-            }
-          );
+      }
+    default:
+      return {
+        a: {
+          name: 'Home',
+          url: app.config.comitium.basePath
+        },
+        b: {
+          name: 'Discussion Categories',
+          url: 'discussions'
+        },
+        c: {
+          name: topic.discussionTitle,
+          url: 'discussion/' + topic.discussionUrl + '/id/' + topic.discussionID
         }
-      });
-    }
-  }, function (output) {
-
-    if ( output.listen.success && emitter ) {
-      emitter.emit('ready', {
-        success: true
-      });
-    } else if ( emitter ) {
-      emitter.emit('error', output.listen);
-    }
-
-  });
+      }
+  }
 }
 
 
-function breadcrumbs(discussionTitle, discussionUrl, discussionID) {
-  return {
-    a: {
-      name: 'Forum Home',
-      url: app.config.comitium.basePath
-    },
-    b: {
-      name: 'Discussion Categories',
-      url: 'discussions'
-    },
-    c: {
-      name: discussionTitle,
-      url: discussionID ? 'discussion/' + discussionUrl + '/id/' + discussionID : discussionUrl
-    }
-  };
-}
+async function metaData(args) {
+  let topic = await this.info(args.topicID)
 
-
-function metaData() {
   return {
-    title: 'Discussion View',
-    description: 'This is the discussion view template.',
-    keywords: 'discussion, view'
-  };
+    title: topic.title + ' - Original Trilogy',
+    description: 'Posted by ' + topic.author + ' on ' + topic.time,
+    keywords: ''
+  }
 }

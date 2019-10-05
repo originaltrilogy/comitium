@@ -1,67 +1,58 @@
 // private topics controller
 
-'use strict';
+'use strict'
 
 module.exports = {
-  handler: handler
-};
+  handler : handler
+}
 
 
-function handler(params, context, emitter) {
+async function handler(params) {
+  let access = await app.toolbox.access.privateTopicsView({ user: params.session })
 
-  app.listen({
-    access: function (emitter) {
-      app.toolbox.access.privateTopicsView(params.session, emitter);
-    }
-  }, function (output) {
+  if ( access === true ) {
+    params.url.page = params.url.page || 1
 
-    params.url.page = params.url.page || 1;
-
-    if ( output.listen.success ) {
-
-      app.listen({
-        stats: function (emitter) {
-          app.models['private-topics'].stats(params.session.userID, emitter);
-        },
-        topics: function (emitter) {
-          var start = ( params.url.page - 1 ) * 25,
-              end = start + 25;
-          app.models['private-topics'].topics({
-            userID: params.session.userID,
-            start: start,
-            end: end
-          }, emitter);
-        }
-      }, function (output) {
-        var content = {};
-
-        if ( output.listen.success ) {
-
-          content = {
-            pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, output.stats.topics)
-          };
-
-          if ( output.topics && app.size(output.topics) ) {
-            content.topics = output.topics;
-          }
-
-          emitter.emit('ready', {
-            content: content
-          });
-
-        } else {
-
-          emitter.emit('error', output.listen);
-
-        }
-
-      });
-
-    } else {
-
-      emitter.emit('error', output.listen);
-
+    let start = ( params.url.page - 1 ) * 25,
+        end = start + 25,
+        topicID = [],
+        topics = await app.models['private-topics'].topics({
+          userID: params.session.userID,
+          start: start,
+          end: end
+        }),
+        count = topics.length ? topics[0].full_count : 0,
+        viewTimes
+    
+    for ( let topic in topics ) {
+      if ( topics.hasOwnProperty(topic) ) {
+        topicID.push(topics[topic].id)
+      }
     }
 
-  });
+    if ( topicID.length ) {
+      viewTimes = await app.models.user.topicViewTimes({ userID: params.session.userID, topicID: topicID.join(', ') }) || []
+      viewTimes.forEach( function (item) {
+        viewTimes[item.topicID] = item
+      })
+    }
+
+    topics.forEach( function (item) {
+      if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+        item.unread = true
+      }
+    })
+
+    return {
+      content: {
+        count: count,
+        topics: topics.length ? topics : false,
+        breadcrumbs: app.models['private-topics'].breadcrumbs(),
+        pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, count),
+        previousAndNext: app.toolbox.helpers.previousAndNext('private-topics', params.url.page, count)
+      }
+    } 
+  } else {
+    return access
+  }
 }
