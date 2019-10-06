@@ -38,7 +38,7 @@ async function acceptInvitation(args) {
   try {
     await client.query({
       name: 'topic_acceptInvitation',
-      text: 'update "topicInvitations" set accepted = true where "userID" = $1 and "topicID" = $2;',
+      text: 'update topic_invitations set accepted = true where user_id = $1 and topic_id = $2;',
       values: [ args.userID, args.topicID ]
     })
 
@@ -57,7 +57,7 @@ async function announcementView(args) {
   try {
     const result = await client.query({
       name: 'topic_announcementView',
-      text: 'select dp."discussionID" from "discussionPermissions" dp join "announcements" a on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and a."topicID" = $2 and dp."read" = true;',
+      text: 'select dp.discussion_id from discussion_permissions dp join "announcements" a on dp.discussion_id = a.discussion_id where dp.group_id = $1 and a.topic_id = $2 and dp.read = true;',
       values: [ args.groupID, args.topicID ]
     })
 
@@ -78,7 +78,7 @@ async function announcementReply(args) {
   try {
     const result = await client.query({
       name: 'topic_announcementReply',
-      text: 'select dp."discussionID" from "discussionPermissions" dp join "announcements" a on dp."discussionID" = a."discussionID" where dp."groupID" = $1 and a."topicID" = $2 and dp."reply" = true;',
+      text: 'select dp.discussion_id from discussion_permissions dp join "announcements" a on dp.discussion_id = a.discussion_id where dp.group_id = $1 and a.topic_id = $2 and dp.reply = true;',
       values: [ args.groupID, args.topicID ]
     })
 
@@ -106,13 +106,13 @@ async function edit(args) {
     try {
       await client.query('begin')
       await client.query(
-        'update "posts" set "text" = $1, "html" = $2, "editorID" = $3, "editReason" = $4, "modified" = $5 where "id" = $6;',
+        'update "posts" set "text" = $1, "html" = $2, editor_id = $3, edit_reason = $4, "modified" = $5 where "id" = $6;',
         [ args.text, args.html, args.editorID, args.reason, args.time, args.postID ])
       await client.query(
-        'insert into "postHistory" ( "postID", "editorID", "editReason", "text", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 );',
+        'insert into post_history ( post_id, editor_id, edit_reason, "text", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 );',
         [ args.postID, !args.currentPost.editorID ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ])
       await client.query(
-        'update "topics" set "title" = $1, "titleHtml" = $2, "url" = $3, "editedByID" = $4, "editReason" = $5 where "id" = $6;',
+        'update "topics" set "title" = $1, title_html = $2, "url" = $3, edited_by_id = $4, edit_reason = $5 where "id" = $6;',
         [ args.title, args.titleHtml, args.url, args.editorID, args.reason, args.topicID ])
       await client.query('commit')
 
@@ -190,7 +190,7 @@ async function newPosts(args) {
     try {
       const result = await client.query({
         name: 'topic_newPosts',
-        text: 'select "id" from "posts" where "topicID" = $1 and "draft" = false and "created" > $2 order by "created" asc;',
+        text: 'select "id" from "posts" where topic_id = $1 and "draft" = false and "created" > $2 order by "created" asc;',
         values: [ args.topicID, args.time ]
       })
 
@@ -228,7 +228,7 @@ async function invitee(args) {
   try {
     const result = await client.query({
       name: 'topic_invitee',
-      text: 'select "topicID", accepted, "left" from "topicInvitations" where "topicID" = $1 and "userID" = $2;',
+      text: 'select topic_id, accepted, "left" from topic_invitations where topic_id = $1 and user_id = $2;',
       values: [ args.topicID, args.userID ]
     })
 
@@ -250,7 +250,7 @@ async function invitees(args) {
   try {
     const result = await client.query({
       name: 'topic_invitees',
-      text: 'select ti."topicID", ti.accepted, ti.left, u."id", u."username", u."url" from "topicInvitations" ti join "users" u on ti."userID" = u."id" where "topicID" = $1 and ti.left = $2 order by u."username" asc;',
+      text: 'select ti.topic_id, ti.accepted, ti.left, u.id, u.username, u.url from topic_invitations ti join "users" u on ti.user_id = u.id where topic_id = $1 and ti.left = $2 order by u.username asc;',
       values: [ args.topicID, args.left ]
     })
 
@@ -277,7 +277,7 @@ async function info(topicID) {
     try {
       const result = await client.query({
         name: 'topic_info',
-        text: 'select t."id", t."discussionID", t."title", t."titleHtml", t."url", t."created", t."modified", ( select count(*) from posts where "topicID" = t.id and draft = false ) - 1 as replies, t."draft", t."private", t."lockedByID", t."lockReason", d."title" as "discussionTitle", d."url" as "discussionUrl", p.id as "firstPostID", p."userID" as "authorID", p.text, u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", p2.id as "lastPostID", p2."created" as "lastPostCreated" from "topics" t left join "discussions" d on t."discussionID" = d."id" join "posts" p on p."id" = ( select id from posts where "topicID" = t.id order by created asc limit 1 ) join "users" u on u."id" = p."userID" join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and "draft" = false order by created desc limit 1 ) where t."id" = $1;',
+        text: 'select t.id, t.discussion_id, t.title, t.title_html, t.url, t.created, t.modified, ( select count(*) from posts where topic_id = t.id and draft = false ) - 1 as replies, t.draft, t.private, t.locked_by_id, t.lock_reason, d.title as "discussionTitle", d.url as "discussionUrl", p.id as "firstPostID", p.user_id as "authorID", p.text, u.group_id as "authorGroupID", u.username as "author", u.url as "authorUrl", p2.id as "lastPostID", p2.created as "lastPostCreated" from "topics" t left join "discussions" d on t.discussion_id = d.id join "posts" p on p.id = ( select id from posts where topic_id = t.id order by created asc limit 1 ) join "users" u on u.id = p.user_id join posts p2 on p2.id = ( select id from posts where topic_id = t.id and "draft" = false order by created desc limit 1 ) where t.id = $1;',
         values: [ topicID ]
       })
 
@@ -328,10 +328,10 @@ async function insert(args) {
     try {
       await client.query('BEGIN')
       const insertTopic = await client.query(
-        'insert into topics ( "discussionID", "title", "titleHtml", "url", "created", "sticky", "draft", "private" ) values ( $1, $2, $3, $4, $5, $5, $6, $7 ) returning id;',
+        'insert into topics ( discussion_id, "title", title_html, "url", "created", "sticky", "draft", "private" ) values ( $1, $2, $3, $4, $5, $5, $6, $7 ) returning id;',
         [ args.discussionID, args.title, args.titleHtml, args.url, args.time, args.draft, args.private ])
       const insertPost = await client.query(
-        'insert into posts ( "topicID", "userID", "text", "html", "created", "draft" ) values ( $1, $2, $3, $4, $5, $6 ) returning id;',
+        'insert into posts ( topic_id, user_id, "text", "html", "created", "draft" ) values ( $1, $2, $3, $4, $5, $6 ) returning id;',
         [ insertTopic.rows[0].id, args.userID, args.text, args.html, args.time, args.draft ])
       
       let invited = []
@@ -351,14 +351,14 @@ async function insert(args) {
         invitees.forEach((item, index, array) => {
           invitations.push(
             ( async () => {
-              const invitee = await client.query('select id, email, "privateTopicEmailNotification" from users where lower(username) = lower($1)', [ item ])
+              const invitee = await client.query('select id, email, private_topic_email_notification from users where lower(username) = lower($1)', [ item ])
               if ( !invitee.rowCount ) {
                 throw new Error(item + ' isn\'t a member.')
               }
               if ( array.length === 1 && invitee.rows[0].id === args.userID ) {
                 throw new Error('You don\'t need to invite yourself, but you do need to invite at least one other person.')
               }
-              await client.query('insert into "topicInvitations" ( "topicID", "userID", "accepted" ) values ( $1, $2, false );',
+              await client.query('insert into topic_invitations ( topic_id, user_id, "accepted" ) values ( $1, $2, false );',
               [ insertTopic.rows[0].id, invitee.rows[0].id ])
               invited.push(invitee.rows[0])
             })()
@@ -367,7 +367,7 @@ async function insert(args) {
 
         invitations.push(
           client.query(
-            'insert into "topicInvitations" ( "topicID", "userID", "accepted" ) values ( $1, $2, true );',
+            'insert into topic_invitations ( topic_id, user_id, "accepted" ) values ( $1, $2, true );',
             [ insertTopic.rows[0].id, args.userID ])
         )
 
@@ -379,7 +379,7 @@ async function insert(args) {
         args.discussions.forEach((item) => {
           announcements.push(
             client.query(
-              'insert into "announcements" ( "discussionID", "topicID" ) values ( $1, $2 );',
+              'insert into "announcements" ( discussion_id, topic_id ) values ( $1, $2 );',
               [ item, insertTopic.rows[0].id ])
           )
         })
@@ -391,7 +391,7 @@ async function insert(args) {
         'update discussions set last_post_id = $2 where "id" = $1;',
         [ args.discussionID, insertPost.rows[0].id ])
       await client.query(
-        'update "users" set "lastActivity" = $1 where "id" = $2;',
+        'update "users" set last_activity = $1 where "id" = $2;',
         [ args.time, args.userID ])
       await client.query('COMMIT')
 
@@ -445,11 +445,11 @@ async function posts(args) {
     try {
       const result = await client.query({
         name: 'topic_posts',
-        text: 'select p."id", p."html", p."created", p."modified", p."editorID", p."lockedByID", p."lockReason", u."id" as "authorID", u."groupID" as "authorGroupID", u."username" as "author", u."url" as "authorUrl", u."signatureHtml" as "authorSignature" ' +
+        text: 'select p.id, p.html, p.created, p.modified, p.editor_id, p.locked_by_id, p.lock_reason, u.id as "authorID", u.group_id as "authorGroupID", u.username as "author", u.url as "authorUrl", u.signature_html as "authorSignature" ' +
         'from posts p ' +
-        'join users u on p."userID" = u.id ' +
-        'where p."topicID" = $1 and p.draft = false ' +
-        'order by p."created" asc ' +
+        'join users u on p.user_id = u.id ' +
+        'where p.topic_id = $1 and p.draft = false ' +
+        'order by p.created asc ' +
         'limit $2 offset $3;',
         values: [ args.topicID, end - start, start ]
       })
@@ -483,8 +483,8 @@ async function leave(args) {
 
   try {
     await client.query('BEGIN')
-    await client.query('update "topicInvitations" set "left" = true where "userID" = $1 and "topicID" = $2;', [ args.userID, args.topicID ])
-    await client.query('delete from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;', [ args.userID, args.topicID ])
+    await client.query('update topic_invitations set "left" = true where user_id = $1 and topic_id = $2;', [ args.userID, args.topicID ])
+    await client.query('delete from topic_subscriptions where user_id = $1 and topic_id = $2;', [ args.userID, args.topicID ])
     await client.query('COMMIT')
 
     app.cache.clear({ scope: 'topic-' + args.topicID })
@@ -505,7 +505,7 @@ async function lock(args) {
   try {
     await client.query({
       name: 'topic_lock',
-      text: 'update "topics" set "lockedByID" = $1, "lockReason" = $2 where "id" = $3',
+      text: 'update "topics" set locked_by_id = $1, lock_reason = $2 where "id" = $3',
       values: [ args.lockedByID, args.lockReason, args.topicID ]
     })
 
@@ -525,7 +525,7 @@ async function unlock(args) {
   try {
     await client.query({
       name: 'topic_unlock',
-      text: 'update "topics" set "lockedByID" = null, "lockReason" = null where "id" = $1',
+      text: 'update "topics" set locked_by_id = null, lock_reason = null where "id" = $1',
       values: [ args.topicID ]
     })
 
@@ -544,13 +544,13 @@ async function move(args) {
 
   try {
     await client.query('begin')
-    await client.query('update "topics" set "discussionID" = $1 where "id" = $2;', [ args.newDiscussionID, args.topicID ])
-    await client.query('delete from "announcements" where "topicID" = $1;', [ args.topicID ])
+    await client.query('update "topics" set discussion_id = $1 where "id" = $2;', [ args.newDiscussionID, args.topicID ])
+    await client.query('delete from "announcements" where topic_id = $1;', [ args.topicID ])
     await client.query(
-      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts.topic_id = topics.id where topics.discussion_id = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
       [ args.discussionID ])
     await client.query(
-      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts."topicID" = topics.id where topics."discussionID" = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts.topic_id = topics.id where topics.discussion_id = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
       [ args.newDiscussionID ])
     await client.query('commit')
 
@@ -583,13 +583,13 @@ async function reply(args) {
     }
     await client.query('BEGIN')
     // Insert the new post
-    const post = await client.query('insert into posts ( "topicID", "userID", "text", "html", "created", "draft" ) values ( $1, $2, $3, $4, $5, $6 ) returning id;', [ args.topicID, args.userID, args.text, args.html, args.time, args.draft ])
+    const post = await client.query('insert into posts ( topic_id, user_id, "text", "html", "created", "draft" ) values ( $1, $2, $3, $4, $5, $6 ) returning id;', [ args.topicID, args.userID, args.text, args.html, args.time, args.draft ])
     // Update topic stats
-    await client.query('update topics set replies = ( select count(id) from posts where "topicID" = $1 and draft = false ) - 1, sticky = $2 where "id" = $1;', [ args.topicID, sticky ])
+    await client.query('update topics set replies = ( select count(id) from posts where topic_id = $1 and draft = false ) - 1, sticky = $2 where "id" = $1;', [ args.topicID, sticky ])
     // Update discussion stats
     await client.query('update "discussions" set last_post_id = $2 where "id" = $1', [ args.discussionID, post.rows[0].id ])
     // Update user stats
-    await client.query('update "users" set "lastActivity" = $1 where "id" = $2;', [ args.time, args.userID ])
+    await client.query('update "users" set last_activity = $1 where "id" = $2;', [ args.time, args.userID ])
     await client.query('COMMIT')
 
     if ( !args.draft ) {
@@ -634,7 +634,7 @@ async function subscriptionExists(args) {
   try {
     const result = await client.query({
       name: 'topic_subscriptionExists',
-      text: 'select "userID" from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;',
+      text: 'select user_id from topic_subscriptions where user_id = $1 and topic_id = $2;',
       values: [ args.userID, args.topicID ]
     })
 
@@ -655,7 +655,7 @@ async function subscribers(args) {
   try {
     const result = await client.query({
       name: 'topic_subscribers',
-      text: 'select u.id, u.email from users u join "topicSubscriptions" s on u.id = s."userID" where s."topicID" = $1;',
+      text: 'select u.id, u.email from users u join topic_subscriptions s on u.id = s.user_id where s.topic_id = $1;',
       values: [ args.topicID ]
     })
 
@@ -672,10 +672,10 @@ async function subscribersToUpdate(args) {
   let name, sql
   if ( args.skip ) {
     name = 'topic_subscribersToUpdateSkip'
-    sql = 'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" and u.id not in ( ' + args.skip + ' ) and u."subscriptionEmailNotification" = true where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );'
+    sql = 'select u.email from users u join topic_subscriptions s on u.id = s.user_id and u.id not in ( ' + args.skip + ' ) and u.subscription_email_notification = true where s.topic_id = $1 and s.notification_sent <= ( select tv.time from topic_views tv where tv.user_id = s.user_id and tv.topic_id = s.topic_id );'
   } else {
     name = 'topic_subscribersToUpdate'
-    sql = 'select u.email from users u join "topicSubscriptions" s on u.id = s."userID" and u."subscriptionEmailNotification" = true where s."topicID" = $1 and s."notificationSent" <= ( select tv.time from "topicViews" tv where tv."userID" = s."userID" and tv."topicID" = s."topicID" );'
+    sql = 'select u.email from users u join topic_subscriptions s on u.id = s.user_id and u.subscription_email_notification = true where s.topic_id = $1 and s.notification_sent <= ( select tv.time from topic_views tv where tv.user_id = s.user_id and tv.topic_id = s.topic_id );'
   }
 
   try {
@@ -700,7 +700,7 @@ async function subscriptionNotificationSentUpdate(args) {
   try {
     await client.query({
       name: 'topic_subscriptionNotificationSentUpdate',
-      text: 'update "topicSubscriptions" set "notificationSent" = $1 where "topicID" = $2;',
+      text: 'update topic_subscriptions set notification_sent = $1 where topic_id = $2;',
       values: [ args.time, args.topicID ]
     })
   } catch (err) {
@@ -720,7 +720,7 @@ async function subscribe(args) {
     try {
       const result = await client.query({
         name: 'topic_subscribe',
-        text: 'insert into "topicSubscriptions" ( "userID", "topicID", "notificationSent" ) values ( $1, $2, $3 );',
+        text: 'insert into topic_subscriptions ( user_id, topic_id, notification_sent ) values ( $1, $2, $3 );',
         values: [ args.userID, args.topicID, args.time ]
       })
 
@@ -742,7 +742,7 @@ async function unsubscribe(args) {
   try {
     const result = await client.query({
       name: 'topic_unsubscribe',
-      text: 'delete from "topicSubscriptions" where "userID" = $1 and "topicID" = $2;',
+      text: 'delete from topic_subscriptions where user_id = $1 and topic_id = $2;',
       values: [ args.userID, args.topicID ]
     })
 
@@ -760,9 +760,9 @@ async function viewTimeUpdate(args) {
 
   try {
     await client.query('BEGIN')
-    const result = await client.query('update "topicViews" set time = $3 where "userID" = $1 and "topicID" = $2;', [ args.userID, args.topic.id, args.time ])
+    const result = await client.query('update topic_views set time = $3 where user_id = $1 and topic_id = $2;', [ args.userID, args.topic.id, args.time ])
     if ( !result.rowCount ) {
-      await client.query('insert into "topicViews" ( "userID", "topicID", "time" ) values ( $1, $2, $3 );', [ args.userID, args.topic.id, args.time ])
+      await client.query('insert into topic_views ( user_id, topic_id, "time" ) values ( $1, $2, $3 );', [ args.userID, args.topic.id, args.time ])
     }
     await client.query('COMMIT')
 

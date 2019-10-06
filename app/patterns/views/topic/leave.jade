@@ -10,7 +10,7 @@ if topic && topic.message
 section.form.topic-leave
   p Once you leave a private topic, you can no longer view the topic or reply. Are you sure you want to leave?
   form#topic-leave-form(action="topic/action/leaveForm/id/#{topic.id}" method="post" novalidate)
-    input(name="topicID" type="hidden" value="#{topic.id}")
+    input(name=topic_id type="hidden" value="#{topic.id}")
     input(name="forwardToUrl" type="hidden" value="#{form.forwardToUrl}")
     ul.actions
       li.primary

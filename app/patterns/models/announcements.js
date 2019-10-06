@@ -26,7 +26,7 @@ async function info(discussionID) {
     try {
       const result = await client.query({
         name: 'announcements_info',
-        text: 'select c.id as "categoryID", c."title" as "categoryTitle", c."description" as "categoryDescription", d.id, d."title", d."url", d."description",  ( select count(*) from topics t where "discussionID" = d.id and t.draft = false ) as topics, ( select count(*) from posts p join topics t on p."topicID" = t.id and t.draft = false where t."discussionID" = d.id ) as posts from discussions d left join categories c on d."categoryID" = c.id where d."id" = $1;',
+        text: 'select c.id as category_id, c.title as "categoryTitle", c.description as "categoryDescription", d.id, d.title, d.url, d.description,  ( select count(*) from topics t where discussion_id = d.id and t.draft = false ) as topics, ( select count(*) from posts p join topics t on p.topic_id = t.id and t.draft = false where t.discussion_id = d.id ) as posts from discussions d left join categories c on d.category_id = c.id where d.id = $1;',
         values: [ discussionID ]
       })
 
@@ -65,16 +65,16 @@ async function topics(args) {
     try {
       const result = await client.query({
         name: 'announcements_topics',
-        text: 'select distinct t."id", t."titleHtml", t."url", t."sticky", ( select count(*) from posts where "topicID" = t."id" ) - 1 as replies, p."id" as "firstPostID", p2."id" as "lastPostID", t."titleHtml", t."url", p."created" as "postDate", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+        text: 'select distinct t.id, t.title_html, t.url, t.sticky, ( select count(*) from posts where topic_id = t.id ) - 1 as replies, p.id as "firstPostID", p2.id as "lastPostID", t.title_html, t.url, p.created as "postDate", p2.created as "lastPostCreated", u.id as "topicStarterID", u.username as "topicStarter", u.url as "topicStarterUrl", u2.id as "lastPostAuthorID", u2.username as "lastPostAuthor", u2.url as "lastPostAuthorUrl" ' +
         'from topics t ' +
-        'join announcements a on t."id" = a."topicID" ' +
-        'join "discussionPermissions" dp on dp."discussionID" = a."discussionID" ' +
-        'join posts p on p."id" = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +
-        'join users u on u."id" = p."userID" ' +
-        'join posts p2 on p2."id" = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
-        'join users u2 on u2."id" = p2."userID" ' +
-        'where dp."groupID" = $1 and dp."read" = true and t."draft" = false and t.private = false ' +
-        'order by t."sticky" desc ' +
+        'join announcements a on t.id = a.topic_id ' +
+        'join discussion_permissions dp on dp.discussion_id = a.discussion_id ' +
+        'join posts p on p.id = ( select id from posts where topic_id = t.id and draft = false order by created asc limit 1 ) ' +
+        'join users u on u.id = p.user_id ' +
+        'join posts p2 on p2.id = ( select id from posts where topic_id = t.id and draft = false order by created desc limit 1 ) ' +
+        'join users u2 on u2.id = p2.user_id ' +
+        'where dp.group_id = $1 and dp.read = true and t.draft = false and t.private = false ' +
+        'order by t.sticky desc ' +
         'limit $2 offset $3;',
         values: [ args.groupID, end - start, start ]
       })

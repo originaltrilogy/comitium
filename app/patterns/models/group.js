@@ -24,7 +24,7 @@ async function discussionPermissions(discussionID, groupID) {
     try {
       const result = await client.query({
         name: 'group_discussionPermissions',
-        text: 'select "groupID", "discussionID", "read", "post", "reply" from "discussionPermissions" where "groupID" = $1 and "discussionID" = $2;',
+        text: 'select group_id, discussion_id, "read", "post", "reply" from discussion_permissions where group_id = $1 and discussion_id = $2;',
         values: [ groupID, discussionID ]
       })
 
@@ -53,7 +53,7 @@ async function info(groupID) {
   try {
     const result = await client.query({
       name: 'group_info',
-      text: 'select id, name, url, description, login, post, reply, "talkPrivately", "moderateDiscussions", "administrateDiscussions", "moderateUsers", "administrateUsers", "administrateApp", "bypassLockdown", system, locked from groups where id = $1;',
+      text: 'select id, name, url, description, login, post, reply, talk_privately, moderate_discussions, administrate_discussions, moderate_users, administrate_users, administrate_app, bypass_lockdown, system, locked from groups where id = $1;',
       values: [ groupID ]
     })
 

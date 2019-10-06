@@ -26,7 +26,7 @@ async function unread(args) {
     try {
       const result = await client.query({
         name: 'private_topics_unread',
-        text: 'select p."topicID" from posts p join "topicInvitations" ti on ti."userID" = $1 and ti."left" = false and p."topicID" = ti."topicID" and p.id = ( select id from posts where "topicID" = ti."topicID" and "userID" <> $1 order by created desc limit 1 ) left join "topicViews" tv on ti."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
+        text: 'select p.topic_id from posts p join topic_invitations ti on ti.user_id = $1 and ti.left = false and p.topic_id = ti.topic_id and p.id = ( select id from posts where topic_id = ti.topic_id and user_id <> $1 order by created desc limit 1 ) left join topic_views tv on ti.topic_id = tv.topic_id and tv.user_id = $1 where tv.time < p.created or tv.time is null;',
         values: [ args.userID ]
       })
 
@@ -70,16 +70,16 @@ async function topics(args) {
       await client.query('SET enable_seqscan = OFF;')
       const result = await client.query({
         name: 'private_topics_topics',
-        text: 'select count(*) over() as full_count, t.id, t."sticky", t."replies", t."titleHtml", ti.accepted, ti.left, p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."groupID" as "topicStarterGroupID", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+        text: 'select count(*) over() as full_count, t.id, t.sticky, t.replies, t.title_html, ti.accepted, ti.left, p.created as "postDate", p2.id as "lastPostID", p2.created as "lastPostCreated", u.id as "topicStarterID", u.username as "topicStarter", u.group_id as "topicStarterGroupID", u.url as "topicStarterUrl", u2.id as "lastPostAuthorID", u2.username as "lastPostAuthor", u2.url as "lastPostAuthorUrl" ' +
         'from topics t ' +
-        'join "topicInvitations" ti on ti."userID" = $1 ' +
+        'join topic_invitations ti on ti.user_id = $1 ' +
         'and ti.left = false ' +
-        'join posts p on p."topicID" = ti."topicID" ' +
-        'and p."id" = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +
-        'join users u on u.id = p."userID" ' +
-        'join posts p2 on p2."topicID" = ti."topicID" ' +
-        'and p2."id" = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
-        'join users u2 on u2.id = p2."userID" ' +
+        'join posts p on p.topic_id = ti.topic_id ' +
+        'and p.id = ( select id from posts where topic_id = t.id and draft = false order by created asc limit 1 ) ' +
+        'join users u on u.id = p.user_id ' +
+        'join posts p2 on p2.topic_id = ti.topic_id ' +
+        'and p2.id = ( select id from posts where topic_id = t.id and draft = false order by created desc limit 1 ) ' +
+        'join users u2 on u2.id = p2.user_id ' +
         'and t.draft = false and t.private = true ' +
         'order by p2.created desc ' +
         'limit $2 offset $3;',

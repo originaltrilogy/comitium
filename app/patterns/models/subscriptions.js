@@ -26,7 +26,7 @@ async function unread(args) {
     try {
       const result = await client.query({
         name: 'subscriptions_unread',
-        text: 'select p."topicID" from posts p join "topicSubscriptions" ts on ts."userID" = $1 and p."topicID" = ts."topicID" and p.id = ( select id from posts where "topicID" = ts."topicID" and "userID" <> $1 order by created desc limit 1 ) left join "topicViews" tv on ts."topicID" = tv."topicID" and tv."userID" = $1 where tv.time < p.created or tv.time is null;',
+        text: 'select p.topic_id from posts p join topic_subscriptions ts on ts.user_id = $1 and p.topic_id = ts.topic_id and p.id = ( select id from posts where topic_id = ts.topic_id and user_id <> $1 order by created desc limit 1 ) left join topic_views tv on ts.topic_id = tv.topic_id and tv.user_id = $1 where tv.time < p.created or tv.time is null;',
         values: [ args.userID ]
       })
 
@@ -70,17 +70,17 @@ async function topics(args) {
       await client.query('SET enable_seqscan = OFF;')
       const result = await client.query({
         name: 'subscriptions_topics',
-        text: 'select count(*) over() as full_count, t.id, t."discussionID", t."sticky", t."replies", t."titleHtml", t.url, p."created" as "postDate", p2.id as "lastPostID", p2."created" as "lastPostCreated", u."id" as "topicStarterID", u."username" as "topicStarter", u."url" as "topicStarterUrl", u2."id" as "lastPostAuthorID", u2."username" as "lastPostAuthor", u2."url" as "lastPostAuthorUrl" ' +
+        text: 'select count(*) over() as full_count, t.id, t.discussion_id, t.sticky, t.replies, t.title_html, t.url, p.created as "postDate", p2.id as "lastPostID", p2.created as "lastPostCreated", u.id as "topicStarterID", u.username as "topicStarter", u.url as "topicStarterUrl", u2.id as "lastPostAuthorID", u2.username as "lastPostAuthor", u2.url as "lastPostAuthorUrl" ' +
         'from topics t ' +
-        'join "topicSubscriptions" ts on ts."userID" = $1 ' +
-        'join posts p on p."topicID" = ts."topicID" ' +
-        'and p."id" = ( select id from posts where "topicID" = t.id and draft = false order by created asc limit 1 ) ' +
-        'join users u on u.id = p."userID" ' +
-        'join posts p2 on p2."topicID" = ts."topicID" ' +
-        'and p2."id" = ( select id from posts where "topicID" = t.id and draft = false order by created desc limit 1 ) ' +
-        'join users u2 on u2.id = p2."userID" ' +
+        'join topic_subscriptions ts on ts.user_id = $1 ' +
+        'join posts p on p.topic_id = ts.topic_id ' +
+        'and p.id = ( select id from posts where topic_id = t.id and draft = false order by created asc limit 1 ) ' +
+        'join users u on u.id = p.user_id ' +
+        'join posts p2 on p2.topic_id = ts.topic_id ' +
+        'and p2.id = ( select id from posts where topic_id = t.id and draft = false order by created desc limit 1 ) ' +
+        'join users u2 on u2.id = p2.user_id ' +
         // Don't show topics that have been moved to the trash. If they're permanently deleted, the subscription will be also.
-        'and t.draft = false and t."discussionID" <> 1 ' +
+        'and t.draft = false and t.discussion_id <> 1 ' +
         'order by p2.created desc ' +
         'limit $2 offset $3;',
         values: [ args.userID, end - start, start ]
