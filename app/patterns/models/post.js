@@ -27,10 +27,10 @@ async function edit(args) {
     try {
       await client.query('BEGIN')
       await client.query(
-        'update "posts" set "text" = $1, "html" = $2, editor_id = $3, edit_reason = $4, "modified" = $5 where "id" = $6',
+        'update posts set text = $1, html = $2, editor_id = $3, edit_reason = $4, modified = $5 where id = $6',
         [ args.text, args.html, args.editorID, args.reason, args.time, args.id ])
       await client.query(
-        'insert into post_history ( post_id, editor_id, edit_reason, "text", "html", "time" ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
+        'insert into post_history ( post_id, editor_id, edit_reason, text, html, time ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
         [ args.id, !args.currentPost.editorID ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ])
       await client.query('COMMIT')
 
@@ -56,14 +56,14 @@ async function info(postID) {
   try {
     const result = await client.query({
       name: 'post_info',
-      text: 'select p.id, p.user_id, p.topic_id, p.text, p.html, p.created, p.modified, p.draft, p.editor_id, p.edit_reason, p.locked_by_id, p.lock_reason, t.discussion_id, t.title as "topicTitle", t.title_html as "topicTitle", t.url as "topicUrl", t.replies as "topicReplies", d.url as "discussionUrl", u.id as "authorID", u.username as author, u.url as "authorUrl", u2.username as editor, u2.url as "editorUrl" from posts p join users u on p.user_id = u.id left join users u2 on p.editor_id = u2.id join topics t on p.topic_id = t.id left join discussions d on t.discussion_id = d.id where p.id = $1;',
+      text: 'select p.id, p.user_id, p.topic_id, p.text, p.html, p.created, p.modified, p.draft, p.editor_id, p.edit_reason, p.locked_by_id, p.lock_reason, t.discussion_id, t.title as topic_title, t.title_html as topic_title, t.url as topic_url, t.replies as topic_replies, d.url as discussion_url, u.id as authorID, u.username as author, u.url as author_url, u2.username as editor, u2.url as editorUrl from posts p join users u on p.user_id = u.id left join users u2 on p.editor_id = u2.id join topics t on p.topic_id = t.id left join discussions d on t.discussion_id = d.id where p.id = $1;',
       values: [ postID ]
     })
 
     if ( result.rows.length ) {
-      result.rows[0].createdFormatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A')
+      result.rows[0].created_formatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A')
       if ( result.rows[0].modified ) {
-        result.rows[0].modifiedFormatted = app.toolbox.moment.tz(result.rows[0].modified, 'America/New_York').format('D-MMM-YYYY, h:mm A')
+        result.rows[0].modified_formatted = app.toolbox.moment.tz(result.rows[0].modified, 'America/New_York').format('D-MMM-YYYY, h:mm A')
       }
       return result.rows[0]
     } else {
@@ -81,7 +81,7 @@ async function lock(args) {
   try {
     await client.query({
       name: 'post_lock',
-      text: 'update "posts" set locked_by_id = $1, lock_reason = $2 where "id" = $3',
+      text: 'update posts set locked_by_id = $1, lock_reason = $2 where id = $3',
       values: [ args.lockedByID, args.lockReason, args.postID ]
     })
 
@@ -99,7 +99,7 @@ async function unlock(args) {
   try {
     await client.query({
       name: 'post_unlock',
-      text: 'update "posts" set locked_by_id = 0, lock_reason = null where "id" = $1',
+      text: 'update posts set locked_by_id = 0, lock_reason = null where id = $1',
       values: [ args.postID ]
     })
 
@@ -140,7 +140,7 @@ function saveBookmark(args, emitter) {
           emitter.emit('error', err)
         } else {
           client.query(
-            'select user_id from "bookmarks" where user_id = $1 and post_id = $2;',
+            'select user_id from bookmarks where user_id = $1 and post_id = $2;',
             [ args.userID, args.postID ],
             function (err, result) {
               done()
@@ -171,7 +171,7 @@ function saveBookmark(args, emitter) {
               emitter.emit('error', err)
             } else {
               client.query(
-                'insert into "bookmarks" ( user_id, post_id, "notes" ) values ( $1, $2, $3 );',
+                'insert into bookmarks ( user_id, post_id, notes ) values ( $1, $2, $3 );',
                 [ args.userID, args.postID, args.notes ],
                 function (err, result) {
                   done()
@@ -209,7 +209,7 @@ async function saveReport(args) {
     try {
       await client.query({
         name: 'post_saveReport',
-        text: 'insert into post_reports ( post_id, reported_by_id, "reason" ) values ( $1, $2, $3 ) returning id;',
+        text: 'insert into post_reports ( post_id, reported_by_id, reason ) values ( $1, $2, $3 ) returning id;',
         values: [ args.postID, args.userID, args.reason ]
       })
   
@@ -229,13 +229,13 @@ async function trash(args) {
   try {
     await client.query('BEGIN')
     await client.query(
-      'insert into post_trash ( "id", topic_id, user_id, "html", "text", "created", "modified", "draft", editor_id, edit_reason, locked_by_id, lock_reason, deleted_by_id, delete_reason ) select "id", topic_id, user_id, "html", "text", "created", "modified", "draft", editor_id, edit_reason, locked_by_id, lock_reason, $2, $3 from "posts" where id = $1;',
+      'insert into post_trash ( id, topic_id, user_id, html, text, created, modified, draft, editor_id, edit_reason, locked_by_id, lock_reason, deleted_by_id, delete_reason ) select id, topic_id, user_id, html, text, created, modified, draft, editor_id, edit_reason, locked_by_id, lock_reason, $2, $3 from posts where id = $1;',
       [ args.postID, args.deletedByID, args.deleteReason ])
     await client.query(
-      'delete from "posts" where "id" = $1;',
+      'delete from posts where id = $1;',
       [ args.postID ])
     let lastPostDate = await client.query(
-      'select max(created) as "lastPostDate" from posts where topic_id = $1 and draft = false;',
+      'select max(created) as last_post_date from posts where topic_id = $1 and draft = false;',
       [ args.topicID ])
     let currentSticky = await client.query(
       'select sticky from topics where id = $1;',
@@ -244,13 +244,13 @@ async function trash(args) {
     if ( app.toolbox.moment(currentSticky.rows[0].sticky).isAfter(app.toolbox.moment().utc().valueOf()) ) {
       sticky = currentSticky.rows[0].sticky
     } else {
-      sticky = lastPostDate.rows[0].lastPostDate
+      sticky = lastPostDate.rows[0].last_post_date
     }
     await client.query(
-      'update "topics" set sticky = $2 where "id" = $1',
+      'update topics set sticky = $2 where id = $1',
       [ args.topicID, sticky ])
     await client.query(
-      'update "discussions" set last_post_id = ( select posts.id from posts join topics on posts.topic_id = topics.id where topics.discussion_id = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where "id" = $1',
+      'update discussions set last_post_id = ( select posts.id from posts join topics on posts.topic_id = topics.id where topics.discussion_id = $1 and topics.draft = false and posts.draft = false order by posts.created desc limit 1 ) where id = $1',
       [ args.discussionID ])
     await client.query('COMMIT')
 

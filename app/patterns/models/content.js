@@ -82,7 +82,7 @@ async function mail(args) {
   try {
     const result = await client.query({
       name: 'content_mail',
-      text: 'select "subject", "text", "html" from email_templates where lower("name") = lower($1);',
+      text: 'select subject, text, html from email_templates where lower(name) = lower($1);',
       values: [ args.template ]
     })
 

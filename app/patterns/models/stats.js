@@ -25,7 +25,7 @@ async function firstPost() {
     try {
       const result = await client.query({
         name: 'stats_firstPost',
-        text: 'select min("created") as "created" from "posts" where "draft" = false;'
+        text: 'select min(created) as created from posts where draft = false;'
       })
 
       // Cache the categories object for future requests
@@ -59,7 +59,7 @@ async function posts() {
     try {
       const result = await client.query({
         name: 'stats_posts',
-        text: 'select count(p.id) as "postCount" from "posts" p join "topics" t on p.topic_id = t.id where t.discussion_id <> 0 and t.discussion_id <> 1 and t.draft = false and p.draft = false;'
+        text: 'select count(p.id) as post_count from posts p join topics t on p.topic_id = t.id where t.discussion_id <> 0 and t.discussion_id <> 1 and t.draft = false and p.draft = false;'
       })
 
       // Cache the categories object for future requests
@@ -93,7 +93,7 @@ async function topics() {
     try {
       const result = await client.query({
         name: 'stats_topics',
-        text: 'select count("id") as "topicCount" from "topics" where discussion_id <> 0 and discussion_id <> 1 and "draft" = false;'
+        text: 'select count(id) as topic_count from topics where discussion_id <> 0 and discussion_id <> 1 and draft = false;'
       })
 
       // Cache the categories object for future requests
@@ -101,10 +101,10 @@ async function topics() {
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: result.rows[0].topicCount
+          value: result.rows[0].topic_count
         })
       }
-      return result.rows[0].topicCount
+      return result.rows[0].topic_count
     } finally {
       client.release()
     }
@@ -127,7 +127,7 @@ async function users() {
     try {
       const result = await client.query({
         name: 'stats_users',
-        text: 'select count("id") as "userCount" from "users" where "activated" = true;'
+        text: 'select count(id) as user_count from users where activated = true;'
       })
 
       // Cache the categories object for future requests
@@ -135,10 +135,10 @@ async function users() {
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: result.rows[0].userCount
+          value: result.rows[0].user_count
         })
       }
-      return result.rows[0].userCount
+      return result.rows[0].user_count
     } finally {
       client.release()
     }

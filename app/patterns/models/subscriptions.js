@@ -70,7 +70,7 @@ async function topics(args) {
       await client.query('SET enable_seqscan = OFF;')
       const result = await client.query({
         name: 'subscriptions_topics',
-        text: 'select count(*) over() as full_count, t.id, t.discussion_id, t.sticky, t.replies, t.title_html, t.url, p.created as "postDate", p2.id as "lastPostID", p2.created as "lastPostCreated", u.id as "topicStarterID", u.username as "topicStarter", u.url as "topicStarterUrl", u2.id as "lastPostAuthorID", u2.username as "lastPostAuthor", u2.url as "lastPostAuthorUrl" ' +
+        text: 'select count(*) over() as full_count, t.id, t.discussion_id, t.sticky, t.replies, t.title_html, t.url, p.created as post_date, p2.id as last_post_id, p2.created as last_post_created, u.id as topic_starter_id, u.username as topic_starter, u.url as topic_starter_url, u2.id as last_post_author_id, u2.username as last_post_author, u2.url as last_post_author_url ' +
         'from topics t ' +
         'join topic_subscriptions ts on ts.user_id = $1 ' +
         'join posts p on p.topic_id = ts.topic_id ' +
@@ -88,10 +88,10 @@ async function topics(args) {
       await client.query('SET enable_seqscan = ON;')
 
       result.rows.forEach( function (item) {
-        item['full_count_formatted']      = app.toolbox.numeral(item['full_count']).format('0,0')
-        item['repliesFormatted']          = app.toolbox.numeral(item['replies']).format('0,0')
-        item['postDateFormatted']         = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY')
-        item['lastPostCreatedFormatted']  = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY')
+        item.full_count_formatted         = app.toolbox.numeral(item.full_count).format('0,0')
+        item.replies_formatted            = app.toolbox.numeral(item.replies).format('0,0')
+        item.post_date_formatted          = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+        item.last_post_created_formatted  = app.toolbox.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests

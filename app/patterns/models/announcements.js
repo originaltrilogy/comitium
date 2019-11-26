@@ -26,7 +26,7 @@ async function info(discussionID) {
     try {
       const result = await client.query({
         name: 'announcements_info',
-        text: 'select c.id as category_id, c.title as "categoryTitle", c.description as "categoryDescription", d.id, d.title, d.url, d.description,  ( select count(*) from topics t where discussion_id = d.id and t.draft = false ) as topics, ( select count(*) from posts p join topics t on p.topic_id = t.id and t.draft = false where t.discussion_id = d.id ) as posts from discussions d left join categories c on d.category_id = c.id where d.id = $1;',
+        text: 'select c.id as category_id, c.title as category_title, c.description as category_description, d.id, d.title, d.url, d.description,  ( select count(*) from topics t where discussion_id = d.id and t.draft = false ) as topics, ( select count(*) from posts p join topics t on p.topic_id = t.id and t.draft = false where t.discussion_id = d.id ) as posts from discussions d left join categories c on d.category_id = c.id where d.id = $1;',
         values: [ discussionID ]
       })
 
@@ -65,7 +65,7 @@ async function topics(args) {
     try {
       const result = await client.query({
         name: 'announcements_topics',
-        text: 'select distinct t.id, t.title_html, t.url, t.sticky, ( select count(*) from posts where topic_id = t.id ) - 1 as replies, p.id as "firstPostID", p2.id as "lastPostID", t.title_html, t.url, p.created as "postDate", p2.created as "lastPostCreated", u.id as "topicStarterID", u.username as "topicStarter", u.url as "topicStarterUrl", u2.id as "lastPostAuthorID", u2.username as "lastPostAuthor", u2.url as "lastPostAuthorUrl" ' +
+        text: 'select distinct t.id, t.title_html, t.url, t.sticky, ( select count(*) from posts where topic_id = t.id ) - 1 as replies, p.id as first_post_id, p2.id as last_post_id, t.title_html, t.url, p.created as post_date, p2.created as last_post_created, u.id as topic_starter_id, u.username as topic_starter, u.url as topic_starter_url, u2.id as last_post_author_id, u2.username as last_post_author, u2.url as last_post_author_url ' +
         'from topics t ' +
         'join announcements a on t.id = a.topic_id ' +
         'join discussion_permissions dp on dp.discussion_id = a.discussion_id ' +
@@ -80,9 +80,9 @@ async function topics(args) {
       })
 
       result.rows.forEach( function (item) {
-        item['repliesFormatted'] = app.toolbox.numeral(item['replies']).format('0,0')
-        item['postDateFormatted'] = app.toolbox.moment.tz(item['postDate'], 'America/New_York').format('D-MMM-YYYY')
-        item['lastPostCreatedFormatted'] = app.toolbox.moment.tz(item['lastPostCreated'], 'America/New_York').format('D-MMM-YYYY')
+        item.replies_formatted            = app.toolbox.numeral(item.replies).format('0,0')
+        item.post_date_formatted          = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+        item.last_post_created_formatted  = app.toolbox.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests

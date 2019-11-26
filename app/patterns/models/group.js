@@ -24,7 +24,7 @@ async function discussionPermissions(discussionID, groupID) {
     try {
       const result = await client.query({
         name: 'group_discussionPermissions',
-        text: 'select group_id, discussion_id, "read", "post", "reply" from discussion_permissions where group_id = $1 and discussion_id = $2;',
+        text: 'select group_id, discussion_id, read, post, reply from discussion_permissions where group_id = $1 and discussion_id = $2;',
         values: [ groupID, discussionID ]
       })
 

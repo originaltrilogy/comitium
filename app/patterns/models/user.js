@@ -51,7 +51,7 @@ async function activate(args) {
       try {
         await client.query({
           name: 'user_activate',
-          text: 'update users set "activated" = true where id = $1 and activation_code = $2',
+          text: 'update users set activated = true where id = $1 and activation_code = $2',
           values: [ args.id, args.activationCode ]
         })
 
@@ -103,7 +103,7 @@ async function activationStatus(args) {
   try {
     const result = await client.query({
       name: 'user_activationStatus',
-      text: 'select "id", "activated", activation_code from "users" where "id" = $1',
+      text: 'select id, activated, activation_code from users where id = $1',
       values: [ args.id ]
     })
 
@@ -111,7 +111,7 @@ async function activationStatus(args) {
       return {
         userExists: true,
         id: result.rows[0].id,
-        activationCode: result.rows[0].activationCode,
+        activationCode: result.rows[0].activation_code,
         activated: result.rows[0].activated
       }
     } else {
@@ -131,7 +131,7 @@ async function activityUpdate(args) {
   try {
     const result = await client.query({
       name: 'user_activityUpdate',
-      text: 'update "users" set last_activity = $1 where "id" = $2;',
+      text: 'update users set last_activity = $1 where id = $2;',
       values: [ args.time || app.toolbox.helpers.isoDate(), args.userID ]
     })
 
@@ -175,7 +175,7 @@ async function authenticate(credentials) {
     } else if ( email.length ) {
       user = await info({ email: email })
     }
-    let compareHash = password.length && user && user.passwordHash ? await app.toolbox.helpers.compareHash(password, user.passwordHash) : false
+    let compareHash = password.length && user && user.password_hash ? await app.toolbox.helpers.compareHash(password, user.password_hash) : false
 
     if ( user ) {
       if ( user.activated ) {
@@ -225,7 +225,7 @@ async function ban(args) {
   try {
     await client.query({
       name: 'user_ban',
-      text: 'update "users" set group_id = ( select "id" from "groups" where "name" = \'Banned Members\' ), signature = null, signature_html = null, website = null where "id" = $1;',
+      text: 'update users set group_id = ( select id from groups where name = \'Banned Members\' ), signature = null, signature_html = null, website = null where id = $1;',
       values: [ args.userID ]
     })
 
@@ -244,7 +244,7 @@ async function liftBan(args) {
   try {
     await client.query({
       name: 'user_liftBan',
-      text: 'update "users" set group_id = ( select "id" from "groups" where "name" = \'Members\' ) where "id" = $1;',
+      text: 'update users set group_id = ( select id from groups where name = \'Members\' ) where id = $1;',
       values: [ args.userID ]
     })
 
@@ -478,16 +478,16 @@ async function info(args) {
   let sql, arg
 
   if ( args.userID ) {
-    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as "group", g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from "users" u join "groups" g on u.group_id = g.id where u.id = $1'
+    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join groups g on u.group_id = g.id where u.id = $1'
     arg = args.userID
   } else if ( args.username ) {
-    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as "group", g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from "users" u join "groups" g on u.group_id = g.id where lower(u.username) = lower($1)'
+    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join groups g on u.group_id = g.id where lower(u.username) = lower($1)'
     arg = args.username
   } else if ( args.usernameHash ) {
-    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as "group", g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from "users" u join "groups" g on u.group_id = g.id where lower(u.username_hash) = lower($1)'
+    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join groups g on u.group_id = g.id where lower(u.username_hash) = lower($1)'
     arg = args.usernameHash
   } else if ( args.email ) {
-    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as "group", g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from "users" u join "groups" g on u.group_id = g.id where lower(u.email) = lower($1)'
+    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join groups g on u.group_id = g.id where lower(u.email) = lower($1)'
     arg = args.email
   }
 
@@ -501,8 +501,8 @@ async function info(args) {
       })
 
       if ( result.rows.length ) {
-        result.rows[0].joinedFormatted = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
-        result.rows[0].lastActivityFormatted = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].joined_formatted = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].last_activity_formatted = app.toolbox.moment.tz(result.rows[0].last_activity, 'America/New_York').format('D-MMM-YYYY')
         return result.rows[0]
       } else {
         return false
@@ -522,7 +522,7 @@ async function insert(args) {
   try {
     const result = await client.query({
       name: 'user_insert',
-      text: 'insert into "users" ( group_id, "username", username_hash, password_hash, "url", "email", "timezone", date_format, "theme", last_activity, "joined", private_topic_email_notification, subscription_email_notification, "activated", activation_code, "system", "locked" ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17 ) returning id;',
+      text: 'insert into users ( group_id, username, username_hash, password_hash, url, email, timezone, date_format, theme, last_activity, joined, private_topic_email_notification, subscription_email_notification, activated, activation_code, system, locked ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17 ) returning id;',
       values: [ args.groupID, args.username, args.usernameHash, args.passwordHash, args.url, args.email, args.timezone, args.dateFormat, args.theme, args.lastActivity, args.joined, args.privateTopicEmailNotification, args.subscriptionEmailNotification, args.activated, args.activationCode, args.system, args.locked ]
     })
 
@@ -565,7 +565,7 @@ async function log(args) {
   try {
     const result = await client.query({
       name: 'user_log',
-      text: 'insert into user_logs ( user_id, "action", "ip", "time" ) values ( $1, $2, $3, $4 ) returning id;',
+      text: 'insert into user_logs ( user_id, action, ip, time ) values ( $1, $2, $3, $4 ) returning id;',
       values: [ args.userID, args.action, args.ip, app.toolbox.helpers.isoDate() ]
     })
 
@@ -613,7 +613,7 @@ async function passwordResetInsert(args) {
   try {
     await client.query({
       name: 'user_passwordResetInsert',
-      text: 'insert into password_reset ( user_id, verification_code, "time" ) values ( $1, $2, $3 );',
+      text: 'insert into password_reset ( user_id, verification_code, time ) values ( $1, $2, $3 );',
       values: [ args.userID, verificationCode, app.toolbox.helpers.isoDate() ]
     })
 
@@ -632,7 +632,7 @@ async function passwordResetVerify(args) {
   try {
     const result = await client.query({
       name: 'user_passwordResetVerify',
-      text: 'select user_id, verification_code, "time" from password_reset where user_id = $1 and verification_code = $2;',
+      text: 'select user_id, verification_code, time from password_reset where user_id = $1 and verification_code = $2;',
       values: [ args.userID, args.verificationCode ]
     })
 
@@ -665,20 +665,20 @@ async function posts(args) {
     try {
       const result = await client.query({
         name: 'user_posts',
-        text: 'select p.id, p.topic_id, p.html, p.created, p.modified, p.editor_id, p.locked_by_id, p.lock_reason, t.title_html as "topicTitle", t.url as "topicUrl", t.replies as "topicReplies", u.username as "author", u.url as "authorUrl" ' +
+        text: 'select p.id, p.topic_id, p.html, p.created, p.modified, p.editor_id, p.locked_by_id, p.lock_reason, t.title_html as topic_title, t.url as topic_url, t.replies as topic_replies, u.username as author, u.url as author_url ' +
         'from posts p ' +
         'join topics t on p.topic_id = t.id ' +
         'join users u on p.user_id = u.id ' +
         // Only grab public posts, not posts from private topics!
-        'where u.id = $1 and p.draft = false and t.discussion_id in ( select discussion_id from discussion_permissions where group_id = $2 and "read" = true ) ' +
+        'where u.id = $1 and p.draft = false and t.discussion_id in ( select discussion_id from discussion_permissions where group_id = $2 and read = true ) ' +
         'order by p.created desc ' +
         'limit $3 offset $4;',
         values: [ args.userID, args.visitorGroupID, end - start, start ]
       })
 
       result.rows.forEach( function (item) {
-        item.createdFormatted   = app.toolbox.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
-        item.modifiedFormatted  = app.toolbox.moment.tz(item.modified, 'America/New_York').format('D-MMM-YYYY h:mm A')
+        item.created_formatted   = app.toolbox.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
+        item.modified_formatted  = app.toolbox.moment.tz(item.modified, 'America/New_York').format('D-MMM-YYYY h:mm A')
       })
 
       // Cache the result for future requests
@@ -714,7 +714,7 @@ async function profileByID(args) {
     try {
       const result = await client.query({
         name: 'user_profileByID',
-        text: 'select u.id, u.group_id, u.username, u.url, u.signature_html, u.last_activity, u.joined, u.website, g.name as "group", ( select count(*) from "posts" p join topics t on p.topic_id = t.id where user_id = $1 and t.draft = false and p.draft = false and t.discussion_id in ( select discussion_id from discussion_permissions where group_id = $2 and "read" = true ) ) as "postCount" from "users" u join "groups" g on u.group_id = g.id where u.id = $1',
+        text: 'select u.id, u.group_id, u.username, u.url, u.signature_html, u.last_activity, u.joined, u.website, g.name as group, ( select count(*) from posts p join topics t on p.topic_id = t.id where user_id = $1 and t.draft = false and p.draft = false and t.discussion_id in ( select discussion_id from discussion_permissions where group_id = $2 and read = true ) ) as post_count from users u join groups g on u.group_id = g.id where u.id = $1',
         values: [ args.userID, args.visitorGroupID ]
       })
 
@@ -758,7 +758,7 @@ async function profileByUsername(args) {
     try {
       const result = await client.query({
         name: 'user_profileByUsername',
-        text: 'select u.id, u.group_id, u.username, u.url, u.signature_html, u.last_activity, u.joined, u.website, g.name as "group", ( select count("id") from "posts" where user_id = $1 and "draft" = false ) as "postCount" from "users" u join "groups" g on u.group_id = g.id where u.username = $1',
+        text: 'select u.id, u.group_id, u.username, u.url, u.signature_html, u.last_activity, u.joined, u.website, g.name as group, ( select count(id) from posts where user_id = $1 and draft = false ) as post_count from users u join groups g on u.group_id = g.id where u.username = $1',
         values: [ args.username ]
       })
 
@@ -816,7 +816,7 @@ async function topicViewTimes(args) {
 
   try {
     const result = await client.query({
-      text: 'select topic_id, "time" from topic_views where user_id = $1 and topic_id in ( ' + args.topicID + ' );',
+      text: 'select topic_id, time from topic_views where user_id = $1 and topic_id in ( ' + args.topicID + ' );',
       values: [ args.userID ]
     })
 
@@ -837,7 +837,7 @@ async function updateEmail(args) {
   try {
     const result = await client.query({
       name: 'user_updateEmail',
-      text: 'update "users" set "email" = $1, "activated" = false, activation_code = $3 where "id" = $2;',
+      text: 'update users set email = $1, activated = false, activation_code = $3 where id = $2;',
       values: [ args.email, args.userID, args.activationCode ]
     })
 
@@ -856,7 +856,7 @@ async function updatePassword(args) {
   try {
     const result = await client.query({
       name: 'user_updatePassword',
-      text: 'update "users" set password_hash = $1 where "id" = $2;',
+      text: 'update users set password_hash = $1 where id = $2;',
       values: [ passwordHash, args.userID ]
     })
 
@@ -873,7 +873,7 @@ async function updateSettings(args) {
   try {
     const result = await client.query({
       name: 'user_updateSettings',
-      text: 'update "users" set "signature" = $1, signature_html = $2, "timezone" = $3, "theme" = $4, "website" = $5, subscription_email_notification = $6, private_topic_email_notification = $7 where "id" = $8;',
+      text: 'update users set signature = $1, signature_html = $2, timezone = $3, theme = $4, website = $5, subscription_email_notification = $6, private_topic_email_notification = $7 where id = $8;',
       values: [ args.signature, args.signatureHtml, args.timezone, args.theme, args.website, args.subscriptionEmailNotification, args.privateTopicEmailNotification, args.userID ]
     })
 
