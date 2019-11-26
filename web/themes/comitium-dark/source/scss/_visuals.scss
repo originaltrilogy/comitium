@@ -536,12 +536,12 @@ body[data-controller="post"][data-view="announcement"] {
         background-repeat: no-repeat;
         
         &.moderator {
-          background-image: url(/themes/default/images/moderator.png);
+          background-image: url(/themes/comitium-dark/images/moderator.png);
           background-size: 4.8rem;
           background-position-x: -0.5rem;
         }
         &.administrator {
-          background-image: url(/themes/default/images/administrator.png);
+          background-image: url(/themes/comitium-dark/images/administrator.png);
           background-size: 6rem;
           background-position-x: -1rem;
         }
