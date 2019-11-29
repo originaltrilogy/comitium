@@ -14,11 +14,11 @@
   "main": "index",
   "scripts": {
     "start-dev": "node ./app/start-dev.js",
-    "start-prod": "node ./app/start-prod.js"
+    "start": "node ./app/start.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "citizen": "github:jaysylvester/citizen#0.9.0",
+    "citizen": "0.9.0",
     "gm": "1.23.1",
     "jade": "1.11.0",
     "markdown-it": "8.4.1",
@@ -44,6 +44,6 @@
     "gulp-watch": "*"
   },
   "engines": {
-    "node": ">= 6.0.0"
+    "node": ">= 8.0.0"
   }
 }
