@@ -47,7 +47,7 @@ app.toolbox.slug.charmap['--'] = '-'
 // Static resources
 app.resources = {
   images: {
-    defaultAvatar: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/default-avatar.jpg')
+    defaultAvatar: fs.readFileSync(app.config.citizen.directories.web + '/avatars/default-avatar.jpeg')
   }
 }
 
