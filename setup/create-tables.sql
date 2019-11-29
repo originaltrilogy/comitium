@@ -486,3 +486,79 @@ CREATE TABLE users (
     system boolean NOT NULL,
     locked boolean NOT NULL
 );
+
+
+
+-- Default categories
+
+INSERT INTO "categories"("id","title","url","description","meta_description","keywords","sort","created","hidden","system","locked")
+VALUES
+(1,'Administrative Functions','Administrative-Functions','Forums related to administrative concerns. This category is hidden from users who don''t have access.','','',1,now(),TRUE,TRUE,FALSE),
+(2,'Sample Category','Sample-Category','Default category created during setup.','This is the meta description for display in search engine results.','insert, meta, keywoards, here',2,now(),FALSE,FALSE,FALSE);
+
+INSERT INTO "public"."discussions"("id","category_id","title","url","description","meta_description","keywords","posts","topics","last_post_id","sort","created","hidden","system","locked")
+VALUES
+(1,1,'Trash','Trash','Dumping ground for deleted topics. Topics are not truly deleted until removed from this forum.','Dumping ground for deleted topics. Topics are not truly deleted until removed from this forum.','',0,0,0,1,now(),TRUE,TRUE,TRUE),
+(2,0,'Announcements','Announcements','Site and forum announcements.','Site and forum announcements.','announcements, news',0,0,0,1,now(),FALSE,TRUE,TRUE),
+(3,2,'Sample Subcategory','Sample-Subcategory','Default subcategory created during setup.','This is the meta description for display in search engine results.','insert, meta, keywoards, here',0,0,0,1,now(),FALSE,FALSE,FALSE);
+
+
+
+-- Default groups
+
+INSERT INTO "groups" ("id","name","url","description","login","post","reply","talk_privately","moderate_discussions","administrate_discussions","moderate_users","administrate_users","administrate_app","bypass_lockdown","system","locked")
+VALUES
+(1,'Public','Public','Public (anonymous) visitors.',FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
+(2,'New Members','New-Members','Forum members who can reply to existing topics, but haven''t met the minimum post requirement to start new topics.',TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
+(3,'Members','Members','Forum members with full access to post and reply.',TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
+(4,'Moderators','Moderators','Members responsible for moderating users and content.',TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,TRUE,TRUE,FALSE),
+(5,'Administrators','Administrators','Members with full control over the forum, including access to the admin. This group''s permissions are locked in order to prevent accidental removal of administration capabilities.',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE),
+(6,'Banned Members','Banned-Members','Users who have had their forum access privileges revoked.',FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE);
+
+
+
+-- Default permissions
+INSERT INTO "discussion_permissions" ("group_id","discussion_id","read","post","reply")
+VALUES
+(1,1,FALSE,FALSE,FALSE),
+(1,2,TRUE,FALSE,FALSE),
+(1,3,TRUE,FALSE,FALSE),
+(2,1,FALSE,FALSE,FALSE),
+(2,2,TRUE,FALSE,TRUE),
+(2,3,TRUE,FALSE,TRUE),
+(3,1,FALSE,FALSE,FALSE),
+(3,2,TRUE,FALSE,TRUE),
+(3,3,TRUE,TRUE,TRUE),
+(4,1,TRUE,FALSE,FALSE),
+(4,2,TRUE,TRUE,TRUE),
+(4,3,TRUE,TRUE,TRUE),
+(5,1,TRUE,FALSE,FALSE),
+(5,2,TRUE,TRUE,TRUE),
+(5,3,TRUE,TRUE,TRUE),
+(6,1,FALSE,FALSE,FALSE),
+(6,2,FALSE,FALSE,FALSE),
+(6,3,FALSE,FALSE,FALSE);
+
+
+
+-- Administrator account
+INSERT INTO "users" ("id","groupID","username","usernameHash","passwordHash","url","email","timezone","dateFormat","theme","signature","signatureHtml","lastActivity","joined","website","privateTopicEmailNotification","subscriptionEmailNotification","activated","activationCode","system","locked")
+VALUES
+(1,5,'Administrator','$2a$10$OcEsQ1L2jizBqw1CPmLG6uK6ZJuUB39TDYOBH9RLXmKD44mvm3sCa','$2a$12$BUs.SDPtAxSkSAjJGf6G2eb348JbZPVR0OmnXySJs2M5IDDh0Wf62','Administrator','jay@originaltrilogy.com','GMT','MMMM D, YYYY','Comitium Light',NULL,NULL,now(),now(),NULL,TRUE,TRUE,TRUE,'N/A',TRUE,TRUE);
+
+
+
+-- E-mail templates
+INSERT INTO "email_templates" ("name","description","default_subject","default_text","subject","text","html")
+VALUES
+('Password Reset','Users who have forgotten their passwords can request a password reset link via e-mail.','Forum password reset request','We received a request to reset your password. Please click the link below to start the process:\n\n[resetUrl]\n\nIf you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.','Forum password reset request','We received a request to reset your password. Please click the link below to start the process:\n\n[resetUrl]\n\nIf you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.',NULL),
+('Post Delete','When moderators delete a post, they can notify the author using this e-mail.','Your post was deleted','A moderator deleted one of your posts.\n\nPost ID: [postID]\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]\n\nPost content:\n[postText]','Your post was deleted','A moderator deleted one of your posts.\n\nPost ID: [postID]\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]\n\nPost content:\n[postText]',NULL),
+('Post Lock','When moderators lock a post, they can notify the author using this e-mail.','Your post was locked','A moderator locked one of your posts.\n\nPost: [postUrl]\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]\n\nPost content:\n[postText]','Your post was locked','A moderator locked one of your posts.\n\nPost: [postUrl]\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]\n\nPost content:\n[postText]',NULL),
+('Post Report','When users report a post, moderators are notified via e-mail.','Post report','Submitted by: [reporter]\nReason: [reason]\n\nPost: [postUrl]\nTopic: [topicTitle]\n\n[topicUrl]\n\nPost content:\n\n[postText]','Post report','Submitted by: [reporter]\nReason: [reason]\n\nPost: [postUrl]\nTopic: [topicTitle]\n\n[topicUrl]\n\nPost content:\n\n[postText]',NULL),
+('Reactivation','When users update their e-mail address, they''re asked to reactivate their account in order to verify that the e-mail they provided is valid.','Your account requires reactivation','When you update your e-mail address, we send this verification e-mail to make sure it''s a valid address. This helps us fight spammers and provide a better community experience.\n\nClick the link below to verify this address and reactivate your account:\n\n[activationUrl]','Your account requires reactivation','When you update your e-mail address, we send this verification e-mail to make sure it''s a valid address. This helps us fight spammers and provide a better community experience.\n\nClick the link below to verify this address and reactivate your account:\n\n[activationUrl]',NULL),
+('Registration','This e-mail is sent to new users after they register so they can activate their account.','Welcome to the forum, [username]!','Thanks for signing up! To activate your account, please click the link below:\n\n[activationUrl]','Welcome to the forum, [username]!','Thanks for signing up! To activate your account, please click the link below:\n\n[activationUrl]',NULL),
+('Topic Delete','When moderators delete a topic, they can notify subscribers using this e-mail.','A topic you''re following was deleted','A moderator deleted a topic you were following.\n\nTopic: [topicTitle]\n\nReason: [reason]','A topic you''re following was deleted','A moderator deleted a topic you were following.\n\nTopic: [topicTitle]\n\nReason: [reason]',NULL),
+('Topic Invitation','Users who opt in to notifications receive this e-mail when they''re invited to participate in a private topic.','Private topic invitation','[author] invited you to a private topic. Private topics are visible only to members who receive an invitation; not even moderators can view your private topics.\n\nTo accept the invitation and read the topic:\n[topicUrl]','Private topic invitation','[author] invited you to a private topic. Private topics are visible only to members who receive an invitation; not even moderators can view your private topics.\n\nTo accept the invitation and read the topic:\n[topicUrl]',NULL),
+('Topic Lock','When moderators lock a topic, they can notify subscribers using this e-mail.','A topic you''re following was locked','A moderator locked a topic you were following.\n\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]','A topic you''re following was locked','A moderator locked a topic you were following.\n\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]',NULL),
+('Topic Move','Subscribers receive an e-mail notification when a topic they''re following is moved to a different discussion.','A topic you''re following was moved','The following topic was moved from [oldDiscussionTitle] to [newDiscussionTitle].\n\n[topicTitle]\n[topicUrl]','A topic you''re following was moved','The following topic was moved from [oldDiscussionTitle] to [newDiscussionTitle].\n\n[topicTitle]\n[topicUrl]',NULL),
+('Topic Reply','Subscribers receive an e-mail notification when someone replies to a topic they''re following.','Topic update: [topicTitle]','[replyAuthor] posted a reply to the following topic:\n\n[topicTitle]\n[replyUrl]\n\n\nThere may be additional replies, but you won''t receive any further notifications until you visit the forum again.\n\n\nUnsubscribe:\n\n[unsubscribeUrl]','Topic update: [topicTitle]','[replyAuthor] posted a reply to the following topic:\n\n[topicTitle]\n[replyUrl]\n\n\nThere may be additional replies, but you won''t receive any further notifications until you visit the forum again.\n\n\nUnsubscribe:\n\n[unsubscribeUrl]',NULL);
