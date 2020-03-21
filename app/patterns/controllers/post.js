@@ -367,7 +367,7 @@ async function reportForm(params, context) {
 
         app.toolbox.mail.sendMail({
           from: app.config.comitium.email,
-          to: app.config.comitium.email,
+          to: app.config.comitium.reportEmail, // remove when post report UI is complete
           subject: mail.subject,
           text: mail.text
         })
