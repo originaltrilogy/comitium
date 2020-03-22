@@ -1013,7 +1013,7 @@ async function merge(params) {
     let topic = await app.models.topic.info(params.url.id),
         topics = await app.models.discussion.topics({
           discussionID: topic.discussionID,
-          end: 50
+          end: 150
         })
 
     params.form.title = topic.title
