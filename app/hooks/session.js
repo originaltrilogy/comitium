@@ -59,13 +59,15 @@ async function start(params) {
             }
           },
           session: {
-            groupID: 1
+            groupID: 1,
+            theme: 'Default'
           }
         }
       }
     } else {
       session.groupID = 1
       session.ip = ip
+      session.theme = 'Default'
       active = app.toolbox.helpers.isoDate()
       cookie.comitium_active = {
         value: active,

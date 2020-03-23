@@ -13,22 +13,13 @@ var autoprefixer  = require('autoprefixer'),
 
 var themes = [
       {
-        // Dark Side theme
-        name: 'Default',
-        path: 'default'
+        name: 'Comitium Dark',
+        path: 'comitium-dark'
       },
-      // {
-      //   name: 'Imperial',
-      //   path: 'imperial'
-      // },
       {
-        name: 'LightSide',
-        path: 'light-side'
-      },
-      // {
-      //   name: 'Rebellious',
-      //   path: 'rebellious'
-      // }
+        name: 'Comitium Light',
+        path: 'comitium-light'
+      }
     ],
     buildTasks = []
 
@@ -53,15 +44,15 @@ buildTasks.push('js')
 
 gulp.task('js', function (done) {
   gulp.src([
-            'web/themes/default/source/js/site/immediate.js',
-            'web/themes/default/source/js/site/**.js',
-            'web/themes/default/source/js/lib/svgxuse.min.js'
+            'web/themes/comitium-light/source/js/site/immediate.js',
+            'web/themes/comitium-light/source/js/site/**.js',
+            'web/themes/comitium-light/source/js/lib/svgxuse.min.js'
           ])
       .pipe(sourcemaps.init())
       .pipe(uglify())
       .pipe(concat('site.js'))
       .pipe(sourcemaps.write(''))
-      .pipe(gulp.dest('web/themes/default/min'))
+      .pipe(gulp.dest('web/themes/comitium-light/min'))
       .pipe(livereload())
   done()
 })
@@ -77,14 +68,9 @@ gulp.task('reload', function (done) {
 gulp.task('watch', function (done) {
   livereload.listen()
   themes.forEach( function (item) {
-    gulp.watch('web/themes/default/source/scss/**/**.scss', gulp.parallel('css' + item.name))
+    gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', gulp.parallel('css' + item.name))
   })
-  themes.forEach( function (item) {
-    if ( item.name !== 'Default') {
-      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', gulp.parallel('css' + item.name))
-    }
-  })
-  gulp.watch('web/themes/default/source/js/**/**.js', gulp.parallel('js'))
+  gulp.watch('web/themes/**/source/js/**/**.js', gulp.parallel('js'))
   gulp.watch('app/patterns/**', gulp.parallel('reload'))
   gulp.watch('app/toolbox/**', gulp.parallel('reload'))
   gulp.watch('web/**/**.html', gulp.parallel('reload'))
