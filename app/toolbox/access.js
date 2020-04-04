@@ -17,6 +17,8 @@ module.exports = {
   privateTopicsView : privateTopicsView,
   topicEdit         : topicEdit,
   topicLock         : topicLock,
+  topicMerge        : topicMerge,
+  topicMergeForm    : topicMergeForm,
   topicMove         : topicMove,
   topicMoveForm     : topicMoveForm,
   topicReply        : topicReply,
@@ -136,7 +138,7 @@ async function postEdit(args) {
 
       if ( topic ) {
         if ( !topic.lockedByID || args.user.moderateDiscussions ) {
-          let topicView = await this.topicView(app.extend(args, { topicID: topic.id }))
+          let topicView = await this.topicView(app.toolbox.helpers.extend(args, { topicID: topic.id }))
 
           if ( topicView === true ) {
             return true
@@ -165,7 +167,7 @@ async function postLock(args) {
 
   if ( post ) {
     if ( args.user.moderateDiscussions ) {
-      let topicView = await this.topicView(app.extend(args, { topicID: post.topicID }))
+      let topicView = await this.topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
 
       if ( topicView === true ) {
         return true
@@ -212,7 +214,7 @@ async function postTrash(args) {
   if ( post ) {
     if ( post.topicReplies > 0 ) {
       if ( args.user.moderateDiscussions ) {
-        let topicView = await this.topicView(app.extend(args, { topicID: post.topicID }))
+        let topicView = await this.topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
 
         if ( topicView === true ) {
           return true
@@ -239,7 +241,7 @@ async function postView(args) {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
-    let topicView = await this.topicView(app.extend(args, { topicID: post.topicID }))
+    let topicView = await this.topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
 
     if ( topicView === true ) {
       return true
@@ -283,7 +285,7 @@ async function topicEdit(args) {
         // Check if the user has posting rights to the topic's current discussion.
         // If a topic has been moved to a discussion that the user doesn't have
         // permission to post in, they lose their editing permissions.
-        let discussionPost = await this.discussionPost(app.extend(args, { discussionID: topic.discussionID }))
+        let discussionPost = await this.discussionPost(app.toolbox.helpers.extend(args, { discussionID: topic.discussionID }))
 
         if ( discussionPost === true ) {
           return true
@@ -319,6 +321,33 @@ async function topicLock(args) {
 }
 
 
+async function topicMerge(args) {
+  if ( args.user.moderateDiscussions ) {
+    return await this.topicView(args)
+  } else {
+    return challenge(args)
+  }
+}
+
+
+async function topicMergeForm(args) {
+  if ( args.user.moderateDiscussions ) {
+    let access = true
+    let permissions = await Promise.all(args.topicID.map( async (topicID) => {
+      return await this.topicView(app.toolbox.helpers.extend(args, { topicID: topicID }))
+    }))
+    permissions.forEach( item => {
+      if ( !item ) {
+        access = false
+      }
+    })
+    return access
+  } else {
+    return challenge(args)
+  }
+}
+
+
 async function topicMove(args) {
   if ( args.user.moderateDiscussions ) {
     return await this.topicView(args)
@@ -333,7 +362,7 @@ async function topicMoveForm(args) {
     let topicView = await this.topicView(args)
 
     if ( topicView === true ) {
-      let newDiscussionView = await discussionView(app.extend(args, { discussionID: args.newDiscussionID }))
+      let newDiscussionView = await discussionView(app.toolbox.helpers.extend(args, { discussionID: args.newDiscussionID }))
 
       if ( newDiscussionView === true ) {
         return true
@@ -360,7 +389,7 @@ async function topicReply(args) {
         return challenge(args)
       } else {
         if ( topic.discussionID !== 2 ) {
-          let discussionReply = await this.discussionReply(app.extend(args, { discussionID: topic.discussionID }))
+          let discussionReply = await this.discussionReply(app.toolbox.helpers.extend(args, { discussionID: topic.discussionID }))
 
           if ( topicLocked === false && discussionReply === true ) {
             return true
@@ -429,7 +458,7 @@ async function topicView(args) {
   if ( topic ) {
     if ( !topic.private ) {
       if ( topic.discussionID !== 2 ) {
-        let discussionView = await this.discussionView(app.extend(args, { discussionID: topic.discussionID }))
+        let discussionView = await this.discussionView(app.toolbox.helpers.extend(args, { discussionID: topic.discussionID }))
         if ( discussionView === true ) {
           return true
         } else {

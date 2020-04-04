@@ -23,8 +23,8 @@ module.exports = {
   unlock                : unlock,
   edit                  : edit,
   editForm              : editForm,
-  // merge                 : merge,
-  // mergeForm             : mergeForm,
+  merge                 : merge,
+  mergeForm             : mergeForm,
   move                  : move,
   moveForm              : moveForm,
   trash                 : trash,
@@ -733,7 +733,12 @@ async function replyForm(params, context) {
 
 
 async function notifySubscribers(args) {
-  let subscribersToNotify = await app.models.topic.subscribersToUpdate({ topicID: args.topicID, skip: args.skip })
+  let subscribersToNotify
+  if ( args.scope === 'updates' ) {
+    subscribersToNotify = await app.models.topic.subscribersToUpdate({ topicID: args.topicID, skip: args.skip })
+  } else {
+    subscribersToNotify = await app.models.topic.subscribers({ topicID: args.topicID, skip: args.skip })
+  }
 
   if ( subscribersToNotify.length ) {
     let mail = await app.models.content.mail({ template: args.template, replace: args.replace })
@@ -915,7 +920,7 @@ async function edit(params) {
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/' + topic.id + '/' + topic.url)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/action/edit/id/' + topic.id)
     params.form.title = topic.title
     params.form.content = topic.text
 
@@ -1001,6 +1006,90 @@ async function editForm(params, context) {
 }
 
 
+async function merge(params) {
+  let access = await app.toolbox.access.topicMerge({ topicID: params.url.id, user: params.session })
+
+  if ( access === true ) {
+    let topic = await app.models.topic.info(params.url.id),
+        topics = await app.models.discussion.topics({
+          discussionID: topic.discussionID,
+          end: 150
+        })
+
+    params.form.title = topic.title
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/' + topic.url + '/id/' + topic.id)
+
+    return {
+      view: 'merge',
+      content: {
+        topic: topic,
+        topics: topics
+      }
+    }
+  } else {
+    return access
+  }
+}
+
+
+async function mergeForm(params, context) {
+  if ( params.request.method === 'POST' ) {
+    params.form.topicID = params.form.topicID.filter( item => {
+      return item.length
+    })
+    let access = await app.toolbox.access.topicMergeForm({
+          topicID: params.form.topicID,
+          user: params.session
+        })
+
+    if ( access === true ) {
+      let mergedTopic = await app.models.topic.merge({
+                          time       : app.toolbox.helpers.isoDate(),
+                          topicID    : params.form.topicID,
+                          lockedByID : params.session.userID
+                        })
+
+      if ( mergedTopic.success ) {
+        if ( params.form.notify ) {
+          notifySubscribers({
+            topicID: mergedTopic.id,
+            template: 'Topic Merge',
+            replace: {
+              topicTitle: mergedTopic.title,
+              topicUrl: app.config.comitium.baseUrl + 'topic/' + mergedTopic.url + '/id/' + mergedTopic.id,
+              unsubscribeUrl: app.config.comitium.baseUrl + 'topic/action/unsubscribe/id/' + mergedTopic.id
+            }
+          })
+        }
+        
+        return {
+          redirect: app.config.comitium.baseUrl + 'topic/' + mergedTopic.url + '/id/' + mergedTopic.id
+        }
+      } else {
+        let topic = await app.models.topic.info(params.url.id),
+            topics = await app.models.discussion.topics({
+              discussionID: topic.discussionID,
+              end: 50
+            })
+
+        return {
+          view: 'merge',
+          content: {
+            topic: topic,
+            topics: topics,
+            error: merge
+          }
+        }
+      }
+    } else {
+      return access
+    }
+  } else {
+    return merge(params, context)
+  }
+}
+
+
 async function move(params) {
   let access = await app.toolbox.access.topicMove({ topicID: params.url.id, user: params.session })
 
@@ -1013,7 +1102,7 @@ async function move(params) {
       app.models.discussions.categories(params.session.groupID)
     ])
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'topic/action/move/id/' + topic.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id)
 
     return {
       view: 'move',

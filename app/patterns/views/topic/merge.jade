@@ -1,0 +1,63 @@
+header
+  section.summary
+    h1 Merge topics
+
+if error && error.message
+  section.notice.error
+    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
+    p !{error.message}
+
+section.form.post
+  p Select the topics you'd like to merge (up to 5). The oldest topic becomes the parent; newer topics will be merged into the oldest topic.
+  p Only topics within the same discussion can be merged; to merge topics in different categories, move them into the same category first.
+  form(action="topic/action/mergeForm/id/#{topic.id}" method="post" novalidate)
+    ul.data
+      li.topic-a.select.required
+        label(for="topic-a")
+          | First topic
+        select(id="topic-a" name="topicID")
+          each topic in topics
+            if topic.id != url.id
+              option(value="#{topic.id}")
+                | #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+            else
+              option(value="#{topic.id}" selected)
+                | #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+      li.topic-b.select.required
+        label(for="topic-b")
+          | Second topic
+        select(id="topic-b" name="topicID")
+          option
+          each topic in topics
+            if topic.id != url.id
+              option(value="#{topic.id}") #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+      li.topic-c.select
+        label(for="topic-c")
+          | Third topic
+        select(id="topic-c" name="topicID")
+          option
+          each topic in topics
+            if topic.id != url.id
+              option(value="#{topic.id}") #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+      li.topic-d.select
+        label(for="topic-d")
+          | Fourth topic
+        select(id="topic-d" name="topicID")
+          option
+          each topic in topics
+            if topic.id != url.id
+              option(value="#{topic.id}") #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+      li.topic-e.select
+        label(for="topic-e")
+          | Fifth topic
+        select(id="topic-e" name="topicID")
+          option
+          each topic in topics
+            if topic.id != url.id
+              option(value="#{topic.id}") #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+      li.notify.checkbox
+        input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
+        label(for="notify") Notify members following these topics
+    ul.actions
+      li.primary.save
+        input(name="formAction" type="submit" value="Merge topics")

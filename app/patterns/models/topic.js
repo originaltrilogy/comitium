@@ -19,6 +19,7 @@ module.exports = {
   lock: lock,
   unlock: unlock,
   move: move,
+  merge: merge,
   reply: reply,
   subscriptionExists: subscriptionExists,
   subscribers: subscribers,
@@ -567,6 +568,120 @@ async function move(args) {
     throw err
   } finally {
     client.release()
+  }
+}
+
+
+async function merge(args) {
+  if ( args.topicID.length === 1 ) {
+    return {
+      success: false,
+      reason: 'requiredFieldsEmpty',
+      message: 'You need to specify at least two topics to merge.'
+    }
+  } else {
+    const client = await app.toolbox.dbPool.connect()
+  
+    try {
+      await client.query('begin')
+
+      // get the oldest post across all topics to be merged...this will be the final topic and first post
+      const oldestPost = await client.query(
+        'select id, topic_id, text, html from posts where topic_id = any($1) order by created asc limit 1;',
+        [ args.topicID ]
+      )
+
+      const subscribers = await client.query(
+        'select distinct user_id from topic_subscriptions where topic_id = any($1);',
+        [ args.topicID ]
+      )
+
+      await client.query(
+        'delete from topic_subscriptions where topic_id = any($1);',
+        [ args.topicID ]
+      )
+
+      await Promise.all(subscribers.rows.map( async (subscriber) => {
+        await client.query(
+          'insert into topic_subscriptions ( user_id, topic_id, notification_sent ) values ( $1, $2, $3 );',
+          [ subscriber.userID, oldestPost.rows[0].topicID, args.time ]
+        )
+      }))
+
+      let mergedFirstPost = {
+        text: oldestPost.rows[0].text + '\n\n## The following topics have been merged into this one:\n\n',
+        html: ''
+      }
+      let mergedTopicInfo = await app.models.topic.info(oldestPost.rows[0].topicID)
+      await Promise.all(args.topicID.map( async (mergedTopicID) => {
+        if ( mergedTopicID != oldestPost.rows[0].topicID ) {
+          let mergedTopicUrl = app.config.comitium.baseUrl + 'topic/' + mergedTopicInfo.url + '/id/' + mergedTopicInfo.id
+          await client.query(
+            'update posts set topic_id = $1 where topic_id = $2 and id <> ( select id from posts where topic_id = $2 order by created asc limit 1 );',
+            [ oldestPost.rows[0].topicID, mergedTopicID ]
+          )
+  
+          let firstPost = await client.query(
+            'select u.username, p.id, p.text, p.html from users u join posts p on u.id = p.user_id where p.id = ( select id from posts where topic_id = $1 order by created asc limit 1 )',
+            [ mergedTopicID ]
+          )
+  
+          mergedFirstPost.text += '> [**' + firstPost.rows[0].username + '** said:](post/id/' + firstPost.rows[0].id + ')\n>\n> ' + firstPost.rows[0].text.replace(/\n/g, '\n> ') + '\n>\n\n'
+  
+          await client.query(
+            'update topics set locked_by_id = $1, lock_reason = $2 where id = $3',
+            [ args.lockedByID, 'This topic has been merged into another topic: <br><a href="' + mergedTopicUrl + '" title="Go to the merged topic.">' + mergedTopicUrl + '</a>', mergedTopicID ]
+          )
+  
+          // Update individual topic stats
+          await client.query(
+            'update topics set replies = 0 where id = $1;',
+            [ mergedTopicID ]
+          )
+        } else {
+          await client.query(
+            'delete from topic_views where topic_id = $1;',
+            [ mergedTopicID ]
+          )
+        }
+      }))
+
+      mergedFirstPost.html = app.toolbox.markdown.content(mergedFirstPost.text)
+
+      await client.query(
+        'update posts set text = $1, html = $2 where id = ( select id from posts where topic_id = $3 order by created asc limit 1 );',
+        [ mergedFirstPost.text, mergedFirstPost.html, mergedTopicInfo.id ]
+      )
+
+      await client.query(
+        'update topics set replies = ( select count(id) from posts where topic_id = $1 and draft = false ) - 1 where id = $1;',
+        [ mergedTopicInfo.id ]
+      )
+        
+      await client.query('commit')
+
+      mergedTopicInfo.success = true
+
+      // Clear the cache
+      args.topicID.forEach( topicID => {
+        app.cache.clear({ scope: 'topic-' + topicID })
+      })
+      app.cache.clear({ scope: 'discussion-' + mergedTopicInfo.discussionID })
+      app.cache.clear({ scope: 'categories_discussions' })
+      if ( mergedTopicInfo.discussionID === 2 ) {
+        app.cache.clear({ scope: 'announcements' })
+      }
+      subscribers.rows.forEach( subscriber => {
+        app.cache.clear({ scope: 'subscriptions-' + subscriber.userID })
+      })
+
+      return mergedTopicInfo
+    } catch (err) {
+      await client.query('rollback')
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
 

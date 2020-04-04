@@ -5,6 +5,7 @@
 module.exports = {
   activationCode        : activationCode,
   compareHash           : compareHash,
+  extend                : extend,
   getRandomIntInclusive : getRandomIntInclusive,
   hash                  : hash,
   ip                    : ip,
@@ -23,6 +24,25 @@ async function compareHash(str, hash) {
   return await app.toolbox.bcrypt.compare(str, hash).then(result => {
     return result
   }).catch(err => { throw err })
+}
+
+
+function extend(original, extension) {
+  var mergedObject = Object.assign({}, original) || {}
+
+  extension = Object.assign({}, extension) || {}
+
+  for ( var property in extension ) {
+    if ( extension.hasOwnProperty(property) ) {
+      if ( extension[property] && extension[property].constructor === Object ) {
+        mergedObject[property] = extend(mergedObject[property], extension[property])
+      } else {
+        mergedObject[property] = extension[property]
+      }
+    }
+  }
+
+  return mergedObject
 }
 
 
