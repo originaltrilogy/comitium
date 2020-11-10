@@ -17,33 +17,33 @@
     "start-prod": "node ./app/start-prod.js"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "2.4.3",
     "citizen": "^0.9.x",
     "gm": "1.23.1",
     "jade": "1.11.0",
-    "markdown-it": "8.4.1",
-    "markdown-it-emoji": "1.4.0",
-    "moment": "2.22.0",
-    "moment-timezone": "0.5.17",
-    "nodemailer": "4.6.4",
+    "markdown-it": "12.0.2",
+    "markdown-it-emoji": "2.0.0",
+    "moment": "2.29.1",
+    "moment-timezone": "0.5.31",
+    "nodemailer": "6.4.14",
     "numeral": "2.0.6",
-    "pg": "7.4.3",
-    "slug": "^0.9.4"
+    "pg": "8.4.2",
+    "slug": "4.0.2"
   },
   "devDependencies": {
-    "autoprefixer": "^9.6.1",
-    "gulp": "^4.0.2",
+    "autoprefixer": "*",
+    "gulp": "*",
     "gulp-concat": "*",
     "gulp-cssnano": "*",
-    "gulp-filter": "^6.0.0",
+    "gulp-filter": "*",
     "gulp-livereload": "*",
     "gulp-postcss": "*",
     "gulp-sass": "*",
-    "gulp-sourcemaps": "^2.6.5",
+    "gulp-sourcemaps": "*",
     "gulp-uglify-es": "*",
     "gulp-watch": "*"
   },
   "engines": {
-    "node": ">= 6.0.0"
+    "node": ">= 12.0.0"
   }
 }
