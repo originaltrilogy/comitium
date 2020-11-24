@@ -784,9 +784,8 @@ async function subscribers(args) {
 async function subscribersToUpdate(args) {
   const client = await app.toolbox.dbPool.connect()
 
-  let name, sql
+  let name = false, sql
   if ( args.skip ) {
-    name = 'topic_subscribersToUpdateSkip'
     sql = 'select u.email from users u join topic_subscriptions s on u.id = s.user_id and u.id not in ( ' + args.skip + ' ) and u.subscription_email_notification = true where s.topic_id = $1 and s.notification_sent <= ( select tv.time from topic_views tv where tv.user_id = s.user_id and tv.topic_id = s.topic_id );'
   } else {
     name = 'topic_subscribersToUpdate'
