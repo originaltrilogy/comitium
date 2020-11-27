@@ -604,7 +604,7 @@ async function reply(params) {
     ] = await Promise.all([
       app.models.topic.info(params.url.id),
       ( async () => {
-        if ( params.url.quote && app.isNumeric(params.url.quote) ) {
+        if ( params.url.quote ) {
           return await app.models.post.info(params.url.quote)
         } else {
           return false
