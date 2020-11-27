@@ -16,10 +16,9 @@ function start(params) {
       regexp        = new RegExp(/.*\/([A-Za-z0-9-_]+)\.cfm(.*)/),
       forumRegex    = new RegExp(/\/forum[/]?(\/index\.cfm)?$/),
       faneditsRegex = new RegExp(/\/fan-edits[/]?$/),
-      petitionRegex = new RegExp(/\/petition[/]?$/),
       discussionID
 
-  if ( !regexp.test(url) && !forumRegex.test(url) && !faneditsRegex.test(url) && !petitionRegex.test(url) ) {
+  if ( !regexp.test(url) && !forumRegex.test(url) && !faneditsRegex.test(url) ) {
     // Keep all of this (mode security)
     switch ( app.config.comitium.mode.status ) {
       // If full access is enabled, send the user on their way
@@ -52,10 +51,8 @@ function start(params) {
     if ( forumRegex.test(url) ) {
       url = '/discussions'
     } else if ( faneditsRegex.test(url) ) {
-      url = '/discussion/Fan-Edits-of-Other-Films/id/11'
+      url = '/discussion/Fan-Edits-and-Projects-for-Other-Properties/id/11'
       statusCode = 302
-    } else if ( petitionRegex.test(url) ) {
-      url = '/petition.html'
     } else {
       url = url.replace(/\/forum/i, '')
       template = url.replace(regexp, '$1')
@@ -85,6 +82,8 @@ function start(params) {
           url = url.replace('forum.cfm', 'discussion')
           if ( params.url.forum == 2 ) {
             url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/22')
+          } else if ( params.url.forum == 14 ) {
+            url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/5')
           } else {
             url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/$2')
           }
