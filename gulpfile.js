@@ -45,8 +45,7 @@ buildTasks.push('js')
 gulp.task('js', function (done) {
   gulp.src([
             'web/themes/comitium-light/source/js/site/immediate.js',
-            'web/themes/comitium-light/source/js/site/**.js',
-            'web/themes/comitium-light/source/js/lib/svgxuse.min.js'
+            'web/themes/comitium-light/source/js/site/**.js'
           ])
       .pipe(sourcemaps.init())
       .pipe(uglify())
