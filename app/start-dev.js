@@ -26,7 +26,7 @@ app.toolbox = {
           subject: args.subject,
           text: args.text
         },
-        file: 'email.txt'
+        file: 'email.log'
       })
     }
   },
