@@ -542,7 +542,7 @@ VALUES
 
 
 -- Administrator account
-INSERT INTO "users" ("id","groupID","username","usernameHash","passwordHash","url","email","timezone","dateFormat","theme","signature","signatureHtml","lastActivity","joined","website","privateTopicEmailNotification","subscriptionEmailNotification","activated","activationCode","system","locked")
+INSERT INTO "users" ("id","group_id","username","username_hash","password_hash","url","email","timezone","date_format","theme","signature","signature_html","last_activity","joined","website","private_topic_email_notification","subscription_email_notification","activated","activation_code","system","locked")
 VALUES
 (1,5,'Administrator','$2a$10$OcEsQ1L2jizBqw1CPmLG6uK6ZJuUB39TDYOBH9RLXmKD44mvm3sCa','$2a$12$BUs.SDPtAxSkSAjJGf6G2eb348JbZPVR0OmnXySJs2M5IDDh0Wf62','Administrator','jay@originaltrilogy.com','GMT','MMMM D, YYYY','Comitium Light',NULL,NULL,now(),now(),NULL,TRUE,TRUE,TRUE,'N/A',TRUE,TRUE);
 
