@@ -37,6 +37,16 @@ app.toolbox.dbPool.on('error', function (err) {
   })
 })
 
+
+// slug options
+app.toolbox.slug.mode = 'pretty'
+app.toolbox.slug.defaults.modes['pretty'] = {
+  replacement: '-',
+  remove: null,
+  lower: false,
+  charmap: app.toolbox.slug.charmap,
+  multicharmap: app.toolbox.slug.multicharmap
+}
 // Overwrite slug's character map to avoid funky URLs
 app.toolbox.slug.charmap['.'] = '-'
 app.toolbox.slug.charmap['~'] = '-'
