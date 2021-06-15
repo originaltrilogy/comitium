@@ -18,19 +18,19 @@ function handler(params) {
 }
 
 
-async function form(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function form(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     params.form.email = params.form.email.trim() || ''
 
     if ( !params.form.email.length ) {
       return {
-        content: {
+        public: {
           message: 'Your e-mail address is required.'
         }
       }
     } else if ( !app.toolbox.validate.email(params.form.email) ) {
       return {
-        content: {
+        public: {
           message: 'That doesn\'t appear to be a properly formatted e-mail address. Please check your entry and try again.'
         }
       }
@@ -40,7 +40,7 @@ async function form(params, context) {
 
     if ( !user ) {
       return {
-        content: {
+        public: {
           message: 'The e-mail address you provided doesn\'t exist in our system. Please check it and try again.'
         }
       }
@@ -53,7 +53,7 @@ async function form(params, context) {
       app.models.user.log({
         userID: user.id,
         action: 'Password reset request',
-        ip: app.toolbox.helpers.ip(params.request)
+        ip: app.toolbox.helpers.ip(request)
       })
     ])
 
@@ -121,7 +121,7 @@ async function resetForm(params) {
 
   if ( message.length ) {
     return {
-      content: {
+      public: {
         message: message
       },
       view: 'reset'

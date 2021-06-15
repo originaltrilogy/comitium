@@ -27,7 +27,7 @@ async function handler(params) {
     if ( params.route.descriptor === content.url ) {
       // content.userCanEdit = userCanEdit
       return {
-        content: {
+        public: {
           content: content,
           userCanEdit: userCanEdit
         }
@@ -58,7 +58,7 @@ async function edit(params) {
     params.form.content_markdown = content.content_markdown
 
     return {
-      content: {
+      public: {
         content: content
       },
       view: 'edit'
@@ -69,8 +69,8 @@ async function edit(params) {
 }
 
 
-async function editForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function editForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.contentEdit({ user: params.session, contentID: params.url.id })
 
     if ( access === true ) {
@@ -91,7 +91,7 @@ async function editForm(params, context) {
       } else {
         let content = await app.models.content.info(params.url.id)
         return {
-          content: {
+          public: {
             content: content,
             message: editContent.message
           },

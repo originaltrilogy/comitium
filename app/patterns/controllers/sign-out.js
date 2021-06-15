@@ -7,13 +7,13 @@ module.exports = {
 }
 
 
-function handler(params) {
+function handler(params, request) {
 
   if ( params.session.userID ) {
     app.models.user.log({
       userID: params.session.userID,
       action: 'Sign out',
-      ip: app.toolbox.helpers.ip(params.request)
+      ip: app.toolbox.helpers.ip(request)
     })
   }
 

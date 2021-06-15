@@ -32,7 +32,12 @@ module.exports = {
 }
 
 
-async function handler(params) {
+async function handler(params, request, response, context) {
+  // Use topic info handed off from the post controller if it exists
+  if ( context.topic ) {
+    params.url.id   = context.topic.id
+    params.url.page = context.topic.page
+  }
   // Verify the user's group has read access to the topic's parent discussion
   let access = await app.toolbox.access.topicView({ topicID: params.url.id, user: params.session })
 
@@ -162,7 +167,7 @@ async function handler(params) {
 
       return {
         view: type,
-        content: {
+        public: {
           topic: topic,
           firstPost: firstPost,
           posts: posts,
@@ -208,7 +213,7 @@ async function start(params) {
 
     return {
       view: 'start',
-      content: {
+      public: {
         discussion: discussion,
         breadcrumbs: app.models.topic.breadcrumbs({
           discussionTitle : discussion.title,
@@ -223,8 +228,8 @@ async function start(params) {
 }
 
 
-async function startForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function startForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.discussionPost({ discussionID: params.url.id, user: params.session })
 
     if ( access === true ) {
@@ -244,7 +249,7 @@ async function startForm(params, context) {
         case 'Preview post':
           return {
             view: 'start',
-            content: {
+            public: {
               preview: {
                 title: parsedTitle,
                 content: parsedContent
@@ -291,7 +296,7 @@ async function startForm(params, context) {
           } else {
             return {
               view: 'start',
-              content: {
+              public: {
                 topic: saveTopic,
                 discussion: discussion,
                 breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url, discussion.id)
@@ -323,7 +328,7 @@ async function startAnnouncement(params) {
 
     return {
       view: 'start-announcement',
-      content: {
+      public: {
         categories: categories,
         breadcrumbs: app.models.topic.breadcrumbs({
           discussionTitle: 'Announcements',
@@ -338,8 +343,8 @@ async function startAnnouncement(params) {
 }
 
 
-async function startAnnouncementForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function startAnnouncementForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.discussionPost({ discussionID: 2, user: params.session })
 
     if ( access === true ) {
@@ -367,7 +372,7 @@ async function startAnnouncementForm(params, context) {
         case 'Preview post':
           return {
             view: 'start-announcement',
-            content: {
+            public: {
               preview: {
                 title: parsedTitle,
                 content: parsedContent
@@ -429,7 +434,7 @@ async function startAnnouncementForm(params, context) {
           } else {
             return {
               view: 'start-announcement',
-              content: {
+              public: {
                 topic: saveTopic,
                 categories: categories,
                 breadcrumbs: app.models.topic.breadcrumbs({
@@ -482,7 +487,7 @@ async function startPrivate(params) {
 
     return {
       view: 'start-private',
-      content: {
+      public: {
         invitees: invitees
       }
     }
@@ -492,8 +497,8 @@ async function startPrivate(params) {
 }
 
 
-async function startPrivateForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function startPrivateForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.privateTopicStart({ user: params.session })
 
     if ( access === true ) {
@@ -514,7 +519,7 @@ async function startPrivateForm(params, context) {
         case 'Preview post':
           return {
             view: 'start-private',
-            content: {
+            public: {
               preview: {
                 title: parsedTitle,
                 content: parsedContent
@@ -578,7 +583,7 @@ async function startPrivateForm(params, context) {
           } else {
             return {
               view: 'start-private',
-              content: {
+              public: {
                 topic: saveTopic
               }
             }
@@ -625,7 +630,7 @@ async function reply(params) {
 
     return {
       view: 'reply',
-      content: {
+      public: {
         topic: topic,
         message: message
       }
@@ -636,8 +641,8 @@ async function reply(params) {
 }
 
 
-async function replyForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function replyForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicReply({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
@@ -653,7 +658,7 @@ async function replyForm(params, context) {
         case 'Preview post':
           return {
             view: 'reply',
-            content: {
+            public: {
               preview: {
                 content: parsedContent
               },
@@ -669,7 +674,7 @@ async function replyForm(params, context) {
           if ( !params.form.content.trim().length ) {
             return {
               view: 'reply',
-              content: {
+              public: {
                 message: 'All fields are required.',
                 topic: topic
               }
@@ -720,7 +725,7 @@ async function replyForm(params, context) {
           }
 
           return {
-            content: reply,
+            public: reply,
             redirect: forwardToUrl
           }
       }
@@ -812,7 +817,7 @@ async function leave(params) {
 
     return {
       view: 'leave',
-      content: {
+      public: {
         topic: topic
       }
     }
@@ -822,8 +827,8 @@ async function leave(params) {
 }
 
 
-async function leaveForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function leaveForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicView({ topicID: params.form.topicID, user: params.session })
 
     if ( access === true ) {
@@ -852,7 +857,7 @@ async function lock(params) {
 
     return {
       view: 'lock',
-      content: {
+      public: {
         topic: topic
       }
     }
@@ -862,8 +867,8 @@ async function lock(params) {
 }
 
 
-async function lockForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function lockForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
@@ -899,14 +904,14 @@ async function lockForm(params, context) {
 }
 
 
-async function unlock(params) {
+async function unlock(params, request) {
   let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     await app.models.topic.unlock({ topicID: params.url.id })
 
     return {
-      redirect: params.request.headers.referer
+      redirect: request.headers.referer
     }
   } else {
     return access
@@ -926,7 +931,7 @@ async function edit(params) {
 
     return {
       view: 'edit',
-      content: {
+      public: {
         topic: topic
       }
     }
@@ -936,8 +941,8 @@ async function edit(params) {
 }
 
 
-async function editForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function editForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicEdit({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
@@ -960,7 +965,7 @@ async function editForm(params, context) {
         case 'Preview changes':
           return {
             view: 'edit',
-            content: {
+            public: {
               preview: {
                 title: parsedTitle,
                 content: parsedContent
@@ -991,7 +996,7 @@ async function editForm(params, context) {
           } else {
             return {
               view: 'edit',
-              content: {
+              public: {
                 topic: edit
               }
             }
@@ -1021,7 +1026,7 @@ async function merge(params) {
 
     return {
       view: 'merge',
-      content: {
+      public: {
         topic: topic,
         topics: topics
       }
@@ -1032,8 +1037,8 @@ async function merge(params) {
 }
 
 
-async function mergeForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function mergeForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     params.form.topicID = params.form.topicID.filter( item => {
       return item.length
     })
@@ -1074,7 +1079,7 @@ async function mergeForm(params, context) {
 
         return {
           view: 'merge',
-          content: {
+          public: {
             topic: topic,
             topics: topics,
             error: merge
@@ -1106,7 +1111,7 @@ async function move(params) {
 
     return {
       view: 'move',
-      content: {
+      public: {
         topic: topic,
         categories: categories
       }
@@ -1117,8 +1122,8 @@ async function move(params) {
 }
 
 
-async function moveForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function moveForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicMoveForm({
           topicID: params.url.id,
           newDiscussionID: params.form.destination,
@@ -1173,7 +1178,7 @@ async function trash(params) {
 
     return {
       view: 'trash',
-      content: {
+      public: {
         topic: topic
       }
     }
@@ -1183,8 +1188,8 @@ async function trash(params) {
 }
 
 
-async function trashForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function trashForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicTrash({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {

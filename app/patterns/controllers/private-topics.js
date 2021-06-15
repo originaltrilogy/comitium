@@ -44,7 +44,7 @@ async function handler(params) {
     })
 
     return {
-      content: {
+      public: {
         count: count,
         topics: topics.length ? topics : false,
         breadcrumbs: app.models['private-topics'].breadcrumbs(),

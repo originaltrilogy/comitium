@@ -2,7 +2,7 @@
 //  account pattern   //
 ////////////////////////
 
-body[data-controller="account"] {
+body[data-chain*="account-handler-account"] {
 
   section.settings {
     > section {

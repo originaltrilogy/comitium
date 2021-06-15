@@ -7,11 +7,11 @@ module.exports = {
 }
 
 
-async function start(params) {
+async function start(params, request) {
   let cookie    = {},
       session   = {},
       active    ,
-      ip        = app.toolbox.helpers.ip(params.request),
+      ip        = app.toolbox.helpers.ip(request),
       bannedIP  = false
 
   // Check banned IP addresses

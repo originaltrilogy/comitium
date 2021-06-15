@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
-    "citizen": "0.9.1",
+    "citizen": "https://github.com/jaysylvester/citizen#1.0.0",
     "gm": "1.23.1",
     "jade": "1.11.0",
     "markdown-it": "12.0.2",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "autoprefixer": "*",
+    "eslint": "*",
     "gulp": "*",
     "gulp-concat": "*",
     "gulp-cssnano": "*",
@@ -41,7 +42,8 @@
     "gulp-sass": "*",
     "gulp-sourcemaps": "*",
     "gulp-uglify-es": "*",
-    "gulp-watch": "*"
+    "gulp-watch": "*",
+    "postcss": "*"
   },
   "engines": {
     "node": ">= 12.0.0"

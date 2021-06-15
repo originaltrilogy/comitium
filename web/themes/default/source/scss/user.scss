@@ -2,7 +2,7 @@
 //   user view   //
 ///////////////////
 
-body[data-view="user"] {
+body[data-chain*="user-handler-user"] {
 
   section.summary {
     margin: auto;

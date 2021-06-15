@@ -2,10 +2,10 @@
 //    discussion pages    //
 ////////////////////////////
 
-body[data-controller="discussion"][data-view="discussion"],
-body[data-controller="announcements"][data-view="announcements"],
-body[data-controller="private-topics"][data-view="private-topics"],
-body[data-controller="subscriptions"][data-view="subscriptions"] {
+body[data-chain*="discussion-handler-discussion"],
+body[data-chain*="announcements-handler-announcements"],
+body[data-chain*="private-topics-handler-private-topics"],
+body[data-chain*="subscriptions-handler-subscriptions"] {
 
   main > p {
     margin: 1.2rem 1.2rem 1.8rem;
@@ -225,8 +225,8 @@ body[data-controller="subscriptions"][data-view="subscriptions"] {
 
 }
 
-body[data-controller="private-topics"][data-view="private-topics"],
-body[data-controller="subscriptions"][data-view="subscriptions"] {
+body[data-chain*="private-topics-handler-private-topics"],
+body[data-chain*="subscriptions-handler-subscriptions"] {
   article.topic {
     nav.actions {
       margin: 1.2rem 0.6rem 0 0;

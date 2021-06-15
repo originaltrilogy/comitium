@@ -62,7 +62,7 @@ async function handler(params) {
     }
     
     return {
-      content: {
+      public: {
         discussion: discussion,
         topics: topics.length ? topics : false,
         breadcrumbs: app.models.announcements.breadcrumbs(),

@@ -203,16 +203,16 @@ body {
   &[data-controller="discussion"] nav li.discussions a,
   &[data-controller="announcements"] nav li.discussions a,
   &[data-controller="announcement"] nav li.discussions a,
-  &[data-controller="topic"][data-view="topic"] nav li.discussions a,
-  &[data-controller="subscriptions"][data-view="subscriptions"] nav li.subscriptions a,
-  &[data-controller="topic"][data-view="private-topic"] nav li.private-topics a,
-  &[data-controller="topic"][data-view="start-private"] nav li.private-topics a,
+  &[data-chain*="topic-handler-topic"] nav li.discussions a,
+  &[data-chain*="subscriptions-handler-subscriptions"] nav li.subscriptions a,
+  &[data-chain*="topic-handler-private-topic"] nav li.private-topics a,
+  &[data-chain*="topic-handler-start-private"] nav li.private-topics a,
   &[data-controller="private-topics"] nav li.private-topics a,
   &[data-controller="sign-in"] nav li.sign-in a,
   &[data-controller="register"] nav li.register a,
-  &[data-controller="account"] nav li.account a,
-  &[data-controller="about"] nav li.about a,
-  &[data-controller="help"] nav li.help a {
+  &[data-chain*="account-handler-account"] nav li.account a,
+  &[data-chain*="content-handler-content"][data-descriptor="About"] nav li.about a,
+  &[data-chain*="content-handler-content"][data-descriptor="Help"] nav li.help a {
     background-color: hsl(227,18%, 26%);
   }
 }

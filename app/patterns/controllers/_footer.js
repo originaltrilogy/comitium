@@ -28,7 +28,7 @@ async function handler() {
   }
 
   return {
-    content: {
+    public: {
       logo: app.resources.images.logoVertical,
       stats: {
         topics: app.toolbox.numeral(topics).format('0,0'),

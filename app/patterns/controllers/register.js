@@ -17,20 +17,20 @@ function handler(params) {
   params.form.tos = false
 
   return {
-    content: {
+    public: {
       verification: verification()
     }
   }
 }
 
 
-async function form(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function form(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     params.form.tos = params.form.tos || false
 
     if ( parseInt(params.form.first_int, 10) + parseInt(params.form.second_int, 10) !== parseInt(params.form.verification, 10) ) {
       return {
-        content: {
+        public: {
           message: 'Are you a bot? If not, please try again.',
           verification: verification()
         }
@@ -60,7 +60,7 @@ async function form(params, context) {
       }
     } else {
       return {
-        content: {
+        public: {
           message: register.message,
           verification: verification()
         }

@@ -2,12 +2,12 @@
 //  topic patterns  //
 //////////////////////
 
-body[data-controller="topic"][data-view="topic"],
-body[data-controller="post"][data-view="topic"],
-body[data-controller="topic"][data-view="private-topic"],
-body[data-controller="post"][data-view="private-topic"],
-body[data-controller="announcement"][data-view="announcement"],
-body[data-controller="post"][data-view="announcement"] {
+body[data-chain*="topic-handler-topic"],
+body[data-chain*="post-handler-topic"],
+body[data-chain*="topic-handler-private-topic"],
+body[data-chain*="post-handler-private-topic"],
+body[data-chain*="announcement-handler-announcement"],
+body[data-chain*="post-handler-announcement"] {
 
   section.summary {
     display: flex;
@@ -58,7 +58,7 @@ body[data-controller="post"][data-view="announcement"] {
   }
 
   // First page
-  &[data-page="1"][data-action="handler"],
+  &[data-page="1"],
   &[data-page="1"][data-action="topic"] {
     section.posts {
       > nav {
@@ -446,9 +446,7 @@ body[data-controller="post"][data-view="announcement"] {
   }
 
   // Topic and announcement views (excludes start, move, etc.)
-  &[data-view="topic"][data-page="1"],
-  &[data-view="private-topic"][data-page="1"],
-  &[data-view="announcement"][data-page="1"] {
+  &[data-page="1"] {
 
     @media only screen and (min-width: 720px) {
 
@@ -497,8 +495,8 @@ body[data-controller="post"][data-view="announcement"] {
 }
 
 // Private topic view
-body[data-controller="topic"][data-view="private-topic"],
-body[data-controller="post"][data-view="private-topic"] {
+body[data-chain*="topic-handler-private-topic"],
+body[data-chain*="post-handler-private-topic"] {
 
   section.notice.private {
     svg {
@@ -517,7 +515,7 @@ body[data-controller="post"][data-view="private-topic"] {
 
 }
 
-body[data-controller="topic"][data-view="start-announcement"] {
+body[data-chain*="topic-handler-start-announcement"] {
   section.form.topic-write {
     ul.data {
       li.discussions {

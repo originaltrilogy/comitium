@@ -1,11 +1,11 @@
 doctype html
 html(lang="en")
   != include._head
-  body(data-chain="#{controllerChain}" data-controller="#{route.controller}" data-action="#{route.action}" data-view="#{route.view}" data-renderer="#{route.renderer}" data-rendered-view="#{route.renderedView}" data-show="#{route.show}" data-task="#{route.task}" data-type="#{route.type}" data-mode="#{config.citizen.mode}" data-breadcrumbs="#{ breadcrumbs ? 'true' : 'false' }" data-page="#{ url.page || 1 }")
+  body(data-controller="#{route.controller}" data-action="#{route.action}" data-chain="#{controllerChain}" data-mode="#{config.citizen.mode}" data-descriptor="#{route.descriptor}" data-breadcrumbs="#{ breadcrumbs ? 'true' : 'false' }" data-page="#{ url.page || 1 }")
     != include._header
     main
-      each controller in route.chain
-        if controller.viewContent
-          | <!-- controller: #{controller.controller}, action: #{controller.action}, view: #{controller.view} -->
-          != controller.viewContent
+      each link in route.chain
+        if link.output
+          | <!-- controller: #{link.controller}, action: #{link.action}, view: #{link.view} -->
+          != link.output
     != include._footer
