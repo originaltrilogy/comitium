@@ -4,7 +4,6 @@
 
 module.exports = {
   handler       : handler,
-  bookmark      : bookmark,
   edit          : edit,
   editForm      : editForm,
   lock          : lock,
@@ -43,60 +42,13 @@ async function handler(params) {
 }
 
 
-function bookmark(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postView({
-        postID: params.url.id,
-        user: params.session
-      }, emitter)
-    },
-    proceed: function (previous, emitter) {
-      if ( previous.access === true ) {
-        emitter.emit('ready', true)
-      } else {
-        emitter.emit('end', false)
-      }
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.id, emitter)
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.access === true ) {
-        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'bookmarks')
-        params.form.notes = ''
-
-        emitter.emit('ready', {
-          view: 'bookmark',
-          public: {
-            post: output.post
-          },
-          include: {
-            post: {
-              route: '/post/id/' + output.post.id
-            }
-          }
-        })
-      } else {
-        emitter.emit('ready', output.access)
-      }
-    } else {
-      emitter.emit('error', output.listen)
-    }
-  })
-
-}
-
-
-async function edit(params) {
+async function edit(params, request) {
   let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + post.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/' + post.id)
     params.form.content = post.text
     params.form.reason = ''
 
@@ -180,13 +132,13 @@ async function editForm(params, request, response, context) {
 }
 
 
-async function lock(params) {
+async function lock(params, request) {
   let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
     
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {
@@ -258,13 +210,13 @@ async function lockForm(params, request, response, context) {
 }
 
 
-async function report(params) {
+async function report(params, request) {
   let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {
@@ -373,13 +325,13 @@ async function topic(params) {
 }
 
 
-async function trash(params) {
+async function trash(params, request) {
   let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {

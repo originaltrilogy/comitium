@@ -9,9 +9,9 @@ module.exports = {
   avatarForm  : avatarForm,
   generalForm : generalForm,
   config: {
-    form: {
-      avatarForm: {
-        maxFieldsSize: 5000
+    avatarForm: {
+      forms: {
+        maxFileSize: 5242880 // 5MB
       }
     }
   }

@@ -43,7 +43,7 @@ async function submit(params, request) {
   if ( request.method === 'POST' ) {
     let authenticate = await app.models.user.authenticate({ email: params.form.email || params.session.email, password: params.form.password }),
         user = authenticate.user,
-        cookie = {}
+        cookies = {}
 
     if ( authenticate.success ) {
       user.userID = authenticate.user.id
@@ -52,14 +52,14 @@ async function submit(params, request) {
       delete user.id
 
       if ( !params.cookie.comitium_id ) {
-        cookie.comitium_id = {
+        cookies.comitium_id = {
           value: authenticate.user.usernameHash,
           expires: params.form.remember ? 'never' : 'session'
         }
       }
       
       // This cookie is only necessary for guests
-      cookie.comitium_active = {
+      cookies.comitium_active = {
         expires: 'now'
       }
 
@@ -70,7 +70,7 @@ async function submit(params, request) {
       })
 
       return {
-        cookie: cookie,
+        cookies: cookies,
         session: user,
         redirect: params.form.forwardToUrl
       }

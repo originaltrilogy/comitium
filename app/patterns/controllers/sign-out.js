@@ -19,7 +19,7 @@ function handler(params, request) {
 
   return {
     view: params.url.reason || 'sign-out',
-    cookie: {
+    cookies: {
       comitium_id: {
         expires: 'now'
       }

@@ -488,8 +488,8 @@ async function topicView(args) {
 }
 
 
-function signInRedirect(params, url) {
-  return params.request.headers.referer && params.request.headers.referer.search('/sign-in') < 0 ? params.request.headers.referer : url
+function signInRedirect(request, url) {
+  return request.headers.referer && request.headers.referer.search('/sign-in') < 0 ? request.headers.referer : url
 }
 
 

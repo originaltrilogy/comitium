@@ -763,7 +763,7 @@ async function notifySubscribers(args) {
 }
 
 
-async function subscribe(params) {
+async function subscribe(params, request) {
   let access = await app.toolbox.access.topicSubscribe({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -779,7 +779,7 @@ async function subscribe(params) {
     ])
 
     return {
-      redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
+      redirect: app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
     }
   } else {
     return access
@@ -787,7 +787,7 @@ async function subscribe(params) {
 }
 
 
-async function unsubscribe(params) {
+async function unsubscribe(params, request) {
   let access = await app.toolbox.access.topicSubscribe({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -800,7 +800,7 @@ async function unsubscribe(params) {
     ])
 
     return {
-      redirect: app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'subscriptions')
+      redirect: app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + 'subscriptions')
     }
   } else {
     return access
@@ -846,13 +846,13 @@ async function leaveForm(params, request, response, context) {
 }
 
 
-async function lock(params) {
+async function lock(params, request) {
   let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
     params.form.reason = ''
 
     return {
@@ -919,13 +919,13 @@ async function unlock(params, request) {
 }
 
 
-async function edit(params) {
+async function edit(params, request) {
   let access = await app.toolbox.access.topicEdit({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/action/edit/id/' + topic.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/topic/action/edit/id/' + topic.id)
     params.form.title = topic.title
     params.form.content = topic.text
 
@@ -1011,7 +1011,7 @@ async function editForm(params, request, response, context) {
 }
 
 
-async function merge(params) {
+async function merge(params, request) {
   let access = await app.toolbox.access.topicMerge({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -1022,7 +1022,7 @@ async function merge(params) {
         })
 
     params.form.title = topic.title
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/topic/' + topic.url + '/id/' + topic.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/topic/' + topic.url + '/id/' + topic.id)
 
     return {
       view: 'merge',
@@ -1095,7 +1095,7 @@ async function mergeForm(params, request, response, context) {
 }
 
 
-async function move(params) {
+async function move(params, request) {
   let access = await app.toolbox.access.topicMove({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -1107,7 +1107,7 @@ async function move(params) {
       app.models.discussions.categories(params.session.groupID)
     ])
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id)
 
     return {
       view: 'move',
@@ -1167,13 +1167,13 @@ async function moveForm(params, request, response, context) {
 }
 
 
-async function trash(params) {
+async function trash(params, request) {
   let access = await app.toolbox.access.topicTrash({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'topic/action/trash/id/' + topic.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + 'topic/action/trash/id/' + topic.id)
     params.form.reason = ''
 
     return {
