@@ -1,6 +1,6 @@
 {
   "env": {
-    "es6": true,
+    "es2017": true,
     "node": true,
     "browser": false
   },
@@ -9,7 +9,7 @@
   },
   "extends": "eslint:recommended",
   "parserOptions": {
-    "ecmaVersion": 8
+    "sourceType": "module"
   },
   "rules": {
     "linebreak-style": [
