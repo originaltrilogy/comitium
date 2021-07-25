@@ -1,8 +1,0 @@
-if topics
-  each topic in topics
-    article(class="topic #{ topic.unread ? 'unread' : '' } #{ topic.lockedByID ? 'locked' : '' }" data-topic-id="#{topic.id}")
-      h3
-        a(href="announcement/#{topic.url}/id/#{topic.id}") !{topic.titleHtml}
-  article(class="topic view-all")
-    h3
-      a(href="announcements") More announcements

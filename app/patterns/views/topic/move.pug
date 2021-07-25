@@ -1,0 +1,33 @@
+header
+  section.summary
+    h1 Move a topic
+    p You can move a topic to any discussion to which you have moderation permissions.
+
+if move && move.message
+  section.notice.error
+    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
+    p !{move.message}
+
+section.form.topic-move
+  form#topic-move-form(action="topic/id/" + url.id + "/action/moveForm" method="post" novalidate)
+    input(name="forwardToUrl" type="hidden" value=form.forwardToUrl)
+    ul.data
+      li.select.destination
+        label(for="destination") Where do you want to move this topic?
+        select(id="destination" name="destination")
+          each category in categories
+            optgroup(label=category.categoryTitle)
+            each discussion in category.subcategories
+              if discussion.discussionID !== topic.discussionID
+                option(value=discussion.discussionID)
+                  = "– " + discussion.discussionTitle
+              else
+                option(value=discussion.discussionID selected)
+                  = "– " + discussion.discussionTitle
+      li.notify.checkbox
+        input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
+        label(for="notify") Notify members following this topic
+
+    ul.actions
+      li.primary.report
+        input(name="formAction" type="submit" value="Move this topic")

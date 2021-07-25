@@ -1,0 +1,35 @@
+header
+  section.summary
+    h1 Discussion Categories
+    p Welcome to the Original Trilogy forums! Talk about Star Wars fan preservations and fan edits, or just hang out in our Off Topic section.
+
+if include && include.announcements
+  section.announcements
+    h2 Announcements
+    != include.announcements
+
+section.categories
+  each category in categories
+    section(class="category" data-category-id=category.categoryID)
+      h2 #{category.categoryTitle}
+      each discussion in category.subcategories
+        article(class="discussion" + ( discussion.unread ? " unread" : "" ) data-discussion-id=discussion.discussionID )
+          section.description
+            h3
+              a(href="discussion/" + discussion.discussionUrl + "/id/" + discussion.discussionID) !{discussion.discussionTitle}
+            if discussion.discussionDescription
+              p !{discussion.discussionDescription}
+          a.content-stats(href="discussion/" + discussion.discussionUrl + "/id/" + discussion.discussionID)
+            dl.content-stats
+              dt.topics Topic#{ discussion.topics != 1 ? "s" : "" }
+              dd.topics #{discussion.topicsFormatted}
+          if discussion.topics
+            p.last-post
+              a(class="avatar" + ( discussion.lastPostAuthorGroupID === 6 ? " banned" : "") href=("user/" + discussion.lastPostAuthorUrl + "/id/" + discussion.lastPostAuthorID) rel="author" title="View " + discussion.lastPostAuthor + "'s profile.")
+                if discussion.lastPostAuthorGroupID === 6
+                  <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
+                img(src="avatars/" + discussion.lastPostAuthorID + ".jpg")
+              a(href="user/" + discussion.lastPostAuthorUrl + "/id/" + discussion.lastPostAuthorID rel="author" title="View " + discussion.lastPostAuthor + "'s profile.")
+                = discussion.lastPostAuthor
+              |  posted 
+              time #{discussion.lastPostCreatedFormatted}

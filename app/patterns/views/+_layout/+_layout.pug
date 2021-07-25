@@ -1,0 +1,11 @@
+doctype html
+html(lang="en")
+  != include._head
+  body(data-controller=route.controller data-action=route.action data-chain=controllerChain data-mode=config.citizen.mode data-descriptor=route.descriptor data-breadcrumbs= breadcrumbs ? "true" : "false" data-page= url.page || 1 )
+    != include._header
+    main
+      each link in route.chain
+        if link.output
+          | <!-- controller: #{link.controller}, action: #{link.action}, view: #{link.view} -->
+          != link.output
+    != include._footer
