@@ -7,7 +7,7 @@ var autoprefixer  = require('autoprefixer'),
     gulp          = require('gulp'),
     livereload    = require('gulp-livereload'),
     postcss       = require('gulp-postcss'),
-    sass          = require('gulp-sass'),
+    sass          = require('gulp-sass')(require('sass')),
     sourcemaps    = require('gulp-sourcemaps'),
     uglify        = require('gulp-uglify-es').default
 
