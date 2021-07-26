@@ -31,7 +31,7 @@ section.form.sign-up
           select(name="verification" id="verification")
             option(value="0")  
             each option in verification.options
-              option(value="#{option}") #{option}
+              option(value=option) #{option}
         li.tos.checkbox.required
           input#tos(name="tos" type="checkbox" value="true" checked=form.tos required)
           label(for="tos") I have read and agree to the forum <a href="content/Terms-of-Service/id/3">Terms of Service</a>.
