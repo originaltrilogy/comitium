@@ -10,7 +10,7 @@ module.exports = {
 async function handler(params) {
   if ( !params.session.username ) {
     return {
-      content: {
+      public: {
         logo: app.resources.images.logoHorizontal
       }
     }
@@ -24,7 +24,7 @@ async function handler(params) {
     ])
 
     return {
-      content: {
+      public: {
         unread: {
           topics: unreadTopics,
           privateTopics: unreadPrivateTopics

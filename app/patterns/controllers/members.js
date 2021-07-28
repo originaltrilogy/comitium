@@ -38,7 +38,7 @@ async function handler(params) {
   let count = members.length ? members[0].full_count : 0
 
   return {
-    content: {
+    public: {
       count: count,
       group: group,
       groups: groups,
@@ -56,8 +56,8 @@ function head() {
 }
 
 
-function search(params) {
-  if ( params.request.method === 'POST' ) {
+function search(params, request) {
+  if ( request.method === 'POST' ) {
     return {
       redirect: app.config.comitium.baseUrl + 'members/action/searchResults/term/' + encodeURI(params.form.term)
     }
@@ -96,7 +96,7 @@ async function searchResults(params) {
   let count = members.length ? members[0].full_count : 0
 
   return {
-    content: {
+    public: {
       count: count,
       groups: groups,
       members: members,

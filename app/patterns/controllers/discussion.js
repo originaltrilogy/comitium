@@ -76,7 +76,7 @@ async function handler(params) {
       })
 
       return {
-        content: {
+        public: {
           discussion: discussion,
           announcements: announcements.length ? announcements : false,
           topics: topics.length ? topics : false,

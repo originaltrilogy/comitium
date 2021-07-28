@@ -8,17 +8,15 @@ module.exports = {
 
 
 function handler(params) {
-  var controllerChain = '';
-
-  for ( var i = 0; i < params.route.chain.length; i++ ) {
-    controllerChain += params.route.chain[i].controller
-    if ( i < params.route.chain.length-1 ) {
-      controllerChain += ', '
-    }
+  let controllerChain = ''
+  for ( let link in params.route.chain ) {
+    controllerChain += params.route.chain[link].controller + '-' + params.route.chain[link].action + '-' + params.route.chain[link].view + ','
   }
+  // Get rid of the extra comma
+  controllerChain = controllerChain.substring(0, controllerChain.length-1)
 
   return {
-    content: {
+    public: {
       controllerChain: controllerChain
     },
     include: {

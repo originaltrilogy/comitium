@@ -48,7 +48,7 @@ async function handler(params) {
     }
 
     return {
-      content: {
+      public: {
         talkPrivately: params.session.talkPrivately && user.id !== params.session.userID,
         editProfile: user.id === params.session.userID,
         moderateUser: params.url.id !== params.session.userID && params.session.moderateUsers,
@@ -77,7 +77,7 @@ async function activate(params) {
   if ( activate.success || ( !activate.success && activate.reason === 'accountAlreadyActivated' ) ) {
     return {
       view: 'activate',
-      content: {
+      public: {
         activate: activate
       },
       include: {
@@ -90,7 +90,7 @@ async function activate(params) {
   } else {
     return {
       view: 'activate',
-      content: {
+      public: {
         activate: activate
       }
     }
@@ -98,7 +98,7 @@ async function activate(params) {
 }
 
 
-async function ban(params) {
+async function ban(params, request) {
   let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -106,7 +106,7 @@ async function ban(params) {
     // End the banned user's session immediately
     app.session.end('userID', +params.url.id) // URL params are always strings, so cast to number
     return {
-      redirect: params.request.headers.referer
+      redirect: request.headers.referer
     }
   } else {
     return access
@@ -119,7 +119,7 @@ async function head(params) {
 }
 
 
-async function liftBan(params) {
+async function liftBan(params, request) {
   let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -127,7 +127,7 @@ async function liftBan(params) {
     // End the user's session immediately
     app.session.end('userID', +params.url.id) // URL params are always strings, so cast to number
     return {
-      redirect: params.request.headers.referer
+      redirect: request.headers.referer
     }
   } else {
     return access
@@ -135,7 +135,7 @@ async function liftBan(params) {
 }
 
 
-async function banIP(params) {
+async function banIP(params, request) {
   let access = await app.toolbox.access.userIPBan({ user: params.session })
 
   if ( access === true ) {
@@ -151,7 +151,7 @@ async function banIP(params) {
     app.session.end('ip', log.ip.replace('/32', ''))
 
     return {
-      redirect: params.request.headers.referer
+      redirect: request.headers.referer
     }
   } else {
     return access

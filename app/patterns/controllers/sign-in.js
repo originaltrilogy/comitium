@@ -8,9 +8,9 @@ module.exports = {
 }
 
 
-function handler(params) {
-  params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctzn_referer || params.request.headers.referer || app.config.comitium.baseUrl
-  params.form.loginReferrer = params.request.headers.referer || app.config.comitium.baseUrl
+function handler(params, request) {
+  params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctzn_referer || request.headers.referer || app.config.comitium.baseUrl
+  params.form.loginReferrer = request.headers.referer || app.config.comitium.baseUrl
   params.form.email = ''
   params.form.password = ''
   params.form.remember = false
@@ -38,12 +38,12 @@ function handler(params) {
 }
 
 
-async function submit(params, context) {
+async function submit(params, request) {
   // If it's a POST, authenticate the user
-  if ( params.request.method === 'POST' ) {
+  if ( request.method === 'POST' ) {
     let authenticate = await app.models.user.authenticate({ email: params.form.email || params.session.email, password: params.form.password }),
         user = authenticate.user,
-        cookie = {}
+        cookies = {}
 
     if ( authenticate.success ) {
       user.userID = authenticate.user.id
@@ -52,38 +52,38 @@ async function submit(params, context) {
       delete user.id
 
       if ( !params.cookie.comitium_id ) {
-        cookie.comitium_id = {
+        cookies.comitium_id = {
           value: authenticate.user.usernameHash,
           expires: params.form.remember ? 'never' : 'session'
         }
       }
       
       // This cookie is only necessary for guests
-      cookie.comitium_active = {
+      cookies.comitium_active = {
         expires: 'now'
       }
 
       app.models.user.log({
         userID: user.userID,
         action: 'Sign in',
-        ip: app.toolbox.helpers.ip(params.request)
+        ip: app.toolbox.helpers.ip(request)
       })
 
       return {
-        cookie: cookie,
+        cookies: cookies,
         session: user,
         redirect: params.form.forwardToUrl
       }
     } else {
       return {
         view: params.form.authenticationMethod || 'sign-in',
-        content: {
+        public: {
           authenticate: authenticate
         }
       }
     }
-  // If it's a GET, fall back to the default action
+  // If it's a GET, redirect to the default action
   } else {
-    return handler(params, context)
+    return { redirect: '/sign-in' }
   }
 }

@@ -7,11 +7,11 @@ module.exports = {
 }
 
 
-async function start(params) {
+async function start(params, request) {
   let cookie    = {},
       session   = {},
       active    ,
-      ip        = app.toolbox.helpers.ip(params.request),
+      ip        = app.toolbox.helpers.ip(request),
       bannedIP  = false
 
   // Check banned IP addresses
@@ -59,15 +59,13 @@ async function start(params) {
             }
           },
           session: {
-            groupID: 1,
-            theme: 'Default'
+            groupID: 1
           }
         }
       }
     } else {
       session.groupID = 1
       session.ip = ip
-      session.theme = 'Default'
       active = app.toolbox.helpers.isoDate()
       cookie.comitium_active = {
         value: active,

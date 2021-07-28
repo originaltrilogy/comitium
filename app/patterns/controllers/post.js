@@ -4,8 +4,6 @@
 
 module.exports = {
   handler       : handler,
-  bookmark      : bookmark,
-  bookmarkForm  : bookmarkForm,
   edit          : edit,
   editForm      : editForm,
   lock          : lock,
@@ -33,7 +31,7 @@ async function handler(params) {
     post.url = 'post/id/' + post.id + '/action/topic#' + post.id
 
     return {
-      content: {
+      public: {
         post: post,
         topic: topic
       }
@@ -44,121 +42,19 @@ async function handler(params) {
 }
 
 
-function bookmark(params, context, emitter) {
-
-  app.listen('waterfall', {
-    access: function (emitter) {
-      app.toolbox.access.postView({
-        postID: params.url.id,
-        user: params.session
-      }, emitter)
-    },
-    proceed: function (previous, emitter) {
-      if ( previous.access === true ) {
-        emitter.emit('ready', true)
-      } else {
-        emitter.emit('end', false)
-      }
-    },
-    post: function (previous, emitter) {
-      app.models.post.info(params.url.id, emitter)
-    }
-  }, function (output) {
-    if ( output.listen.success ) {
-      if ( output.access === true ) {
-        params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + 'bookmarks')
-        params.form.notes = ''
-
-        emitter.emit('ready', {
-          view: 'bookmark',
-          content: {
-            post: output.post
-          },
-          include: {
-            post: {
-              route: '/post/id/' + output.post.id
-            }
-          }
-        })
-      } else {
-        emitter.emit('ready', output.access)
-      }
-    } else {
-      emitter.emit('error', output.listen)
-    }
-  })
-
-}
-
-
-
-function bookmarkForm(params, context, emitter) {
-
-  if ( params.request.method === 'POST' ) {
-    app.listen('waterfall', {
-      access: function (emitter) {
-        app.toolbox.access.postView({
-          postID: params.url.id,
-          user: params.session
-        }, emitter)
-      },
-      proceed: function (previous, emitter) {
-        if ( previous.access === true ) {
-          emitter.emit('ready', true)
-        } else {
-          emitter.emit('end', false)
-        }
-      },
-      post: function (previous, emitter) {
-        app.models.post.info(params.url.id, emitter)
-      }
-    }, function (output) {
-      if ( output.listen.success ) {
-        if ( output.access === true ) {
-          app.listen({
-            saveBookmark: function (emitter) {
-              app.models.post.saveBookmark({
-                userID: params.session.userID,
-                postID: output.post.id,
-                notes: params.form.notes
-              }, emitter)
-            }
-          }, function (output) {
-            if ( output.listen.success ) {
-              emitter.emit('ready', {
-                redirect: params.form.forwardToUrl
-              })
-            } else {
-              emitter.emit('error', output.listen)
-            }
-          })
-        } else {
-          emitter.emit('ready', output.access)
-        }
-      } else {
-        emitter.emit('error', output.listen)
-      }
-    })
-  } else {
-    bookmark(params, context, emitter)
-  }
-
-}
-
-
-async function edit(params) {
+async function edit(params, request) {
   let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/' + post.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/' + post.id)
     params.form.content = post.text
     params.form.reason = ''
 
     return {
       view: 'edit',
-      content: {
+      public: {
         post: post
       }
     }
@@ -168,11 +64,11 @@ async function edit(params) {
 }
 
 
-async function editForm(params, context) {
+async function editForm(params, request, response, context) {
   let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
-    if ( params.request.method === 'POST' ) {
+    if ( request.method === 'POST' ) {
       let post = await app.models.post.info(params.url.id),
           postEdit,
           parsedContent = app.toolbox.markdown.content(params.form.content),
@@ -186,7 +82,7 @@ async function editForm(params, context) {
           throw new Error('No valid form action received')
         case 'Preview post':
           return {
-            content: {
+            public: {
               preview: {
                 content: parsedContent
               },
@@ -219,7 +115,7 @@ async function editForm(params, context) {
             }
           } else {
             return {
-              content: {
+              public: {
                 post: post,
                 message: postEdit.message
               },
@@ -236,18 +132,18 @@ async function editForm(params, context) {
 }
 
 
-async function lock(params) {
+async function lock(params, request) {
   let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
     
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {
       view: 'lock',
-      content: {
+      public: {
         post: post
       },
       include: {
@@ -262,8 +158,8 @@ async function lock(params) {
 }
 
 
-async function lockForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function lockForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
     if ( access === true ) {
@@ -314,18 +210,18 @@ async function lockForm(params, context) {
 }
 
 
-async function report(params) {
+async function report(params, request) {
   let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {
       view: 'report',
-      content: {
+      public: {
         post: post
       },
       include: {
@@ -340,8 +236,8 @@ async function report(params) {
 }
 
 
-async function reportForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function reportForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
   
     if ( access === true ) {
@@ -367,7 +263,7 @@ async function reportForm(params, context) {
 
         app.toolbox.mail.sendMail({
           from: app.config.comitium.email,
-          to: app.config.comitium.email,
+          to: app.config.comitium.reportEmail, // remove when post report UI is complete
           subject: mail.subject,
           text: mail.text
         })
@@ -378,7 +274,7 @@ async function reportForm(params, context) {
       } else {
         return {
           view: 'report',
-          content: {
+          public: {
             message: saveReport.message,
             post: post
           },
@@ -415,6 +311,10 @@ async function topic(params) {
       handoff: {
         controller: 'topic'
       },
+      topic: {
+        id: post.topicID,
+        page: page
+      },
       view: false
     }
   } else {
@@ -425,18 +325,18 @@ async function topic(params) {
 }
 
 
-async function trash(params) {
+async function trash(params, request) {
   let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(params, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {
       view: 'trash',
-      content: {
+      public: {
         post: post
       },
       include: {
@@ -451,8 +351,8 @@ async function trash(params) {
 }
 
 
-async function trashForm(params, context) {
-  if ( params.request.method === 'POST' ) {
+async function trashForm(params, request, response, context) {
+  if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
 
     if ( access === true ) {
@@ -505,7 +405,7 @@ async function trashForm(params, context) {
 }
 
 
-async function unlock(params) {
+async function unlock(params, request) {
   let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -514,7 +414,7 @@ async function unlock(params) {
     await app.models.post.unlock({ postID: post.id, topicID: post.topicID })
 
     return {
-      redirect: params.request.headers.referer
+      redirect: request.headers.referer
     }
   } else {
     return access

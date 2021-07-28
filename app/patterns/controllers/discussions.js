@@ -2,9 +2,18 @@
 
 'use strict'
 
+const config = {
+  global: {
+    legalFormats: {
+      json: true
+    }
+  }
+}
+
 module.exports = {
   handler : handler,
-  head    : head
+  head    : head,
+  config  : config
 }
 
 
@@ -20,7 +29,7 @@ async function handler(params) {
   })
 
   return {
-    content: {
+    public: {
       categories: categories
       // Breadcrumbs will return when the today/home page is done
       // breadcrumbs: app.models.discussions.breadcrumbs()

@@ -9,9 +9,9 @@ module.exports = {
   avatarForm  : avatarForm,
   generalForm : generalForm,
   config: {
-    form: {
-      avatarForm: {
-        maxFieldsSize: 5000
+    avatarForm: {
+      forms: {
+        maxFileSize: 5242880 // 5MB
       }
     }
   }
@@ -31,7 +31,7 @@ function handler(params) {
     params.form.website = params.session.website
 
     return {
-      content: {
+      public: {
         timezones : app.toolbox.moment.tz.names(),
         themes    : app.config.comitium.themes
       }
@@ -44,9 +44,9 @@ function handler(params) {
 }
 
 
-async function generalForm(params, context) {
+async function generalForm(params, request, response, context) {
   if ( params.session.authenticated ) {
-    if ( params.request.method === 'POST' ) {
+    if ( request.method === 'POST' ) {
       let email         = params.form.email.trim(),
           password      = params.form.password.trim(),
           signature     = params.form.signature.trim().length ? params.form.signature.trim() : null,
@@ -145,7 +145,7 @@ async function generalForm(params, context) {
           return {
             // Update the user's session with their new settings
             session: user,
-            content: {
+            public: {
               general: {
                 success: true,
                 messages: {
@@ -159,7 +159,7 @@ async function generalForm(params, context) {
         }
       } else {
         return {
-          content: {
+          public: {
             general: {
               messages: messages
             },
@@ -180,14 +180,14 @@ async function generalForm(params, context) {
 }
 
 
-async function avatarForm(params, context) {
+async function avatarForm(params, request, response, context) {
   // For now, all avatars are converted to JPEG. Storing custom avatars has many complications
   // (topic caches, static file caches, etc.).
 
   // var extension, newExtension
 
   if ( params.session.authenticated ) {
-    if ( params.request.method === 'POST' ) {
+    if ( request.method === 'POST' ) {
       params.form.email = params.session.email
       params.form.password = ''
       params.form.signature = params.session.signature
