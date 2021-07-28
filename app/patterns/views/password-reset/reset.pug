@@ -1,0 +1,24 @@
+header
+  section.summary
+    h1 Reset your password
+    p Thanks for confirming your e-mail address. Please enter your new password below.
+
+if message
+  section.notice.error
+    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
+    p !{message}
+
+section.form.password-reset
+  form(action="password-reset/action/resetForm/id/" + url.id + "/code/" + url.code method="post" novalidate)
+    ul.data
+      li.password.text.required
+        label(for="password") New password
+        p.label-note At least 8 characters, anything but spaces, case-sensitive
+        input#password(name="password" type="password" value=form.password required)
+      li.verify-password.text.required
+        label(for="verify-password") Verify your password
+        input#verify-password(name="verifyPassword" type="password" value=form.verifyPassword required)
+
+    ul.actions
+      li.primary
+        input(name="formAction" type="submit" value="Update your password")

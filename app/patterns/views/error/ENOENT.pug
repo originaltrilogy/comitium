@@ -1,0 +1,8 @@
+//- Template for error code ENOENT (caused by trying to read a folder or file that doesn't exist)
+
+section.summary
+  h1 File read error
+  p The attempt to read or write the following file failed because the file (or possibly the directory) doesn't exist:
+  pre
+    code
+      = error.stack
