@@ -7,7 +7,7 @@ var autoprefixer  = require('autoprefixer'),
     gulp          = require('gulp'),
     livereload    = require('gulp-livereload'),
     postcss       = require('gulp-postcss'),
-    sass          = require('gulp-sass'),
+    sass          = require('gulp-sass')(require('sass')),
     sourcemaps    = require('gulp-sourcemaps'),
     uglify        = require('gulp-uglify-es').default
 
@@ -57,17 +57,19 @@ gulp.task('js', function (done) {
 })
 
 gulp.task('reload', function (done) {
-  // Give citizen time to reload the module before refreshing
-  setTimeout(function () {
-    livereload.reload()
-  }, 500)
+  livereload.reload()
   done()
 })
 
 gulp.task('watch', function (done) {
   livereload.listen()
   themes.forEach( function (item) {
-    gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', gulp.parallel('css' + item.name))
+    gulp.watch('web/themes/comitium-light/source/scss/**/**.scss', gulp.parallel('css' + item.name))
+  })
+  themes.forEach( function (item) {
+    if ( item.name !== 'Comitium Light') {
+      gulp.watch('web/themes/' + item.path + '/source/scss/**/**.scss', gulp.parallel('css' + item.name))
+    }
   })
   gulp.watch('web/themes/**/source/js/**/**.js', gulp.parallel('js'))
   gulp.watch('app/patterns/**', gulp.parallel('reload'))
