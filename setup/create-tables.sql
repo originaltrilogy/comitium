@@ -17,7 +17,7 @@ CREATE TABLE announcements (
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE banned_ip_addresses (
-    id SERIAL PRIMARY KEY,
+    id integer primary key generated always as identity,
     ip cidr NOT NULL,
     admin_user_id integer NOT NULL,
     time timestamp without time zone NOT NULL
@@ -50,7 +50,7 @@ CREATE TABLE bookmarks (
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE categories (
-    id SERIAL PRIMARY KEY,
+    id integer primary key generated always as identity,
     title text NOT NULL,
     url text NOT NULL,
     description text,
@@ -75,7 +75,7 @@ CREATE INDEX categories_sort_idx ON categories(sort int2_ops);
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE content (
-    id SERIAL PRIMARY KEY,
+    id integer primary key generated always as identity,
     title_markdown text,
     title_html text,
     url text UNIQUE,
@@ -124,7 +124,7 @@ CREATE INDEX discussion_permissions_reply_idx ON discussion_permissions(reply bo
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE discussions (
-    id SERIAL PRIMARY KEY,
+    id integer primary key generated always as identity,
     category_id integer NOT NULL,
     title text NOT NULL,
     url text NOT NULL,
@@ -186,7 +186,7 @@ CREATE TABLE email_templates (
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE groups (
-    id SERIAL PRIMARY KEY,
+    id integer primary key generated always as identity,
     name text NOT NULL UNIQUE,
     description text NOT NULL,
     login boolean NOT NULL,
@@ -257,7 +257,7 @@ CREATE INDEX password_reset_verification_code_idx ON password_reset(verification
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE post_history (
-    id serial PRIMARY KEY,
+    id integer primary key generated always as identity,
     post_id integer NOT NULL,
     editor_id integer,
     edit_reason text,
@@ -274,7 +274,7 @@ CREATE TABLE post_history (
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE post_reports (
-    id serial PRIMARY KEY,
+    id integer primary key generated always as identity,
     post_id integer NOT NULL,
     reported_by_id integer NOT NULL,
     reason text NOT NULL
@@ -293,7 +293,7 @@ CREATE INDEX post_reports_reportedByID_idx ON post_reports(reported_by_id int4_o
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE posts (
-    id SERIAL PRIMARY KEY,
+    id integer primary key generated always as identity,
     topic_id integer NOT NULL,
     user_id integer NOT NULL,
     text text NOT NULL,
@@ -328,7 +328,7 @@ CREATE INDEX posts_topic_id_draft_created ON posts(topic_id int4_ops,draft bool_
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE post_trash (
-    id integer PRIMARY KEY,
+    id integer primary key generated always as identity,
     topic_id integer NOT NULL,
     user_id integer NOT NULL,
     text text NOT NULL,
@@ -376,7 +376,7 @@ CREATE INDEX topic_invitations_left_idx ON topic_invitations(left_topic bool_ops
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE topics (
-    id SERIAL PRIMARY KEY,
+    id integer primary key generated always as identity,
     discussion_id integer NOT NULL,
     title text NOT NULL,
     title_html text NOT NULL,
@@ -449,7 +449,7 @@ CREATE INDEX topic_views_user_id_idx ON topic_views(user_id int4_ops);
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE user_logs (
-    id serial PRIMARY KEY,
+    id integer primary key generated always as identity,
     user_id integer NOT NULL,
     action text NOT NULL,
     ip cidr NOT NULL,
@@ -464,7 +464,7 @@ CREATE TABLE user_logs (
 -- Table Definition ----------------------------------------------
 
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id integer primary key generated always as identity,
     group_id integer NOT NULL,
     username text NOT NULL UNIQUE,
     username_hash text NOT NULL,
@@ -491,29 +491,29 @@ CREATE TABLE users (
 
 -- Default categories
 
-INSERT INTO "categories"("id","title","url","description","meta_description","keywords","sort","created","hidden","system","locked")
+INSERT INTO "categories"("title","url","description","meta_description","keywords","sort","created","hidden","system","locked")
 VALUES
-(1,'Administrative Functions','Administrative-Functions','Forums related to administrative concerns. This category is hidden from users who don''t have access.','','',1,now(),TRUE,TRUE,FALSE),
-(2,'Sample Category','Sample-Category','Default category created during setup.','This is the meta description for display in search engine results.','insert, meta, keywoards, here',2,now(),FALSE,FALSE,FALSE);
+('Administrative Functions','Administrative-Functions','Forums related to administrative concerns. This category is hidden from users who don''t have access.','','',1,now(),TRUE,TRUE,FALSE),
+('Sample Category','Sample-Category','Default category created during setup.','This is the meta description for display in search engine results.','insert, meta, keywoards, here',2,now(),FALSE,FALSE,FALSE);
 
-INSERT INTO "public"."discussions"("id","category_id","title","url","description","meta_description","keywords","posts","topics","last_post_id","sort","created","hidden","system","locked")
+INSERT INTO "public"."discussions"("category_id","title","url","description","meta_description","keywords","posts","topics","last_post_id","sort","created","hidden","system","locked")
 VALUES
-(1,1,'Trash','Trash','Dumping ground for deleted topics. Topics are not truly deleted until removed from this forum.','Dumping ground for deleted topics. Topics are not truly deleted until removed from this forum.','',0,0,0,1,now(),TRUE,TRUE,TRUE),
-(2,0,'Announcements','Announcements','Site and forum announcements.','Site and forum announcements.','announcements, news',0,0,0,1,now(),FALSE,TRUE,TRUE),
-(3,2,'Sample Subcategory','Sample-Subcategory','Default subcategory created during setup.','This is the meta description for display in search engine results.','insert, meta, keywoards, here',0,0,0,1,now(),FALSE,FALSE,FALSE);
+(1,'Trash','Trash','Dumping ground for deleted topics. Topics are not truly deleted until removed from this forum.','Dumping ground for deleted topics. Topics are not truly deleted until removed from this forum.','',0,0,0,1,now(),TRUE,TRUE,TRUE),
+(0,'Announcements','Announcements','Site and forum announcements.','Site and forum announcements.','announcements, news',0,0,0,1,now(),FALSE,TRUE,TRUE),
+(2,'Sample Subcategory','Sample-Subcategory','Default subcategory created during setup.','This is the meta description for display in search engine results.','insert, meta, keywoards, here',0,0,0,1,now(),FALSE,FALSE,FALSE);
 
 
 
 -- Default groups
 
-INSERT INTO "groups" ("id","name","url","description","login","post","reply","talk_privately","moderate_discussions","administrate_discussions","moderate_users","administrate_users","administrate_app","bypass_lockdown","system","locked")
+INSERT INTO "groups" ("name","url","description","login","post","reply","talk_privately","moderate_discussions","administrate_discussions","moderate_users","administrate_users","administrate_app","bypass_lockdown","system","locked")
 VALUES
-(1,'Public','Public','Public (anonymous) visitors.',FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
-(2,'New Members','New-Members','Forum members who can reply to existing topics, but haven''t met the minimum post requirement to start new topics.',TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
-(3,'Members','Members','Forum members with full access to post and reply.',TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
-(4,'Moderators','Moderators','Members responsible for moderating users and content.',TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,TRUE,TRUE,FALSE),
-(5,'Administrators','Administrators','Members with full control over the forum, including access to the admin. This group''s permissions are locked in order to prevent accidental removal of administration capabilities.',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE),
-(6,'Banned Members','Banned-Members','Users who have had their forum access privileges revoked.',FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE);
+('Public','Public','Public (anonymous) visitors.',FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
+('New Members','New-Members','Forum members who can reply to existing topics, but haven''t met the minimum post requirement to start new topics.',TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
+('Members','Members','Forum members with full access to post and reply.',TRUE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE),
+('Moderators','Moderators','Members responsible for moderating users and content.',TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,TRUE,TRUE,FALSE),
+('Administrators','Administrators','Members with full control over the forum, including access to the admin. This group''s permissions are locked in order to prevent accidental removal of administration capabilities.',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE),
+('Banned Members','Banned-Members','Users who have had their forum access privileges revoked.',FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE);
 
 
 
@@ -542,9 +542,9 @@ VALUES
 
 
 -- Administrator account
-INSERT INTO "users" ("id","group_id","username","username_hash","password_hash","url","email","timezone","date_format","theme","signature","signature_html","last_activity","joined","website","private_topic_email_notification","subscription_email_notification","activated","activation_code","system","locked")
+INSERT INTO "users" ("group_id","username","username_hash","password_hash","url","email","timezone","date_format","theme","signature","signature_html","last_activity","joined","website","private_topic_email_notification","subscription_email_notification","activated","activation_code","system","locked")
 VALUES
-(1,5,'Administrator','$2a$10$OcEsQ1L2jizBqw1CPmLG6uK6ZJuUB39TDYOBH9RLXmKD44mvm3sCa','$2a$12$BUs.SDPtAxSkSAjJGf6G2eb348JbZPVR0OmnXySJs2M5IDDh0Wf62','Administrator','admin@comitium.com','GMT','MMMM D, YYYY','Comitium Light',NULL,NULL,now(),now(),NULL,TRUE,TRUE,TRUE,'N/A',TRUE,TRUE);
+(5,'Administrator','$2a$10$OcEsQ1L2jizBqw1CPmLG6uK6ZJuUB39TDYOBH9RLXmKD44mvm3sCa','$2a$12$BUs.SDPtAxSkSAjJGf6G2eb348JbZPVR0OmnXySJs2M5IDDh0Wf62','Administrator','admin@comitium.com','GMT','MMMM D, YYYY','Comitium Light',NULL,NULL,now(),now(),NULL,TRUE,TRUE,TRUE,'N/A',TRUE,TRUE);
 
 
 
