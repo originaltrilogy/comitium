@@ -81,7 +81,7 @@ async function editForm(params, request, response, context) {
         url: app.toolbox.slug(params.form.title_markdown),
         content_markdown: params.form.content_markdown,
         content_html: app.toolbox.markdown.content(params.form.content_markdown),
-        modified_by_id: params.session.userID
+        modified_by_id: params.session.user_id
       })
 
       if ( editContent.success ) {

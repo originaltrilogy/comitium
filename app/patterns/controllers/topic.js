@@ -51,8 +51,8 @@ async function handler(params, request, response, context) {
         if ( !params.url.page ) {
           return await app.models.topic.firstUnreadPost({
             topicID: params.url.id,
-            userID: params.session.userID,
-            viewTime: params.session.lastActivity
+            userID: params.session.user_id,
+            viewTime: params.session.last_activity
           })
         } else {
           return false
@@ -64,7 +64,7 @@ async function handler(params, request, response, context) {
         type,
         url
 
-    switch ( topic.discussionID ) {
+    switch ( topic.discussion_id ) {
       case 0:
         type = 'private-topic'
         break
@@ -80,7 +80,7 @@ async function handler(params, request, response, context) {
 
     // If there are unread posts, the first unread post isn't the first post in the topic,
     // and a specific page hasn't been requested, redirect the user to the first unread post.
-    if ( firstUnreadPost && firstUnreadPost.post.id !== topic.firstPostID ) {
+    if ( firstUnreadPost && firstUnreadPost.post.id !== topic.first_post_id ) {
       return {
         redirect: app.config.comitium.baseUrl + url + '/id/' + topic.id + '/page/' + firstUnreadPost.page + '#' + firstUnreadPost.post.id
       }
@@ -103,9 +103,9 @@ async function handler(params, request, response, context) {
         })(),
         // subscriptionExists
         ( async () => {
-          if ( params.session.userID ) {
+          if ( params.session.user_id ) {
             return await app.models.topic.subscriptionExists({
-              userID: params.session.userID,
+              userID: params.session.user_id,
               topicID: topic.id
             })
           } else {
@@ -120,9 +120,9 @@ async function handler(params, request, response, context) {
         }),
         // viewTimeUpdate
         ( async () => {
-          if ( params.session.userID ) {
+          if ( params.session.user_id ) {
             return await app.models.topic.viewTimeUpdate({
-              userID: params.session.userID,
+              userID: params.session.user_id,
               topic: topic,
               time: app.toolbox.helpers.isoDate()
             })
@@ -152,7 +152,7 @@ async function handler(params, request, response, context) {
           ( async () => {
             if ( params.url.accept ) {
               await app.models.topic.acceptInvitation({
-                userID: params.session.userID,
+                userID: params.session.user_id,
                 topicID: topic.id
               })
             }
@@ -175,7 +175,7 @@ async function handler(params, request, response, context) {
           participants: participants,
           left: left,
           userIsSubscribed: subscriptionExists,
-          userCanEdit: ( ( !topic.lockedByID && params.session.userID === topic.authorID ) || params.session.moderateDiscussions ) && topic.discussionID !== 1,
+          userCanEdit: ( ( !topic.locked_by_id && params.session.user_id === topic.author_id ) || params.session.moderate_discussions ) && topic.discussion_id !== 1,
           userCanReply: userCanReply,
           pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
           previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),
@@ -270,7 +270,7 @@ async function startForm(params, request, response, context) {
 
           saveTopic = await app.models.topic.insert({
             discussionID: discussion.id,
-            userID: params.session.userID,
+            userID: params.session.user_id,
             title: params.form.title,
             titleHtml: parsedTitle,
             url: url,
@@ -284,7 +284,7 @@ async function startForm(params, request, response, context) {
           if ( saveTopic.success ) {
             if ( params.form.subscribe ) {
               app.models.topic.subscribe({
-                userID: params.session.userID,
+                userID: params.session.user_id,
                 topicID: saveTopic.id,
                 time: time
               })
@@ -408,7 +408,7 @@ async function startAnnouncementForm(params, request, response, context) {
             announcement: true,
             discussionID: 2,
             discussions: discussions,
-            userID: params.session.userID,
+            userID: params.session.user_id,
             title: params.form.title,
             titleHtml: parsedTitle,
             url: url,
@@ -422,7 +422,7 @@ async function startAnnouncementForm(params, request, response, context) {
           if ( saveTopic.success ) {
             if ( params.form.subscribe ) {
               app.models.topic.subscribe({
-                userID: params.session.userID,
+                userID: params.session.user_id,
                 topicID: saveTopic.id,
                 time: time
               })
@@ -535,7 +535,7 @@ async function startPrivateForm(params, request, response, context) {
           saveTopic = await app.models.topic.insert({
             private: true,
             invitees: params.form.invitees,
-            userID: params.session.userID,
+            userID: params.session.user_id,
             username: params.session.username,
             discussionID: 0,
             title: params.form.title,
@@ -571,7 +571,7 @@ async function startPrivateForm(params, request, response, context) {
 
             if ( params.form.subscribe ) {
               app.models.topic.subscribe({
-                userID: params.session.userID,
+                userID: params.session.user_id,
                 topicID: saveTopic.id,
                 time: time
               })
@@ -684,7 +684,7 @@ async function replyForm(params, request, response, context) {
           reply = await app.models.topic.reply({
             topicID: topic.id,
             discussionID: topic.discussionID,
-            userID: params.session.userID,
+            userID: params.session.user_id,
             html: parsedContent,
             text: params.form.content,
             draft: draft,
@@ -701,7 +701,7 @@ async function replyForm(params, request, response, context) {
 
           if ( params.form.subscribe ) {
             await app.models.topic.subscribe({
-              userID: params.session.userID,
+              userID: params.session.user_id,
               topicID: topic.id,
               time: time
             })
@@ -712,7 +712,7 @@ async function replyForm(params, request, response, context) {
             notifySubscribers({
               topicID: topic.id,
               scope: 'updates',
-              skip: [ params.session.userID ],
+              skip: [ params.session.user_id ],
               time: time,
               template: 'Topic Reply',
               replace: {
@@ -772,7 +772,7 @@ async function subscribe(params, request) {
     ] = await Promise.all([
       app.models.topic.info(params.url.id),
       app.models.topic.subscribe({
-        userID: params.session.userID,
+        userID: params.session.user_id,
         topicID: params.url.id,
         time: app.toolbox.helpers.isoDate()
       })
@@ -794,7 +794,7 @@ async function unsubscribe(params, request) {
     await Promise.all([
       app.models.topic.info(params.url.id),
       app.models.topic.unsubscribe({
-        userID: params.session.userID,
+        userID: params.session.user_id,
         topicID: params.url.id
       })
     ])
@@ -832,7 +832,7 @@ async function leaveForm(params, request, response, context) {
     let access = await app.toolbox.access.topicView({ topicID: params.form.topicID, user: params.session })
 
     if ( access === true ) {
-      await app.models.topic.leave({ topicID: params.form.topicID, userID: params.session.userID })
+      await app.models.topic.leave({ topicID: params.form.topicID, userID: params.session.user_id })
       return {
         redirect: params.form.forwardToUrl
       }
@@ -876,7 +876,7 @@ async function lockForm(params, request, response, context) {
 
       await app.models.topic.lock({
         topicID: topic.id,
-        lockedByID: params.session.userID,
+        lockedByID: params.session.user_id,
         lockReason: app.toolbox.markdown.inline(params.form.reason)
       })
 
@@ -978,7 +978,7 @@ async function editForm(params, request, response, context) {
             topicID: topic.id,
             discussionID: topic.discussionID,
             postID: topic.firstPostID,
-            editorID: params.session.userID,
+            editorID: params.session.user_id,
             currentPost: firstPost,
             title: params.form.title,
             titleHtml: parsedTitle,
@@ -1051,7 +1051,7 @@ async function mergeForm(params, request, response, context) {
       let mergedTopic = await app.models.topic.merge({
                           time       : app.toolbox.helpers.isoDate(),
                           topicID    : params.form.topicID,
-                          lockedByID : params.session.userID
+                          lockedByID : params.session.user_id
                         })
 
       if ( mergedTopic.success ) {

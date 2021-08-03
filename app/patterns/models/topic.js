@@ -212,7 +212,7 @@ async function firstUnreadPost(args) {
   if ( viewTime ) {
     let topic = await this.info(args.topicID)
 
-    if ( app.toolbox.moment(topic.lastPostCreated).isAfter(viewTime[0].time) ) {
+    if ( app.toolbox.moment(topic.last_post_created).isAfter(viewTime[0].time) ) {
       return await this.newPosts({ topicID: args.topicID, time: viewTime[0].time, replies: topic.replies })
     } else {
       return false
@@ -251,7 +251,7 @@ async function invitees(args) {
   try {
     const result = await client.query({
       name: 'topic_invitees',
-      text: 'select ti.topic_id, ti.accepted, ti.left, u.id, u.username, u.url from topic_invitations ti join users u on ti.user_id = u.id where topic_id = $1 and ti.left = $2 order by u.username asc;',
+      text: 'select ti.topic_id, ti.accepted, ti.left_topic, u.id, u.username, u.url from topic_invitations ti join users u on ti.user_id = u.id where topic_id = $1 and ti.left_topic = $2 order by u.username asc;',
       values: [ args.topicID, args.left ]
     })
 
@@ -278,7 +278,7 @@ async function info(topicID) {
     try {
       const result = await client.query({
         name: 'topic_info',
-        text: 'select t.id, t.discussion_id, t.title, t.title_html, t.url, t.created, t.modified, ( select count(*) from posts where topic_id = t.id and draft = false ) - 1 as replies, t.draft, t.private, t.locked_by_id, t.lock_reason, d.title as discussion_title, d.url as discussion_url, p.id as first_post_id, p.user_id as authorID, p.text, u.group_id as authorGroupID, u.username as author, u.url as author_url, p2.id as last_post_id, p2.created as last_post_created from topics t left join discussions d on t.discussion_id = d.id join posts p on p.id = ( select id from posts where topic_id = t.id order by created asc limit 1 ) join users u on u.id = p.user_id join posts p2 on p2.id = ( select id from posts where topic_id = t.id and draft = false order by created desc limit 1 ) where t.id = $1;',
+        text: 'select t.id, t.discussion_id, t.title, t.title_html, t.url, t.created, t.modified, ( select count(*) from posts where topic_id = t.id and draft = false ) - 1 as replies, t.draft, t.private, t.locked_by_id, t.lock_reason, d.title as discussion_title, d.url as discussion_url, p.id as first_post_id, p.user_id as author_id, p.text, u.group_id as author_group_id, u.username as author, u.url as author_url, p2.id as last_post_id, p2.created as last_post_created from topics t left join discussions d on t.discussion_id = d.id join posts p on p.id = ( select id from posts where topic_id = t.id order by created asc limit 1 ) join users u on u.id = p.user_id join posts p2 on p2.id = ( select id from posts where topic_id = t.id and draft = false order by created desc limit 1 ) where t.id = $1;',
         values: [ topicID ]
       })
 
@@ -446,7 +446,7 @@ async function posts(args) {
     try {
       const result = await client.query({
         name: 'topic_posts',
-        text: 'select p.id, p.html, p.created, p.modified, p.editor_id, p.locked_by_id, p.lock_reason, u.id as authorID, u.group_id as authorGroupID, u.username as author, u.url as author_url, u.signature_html as author_signature ' +
+        text: 'select p.id, p.html, p.created, p.modified, p.editor_id, p.locked_by_id, p.lock_reason, u.id as author_id, u.group_id as author_group_id, u.username as author, u.url as author_url, u.signature_html as author_signature ' +
         'from posts p ' +
         'join users u on p.user_id = u.id ' +
         'where p.topic_id = $1 and p.draft = false ' +
@@ -892,9 +892,7 @@ async function viewTimeUpdate(args) {
 
 
 function breadcrumbs(topic) {
-  var title, url
-
-  switch ( topic.discussionID ) {
+  switch ( topic.discussion_id ) {
     case 0:
       return {
         a: {
@@ -907,8 +905,6 @@ function breadcrumbs(topic) {
         }
       }
     case 2:
-      title = 'Announcements'
-      url = 'announcements'
       return {
         a: {
           name: 'Home',
@@ -934,8 +930,8 @@ function breadcrumbs(topic) {
           url: 'discussions'
         },
         c: {
-          name: topic.discussionTitle,
-          url: 'discussion/' + topic.discussionUrl + '/id/' + topic.discussionID
+          name: topic.discussion_title,
+          url: 'discussion/' + topic.discussion_url + '/id/' + topic.discussion_id
         }
       }
   }

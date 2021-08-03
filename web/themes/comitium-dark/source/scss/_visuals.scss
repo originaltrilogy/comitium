@@ -436,10 +436,10 @@ table {
 //   discussion pattern   //
 ////////////////////////////
 
-body[data-controller="discussion"][data-view="discussion"],
-body[data-controller="announcements"][data-view="announcements"],
-body[data-controller="private-topics"][data-view="private-topics"],
-body[data-controller="subscriptions"][data-view="subscriptions"] {
+body[data-chain*="discussion-"],
+body[data-chain*="announcements-"],
+body[data-chain*="private-topics-"],
+body[data-chain*="subscriptions-"] {
 
   main > p {
     color: white;
@@ -492,12 +492,12 @@ article.post {
 //  topic patterns  //
 //////////////////////
 
-body[data-controller="topic"][data-view="topic"],
-body[data-controller="post"][data-view="topic"],
-body[data-controller="topic"][data-view="private-topic"],
-body[data-controller="post"][data-view="private-topic"],
-body[data-controller="announcement"][data-view="announcement"],
-body[data-controller="post"][data-view="announcement"] {
+body[data-chain*="topic-handler-topic"],
+body[data-chain*="post-handler-topic"],
+body[data-chain*="topic-handler-private-topic"],
+body[data-chain*="post-handler-private-topic"],
+body[data-chain*="announcement-handler-announcement"],
+body[data-chain*="post-handler-announcement"] {
 
   section.summary {
     dl.byline {
@@ -613,8 +613,8 @@ body[data-controller="post"][data-view="announcement"] {
 }
 
 // Private topic view
-body[data-controller="topic"][data-view="private-topic"],
-body[data-controller="post"][data-view="private-topic"] {
+body[data-chain*="topic-handler-private-topic"],
+body[data-chain*="post-handler-private-topic"] {
   ul.participants {
     li {
       &:nth-child(n+2) {
@@ -672,7 +672,7 @@ body[data-controller="members"] {
 //   user view   //
 ///////////////////
 
-body[data-view="user"] {
+body[data-controller="user"] {
 
   article.post {
     header {

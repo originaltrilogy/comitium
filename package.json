@@ -1,6 +1,6 @@
 {
   "name": "comitium",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Forum software for Node.js",
   "author": {
     "name": "Jay Sylvester",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jaysylvester/comitium"
+    "url": "https://github.com/codebloat/comitium"
   },
   "main": "index",
   "scripts": {
@@ -18,9 +18,9 @@
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
-    "citizen": "git://github.com/jaysylvester/citizen.git#0.9.1",
+    "citizen": "https://github.com/jaysylvester/citizen#1.0.0",
     "gm": "1.23.1",
-    "jade": "1.11.0",
+    "pug": "3.0.2",
     "markdown-it": "12.0.2",
     "markdown-it-emoji": "2.0.0",
     "moment": "2.29.1",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "autoprefixer": "*",
+    "eslint": "*",
     "gulp": "*",
     "gulp-concat": "*",
     "gulp-cssnano": "*",
@@ -41,7 +42,8 @@
     "gulp-sass": "*",
     "gulp-sourcemaps": "*",
     "gulp-uglify-es": "*",
-    "gulp-watch": "*"
+    "gulp-watch": "*",
+    "sass": "*"
   },
   "engines": {
     "node": ">= 12.0.0"

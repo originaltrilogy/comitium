@@ -5,16 +5,16 @@ header
   else
     include ../partials/topic-summary
 
-if topic.lockedByID
+if topic.locked_by_id
   section.notice.locked
     <svg class="icon lock"><use xlink:href="themes/default/images/symbols.svg#icon-lock"></use></svg>
     if !session.moderateDiscussions
       p This topic has been locked by a moderator.
     else
       p This topic is locked, but as a moderator, you can still reply and make edits.
-    if topic.lockReason
+    if topic.lock_reason
       p.why Why was this topic locked?
-      p.reason !{topic.lockReason}
+      p.reason !{topic.lock_reason}
 
 section.posts
   each post in firstPost

@@ -15,7 +15,7 @@ module.exports = {
 async function handler(params) {
   params.url.page = params.url.page || 1
 
-  let user = await app.models.user.profileByID({ userID: params.url.id, visitorGroupID: params.session.groupID })
+  let user = await app.models.user.profileByID({ userID: params.url.id, visitorGroupID: params.session.group_id })
 
   if ( user ) {
     let posts = await ( async () => {
@@ -23,7 +23,7 @@ async function handler(params) {
             end = start + 25
       return await app.models.user.posts({
         userID: params.url.id,
-        visitorGroupID: params.session.groupID,
+        visitorGroupID: params.session.group_id,
         start: start,
         end: end
       })
@@ -31,7 +31,7 @@ async function handler(params) {
 
     let ipHistory, matchingUsersByIP
 
-    if ( params.url.id !== params.session.userID && params.session.moderateUsers ) {
+    if ( params.url.id !== params.session.user_id && params.session.moderate_users ) {
       [
         ipHistory,
         matchingUsersByIP
@@ -49,14 +49,14 @@ async function handler(params) {
 
     return {
       public: {
-        talkPrivately: params.session.talkPrivately && user.id !== params.session.userID,
-        editProfile: user.id === params.session.userID,
-        moderateUser: params.url.id !== params.session.userID && params.session.moderateUsers,
+        talkPrivately: params.session.talk_privately && user.id !== params.session.user_id,
+        editProfile: user.id === params.session.user_id,
+        moderateUser: params.url.id !== params.session.user_id && params.session.moderate_users,
         user: user,
         posts: posts,
         ipHistory: ipHistory,
         matchingUsersByIP: matchingUsersByIP,
-        pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + user.url + '/id/' + user.id, params.url.page, user.postCount)
+        pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + user.url + '/id/' + user.id, params.url.page, user.post_count)
       }
     }
   } else {
@@ -143,7 +143,7 @@ async function banIP(params, request) {
 
     await app.models.user.banIP({
       ip: log.ip,
-      adminUserID: params.session.userID,
+      adminUserID: params.session.user_id,
       time: app.toolbox.helpers.isoDate()
     })
 

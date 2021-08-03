@@ -9,9 +9,9 @@ module.exports = {
 
 function handler(params, request) {
 
-  if ( params.session.userID ) {
+  if ( params.session.user_id ) {
     app.models.user.log({
-      userID: params.session.userID,
+      userID: params.session.user_id,
       action: 'Sign out',
       ip: app.toolbox.helpers.ip(request)
     })

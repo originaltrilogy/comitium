@@ -26,7 +26,7 @@ async function unread(args) {
     try {
       const result = await client.query({
         name: 'private_topics_unread',
-        text: 'select p.topic_id from posts p join topic_invitations ti on ti.user_id = $1 and ti.left = false and p.topic_id = ti.topic_id and p.id = ( select id from posts where topic_id = ti.topic_id and user_id <> $1 order by created desc limit 1 ) left join topic_views tv on ti.topic_id = tv.topic_id and tv.user_id = $1 where tv.time < p.created or tv.time is null;',
+        text: 'select p.topic_id from posts p join topic_invitations ti on ti.user_id = $1 and ti.left_topic = false and p.topic_id = ti.topic_id and p.id = ( select id from posts where topic_id = ti.topic_id and user_id <> $1 order by created desc limit 1 ) left join topic_views tv on ti.topic_id = tv.topic_id and tv.user_id = $1 where tv.time < p.created or tv.time is null;',
         values: [ args.userID ]
       })
 
@@ -70,10 +70,10 @@ async function topics(args) {
       await client.query('SET enable_seqscan = OFF;')
       const result = await client.query({
         name: 'private_topics_topics',
-        text: 'select count(*) over() as full_count, t.id, t.sticky, t.replies, t.title_html, ti.accepted, ti.left, p.created as post_date, p2.id as last_post_id, p2.created as last_post_created, u.id as topic_starter_id, u.username as topic_starter, u.group_id as topic_starter_group_id, u.url as topic_starter_url, u2.id as last_post_author_id, u2.username as last_post_author, u2.url as last_post_author_url ' +
+        text: 'select count(*) over() as full_count, t.id, t.sticky, t.replies, t.title_html, ti.accepted, ti.left_topic, p.created as post_date, p2.id as last_post_id, p2.created as last_post_created, u.id as topic_starter_id, u.username as topic_starter, u.group_id as topic_starter_group_id, u.url as topic_starter_url, u2.id as last_post_author_id, u2.username as last_post_author, u2.url as last_post_author_url ' +
         'from topics t ' +
         'join topic_invitations ti on ti.user_id = $1 ' +
-        'and ti.left = false ' +
+        'and ti.left_topic = false ' +
         'join posts p on p.topic_id = ti.topic_id ' +
         'and p.id = ( select id from posts where topic_id = t.id and draft = false order by created asc limit 1 ) ' +
         'join users u on u.id = p.user_id ' +

@@ -38,7 +38,7 @@ function handler(params) {
     }
   } else {
     return {
-      redirect: params.session.userID ? app.config.comitium.basePath + 'sign-in/password/true' : app.config.comitium.basePath + 'sign-in'
+      redirect: params.session.user_id ? app.config.comitium.basePath + 'sign-in/password/true' : app.config.comitium.basePath + 'sign-in'
     }
   }
 }
@@ -65,7 +65,7 @@ async function generalForm(params, request, response, context) {
             activationCode = app.toolbox.helpers.activationCode()
             methods.push(
               app.models.user.updateEmail({
-                userID: params.session.userID,
+                userID: params.session.user_id,
                 email: email,
                 deactivateUser: true,
                 activationCode: activationCode
@@ -85,7 +85,7 @@ async function generalForm(params, request, response, context) {
         if ( app.toolbox.validate.password(password) ) {
           methods.push(
             app.models.user.updatePassword({
-              userID: params.session.userID,
+              userID: params.session.user_id,
               password: password
             })
           )
@@ -103,7 +103,7 @@ async function generalForm(params, request, response, context) {
       if ( update ) {
         methods.push(
           app.models.user.updateSettings({
-            userID: params.session.userID,
+            userID: params.session.user_id,
             signature: signature,
             signatureHtml: signatureHtml,
             timezone: params.form.timezone,
@@ -121,7 +121,7 @@ async function generalForm(params, request, response, context) {
           let mail = await app.models.content.mail({
             template: 'Reactivation',
             replace: {
-              activationUrl: app.config.comitium.baseUrl + 'user/action/activate/id/' + params.session.userID + '/activationCode/' + activationCode + '/reactivation/true'
+              activationUrl: app.config.comitium.baseUrl + 'user/action/activate/id/' + params.session.user_id + '/activationCode/' + activationCode + '/reactivation/true'
             }
           })
 
@@ -136,7 +136,7 @@ async function generalForm(params, request, response, context) {
             redirect: app.config.comitium.basePath + 'sign-out/reason/reactivation-required'
           }
         } else {
-          let user = await app.models.user.info({ userID: params.session.userID })
+          let user = await app.models.user.info({ userID: params.session.user_id })
 
           user.userID = user.id
           delete user.id
@@ -174,7 +174,7 @@ async function generalForm(params, request, response, context) {
     }
   } else {
     return {
-      redirect: params.session.userID ? app.config.comitium.basePath + 'sign-in/password/true' : app.config.comitium.basePath + 'sign-in'
+      redirect: params.session.user_id ? app.config.comitium.basePath + 'sign-in/password/true' : app.config.comitium.basePath + 'sign-in'
     }
   }
 }
@@ -208,7 +208,7 @@ async function avatarForm(params, request, response, context) {
 
         let processImage = await new Promise((resolve, reject) => {
           gm(params.form.avatar.path).identify( function (err, stats) {
-            let file = app.config.citizen.directories.web + '/avatars/' + params.session.userID + '.jpg'
+            let file = app.config.citizen.directories.web + '/avatars/' + params.session.user_id + '.jpg'
   
             if ( !stats ) {
               content.avatarForm.message = 'There was a problem with your upload, possibly because the file is corrupt.'
@@ -239,7 +239,7 @@ async function avatarForm(params, request, response, context) {
                   .sharpen(10)
                   .autoOrient()
                   .noProfile()
-                  // .write(app.config.citizen.directories.web + '/avatars/' + params.session.userID + newExtension, function (err) {
+                  // .write(app.config.citizen.directories.web + '/avatars/' + params.session.user_id + newExtension, function (err) {
                   .write(file, function (err) {
                     if ( err ) {
                       reject(err)
@@ -267,7 +267,7 @@ async function avatarForm(params, request, response, context) {
     }
   } else {
     return {
-      redirect: params.session.userID ? app.config.comitium.basePath + 'sign-in/password/true' : app.config.comitium.basePath + 'sign-in'
+      redirect: params.session.user_id ? app.config.comitium.basePath + 'sign-in/password/true' : app.config.comitium.basePath + 'sign-in'
     }
   }
 }

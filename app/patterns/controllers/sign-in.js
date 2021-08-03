@@ -46,14 +46,14 @@ async function submit(params, request) {
         cookies = {}
 
     if ( authenticate.success ) {
-      user.userID = authenticate.user.id
+      user.user_id = authenticate.user.id
       user.authenticated = true
-      user.loginReferrer = params.form.loginReferrer
+      user.login_referrer = params.form.loginReferrer
       delete user.id
 
       if ( !params.cookie.comitium_id ) {
         cookies.comitium_id = {
-          value: authenticate.user.usernameHash,
+          value: authenticate.user.username_hash,
           expires: params.form.remember ? 'never' : 'session'
         }
       }
@@ -64,7 +64,7 @@ async function submit(params, request) {
       }
 
       app.models.user.log({
-        userID: user.userID,
+        userID: user.user_id,
         action: 'Sign in',
         ip: app.toolbox.helpers.ip(request)
       })

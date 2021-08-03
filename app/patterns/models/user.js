@@ -719,8 +719,8 @@ async function profileByID(args) {
       })
 
       if ( result.rows && result.rows.length ) {
-        result.rows[0].joinedFormatted        = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
-        result.rows[0].lastActivityFormatted  = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].joined_formatted        = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].last_activity_formatted = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY')
 
         // Cache the result for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {

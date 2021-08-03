@@ -28,33 +28,36 @@ async function handler(params) {
         end: end
       })
     ])
+
+    let viewTimes
     
-    if ( params.session.userID ) {
-      let topicID = []
+    if ( params.session.user_id ) {
+      let topicID   = []
+
       for ( var topic in topics ) {
-        if ( topics.hasOwnProperty(topic) ) {
-          topicID.push(topics[topic].id)
+        topicID.push(topics[topic].id)
+      }
+
+      if ( topicID.length ) {
+        viewTimes = await app.models.user.topicViewTimes({
+          userID: params.session.user_id,
+          topicID: topicID.join(', ')
+        })
+        
+        if ( viewTimes ) {
+          viewTimes.forEach( function (item) {
+            viewTimes[item.topic_id] = item
+          })
         }
       }
 
-      let viewTimes = await app.models.user.topicViewTimes({
-        userID: params.session.userID,
-        topicID: topicID.join(', ')
-      })
-
-      if ( viewTimes ) {
-        viewTimes.forEach( function (item) {
-          viewTimes[item.topicID] = item
-        })
-      }
-
       topics.forEach( function (item) {
-        if ( params.session.groupID > 1 ) {
-          if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+        if ( params.session.user_id ) {
+          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
             item.unread = true
           }
         } else {
-          if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
+          if ( app.toolbox.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
             item.unread = true
           }
         }

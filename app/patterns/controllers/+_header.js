@@ -19,8 +19,8 @@ async function handler(params) {
       unreadTopics,
       unreadPrivateTopics
     ] = await Promise.all([
-      app.models.subscriptions.unread({ userID: params.session.userID }),
-      app.models['private-topics'].unread({ userID: params.session.userID })
+      app.models.subscriptions.unread({ userID: params.session.user_id }),
+      app.models['private-topics'].unread({ userID: params.session.user_id })
     ])
 
     return {
@@ -29,6 +29,7 @@ async function handler(params) {
           topics: unreadTopics,
           privateTopics: unreadPrivateTopics
         },
+        themePath: app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes['Default'].path,
         logo: app.resources.images.logoHorizontal
       }
     }

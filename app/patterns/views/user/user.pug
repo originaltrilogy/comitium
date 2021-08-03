@@ -14,13 +14,13 @@ header
       dd #{user.group}
 
       dt Join date
-      dd #{user.joinedFormatted}
+      dd #{user.joined_formatted}
 
       dt Last activity
-      dd #{user.lastActivityFormatted}
+      dd #{user.last_activity_formatted}
 
       dt Posts
-      dd #{app.toolbox.numeral(user.postCount).format("0,0")}
+      dd #{app.toolbox.numeral(user.post_count).format("0,0")}
 
       if user.website && user.website.length
         dt Web Site
@@ -49,7 +49,7 @@ if moderateUser
         p IP addresses associated with this user (most recent first):
         ul
           each log in ipHistory
-            li(class=( log.id == url.logID ? "selected" : "" ))
+            li(class=( log.id == url.log_id ? "selected" : "" ))
               a(href="user/" + user.url + "/id/" + user.id + "/logID/" + log.id + "#ip-history") #{log.ip}
       else
         p There are no IP addresses associated with this user.
@@ -64,12 +64,12 @@ if moderateUser
             tr
               td
                 a(href="user/" + user.url + "/id/" + user.id ) #{user.username}
-              td #{user.timeFormatted}
+              td #{user.time_formatted}
 
         nav.actions
           ul
             li
-              a(href="user/action/banIP/logID/" + url.logID + "/userID/" + user.id ) Ban #{matchingUsersByIP[0].ip}
+              a(href="user/action/banIP/logID/" + url.log_id + "/userID/" + user.id ) Ban #{matchingUsersByIP[0].ip}
       else
         p Select an IP address to see all users who match that IP.
 

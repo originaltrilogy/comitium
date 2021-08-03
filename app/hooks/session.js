@@ -8,7 +8,7 @@ module.exports = {
 
 
 async function start(params, request) {
-  let cookie    = {},
+  let cookies   = {},
       session   = {},
       active    ,
       ip        = app.toolbox.helpers.ip(request),
@@ -30,18 +30,18 @@ async function start(params, request) {
           user          = authenticate.user
 
       if ( authenticate.success ) {
-        user.userID = authenticate.user.id
+        user.user_id = authenticate.user.id
         user.ip = ip
         delete user.id
 
         app.models.user.log({
-          userID: user.userID,
+          userID: user.user_id,
           action: 'Session start (cookied)',
           ip: ip
         })
 
         return {
-          cookie: {
+          cookies: {
             comitium_active: {
               expires: 'now'
             }
@@ -50,7 +50,7 @@ async function start(params, request) {
         }
       } else {
         return {
-          cookie: {
+          cookies: {
             comitium_id: {
               expires: 'now'
             },
@@ -59,27 +59,27 @@ async function start(params, request) {
             }
           },
           session: {
-            groupID: 1
+            group_id: 1
           }
         }
       }
     } else {
-      session.groupID = 1
+      session.group_id = 1
       session.ip = ip
       active = app.toolbox.helpers.isoDate()
-      cookie.comitium_active = {
+      cookies.comitium_active = {
         value: active,
         expires: 'never'
       }
 
       if ( params.cookie.comitium_active ) {
-        session.lastActivity = params.cookie.comitium_active
+        session.last_activity = params.cookie.comitium_active
       } else {
-        session.lastActivity = active
+        session.last_activity = active
       }
 
       return {
-        cookie: cookie,
+        cookies: cookies,
         session: session
       }
     }

@@ -98,7 +98,7 @@ async function editForm(params, request, response, context) {
   
           postEdit = await app.models.post.edit({
             id: post.id,
-            editorID: params.session.userID,
+            editorID: params.session.user_id,
             text: params.form.content,
             html: parsedContent,
             reason: parsedReason,
@@ -168,7 +168,7 @@ async function lockForm(params, request, response, context) {
       await app.models.post.lock({
         postID: post.id,
         topicID: post.topicID,
-        lockedByID: params.session.userID,
+        lockedByID: params.session.user_id,
         lockReason: app.toolbox.markdown.inline(params.form.reason)
       })
 
@@ -243,7 +243,7 @@ async function reportForm(params, request, response, context) {
     if ( access === true ) {
       let post = await app.models.post.info(params.url.id),
           saveReport = await app.models.post.saveReport({
-            userID: params.session.userID,
+            userID: params.session.user_id,
             postID: params.url.id,
             reason: app.toolbox.markdown.inline(params.form.reason)
           })
@@ -363,7 +363,7 @@ async function trashForm(params, request, response, context) {
         topicID: post.topicID,
         discussionID: post.discussionID,
         authorID: post.userID,
-        deletedByID: params.session.userID,
+        deletedByID: params.session.user_id,
         deleteReason: app.toolbox.markdown.inline(params.form.reason)
       })
 

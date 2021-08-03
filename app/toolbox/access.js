@@ -35,7 +35,7 @@ module.exports = {
 
 // If they're not logged in, send them to the sign in form. If they are, respond with a 403 Forbidden.
 function challenge(args) {
-  if ( args.user.groupID === 1 ) {
+  if ( args.user.group_id === 1 ) {
     if ( args.response === 'boolean' ) {
       return false
     } else {
@@ -59,7 +59,7 @@ async function contentEdit(args) {
   let content = await app.models.content.info(args.contentID)
 
   if ( content ) {
-    if ( args.user.moderateDiscussions ) {
+    if ( args.user.moderate_discussions ) {
       return true
     } else {
       return challenge(args)
@@ -76,7 +76,7 @@ async function discussionPost(args) {
   let discussion = await app.models.discussion.info(args.discussionID)
 
   if ( discussion ) {
-    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.groupID)
+    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.group_id)
 
     if ( discussionPermissions.post === true ) {
       return true
@@ -95,7 +95,7 @@ async function discussionReply(args) {
   let discussion = await app.models.discussion.info(args.discussionID)
 
   if ( discussion ) {
-    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.groupID)
+    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.group_id)
 
     if ( discussionPermissions.reply === true ) {
       return true
@@ -114,7 +114,7 @@ async function discussionView(args) {
   let discussion = await app.models.discussion.info(args.discussionID)
 
   if ( discussion ) {
-    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.groupID)
+    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.group_id)
 
     if ( discussionPermissions.read ) {
       return true
@@ -257,7 +257,7 @@ async function postView(args) {
 
 
 async function privateTopicStart(args) {
-  if ( args.user.talkPrivately ) {
+  if ( args.user.talk_privately ) {
     return true
   } else {
     return challenge(args)
@@ -266,7 +266,7 @@ async function privateTopicStart(args) {
 
 
 function privateTopicsView(args) {
-  if ( args.user.talkPrivately ) {
+  if ( args.user.talk_privately ) {
     return true
   } else {
     return challenge(args)
@@ -383,13 +383,13 @@ async function topicReply(args) {
 
   if ( topic ) {
     if ( !topic.private ) {
-      let topicLocked = topic.lockedByID && !args.user.moderateDiscussions ? true : false
+      let topicLocked = topic.locked_by_id && !args.user.moderate_discussions ? true : false
 
       if ( topicLocked ) {
         return challenge(args)
       } else {
         if ( topic.discussionID !== 2 ) {
-          let discussionReply = await this.discussionReply(app.toolbox.helpers.extend(args, { discussionID: topic.discussionID }))
+          let discussionReply = await this.discussionReply(app.toolbox.helpers.extend(args, { discussionID: topic.discussion_id }))
 
           if ( topicLocked === false && discussionReply === true ) {
             return true
@@ -397,7 +397,7 @@ async function topicReply(args) {
             return challenge(args)
           }
         } else {
-          let announcementReply = await app.models.topic.announcementReply({ topicID: args.topicID, groupID: args.user.groupID })
+          let announcementReply = await app.models.topic.announcementReply({ topicID: args.topicID, groupID: args.user.group_id })
 
           if ( topicLocked === false && announcementReply === true ) {
             return true
@@ -407,9 +407,9 @@ async function topicReply(args) {
         }
       }
     } else {
-      let invitee = await app.models.topic.invitee({ topicID: args.topicID, userID: args.user.userID })
+      let invitee = await app.models.topic.invitee({ topicID: args.topicID, userID: args.user.user_id })
 
-      if ( args.user.talkPrivately && invitee && !invitee.left ) {
+      if ( args.user.talk_privately && invitee && !invitee.left_topic ) {
         return true
       } else {
         return challenge(args)
@@ -457,15 +457,15 @@ async function topicView(args) {
   let topic = await app.models.topic.info(args.topicID)
   if ( topic ) {
     if ( !topic.private ) {
-      if ( topic.discussionID !== 2 ) {
-        let discussionView = await this.discussionView(app.toolbox.helpers.extend(args, { discussionID: topic.discussionID }))
+      if ( topic.discussion_id !== 2 ) {
+        let discussionView = await this.discussionView(app.toolbox.helpers.extend(args, { discussionID: topic.discussion_id }))
         if ( discussionView === true ) {
           return true
         } else {
           return challenge(args)
         }
       } else {
-        let announcementView = await app.models.topic.announcementView({ topicID: args.topicID, groupID: args.user.groupID })
+        let announcementView = await app.models.topic.announcementView({ topicID: args.topicID, groupID: args.user.group_id })
         if ( announcementView === true ) {
           return true
         } else {
@@ -473,8 +473,8 @@ async function topicView(args) {
         }
       }
     } else {
-      let invitee = await app.models.topic.invitee({ topicID: args.topicID, userID: args.user.userID })
-      if ( args.user.talkPrivately && invitee && !invitee.left ) {
+      let invitee = await app.models.topic.invitee({ topicID: args.topicID, userID: args.user.user_id })
+      if ( args.user.talk_privately && invitee && !invitee.left_topic ) {
         return true
       } else {
         return challenge(args)

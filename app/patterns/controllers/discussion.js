@@ -32,8 +32,10 @@ async function handler(params) {
 
     if ( params.route.descriptor === discussion.url ) {
       let viewTimes
-      if ( params.session.userID ) {
+
+      if ( params.session.user_id ) {
         let topicID = []
+
         topics.forEach( function (item) {
           topicID.push(item.id)
         })
@@ -41,36 +43,38 @@ async function handler(params) {
           topicID.push(item.id)
         })
   
-        viewTimes = await app.models.user.topicViewTimes({
-          userID: params.session.userID,
-          topicID: topicID.join(', ')
-        })
-  
-        if ( viewTimes ) {
-          viewTimes.forEach( function (item) {
-            viewTimes[item.topicID] = item
+        if ( topicID.length ) {
+          viewTimes = await app.models.user.topicViewTimes({
+            userID: params.session.userID,
+            topicID: topicID.join(', ')
           })
+
+          if ( viewTimes ) {
+            viewTimes.forEach( function (item) {
+              viewTimes[item.topicID] = item
+            })
+          }
         }
       }
-  
+
       announcements.forEach( function (item) {
-        if ( params.session.groupID > 1 ) {
-          if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+        if ( params.session.user_id ) {
+          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
             item.unread = true
           }
         } else {
-          if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
+          if ( app.toolbox.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
             item.unread = true
           }
         }
       })
 
       topics.forEach( function (item) {
-        if ( params.session.groupID > 1 ) {
-          if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+        if ( params.session.user_id ) {
+          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
             item.unread = true
           }
-        } else if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) ) {
+        } else if ( app.toolbox.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
           item.unread = true
         }
       })

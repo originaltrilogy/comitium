@@ -18,11 +18,11 @@ module.exports = {
 
 
 async function handler(params) {
-  let categories = await app.models.discussions.categories(params.session.groupID)
+  let categories = await app.models.discussions.categories(params.session.group_id)
 
   categories.forEach( function (item) {
     item.subcategories.forEach( function (item) {
-      if ( app.toolbox.moment(item.lastPostCreated).isAfter(params.session.lastActivity) && item.lastPostAuthorID !== params.session.userID ) {
+      if ( app.toolbox.moment(item.last_post_created).isAfter(params.session.last_activity) && item.last_post_author_id !== params.session.user_id ) {
         item.unread = true
       }
     })
