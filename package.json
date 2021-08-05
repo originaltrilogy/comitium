@@ -12,10 +12,6 @@
     "url": "https://github.com/codebloat/comitium"
   },
   "main": "index",
-  "scripts": {
-    "start-dev": "node ./app/start-dev.js",
-    "start": "node ./app/start.js"
-  },
   "dependencies": {
     "bcryptjs": "2.4.3",
     "citizen": "https://github.com/jaysylvester/citizen#1.0.0",
@@ -25,7 +21,7 @@
     "markdown-it-emoji": "2.0.0",
     "moment": "2.29.1",
     "moment-timezone": "0.5.31",
-    "nodemailer": "6.4.14",
+    "nodemailer": "6.4.16",
     "numeral": "2.0.6",
     "pg": "8.4.2",
     "slug": "4.0.2"
