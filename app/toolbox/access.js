@@ -424,7 +424,7 @@ async function topicReply(args) {
 
 
 async function topicSubscribe(args) {
-  if ( args.user.userID ) {
+  if ( args.user.user_id ) {
     let topicView = await this.topicView(args)
 
     if ( topicView === true ) {
@@ -439,7 +439,7 @@ async function topicSubscribe(args) {
 
 
 async function topicTrash(args) {
-  if ( args.user.moderateDiscussions ) {
+  if ( args.user.moderate_discussions ) {
     let topicView = await this.topicView(args)
 
     if ( topicView === true ) {
@@ -488,14 +488,14 @@ async function topicView(args) {
 }
 
 
-function signInRedirect(params, url) {
-  return params.request.headers.referer && params.request.headers.referer.search('/sign-in') < 0 ? params.request.headers.referer : url
+function signInRedirect(request, url) {
+  return request.headers.referer && request.headers.referer.search('/sign-in') < 0 ? request.headers.referer : url
 }
 
 
 function subscriptionsView(args) {
   // If the user is logged in, proceed.
-  if ( args.user.userID ) {
+  if ( args.user.user_id ) {
     return true
   // Otherwise, challenge.
   } else {

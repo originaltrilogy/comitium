@@ -33,12 +33,12 @@ async function handler(params) {
     if ( topicID.length ) {
       viewTimes = await app.models.user.topicViewTimes({ userID: params.session.user_id, topicID: topicID.join(', ') })
       viewTimes.forEach( function (item) {
-        viewTimes[item.topicID] = item
+        viewTimes[item.topic_id] = item
       })
     }
 
     topics.forEach( function (item) {
-      if ( !viewTimes[item.id] || ( item.lastPostAuthor !== params.session.username && app.toolbox.moment(item.lastPostCreated).isAfter(viewTimes[item.id].time) ) ) {
+      if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
         item.unread = true
       }
     })
