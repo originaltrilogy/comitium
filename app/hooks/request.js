@@ -1,13 +1,9 @@
-'use strict'
+// request event hooks
 
-var querystring = require('querystring')
-
-module.exports = {
-  start : start
-}
+import querystring from 'querystring'
 
 
-function start(params) {
+export const start = (params) => {
   // Redirects for legacy OT.com forum URLs
   // REMOVE from shipping version
   let url           = params.route.parsed.path,

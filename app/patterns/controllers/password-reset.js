@@ -1,24 +1,11 @@
 // password-reset controller
 
-'use strict'
-
-module.exports = {
-  handler           : handler,
-  form              : form,
-  confirmation      : confirmation,
-  reset             : reset,
-  resetForm         : resetForm,
-  resetConfirmation : resetConfirmation
-}
-
-
-// default action
-function handler(params) {
+export const handler = (params) => {
   params.form.email = ''
 }
 
 
-async function form(params, request, response, context) {
+export const form = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     params.form.email = params.form.email.trim() || ''
 
@@ -80,14 +67,14 @@ async function form(params, request, response, context) {
 }
 
 
-function confirmation() {
+export const confirmation = () => {
   return {
     view: 'confirmation'
   }
 }
 
 
-async function reset(params) {
+export const reset = async (params) => {
   params.form.password = ''
   params.form.verifyPassword = ''
 
@@ -108,7 +95,7 @@ async function reset(params) {
 }
 
 
-async function resetForm(params) {
+export const resetForm = async (params) => {
   let message = ''
 
   if ( !params.form.password.length || !params.form.verifyPassword.length ) {
@@ -151,7 +138,7 @@ async function resetForm(params) {
 
 
 
-function resetConfirmation() {
+export const resetConfirmation = () => {
   return {
     view: 'reset-confirmation',
     include: {

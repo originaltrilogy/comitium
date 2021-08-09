@@ -1,41 +1,9 @@
 // user model
 
-'use strict'
-
-const writeFile = require('util').promisify(require('fs').writeFile)
-
-module.exports = {
-  activate: activate,
-  activationStatus: activationStatus,
-  activityUpdate: activityUpdate,
-  authenticate: authenticate,
-  ban: ban,
-  banIP: banIP,
-  bannedIPs: bannedIPs,
-  create: create,
-  emailExists: emailExists,
-  exists: exists,
-  info: info,
-  insert: insert,
-  ipHistory: ipHistory,
-  liftBan: liftBan,
-  log: log,
-  logByID: logByID,
-  matchingUsersByIP: matchingUsersByIP,
-  metaData: metaData,
-  passwordResetInsert: passwordResetInsert,
-  passwordResetVerify: passwordResetVerify,
-  posts: posts,
-  profileByID: profileByID,
-  profileByUsername: profileByUsername,
-  topicViewTimes: topicViewTimes,
-  updateEmail: updateEmail,
-  updatePassword: updatePassword,
-  updateSettings: updateSettings
-}
+import { writeFile } from 'fs/promises'
 
 
-async function activate(args) {
+export const activate = async (args) => {
   if ( !args.id || !args.activationCode ) {
     return {
       success: false,
@@ -97,7 +65,7 @@ async function activate(args) {
 }
 
 
-async function activationStatus(args) {
+export const activationStatus = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -125,7 +93,7 @@ async function activationStatus(args) {
 }
 
 
-async function activityUpdate(args) {
+export const activityUpdate = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -142,7 +110,7 @@ async function activityUpdate(args) {
 }
 
 
-async function authenticate(credentials) {
+export const authenticate = async (credentials) => {
   let email = '',
       password = '',
       usernameHash = ''
@@ -181,7 +149,7 @@ async function authenticate(credentials) {
       if ( user.activated ) {
         if ( user.login ) {
           if ( usernameHash.length || compareHash === true ) {
-            await this.activityUpdate({ userID: user.id })
+            await activityUpdate({ userID: user.id })
             return {
               success: true,
               message: 'Cookies are set.',
@@ -219,7 +187,7 @@ async function authenticate(credentials) {
 }
 
 
-async function ban(args) {
+export const ban = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -238,7 +206,7 @@ async function ban(args) {
 }
 
 
-async function liftBan(args) {
+export const liftBan = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -257,7 +225,7 @@ async function liftBan(args) {
 }
 
 
-async function banIP(args) {
+export const banIP = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -277,7 +245,7 @@ async function banIP(args) {
 }
 
 
-async function bannedIPs() {
+export const bannedIPs = async () => {
   // See if already cached
   var cacheKey  = 'bannedIPs',
       scope     = 'logs',
@@ -317,7 +285,7 @@ async function bannedIPs() {
 }
 
 
-async function create(args) {
+export const create = async (args) => {
   let username  = args.username.trim(),
       email     = args.email.trim(),
       password  = args.password.trim(),
@@ -430,7 +398,7 @@ async function create(args) {
 }
 
 
-async function emailExists(args) {
+export const emailExists = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -452,7 +420,7 @@ async function emailExists(args) {
 }
 
 
-async function exists(args) {
+export const exists = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -474,7 +442,7 @@ async function exists(args) {
 }
 
 
-async function info(args) {
+export const info = async (args) => {
   let sql, arg
 
   if ( args.userID ) {
@@ -516,7 +484,7 @@ async function info(args) {
 }
 
 
-async function insert(args) {
+export const insert = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -535,7 +503,7 @@ async function insert(args) {
 }
 
 
-async function ipHistory(args) {
+export const ipHistory = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -559,7 +527,7 @@ async function ipHistory(args) {
 }
 
 
-async function log(args) {
+export const log = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -576,7 +544,7 @@ async function log(args) {
 }
 
 
-async function logByID(args) {
+export const logByID = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -595,18 +563,18 @@ async function logByID(args) {
 }
 
 
-async function metaData(args) {
-  let info = await this.info({ userID: args.userID })
+export const metaData = async (args) => {
+  let userInfo = await info({ userID: args.userID })
 
   return {
-    title: 'User Profile: ' + info.username + ' - Original Trilogy',
-    description: info.username + ' has been a member since ' + info.joined + '.',
+    title: 'User Profile: ' + userInfo.username + ' - Original Trilogy',
+    description: userInfo.username + ' has been a member since ' + userInfo.joined + '.',
     keywords: ''
   }
 }
 
 
-async function passwordResetInsert(args) {
+export const passwordResetInsert = async (args) => {
   let verificationCode = Math.random().toString().replace('0.', '') + Math.random().toString().replace('0.', '')
   const client = await app.toolbox.dbPool.connect()
 
@@ -626,7 +594,7 @@ async function passwordResetInsert(args) {
 }
 
 
-async function passwordResetVerify(args) {
+export const passwordResetVerify = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -647,7 +615,7 @@ async function passwordResetVerify(args) {
 }
 
 
-async function posts(args) {
+export const posts = async (args) => {
   // See if already cached
   let start = args.start || 0,
       end = args.end || 25,
@@ -698,7 +666,7 @@ async function posts(args) {
 }
 
 
-async function profileByID(args) {
+export const profileByID = async (args) => {
   // See if already cached
   let cacheKey = 'profileByID-visitorGroupID-' + args.visitorGroupID,
       scope = 'user-' + args.userID,
@@ -742,7 +710,7 @@ async function profileByID(args) {
 }
 
 
-async function profileByUsername(args) {
+export const profileByUsername = async (args) => {
   // See if already cached
   let cacheKey = 'profileByUsername-user-' + args.userID,
       scope = 'user',
@@ -786,7 +754,7 @@ async function profileByUsername(args) {
 }
 
 
-async function matchingUsersByIP(args) {
+export const matchingUsersByIP = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -811,7 +779,7 @@ async function matchingUsersByIP(args) {
 }
 
 
-async function topicViewTimes(args) {
+export const topicViewTimes = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -831,7 +799,7 @@ async function topicViewTimes(args) {
 }
 
 
-async function updateEmail(args) {
+export const updateEmail = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -848,7 +816,7 @@ async function updateEmail(args) {
 }
 
 
-async function updatePassword(args) {
+export const updatePassword = async (args) => {
   let passwordHash = await app.toolbox.helpers.hash(args.password)
 
   const client = await app.toolbox.dbPool.connect()
@@ -867,7 +835,7 @@ async function updatePassword(args) {
 }
 
 
-async function updateSettings(args) {
+export const updateSettings = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {

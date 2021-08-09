@@ -1,13 +1,6 @@
 // _header controller
 
-'use strict'
-
-module.exports = {
-  handler : handler
-}
-
-
-async function handler(params) {
+export const handler = async (params) => {
   if ( !params.session.username ) {
     return {
       public: {

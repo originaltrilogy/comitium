@@ -1,18 +1,6 @@
 // user controller
 
-'use strict'
-
-module.exports = {
-  handler   : handler,
-  activate  : activate,
-  ban       : ban,
-  banIP     : banIP,
-  head      : head,
-  liftBan   : liftBan
-}
-
-
-async function handler(params) {
+export const handler = async (params) => {
   params.url.page = params.url.page || 1
 
   let user = await app.models.user.profileByID({ userID: params.url.id, visitorGroupID: params.session.group_id })
@@ -67,7 +55,7 @@ async function handler(params) {
 }
 
 
-async function activate(params) {
+export const activate = async (params) => {
   let activate = await app.models.user.activate({
     id: params.url.id || false,
     activationCode: params.url.activationCode || false,
@@ -98,7 +86,7 @@ async function activate(params) {
 }
 
 
-async function ban(params, request) {
+export const ban = async (params, request) => {
   let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -114,12 +102,12 @@ async function ban(params, request) {
 }
 
 
-async function head(params) {
+export const head = async (params) => {
   return await app.models.user.metaData({ userID: params.url.id })
 }
 
 
-async function liftBan(params, request) {
+export const liftBan = async (params, request) => {
   let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -135,7 +123,7 @@ async function liftBan(params, request) {
 }
 
 
-async function banIP(params, request) {
+export const banIP = async (params, request) => {
   let access = await app.toolbox.access.userIPBan({ user: params.session })
 
   if ( access === true ) {

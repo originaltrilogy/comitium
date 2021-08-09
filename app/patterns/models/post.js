@@ -1,20 +1,6 @@
 // post model
 
-'use strict'
-
-module.exports = {
-  edit          : edit,
-  info          : info,
-  lock          : lock,
-  unlock        : unlock,
-  page          : page,
-  saveBookmark  : saveBookmark,
-  saveReport    : saveReport,
-  trash         : trash
-}
-
-
-async function edit(args) {
+export const edit = async (args) => {
   if ( !args.text.length ) {
     return {
       success: false,
@@ -50,7 +36,7 @@ async function edit(args) {
 }
 
 
-async function info(postID) {
+export const info = async (postID) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -75,7 +61,7 @@ async function info(postID) {
 }
 
 
-async function lock(args) {
+export const lock = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -93,7 +79,7 @@ async function lock(args) {
 }
 
 
-async function unlock(args) {
+export const unlock = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -111,7 +97,7 @@ async function unlock(args) {
 }
 
 
-async function page(postID) {
+export const page = async (postID) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -132,72 +118,7 @@ async function page(postID) {
 }
 
 
-function saveBookmark(args, emitter) {
-  app.listen({
-    bookmarkExists: function (emitter) {
-      app.toolbox.dbPool.connect(function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err)
-        } else {
-          client.query(
-            'select user_id from bookmarks where user_id = $1 and post_id = $2;',
-            [ args.userID, args.postID ],
-            function (err, result) {
-              done()
-              if ( err ) {
-                emitter.emit('error', err)
-              } else {
-                if ( result.rows.length ) {
-                  emitter.emit('ready', true)
-                } else {
-                  emitter.emit('ready', false)
-                }
-              }
-            }
-          )
-        }
-      })
-    }
-  }, function (output) {
-    if ( output.bookmarkExists ) {
-      emitter.emit('ready', {
-        success: true
-      })
-    } else {
-      app.listen({
-        bookmarkInsert: function (emitter) {
-          app.toolbox.dbPool.connect(function (err, client, done) {
-            if ( err ) {
-              emitter.emit('error', err)
-            } else {
-              client.query(
-                'insert into bookmarks ( user_id, post_id, notes ) values ( $1, $2, $3 );',
-                [ args.userID, args.postID, args.notes ],
-                function (err, result) {
-                  done()
-                  if ( err ) {
-                    emitter.emit('error', err)
-                  } else {
-                    emitter.emit('ready', {
-                      success: true
-                    })
-                  }
-                }
-              )
-            }
-          })
-        }
-      }, function (output) {
-        emitter.emit('ready', {
-          success: output.listen.success
-        })
-      })
-    }
-  })
-}
-
-
-async function saveReport(args) {
+export const saveReport = async (args) => {
   if ( !args.reason.length ) {
     return {
       success: false,
@@ -223,7 +144,7 @@ async function saveReport(args) {
 }
 
 
-async function trash(args) {
+export const trash = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {

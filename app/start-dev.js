@@ -1,24 +1,34 @@
 // app start
 
-'use strict'
+import fs from 'fs'
 
-global.app = require('citizen')
+import * as access   from './toolbox/access.js'
+import * as helpers  from './toolbox/helpers.js'
+import * as markdown from './toolbox/markdown.js'
+import * as validate from './toolbox/validate.js'
 
-const fs = require('fs')
+import bcrypt  from 'bcryptjs'
+import citizen from 'citizen'
+import moment  from 'moment-timezone'
+import numeral from 'numeral'
+import pg      from 'pg'
+import slug    from 'slug'
+
+global.app = citizen
 
 app.toolbox = {
   // Native modules
-  access    : require('./toolbox/access'),
-  helpers   : require('./toolbox/helpers'),
-  markdown  : require('./toolbox/markdown'),
-  validate  : require('./toolbox/validate'),
+  access   : access,
+  helpers  : helpers,
+  markdown : markdown,
+  validate : validate,
 
   // Third party modules
-  bcrypt    : require('bcryptjs'),
+  bcrypt   : bcrypt,
   // Log e-mails to app/logs/email.txt instead of sending them
   mail: {
     sendMail: function (args) {
-      app.log({
+      app.helpers.log({
         label: 'E-mail debug log (not sent)',
         content: {
           from: args.from,
@@ -30,10 +40,10 @@ app.toolbox = {
       })
     }
   },
-  moment    : require('moment-timezone'),
-  numeral   : require('numeral'),
-  pg        : require('pg'),
-  slug      : require('slug')
+  moment   : moment,
+  numeral  : numeral,
+  pg       : pg,
+  slug     : slug
 }
 
 // Overwrite pg's default date handler to convert to GMT
@@ -70,9 +80,9 @@ app.toolbox.slug.charmap['--'] = '-'
 // Static resources
 app.resources = {
   images: {
-    defaultAvatar: fs.readFileSync(app.config.citizen.directories.web + '/avatars/default-avatar.jpeg')
+    defaultAvatar: fs.readFileSync(app.config.citizen.directories.app + '/resources/images/default-avatar.jpg')
   }
 }
 
 // Start the server
-app.start()
+app.server.start()

@@ -1,24 +1,6 @@
 // post controller
 
-'use strict'
-
-module.exports = {
-  handler       : handler,
-  edit          : edit,
-  editForm      : editForm,
-  lock          : lock,
-  lockForm      : lockForm,
-  report        : report,
-  reportForm    : reportForm,
-  topic         : topic,
-  trash         : trash,
-  trashForm     : trashForm,
-  unlock        : unlock
-}
-
-
-// default action
-async function handler(params) {
+export const handler = async (params) => {
   let access = await app.toolbox.access.postView({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -42,7 +24,7 @@ async function handler(params) {
 }
 
 
-async function edit(params, request) {
+export const edit = async (params, request) => {
   let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -64,7 +46,7 @@ async function edit(params, request) {
 }
 
 
-async function editForm(params, request, response, context) {
+export const editForm = async (params, request, response, context) => {
   let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -132,7 +114,7 @@ async function editForm(params, request, response, context) {
 }
 
 
-async function lock(params, request) {
+export const lock = async (params, request) => {
   let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -158,7 +140,7 @@ async function lock(params, request) {
 }
 
 
-async function lockForm(params, request, response, context) {
+export const lockForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
@@ -210,7 +192,7 @@ async function lockForm(params, request, response, context) {
 }
 
 
-async function report(params, request) {
+export const report = async (params, request) => {
   let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -236,7 +218,7 @@ async function report(params, request) {
 }
 
 
-async function reportForm(params, request, response, context) {
+export const reportForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
   
@@ -294,7 +276,7 @@ async function reportForm(params, request, response, context) {
 }
 
 
-async function topic(params) {
+export const topic = async (params) => {
   let [
     post,
     page
@@ -325,7 +307,7 @@ async function topic(params) {
 }
 
 
-async function trash(params, request) {
+export const trash = async (params, request) => {
   let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -351,7 +333,7 @@ async function trash(params, request) {
 }
 
 
-async function trashForm(params, request, response, context) {
+export const trashForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
 
@@ -405,7 +387,7 @@ async function trashForm(params, request, response, context) {
 }
 
 
-async function unlock(params, request) {
+export const unlock = async (params, request) => {
   let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {

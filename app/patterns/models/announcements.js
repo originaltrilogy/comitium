@@ -1,16 +1,6 @@
 // announcements model
 
-'use strict'
-
-module.exports = {
-  info        : info,
-  topics      : topics,
-  breadcrumbs : breadcrumbs,
-  metaData    : metaData
-}
-
-
-async function info(discussionID) {
+export const info = async (discussionID) => {
   // See if this discussion info is already cached
   var cacheKey = 'info',
       scope = 'discussion-' + discussionID,
@@ -47,7 +37,7 @@ async function info(discussionID) {
 }
 
 
-async function topics(args) {
+export const topics = async (args) => {
   // See if already cached
   var start = args.start || 0,
       end = args.end || 25,
@@ -102,7 +92,7 @@ async function topics(args) {
 }
 
 
-function breadcrumbs() {
+export const breadcrumbs = () => {
   return {
     a: {
       name: 'Home',
@@ -116,7 +106,7 @@ function breadcrumbs() {
 }
 
 
-function metaData() {
+export const metaData = () => {
   return {
     title: 'Original Trilogy - Discussion Forum: Announcements',
     description: 'Important news and updates for the Original Trilogy community.',

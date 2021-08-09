@@ -1,14 +1,6 @@
 // index controller
 
-'use strict'
-
-module.exports = {
-  handler : handler,
-  head    : head
-}
-
-
-function handler() {
+export const handler = () => {
   return {
     handoff: {
       controller: 'discussions'
@@ -18,6 +10,6 @@ function handler() {
 }
 
 
-function head() {
+export const head = () => {
   return app.models.index.metaData()
 }

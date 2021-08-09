@@ -1,40 +1,7 @@
 // Security checks to verify if users have access to a given controller/action/view
 
-'use strict'
-
-module.exports = {
-  challenge         : challenge,
-  contentEdit       : contentEdit,
-  discussionPost    : discussionPost,
-  discussionReply   : discussionReply,
-  discussionView    : discussionView,
-  postEdit          : postEdit,
-  postLock          : postLock,
-  postReport        : postReport,
-  postTrash         : postTrash,
-  postView          : postView,
-  privateTopicStart : privateTopicStart,
-  privateTopicsView : privateTopicsView,
-  topicEdit         : topicEdit,
-  topicLock         : topicLock,
-  topicMerge        : topicMerge,
-  topicMergeForm    : topicMergeForm,
-  topicMove         : topicMove,
-  topicMoveForm     : topicMoveForm,
-  topicReply        : topicReply,
-  topicSubscribe    : topicSubscribe,
-  topicTrash        : topicTrash,
-  topicView         : topicView,
-  signInRedirect    : signInRedirect,
-  subscriptionsView : subscriptionsView,
-  userBan           : userBan,
-  userIPBan         : userIPBan
-}
-
-
-
 // If they're not logged in, send them to the sign in form. If they are, respond with a 403 Forbidden.
-function challenge(args) {
+export const challenge = (args) => {
   if ( args.user.group_id === 1 ) {
     if ( args.response === 'boolean' ) {
       return false
@@ -55,7 +22,7 @@ function challenge(args) {
 }
 
 
-async function contentEdit(args) {
+export const contentEdit = async (args) => {
   let content = await app.models.content.info(args.contentID)
 
   if ( content ) {
@@ -65,14 +32,14 @@ async function contentEdit(args) {
       return challenge(args)
     }
   } else {
-    let err = new Error()
+    let err = new Error('The requested content doesn\'t exist.')
     err.statusCode = 404
     throw err
   }
 }
 
 
-async function discussionPost(args) {
+export const discussionPost = async (args) => {
   let discussion = await app.models.discussion.info(args.discussionID)
 
   if ( discussion ) {
@@ -91,7 +58,7 @@ async function discussionPost(args) {
 }
 
 
-async function discussionReply(args) {
+export const discussionReply = async (args) => {
   let discussion = await app.models.discussion.info(args.discussionID)
 
   if ( discussion ) {
@@ -110,7 +77,7 @@ async function discussionReply(args) {
 }
 
 
-async function discussionView(args) {
+export const discussionView = async (args) => {
   let discussion = await app.models.discussion.info(args.discussionID)
 
   if ( discussion ) {
@@ -129,18 +96,18 @@ async function discussionView(args) {
 }
 
 
-async function postEdit(args) {
+export const postEdit = async (args) => {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
-    if ( ( args.user.username === post.author && !post.lockedByID ) || args.user.moderateDiscussions ) {
-      let topic = await app.models.topic.info(post.topicID)
+    if ( ( args.user.username === post.author && !post.locked_by_id ) || args.user.moderate_discussions ) {
+      let topic = await app.models.topic.info(post.topic_id)
 
       if ( topic ) {
-        if ( !topic.lockedByID || args.user.moderateDiscussions ) {
-          let topicView = await this.topicView(app.toolbox.helpers.extend(args, { topicID: topic.id }))
+        if ( !topic.locked_by_id || args.user.moderate_discussions ) {
+          let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: topic.id }))
 
-          if ( topicView === true ) {
+          if ( topicViewAccess === true ) {
             return true
           } else {
             return challenge(args)
@@ -149,27 +116,29 @@ async function postEdit(args) {
           return challenge(args)
         }
       } else {
-        throw new Error({ statusCode: 404 })
+        let err = new Error('The requested topic doesn\'t exist.')
+        err.statusCode = 404
+        throw err
       }
     } else {
       return challenge(args)
     }
   } else {
-    let err = new Error()
+    let err = new Error('The requested post doesn\'t exist.')
     err.statusCode = 404
     throw err
   }
 }
 
 
-async function postLock(args) {
+export const postLock = async (args) => {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
     if ( args.user.moderateDiscussions ) {
-      let topicView = await this.topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
+      let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
 
-      if ( topicView === true ) {
+      if ( topicViewAccess === true ) {
         return true
       } else {
         return challenge(args)
@@ -185,14 +154,14 @@ async function postLock(args) {
 }
 
 
-async function postReport(args) {
+export const postReport = async (args) => {
   if ( args.user.userID ) {
     let post = await app.models.post.info(args.postID)
 
     if ( post ) {
-      let postView = await this.postView(args)
+      let postViewAccess = await postView(args)
 
-      if ( postView === true ) {
+      if ( postViewAccess === true ) {
         return true
       } else {
         return challenge(args)
@@ -208,15 +177,15 @@ async function postReport(args) {
 }
 
 
-async function postTrash(args) {
+export const postTrash = async (args) => {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
     if ( post.topicReplies > 0 ) {
       if ( args.user.moderateDiscussions ) {
-        let topicView = await this.topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
+        let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
 
-        if ( topicView === true ) {
+        if ( topicViewAccess === true ) {
           return true
         } else {
           return challenge(args)
@@ -237,13 +206,13 @@ async function postTrash(args) {
 }
 
 
-async function postView(args) {
+export const postView = async (args) => {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
-    let topicView = await this.topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
+    let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
 
-    if ( topicView === true ) {
+    if ( topicViewAccess === true ) {
       return true
     } else {
       return challenge(args)
@@ -256,7 +225,7 @@ async function postView(args) {
 }
 
 
-async function privateTopicStart(args) {
+export const privateTopicStart = async (args) => {
   if ( args.user.talk_privately ) {
     return true
   } else {
@@ -265,7 +234,7 @@ async function privateTopicStart(args) {
 }
 
 
-function privateTopicsView(args) {
+export const privateTopicsView = (args) => {
   if ( args.user.talk_privately ) {
     return true
   } else {
@@ -274,20 +243,20 @@ function privateTopicsView(args) {
 }
 
 
-async function topicEdit(args) {
+export const topicEdit = async (args) => {
   let topic = await app.models.topic.info(args.topicID)
 
   if ( topic ) {
-    let topicView = await this.topicView(args)
+    let topicViewAccess = await topicView(args)
 
-    if ( topicView && ( ( args.user.userID === topic.authorID && !topic.lockedByID ) || args.user.moderateDiscussions ) ) {
+    if ( topicViewAccess && ( ( args.user.user_id === topic.author_id && !topic.locked_by_id ) || args.user.moderate_discussions ) ) {
       if ( !topic.private ) {
         // Check if the user has posting rights to the topic's current discussion.
         // If a topic has been moved to a discussion that the user doesn't have
         // permission to post in, they lose their editing permissions.
-        let discussionPost = await this.discussionPost(app.toolbox.helpers.extend(args, { discussionID: topic.discussionID }))
+        let discussionPostAccess = await discussionPost(app.toolbox.helpers.extend(args, { discussionID: topic.discussion_id }))
 
-        if ( discussionPost === true ) {
+        if ( discussionPostAccess === true ) {
           return true
         } else {
           return challenge(args)
@@ -299,18 +268,18 @@ async function topicEdit(args) {
       return challenge(args)
     }
   } else {
-    let err = new Error()
+    let err = new Error('The requested topic doesn\'t exist.')
     err.statusCode = 404
     throw err
   }
 }
 
 
-async function topicLock(args) {
+export const topicLock = async (args) => {
   if ( args.user.moderateDiscussions ) {
-    let topicView = await this.topicView(args)
+    let topicViewAccess = await topicView(args)
 
-    if ( topicView === true ) {
+    if ( topicViewAccess === true ) {
       return true
     } else {
       return challenge(args)
@@ -321,20 +290,20 @@ async function topicLock(args) {
 }
 
 
-async function topicMerge(args) {
+export const topicMerge = async (args) => {
   if ( args.user.moderateDiscussions ) {
-    return await this.topicView(args)
+    return await topicView(args)
   } else {
     return challenge(args)
   }
 }
 
 
-async function topicMergeForm(args) {
+export const topicMergeForm = async (args) => {
   if ( args.user.moderateDiscussions ) {
     let access = true
     let permissions = await Promise.all(args.topicID.map( async (topicID) => {
-      return await this.topicView(app.toolbox.helpers.extend(args, { topicID: topicID }))
+      return await topicView(app.toolbox.helpers.extend(args, { topicID: topicID }))
     }))
     permissions.forEach( item => {
       if ( !item ) {
@@ -348,20 +317,20 @@ async function topicMergeForm(args) {
 }
 
 
-async function topicMove(args) {
+export const topicMove = async (args) => {
   if ( args.user.moderateDiscussions ) {
-    return await this.topicView(args)
+    return await topicView(args)
   } else {
     return challenge(args)
   }
 }
 
 
-async function topicMoveForm(args) {
+export const topicMoveForm = async (args) => {
   if ( args.user.moderateDiscussions ) {
-    let topicView = await this.topicView(args)
+    let topicViewAccess = await topicView(args)
 
-    if ( topicView === true ) {
+    if ( topicViewAccess === true ) {
       let newDiscussionView = await discussionView(app.toolbox.helpers.extend(args, { discussionID: args.newDiscussionID }))
 
       if ( newDiscussionView === true ) {
@@ -378,7 +347,7 @@ async function topicMoveForm(args) {
 }
 
 
-async function topicReply(args) {
+export const topicReply = async (args) => {
   let topic = await app.models.topic.info(args.topicID)
 
   if ( topic ) {
@@ -389,9 +358,9 @@ async function topicReply(args) {
         return challenge(args)
       } else {
         if ( topic.discussionID !== 2 ) {
-          let discussionReply = await this.discussionReply(app.toolbox.helpers.extend(args, { discussionID: topic.discussion_id }))
+          let discussionReplyAccess = await discussionReply(app.toolbox.helpers.extend(args, { discussionID: topic.discussion_id }))
 
-          if ( topicLocked === false && discussionReply === true ) {
+          if ( topicLocked === false && discussionReplyAccess === true ) {
             return true
           } else {
             return challenge(args)
@@ -423,11 +392,11 @@ async function topicReply(args) {
 }
 
 
-async function topicSubscribe(args) {
+export const topicSubscribe = async (args) => {
   if ( args.user.user_id ) {
-    let topicView = await this.topicView(args)
+    let topicViewAccess = await topicView(args)
 
-    if ( topicView === true ) {
+    if ( topicViewAccess === true ) {
       return true
     } else {
       return challenge(args)
@@ -438,11 +407,11 @@ async function topicSubscribe(args) {
 }
 
 
-async function topicTrash(args) {
+export const topicTrash = async (args) => {
   if ( args.user.moderate_discussions ) {
-    let topicView = await this.topicView(args)
+    let topicViewAccess = await topicView(args)
 
-    if ( topicView === true ) {
+    if ( topicViewAccess === true ) {
       return true
     } else {
       return challenge(args)
@@ -453,13 +422,13 @@ async function topicTrash(args) {
 }
 
 
-async function topicView(args) {
+export const topicView = async (args) => {
   let topic = await app.models.topic.info(args.topicID)
   if ( topic ) {
     if ( !topic.private ) {
       if ( topic.discussion_id !== 2 ) {
-        let discussionView = await this.discussionView(app.toolbox.helpers.extend(args, { discussionID: topic.discussion_id }))
-        if ( discussionView === true ) {
+        let discussionViewAccess = await discussionView(app.toolbox.helpers.extend(args, { discussionID: topic.discussion_id }))
+        if ( discussionViewAccess === true ) {
           return true
         } else {
           return challenge(args)
@@ -488,12 +457,12 @@ async function topicView(args) {
 }
 
 
-function signInRedirect(request, url) {
+export const signInRedirect = (request, url) => {
   return request.headers.referer && request.headers.referer.search('/sign-in') < 0 ? request.headers.referer : url
 }
 
 
-function subscriptionsView(args) {
+export const subscriptionsView = (args) => {
   // If the user is logged in, proceed.
   if ( args.user.user_id ) {
     return true
@@ -504,7 +473,7 @@ function subscriptionsView(args) {
 }
 
 
-async function userBan(args) {
+export const userBan = async (args) => {
   let target = await app.models.user.info({ userID: args.userID })
 
   if ( target ) {
@@ -531,7 +500,7 @@ async function userBan(args) {
 }
 
 
-function userIPBan(args) {
+export const userIPBan = (args) => {
   if ( args.user.moderateUsers ) {
     return true
   } else {

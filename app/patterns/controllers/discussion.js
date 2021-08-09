@@ -1,14 +1,6 @@
 // discussion controller
 
-'use strict'
-
-module.exports = {
-  handler : handler,
-  head    : head
-}
-
-
-async function handler(params) {
+export const handler = async (params) => {
   let access  = await app.toolbox.access.discussionView({ discussionID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -104,6 +96,6 @@ async function handler(params) {
 }
 
 
-async function head(params) {
+export const head = async (params) => {
   return await app.models.discussion.metaData({ discussionID: params.url.id })
 }

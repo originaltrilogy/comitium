@@ -1,14 +1,6 @@
 // announcements controller
 
-'use strict'
-
-module.exports = {
-  handler: handler,
-  head: head
-}
-
-
-async function handler(params) {
+export const handler = async (params) => {
   params.url.page = params.url.page || 1
 
   let access  = await app.toolbox.access.discussionView({ discussionID: 2, user: params.session })
@@ -79,6 +71,6 @@ async function handler(params) {
 }
 
 
-function head() {
+export const head = () => {
   return app.models.announcements.metaData()
 }

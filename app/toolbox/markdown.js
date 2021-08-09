@@ -1,24 +1,15 @@
 // Markdown processing
 
-'use strict'
-
-var Markdown = require('markdown-it'),
-    emoji = require('markdown-it-emoji')
-
-module.exports = {
-  content: content,
-  inline: inline,
-  title: title
-}
+import Markdown from 'markdown-it'
+import emoji    from 'markdown-it-emoji'
 
 
-function emojiMarkup(token, idx) {
+export const emojiMarkup = (token, idx) => {
   return '<span class="emoji emoji_' + token[idx].markup + '">' + token[idx].content + '</span>'
 }
 
 
-
-function content(markdown) {
+export const content = (markdown) => {
   var md = new Markdown({
              breaks: true,
              linkify: true,
@@ -31,8 +22,7 @@ function content(markdown) {
 }
 
 
-
-function inline(markdown) {
+export const inline = (markdown) => {
   var md = new Markdown({
              linkify: true,
              typographer: true
@@ -44,8 +34,7 @@ function inline(markdown) {
 }
 
 
-
-function title(markdown) {
+export const title = (markdown) => {
   var md = new Markdown().disable(['link', 'image'])
 
   return md.renderInline(markdown)

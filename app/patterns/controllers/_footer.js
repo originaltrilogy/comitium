@@ -1,13 +1,6 @@
 // _footer controller
 
-'use strict'
-
-module.exports = {
-  handler : handler
-}
-
-
-async function handler() {
+export const handler = async () => {
   let [
     topics,
     posts,

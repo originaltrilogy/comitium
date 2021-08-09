@@ -1,15 +1,6 @@
 // content model
 
-'use strict'
-
-module.exports = {
-  edit  : edit,
-  info  : info,
-  mail  : mail
-}
-
-
-async function edit(args) {
+export const edit = async (args) => {
   if ( !args.title_markdown.length || !args.content_markdown.length ) {
     return {
       success: false,
@@ -38,7 +29,7 @@ async function edit(args) {
 }
 
 
-async function info(contentID) {
+export const info = async (contentID) => {
   let cache = app.cache.get({ scope: 'content', key: contentID })
 
   if ( cache ) {
@@ -70,7 +61,7 @@ async function info(contentID) {
 }
 
 
-async function mail(args) {
+export const mail = async (args) => {
   var format = args.format || 'text',
       parsedSubject,
       parsedText,

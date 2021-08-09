@@ -1,14 +1,6 @@
 // group model
 
-'use strict'
-
-module.exports = {
-  discussionPermissions : discussionPermissions,
-  info                  : info
-}
-
-
-async function discussionPermissions(discussionID, groupID) {
+export const discussionPermissions = async (discussionID, groupID) => {
   // See if already cached
   let cacheKey  = 'models-group-discussionPermissions-' + discussionID,
       scope     = 'group-' + groupID,
@@ -47,7 +39,7 @@ async function discussionPermissions(discussionID, groupID) {
 }
 
 
-async function info(groupID) {
+export const info = async (groupID) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {

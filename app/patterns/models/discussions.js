@@ -1,16 +1,6 @@
 // discussions model
 
-'use strict'
-
-module.exports = {
-  breadcrumbs     : breadcrumbs,
-  categories      : categories,
-  categoriesPost  : categoriesPost,
-  metaData        : metaData
-}
-
-
-function breadcrumbs() {
+export const breadcrumbs = () => {
   return {
     a: {
       name: 'Home',
@@ -20,7 +10,7 @@ function breadcrumbs() {
 }
 
 
-async function categories(groupID) {
+export const categories = async (groupID) => {
   // See if the category list is already cached
   var cacheKey = 'group-' + groupID,
       scope = 'categories_discussions',
@@ -86,7 +76,7 @@ async function categories(groupID) {
 }
 
 
-async function categoriesPost(groupID) {
+export const categoriesPost = async (groupID) => {
   // See if already cached
   let cacheKey = 'group-' + groupID,
       scope = 'categories_discussions_post',
@@ -153,7 +143,7 @@ async function categoriesPost(groupID) {
 }
 
 
-function metaData() {
+export const metaData = () => {
   return {
     title: 'Original Trilogy - Discussion Forum',
     description: 'Various discussion forums related to the Star Wars universe, including fan projects such as fan edits, fan documentaries, and preservations of the original unaltered Star Wars trilogy.',

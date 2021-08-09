@@ -1,14 +1,10 @@
 // account controller
 
-'use strict'
+import gm from 'gm'
 
-const gm = require('gm')
 
-module.exports = {
-  handler     : handler,
-  avatarForm  : avatarForm,
-  generalForm : generalForm,
-  config: {
+export const config = {
+  controller: {
     avatarForm: {
       forms: {
         maxFileSize: 5242880 // 5MB
@@ -18,7 +14,7 @@ module.exports = {
 }
 
 
-function handler(params) {
+export const handler = async (params) => {
   if ( params.session.authenticated ) {
     params.form.email = params.session.email
     params.form.password = ''
@@ -44,7 +40,7 @@ function handler(params) {
 }
 
 
-async function generalForm(params, request, response, context) {
+export const generalForm = async (params, request, response, context) => {
   if ( params.session.authenticated ) {
     if ( request.method === 'POST' ) {
       let email         = params.form.email.trim(),
@@ -180,7 +176,7 @@ async function generalForm(params, request, response, context) {
 }
 
 
-async function avatarForm(params, request, response, context) {
+export const avatarForm = async (params, request, response, context) => {
   // For now, all avatars are converted to JPEG. Storing custom avatars has many complications
   // (topic caches, static file caches, etc.).
 

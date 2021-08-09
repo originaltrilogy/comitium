@@ -1,13 +1,6 @@
 // private topics controller
 
-'use strict'
-
-module.exports = {
-  handler : handler
-}
-
-
-async function handler(params) {
+export const handler = async (params) => {
   let access = await app.toolbox.access.privateTopicsView({ user: params.session })
 
   if ( access === true ) {

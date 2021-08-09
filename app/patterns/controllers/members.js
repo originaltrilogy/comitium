@@ -1,16 +1,6 @@
 // members controller
 
-'use strict'
-
-module.exports = {
-  handler       : handler,
-  head          : head,
-  search        : search,
-  searchResults : searchResults
-}
-
-
-async function handler(params) {
+export const handler = async (params) => {
   params.form.term = ''
 
   let [
@@ -51,12 +41,12 @@ async function handler(params) {
 }
 
 
-function head() {
+export const head = () => {
   return app.models.members.metaData()
 }
 
 
-function search(params, request) {
+export const search = (params, request) => {
   if ( request.method === 'POST' ) {
     return {
       redirect: app.config.comitium.baseUrl + 'members/action/searchResults/term/' + encodeURI(params.form.term)
@@ -69,7 +59,7 @@ function search(params, request) {
 }
 
 
-async function searchResults(params) {
+export const searchResults = async (params) => {
   params.form.term = decodeURI(params.url.term)
 
   let [

@@ -1,18 +1,6 @@
 // members model
 
-'use strict'
-
-module.exports = {
-  all         : all,
-  breadcrumbs : breadcrumbs,
-  group       : group,
-  groups      : groups,
-  metaData    : metaData,
-  search      : search
-}
-
-
-async function all(args) {
+export const all = async (args) => {
   let start = args.start || 0,
       end = args.end || 25,
       orderSort = ''
@@ -75,7 +63,7 @@ async function all(args) {
 }
 
 
-function breadcrumbs() {
+export const breadcrumbs = () => {
   return {
     a: {
       name: 'Home',
@@ -89,7 +77,7 @@ function breadcrumbs() {
 }
 
 
-async function group(args) {
+export const group = async (args) => {
   let start = args.start || 0,
       end = args.end || 25,
       orderSort = ''
@@ -152,7 +140,7 @@ async function group(args) {
 }
 
 
-async function groups() {
+export const groups = async () => {
   // See if already cached
   let cacheKey = 'groups',
       scope = 'members',
@@ -190,7 +178,7 @@ async function groups() {
 }
 
 
-function metaData() {
+export const metaData = () => {
   return {
     title: 'Member List - Original Trilogy',
     description: 'List of forum members at originaltrilogy.com',
@@ -199,7 +187,7 @@ function metaData() {
 }
 
 
-async function search(args) {
+export const search = async (args) => {
   let start = args.start || 0,
       end = args.end || 25,
       orderSort = ''

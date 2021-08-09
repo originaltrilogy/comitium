@@ -1,16 +1,6 @@
 // statistics model
 
-'use strict'
-
-module.exports = {
-  firstPost : firstPost,
-  posts     : posts,
-  topics    : topics,
-  users     : users
-}
-
-
-async function firstPost() {
+export const firstPost = async () => {
   let cacheKey  = 'firstPost',
       scope     = 'stats',
       cached    = app.cache.get({ scope: scope, key: cacheKey })
@@ -44,7 +34,7 @@ async function firstPost() {
 }
 
 
-async function posts() {
+export const posts = async () => {
   let cacheKey  = 'posts',
       scope     = 'stats',
       cached    = app.cache.get({ scope: scope, key: cacheKey })
@@ -78,7 +68,7 @@ async function posts() {
 }
 
 
-async function topics() {
+export const topics = async () => {
   let cacheKey = 'topics',
       scope = 'stats',
       cached = app.cache.get({ scope: scope, key: cacheKey })
@@ -112,7 +102,7 @@ async function topics() {
 }
 
 
-async function users() {
+export const users = async () => {
   let cacheKey  = 'users',
       scope     = 'stats',
       cached    = app.cache.get({ scope: scope, key: cacheKey })

@@ -1,33 +1,18 @@
 // helpers
 
-'use strict'
-
-module.exports = {
-  activationCode        : activationCode,
-  compareHash           : compareHash,
-  extend                : extend,
-  getRandomIntInclusive : getRandomIntInclusive,
-  hash                  : hash,
-  ip                    : ip,
-  isoDate               : isoDate,
-  paginate              : paginate,
-  previousAndNext       : previousAndNext
-}
-
-
-function activationCode() {
+export const activationCode = () => {
   return Math.random().toString().replace('0.', '')
 }
 
 
-async function compareHash(str, hash) {
+export const compareHash = async (str, hash) => {
   return await app.toolbox.bcrypt.compare(str, hash).then(result => {
     return result
   }).catch(err => { throw err })
 }
 
 
-function extend(original, extension) {
+export const extend = (original, extension) => {
   var mergedObject = Object.assign({}, original) || {}
 
   extension = Object.assign({}, extension) || {}
@@ -47,7 +32,7 @@ function extend(original, extension) {
 
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#Getting_a_random_integer_between_two_values_inclusive
-function getRandomIntInclusive(min, max) {
+export const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min)
   max = Math.floor(max)
   // The maximum is inclusive and the minimum is inclusive
@@ -55,14 +40,14 @@ function getRandomIntInclusive(min, max) {
 }
 
 
-async function hash(str) {
+export const hash = async (str) => {
   return await app.toolbox.bcrypt.hash(str, 12).then(result => {
     return result
   }).catch(err => { throw err })
 }
 
 
-function ip(request, includeProxies) {
+export const ip = (request, includeProxies) => {
   var address = request.headers['x-forwarded-for'] || request.connection.remoteAddress || request.socket.remoteAddress || ( request.connection.socket ? request.connection.socket.remoteAddress : 'undefined' )
 
   address = address.split(', ')
@@ -81,7 +66,7 @@ function ip(request, includeProxies) {
 }
 
 
-function isoDate(date) {
+export const isoDate = (date) => {
   var givenDate = date || new Date(),
       isoformattedDate
 
@@ -98,7 +83,7 @@ function isoDate(date) {
 }
 
 
-function paginate(baseUrl, currentPage, itemCount) {
+export const paginate = (baseUrl, currentPage, itemCount) => {
   var pagination = {
         // Make sure currentPage and itemCount are number types
         currentPage: parseInt(currentPage, 10),
@@ -164,7 +149,7 @@ function paginate(baseUrl, currentPage, itemCount) {
 }
 
 
-function previousAndNext(baseUrl, currentPage, itemCount) {
+export const previousAndNext = (baseUrl, currentPage, itemCount) => {
   var pagination = {
         // Make sure currentPage and itemCount are number types
         currentPage: parseInt(currentPage, 10),

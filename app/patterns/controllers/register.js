@@ -1,16 +1,6 @@
 // register controller
 
-'use strict'
-
-module.exports = {
-  handler       : handler,
-  form          : form,
-  complete      : complete,
-  verification  : verification
-}
-
-
-function handler(params) {
+export const handler = (params) => {
   params.form.username = ''
   params.form.email = ''
   params.form.password = ''
@@ -24,7 +14,7 @@ function handler(params) {
 }
 
 
-async function form(params, request, response, context) {
+export const form = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     params.form.tos = params.form.tos || false
 
@@ -73,14 +63,14 @@ async function form(params, request, response, context) {
 }
 
 
-function complete() {
+export const complete = () => {
   return {
     view: 'complete'
   }
 }
 
 
-function verification() {
+export const verification = () => {
   let verification = {}
   verification.firstInt  = app.toolbox.helpers.getRandomIntInclusive(0, 10)
   verification.secondInt = app.toolbox.helpers.getRandomIntInclusive(1, 10)

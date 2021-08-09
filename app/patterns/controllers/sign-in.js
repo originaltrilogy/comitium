@@ -1,14 +1,6 @@
 // sign in controller
 
-'use strict'
-
-module.exports = {
-  handler : handler,
-  submit  : submit
-}
-
-
-function handler(params, request) {
+export const handler = (params, request) => {
   params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctzn_referer || request.headers.referer || app.config.comitium.baseUrl
   params.form.loginReferrer = request.headers.referer || app.config.comitium.baseUrl
   params.form.email = ''
@@ -38,7 +30,7 @@ function handler(params, request) {
 }
 
 
-async function submit(params, request) {
+export const submit = async (params, request) => {
   // If it's a POST, authenticate the user
   if ( request.method === 'POST' ) {
     let authenticate = await app.models.user.authenticate({ email: params.form.email || params.session.email, password: params.form.password }),

@@ -1,38 +1,6 @@
 // topic controller
 
-'use strict'
-
-module.exports = {
-  handler               : handler,
-  head                  : head,
-  notifySubscribers     : notifySubscribers,
-  start                 : start,
-  startForm             : startForm,
-  startAnnouncement     : startAnnouncement,
-  startAnnouncementForm : startAnnouncementForm,
-  startPrivate          : startPrivate,
-  startPrivateForm      : startPrivateForm,
-  reply                 : reply,
-  replyForm             : replyForm,
-  subscribe             : subscribe,
-  unsubscribe           : unsubscribe,
-  leave                 : leave,
-  leaveForm             : leaveForm,
-  lock                  : lock,
-  lockForm              : lockForm,
-  unlock                : unlock,
-  edit                  : edit,
-  editForm              : editForm,
-  merge                 : merge,
-  mergeForm             : mergeForm,
-  move                  : move,
-  moveForm              : moveForm,
-  trash                 : trash,
-  trashForm             : trashForm
-}
-
-
-async function handler(params, request, response, context) {
+export const handler = async (params, request, response, context) => {
   // Use topic info handed off from the post controller if it exists
   if ( context.topic ) {
     params.url.id   = context.topic.id
@@ -196,12 +164,12 @@ async function handler(params, request, response, context) {
 }
 
 
-async function head(params) {
+export const head = async (params) => {
   return await app.models.topic.metaData({ topicID: params.url.id })
 }
 
 
-async function start(params) {
+export const start = async (params) => {
   let access = await app.toolbox.access.discussionPost({ discussionID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -228,7 +196,7 @@ async function start(params) {
 }
 
 
-async function startForm(params, request, response, context) {
+export const startForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.discussionPost({ discussionID: params.url.id, user: params.session })
 
@@ -314,7 +282,7 @@ async function startForm(params, request, response, context) {
 }
 
 
-async function startAnnouncement(params) {
+export const startAnnouncement = async (params) => {
   let access = await app.toolbox.access.discussionPost({ discussionID: 2, user: params.session })
 
   if ( access === true ) {
@@ -343,7 +311,7 @@ async function startAnnouncement(params) {
 }
 
 
-async function startAnnouncementForm(params, request, response, context) {
+export const startAnnouncementForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.discussionPost({ discussionID: 2, user: params.session })
 
@@ -456,7 +424,7 @@ async function startAnnouncementForm(params, request, response, context) {
 }
 
 
-async function startPrivate(params) {
+export const startPrivate = async (params) => {
   let invitees = await ( async () => {
     let inviteesArray = []
 
@@ -497,7 +465,7 @@ async function startPrivate(params) {
 }
 
 
-async function startPrivateForm(params, request, response, context) {
+export const startPrivateForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.privateTopicStart({ user: params.session })
 
@@ -599,7 +567,7 @@ async function startPrivateForm(params, request, response, context) {
 }
 
 
-async function reply(params) {
+export const reply = async (params) => {
   let access = await app.toolbox.access.topicReply({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -622,7 +590,7 @@ async function reply(params) {
 
     // If the quoted post exists and its topic ID matches this topic ID, add the
     // quote to the post content (this is a security measure, don't remove it).
-    if ( quote && quote.topicID === topic.id && quote.text ) {
+    if ( quote && quote.topic_id === topic.id && quote.text ) {
       params.form.content = '> [**' + quote.author + '** said:](post/id/' + quote.id + ')\n>\n> ' + quote.text.replace(/\n/g, '\n> ') + '\n>\n\n'
     } else if ( params.url.quote && !quote ) {
       message = 'We couldn\'t find the post you\'d like to quote. It may have been deleted.'
@@ -641,7 +609,7 @@ async function reply(params) {
 }
 
 
-async function replyForm(params, request, response, context) {
+export const replyForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicReply({ topicID: params.url.id, user: params.session })
 
@@ -737,7 +705,7 @@ async function replyForm(params, request, response, context) {
 }
 
 
-async function notifySubscribers(args) {
+export const notifySubscribers = async (args) => {
   let subscribersToNotify
   if ( args.scope === 'updates' ) {
     subscribersToNotify = await app.models.topic.subscribersToUpdate({ topicID: args.topicID, skip: args.skip })
@@ -763,7 +731,7 @@ async function notifySubscribers(args) {
 }
 
 
-async function subscribe(params, request) {
+export const subscribe = async (params, request) => {
   let access = await app.toolbox.access.topicSubscribe({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -787,7 +755,7 @@ async function subscribe(params, request) {
 }
 
 
-async function unsubscribe(params, request) {
+export const unsubscribe = async (params, request) => {
   let access = await app.toolbox.access.topicSubscribe({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -808,7 +776,7 @@ async function unsubscribe(params, request) {
 }
 
 
-async function leave(params) {
+export const leave = async (params) => {
   let access = await app.toolbox.access.topicView({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -827,7 +795,7 @@ async function leave(params) {
 }
 
 
-async function leaveForm(params, request, response, context) {
+export const leaveForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicView({ topicID: params.form.topicID, user: params.session })
 
@@ -846,7 +814,7 @@ async function leaveForm(params, request, response, context) {
 }
 
 
-async function lock(params, request) {
+export const lock = async (params, request) => {
   let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -867,7 +835,7 @@ async function lock(params, request) {
 }
 
 
-async function lockForm(params, request, response, context) {
+export const lockForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
@@ -904,7 +872,7 @@ async function lockForm(params, request, response, context) {
 }
 
 
-async function unlock(params, request) {
+export const unlock = async (params, request) => {
   let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -919,7 +887,7 @@ async function unlock(params, request) {
 }
 
 
-async function edit(params, request) {
+export const edit = async (params, request) => {
   let access = await app.toolbox.access.topicEdit({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -941,7 +909,7 @@ async function edit(params, request) {
 }
 
 
-async function editForm(params, request, response, context) {
+export const editForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicEdit({ topicID: params.url.id, user: params.session })
 
@@ -1011,7 +979,7 @@ async function editForm(params, request, response, context) {
 }
 
 
-async function merge(params, request) {
+export const merge = async (params, request) => {
   let access = await app.toolbox.access.topicMerge({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -1037,7 +1005,7 @@ async function merge(params, request) {
 }
 
 
-async function mergeForm(params, request, response, context) {
+export const mergeForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     params.form.topicID = params.form.topicID.filter( item => {
       return item.length
@@ -1095,7 +1063,7 @@ async function mergeForm(params, request, response, context) {
 }
 
 
-async function move(params, request) {
+export const move = async (params, request) => {
   let access = await app.toolbox.access.topicMove({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -1122,7 +1090,7 @@ async function move(params, request) {
 }
 
 
-async function moveForm(params, request, response, context) {
+export const moveForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicMoveForm({
           topicID: params.url.id,
@@ -1167,7 +1135,7 @@ async function moveForm(params, request, response, context) {
 }
 
 
-async function trash(params, request) {
+export const trash = async (params, request) => {
   let access = await app.toolbox.access.topicTrash({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -1188,7 +1156,7 @@ async function trash(params, request) {
 }
 
 
-async function trashForm(params, request, response, context) {
+export const trashForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.topicTrash({ topicID: params.url.id, user: params.session })
 

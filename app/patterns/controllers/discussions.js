@@ -1,23 +1,6 @@
 // discussions controller
 
-'use strict'
-
-const config = {
-  global: {
-    legalFormats: {
-      json: true
-    }
-  }
-}
-
-module.exports = {
-  handler : handler,
-  head    : head,
-  config  : config
-}
-
-
-async function handler(params) {
+export const handler = async (params) => {
   let categories = await app.models.discussions.categories(params.session.group_id)
 
   categories.forEach( function (item) {
@@ -44,6 +27,6 @@ async function handler(params) {
 }
 
 
-function head() {
+export const head = () => {
   return app.models.discussions.metaData()
 }

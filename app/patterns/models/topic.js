@@ -1,39 +1,6 @@
 // topic model
 
-'use strict'
-
-module.exports = {
-  acceptInvitation: acceptInvitation,
-  announcementView: announcementView,
-  announcementReply: announcementReply,
-  edit: edit,
-  exists: exists,
-  firstUnreadPost: firstUnreadPost,
-  invitee: invitee,
-  invitees: invitees,
-  info: info,
-  insert: insert,
-  posts: posts,
-  newPosts: newPosts,
-  leave: leave,
-  lock: lock,
-  unlock: unlock,
-  move: move,
-  merge: merge,
-  reply: reply,
-  subscriptionExists: subscriptionExists,
-  subscribers: subscribers,
-  subscribersToUpdate: subscribersToUpdate,
-  subscriptionNotificationSentUpdate: subscriptionNotificationSentUpdate,
-  subscribe: subscribe,
-  unsubscribe: unsubscribe,
-  viewTimeUpdate: viewTimeUpdate,
-  breadcrumbs: breadcrumbs,
-  metaData: metaData
-}
-
-
-async function acceptInvitation(args) {
+export const acceptInvitation = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -52,7 +19,7 @@ async function acceptInvitation(args) {
 }
 
 
-async function announcementView(args) {
+export const announcementView = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -73,7 +40,7 @@ async function announcementView(args) {
 }
 
 
-async function announcementReply(args) {
+export const announcementReply = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -94,7 +61,7 @@ async function announcementReply(args) {
 }
 
 
-async function edit(args) {
+export const edit = async (args) => {
   if ( !args.title.length || !args.text.length ) {
     return {
       success: false,
@@ -137,45 +104,7 @@ async function edit(args) {
 }
 
 
-function exists(topicID, emitter) {
-  app.listen({
-    exists: function (emitter) {
-      app.toolbox.dbPool.connect(function (err, client, done) {
-        if ( err ) {
-          emitter.emit('error', err)
-        } else {
-          client.query(
-            'select id from topics where id = $1;',
-            [ topicID ],
-            function (err, result) {
-              done()
-              if ( err ) {
-                emitter.emit('error', err)
-              } else {
-                if ( result.rows.length ) {
-                  emitter.emit('ready', true)
-                } else {
-                  emitter.emit('ready', false)
-                }
-              }
-            }
-          )
-        }
-      })
-    }
-  }, function (output) {
-
-    if ( output.listen.success ) {
-      emitter.emit('ready', output.exists)
-    } else {
-      emitter.emit('error', output.listen)
-    }
-
-  })
-}
-
-
-async function newPosts(args) {
+export const newPosts = async (args) => {
   // See if already cached
   let cacheKey = 'key',
       scope = 'scope',
@@ -206,14 +135,14 @@ async function newPosts(args) {
 }
 
 
-async function firstUnreadPost(args) {
+export const firstUnreadPost = async (args) => {
   let viewTime = args.userID ? await app.models.user.topicViewTimes({ userID: args.userID, topicID: args.topicID }) : [ { time: args.viewTime } ]
 
   if ( viewTime ) {
-    let topic = await this.info(args.topicID)
+    let topic = await info(args.topicID)
 
     if ( app.toolbox.moment(topic.last_post_created).isAfter(viewTime[0].time) ) {
-      return await this.newPosts({ topicID: args.topicID, time: viewTime[0].time, replies: topic.replies })
+      return await newPosts({ topicID: args.topicID, time: viewTime[0].time, replies: topic.replies })
     } else {
       return false
     }
@@ -223,7 +152,7 @@ async function firstUnreadPost(args) {
 }
 
 
-async function invitee(args) {
+export const invitee = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -244,7 +173,7 @@ async function invitee(args) {
 }
 
 
-async function invitees(args) {
+export const invitees = async (args) => {
   args.left = args.left || false
   const client = await app.toolbox.dbPool.connect()
 
@@ -262,7 +191,7 @@ async function invitees(args) {
 }
 
 
-async function info(topicID) {
+export const info = async (topicID) => {
   // See if already cached
   let cacheKey = 'info',
       scope = 'topic-' + topicID,
@@ -307,7 +236,7 @@ async function info(topicID) {
 }
 
 
-async function insert(args) {
+export const insert = async (args) => {
   let title   = args.title.trim() || '',
       content = args.text.trim() || ''
 
@@ -428,7 +357,7 @@ async function insert(args) {
 
 
 
-async function posts(args) {
+export const posts = async (args) => {
   // See if this post subset is already cached
   let start = args.start || 0,
       end = args.end || 25,
@@ -479,7 +408,7 @@ async function posts(args) {
 }
 
 
-async function leave(args) {
+export const leave = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -500,7 +429,7 @@ async function leave(args) {
 }
 
 
-async function lock(args) {
+export const lock = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -520,7 +449,7 @@ async function lock(args) {
 }
 
 
-async function unlock(args) {
+export const unlock = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -540,7 +469,7 @@ async function unlock(args) {
 }
 
 
-async function move(args) {
+export const move = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -572,7 +501,7 @@ async function move(args) {
 }
 
 
-async function merge(args) {
+export const merge = async (args) => {
   if ( args.topicID.length === 1 ) {
     return {
       success: false,
@@ -686,7 +615,7 @@ async function merge(args) {
 }
 
 
-async function reply(args) {
+export const reply = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -712,8 +641,8 @@ async function reply(args) {
       app.cache.clear({ scope: 'topic-' + args.topicID })
 
       if ( args.private ) {
-        const invitees = await this.invitees({ topicID: args.topicID })
-        invitees.forEach( function (item) {
+        const topicInvitees = await invitees({ topicID: args.topicID })
+        topicInvitees.forEach( function (item) {
           app.cache.clear({ scope: 'private-topics-' + item.id })
         })
       } else {
@@ -724,8 +653,8 @@ async function reply(args) {
         }
       }
 
-      const subscribers = await this.subscribers({ topicID: args.topicID })
-      subscribers.forEach( function (item) {
+      const topicSubscribers = await subscribers({ topicID: args.topicID })
+      topicSubscribers.forEach( function (item) {
         app.cache.clear({ scope: 'subscriptions-' + item.id })
       })
     }
@@ -743,7 +672,7 @@ async function reply(args) {
 }
 
 
-async function subscriptionExists(args) {
+export const subscriptionExists = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -764,7 +693,7 @@ async function subscriptionExists(args) {
 }
 
 
-async function subscribers(args) {
+export const subscribers = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -781,7 +710,7 @@ async function subscribers(args) {
 }
 
 
-async function subscribersToUpdate(args) {
+export const subscribersToUpdate = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   let name = false, sql
@@ -808,7 +737,7 @@ async function subscribersToUpdate(args) {
 }
 
 
-async function subscriptionNotificationSentUpdate(args) {
+export const subscriptionNotificationSentUpdate = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -825,10 +754,10 @@ async function subscriptionNotificationSentUpdate(args) {
 }
 
 
-async function subscribe(args) {
-  let subscriptionExists = await this.subscriptionExists(args)
+export const subscribe = async (args) => {
+  let exists = await subscriptionExists(args)
 
-  if ( !subscriptionExists ) {
+  if ( !exists ) {
     const client = await app.toolbox.dbPool.connect()
 
     try {
@@ -850,7 +779,7 @@ async function subscribe(args) {
 }
 
 
-async function unsubscribe(args) {
+export const unsubscribe = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -869,7 +798,7 @@ async function unsubscribe(args) {
 }
 
 
-async function viewTimeUpdate(args) {
+export const viewTimeUpdate = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -891,7 +820,7 @@ async function viewTimeUpdate(args) {
 }
 
 
-function breadcrumbs(topic) {
+export const breadcrumbs = (topic) => {
   switch ( topic.discussion_id ) {
     case 0:
       return {
@@ -938,12 +867,12 @@ function breadcrumbs(topic) {
 }
 
 
-async function metaData(args) {
-  let topic = await this.info(args.topicID)
+export const metaData = async (args) => {
+  let topicInfo = await info(args.topicID)
 
   return {
-    title: topic.title + ' - Original Trilogy',
-    description: 'Posted by ' + topic.author + ' on ' + topic.time,
+    title: topicInfo.title + ' - Original Trilogy',
+    description: 'Posted by ' + topicInfo.author + ' on ' + topicInfo.time,
     keywords: ''
   }
 }

@@ -1,16 +1,6 @@
 // subscriptions model
 
-'use strict'
-
-module.exports = {
-  topics      : topics,
-  unread      : unread,
-  breadcrumbs : breadcrumbs,
-  metaData    : metaData
-}
-
-
-async function unread(args) {
+export const unread = async (args) => {
   // See if already cached
   let cacheKey = 'models-subscriptions-unread',
       scope = 'subscriptions-' + args.userID,
@@ -50,7 +40,7 @@ async function unread(args) {
 }
 
 
-async function topics(args) {
+export const topics = async (args) => {
   // See if already cached
   let start = args.start || 0,
       end = args.end || 25,
@@ -111,7 +101,7 @@ async function topics(args) {
 }
 
 
-function breadcrumbs() {
+export const breadcrumbs = () => {
   return {
     a: {
       name: 'Home',
@@ -121,7 +111,7 @@ function breadcrumbs() {
 }
 
 
-function metaData() {
+export const metaData = () => {
   return {
     title: 'Discussion View',
     description: 'This is the discussion view template.',

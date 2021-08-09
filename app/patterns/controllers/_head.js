@@ -1,17 +1,8 @@
 // _head controller
 
-'use strict'
+import { stat } from 'fs/promises'
 
-const 
-  util = require('util'),
-  stat = util.promisify(require('fs').stat)
-
-module.exports = {
-  handler : handler
-}
-
-
-async function handler(params) {
+export const handler = async (params) => {
   let themePath = app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes['Default'].path,
       cssKey = themePath.css + '/min/site.css',
       cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.css + '/min/site.css?v=',

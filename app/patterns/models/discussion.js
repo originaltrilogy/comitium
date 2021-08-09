@@ -1,17 +1,6 @@
 // discussion model
 
-'use strict'
-
-module.exports = {
-  announcements : announcements,
-  breadcrumbs   : breadcrumbs,
-  info          : info,
-  metaData      : metaData,
-  topics        : topics
-}
-
-
-async function announcements(discussionID) {
+export const announcements = async (discussionID) => {
   // See if already cached
   let cacheKey = 'discussion-' + discussionID,
       scope = 'announcements',
@@ -62,7 +51,7 @@ async function announcements(discussionID) {
 }
 
 
-function breadcrumbs() {
+export const breadcrumbs = () => {
   return {
     a: {
       name: 'Home',
@@ -76,7 +65,7 @@ function breadcrumbs() {
 }
 
 
-async function info(discussionID) {
+export const info = async (discussionID) => {
   // See if already cached
   let cacheKey = 'info',
       scope = 'discussion-' + discussionID,
@@ -119,18 +108,18 @@ async function info(discussionID) {
 }
 
 
-async function metaData(args) {
-  let info = await this.info(args.discussionID)
+export const metaData = async (args) => {
+  let discussionInfo = await info(args.discussionID)
 
   return {
-    title       : info.title + ' - ' + info.categoryTitle + ' - Original Trilogy',
-    description : info.metaDescription,
-    keywords    : info.keywords
+    title       : discussionInfo.title + ' - ' + discussionInfo.categoryTitle + ' - Original Trilogy',
+    description : discussionInfo.metaDescription,
+    keywords    : discussionInfo.keywords
   }
 }
 
 
-async function topics(args) {
+export const topics = async (args) => {
   // See if already cached
   let start     = args.start || 0,
       end       = args.end || 25,

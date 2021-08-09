@@ -1,13 +1,7 @@
-// session events
-
-'use strict'
-
-module.exports = {
-  start : start
-}
+// session event hooks
 
 
-async function start(params, request) {
+export const start = async (params, request) => {
   let cookies   = {},
       session   = {},
       active    ,

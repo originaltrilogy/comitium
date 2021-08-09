@@ -1,16 +1,6 @@
 // content controller
 
-'use strict'
-
-module.exports = {
-  handler   : handler,
-  edit      : edit,
-  editForm  : editForm
-}
-
-
-// default action
-async function handler(params) {
+export const handler = async (params) => {
   let [
     content,
     userCanEdit
@@ -41,14 +31,14 @@ async function handler(params) {
       }
     }
   } else {
-    let err = new Error()
+    let err = new Error('The requested content doesn\'t exist.')
     err.statusCode = 404
     throw err
   }
 }
 
 
-async function edit(params) {
+export const edit = async (params) => {
   let access = await app.toolbox.access.contentEdit({ user: params.session, contentID: params.url.id })
 
   if ( access === true ) {
@@ -69,7 +59,7 @@ async function edit(params) {
 }
 
 
-async function editForm(params, request, response, context) {
+export const editForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     let access = await app.toolbox.access.contentEdit({ user: params.session, contentID: params.url.id })
 

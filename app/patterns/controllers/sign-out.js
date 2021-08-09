@@ -1,13 +1,6 @@
 // sign out controller
 
-'use strict'
-
-module.exports = {
-  handler : handler
-}
-
-
-function handler(params, request) {
+export const handler = (params, request) => {
 
   if ( params.session.user_id ) {
     app.models.user.log({

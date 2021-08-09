@@ -1,15 +1,10 @@
 // announcement controller
 
-'use strict'
-
-module.exports = {
-  handler : handler,
-  head    : require('./topic').head
-}
+// use the head action from the topic controller
+import { head } from './topic.js'
 
 
-
-function handler() {
+export const handler = async () => {
   return {
     view: false,
     handoff: {
@@ -18,3 +13,6 @@ function handler() {
     }
   }
 }
+
+
+export { head }

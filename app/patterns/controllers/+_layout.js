@@ -1,13 +1,6 @@
 // layout controller
 
-'use strict'
-
-module.exports = {
-  handler : handler
-}
-
-
-function handler(params) {
+export const handler = async (params) => {
   let controllerChain = ''
   for ( let link in params.route.chain ) {
     controllerChain += params.route.chain[link].controller + '-' + params.route.chain[link].action + '-' + params.route.chain[link].view + ','

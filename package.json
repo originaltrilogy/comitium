@@ -12,6 +12,7 @@
     "url": "https://github.com/codebloat/comitium"
   },
   "main": "index",
+  "type": "module",
   "dependencies": {
     "bcryptjs": "2.4.3",
     "citizen": "https://github.com/jaysylvester/citizen#1.0.0",
