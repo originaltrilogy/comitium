@@ -441,8 +441,6 @@ export const lock = async (args) => {
 
     // Clear the cache for this topic
     app.cache.clear({ scope: 'topic-' + args.topicID })
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }
@@ -461,8 +459,6 @@ export const unlock = async (args) => {
 
     // Clear the cache for this topic
     app.cache.clear({ scope: 'topic-' + args.topicID })
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }
@@ -729,8 +725,6 @@ export const subscribersToUpdate = async (args) => {
     })
 
     return result.rows
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }
@@ -746,8 +740,6 @@ export const subscriptionNotificationSentUpdate = async (args) => {
       text: 'update topic_subscriptions set notification_sent = $1 where topic_id = $2;',
       values: [ args.time, args.topicID ]
     })
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }

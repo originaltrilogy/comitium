@@ -29,9 +29,9 @@ export const announcements = async (discussionID) => {
       })
 
       result.rows.forEach( function (item) {
-        item.replies_formatted            = app.toolbox.numeral(item.replies).format('0,0');
-        item.post_date_formatted          = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY');
-        item.last_post_created_formatted  = app.toolbox.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY');
+        item.replies_formatted            = app.toolbox.numeral(item.replies).format('0,0')
+        item.post_date_formatted          = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+        item.last_post_created_formatted  = app.toolbox.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests

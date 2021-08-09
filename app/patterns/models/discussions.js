@@ -67,8 +67,6 @@ export const categories = async (groupID) => {
         })
       }
       return categories
-    } catch (err) {
-      throw err
     } finally {
       client.release()
     }
@@ -134,8 +132,6 @@ export const categoriesPost = async (groupID) => {
       }
 
       return categories
-    } catch (err) {
-      throw err
     } finally {
       client.release()
     }

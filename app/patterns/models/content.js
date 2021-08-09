@@ -87,14 +87,12 @@ export const mail = async (args) => {
         parsedText = result.rows[0].html
       }
 
-      for ( var property in replace ) {
-        if ( replace.hasOwnProperty(property) ) {
-          regex = '\\[' + property + '\\]'
-          regex = new RegExp(regex, 'gim')
-          parsedSubject = parsedSubject.replace(regex, replace[property])
-          parsedText = parsedText.replace(regex, replace[property])
-        }
-      }
+      Object.keys(replace).forEach( property => {
+        regex = '\\[' + property + '\\]'
+        regex = new RegExp(regex, 'gim')
+        parsedSubject = parsedSubject.replace(regex, replace[property])
+        parsedText = parsedText.replace(regex, replace[property])
+      })
 
       return {
         success: true,
@@ -104,8 +102,6 @@ export const mail = async (args) => {
     } else {
       throw new Error('The requested e-mail template doesn\'t exist.')
     }
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }

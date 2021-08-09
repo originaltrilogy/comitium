@@ -12,20 +12,43 @@ export const compareHash = async (str, hash) => {
 }
 
 
+export const copy = (object) => {
+  var objectCopy
+
+  if ( !object || typeof object === 'number' || typeof object === 'string' || typeof object === 'boolean' || typeof object === 'symbol' || typeof object === 'function' || object.constructor === Date || object._onTimeout ) { // Node returns typeof === 'object' for setTimeout()
+    objectCopy = object
+  } else if ( Array.isArray(object) ) {
+    objectCopy = []
+  
+    object.forEach( function (item, index) {
+      objectCopy[index] = copy(item)
+    })
+  } else if ( object.constructor === Object || Object(object) === object ) {
+    objectCopy = Object.assign({}, object)
+
+    for ( var property in objectCopy ) {
+      objectCopy[property] = copy(object[property])
+    }
+  } else {
+    objectCopy = object
+  }
+  
+  return objectCopy
+}
+
+
 export const extend = (original, extension) => {
   var mergedObject = Object.assign({}, original) || {}
 
   extension = Object.assign({}, extension) || {}
 
-  for ( var property in extension ) {
-    if ( extension.hasOwnProperty(property) ) {
-      if ( extension[property] && extension[property].constructor === Object ) {
-        mergedObject[property] = extend(mergedObject[property], extension[property])
-      } else {
-        mergedObject[property] = extension[property]
-      }
+  Object.keys(extension).forEach( item => {
+    if ( extension[item] && extension[item].constructor === Object ) {
+      mergedObject[item] = extend(mergedObject[item], extension[item])
+    } else {
+      mergedObject[item] = copy(extension[item])
     }
-  }
+  })
 
   return mergedObject
 }

@@ -17,11 +17,9 @@ export const handler = async (params) => {
         count = topics.length ? topics[0].full_count : 0,
         viewTimes
     
-    for ( let topic in topics ) {
-      if ( topics.hasOwnProperty(topic) ) {
-        topicID.push(topics[topic].id)
-      }
-    }
+    Object.keys(topics).forEach( topic => {
+      topicID.push(topics[topic].id)
+    })
 
     if ( topicID.length ) {
       viewTimes = await app.models.user.topicViewTimes({ userID: params.session.user_id, topicID: topicID.join(', ') }) || []

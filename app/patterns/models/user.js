@@ -35,8 +35,6 @@ export const activate = async (args) => {
           success: true,
           message: 'Your account has been activated! You can now sign in.'
         }
-      } catch (err) {
-        throw err
       } finally {
         client.release()
       }
@@ -198,8 +196,6 @@ export const ban = async (args) => {
     })
 
     app.cache.clear({ scope: 'user-' + args.userID })
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }
@@ -217,8 +213,6 @@ export const liftBan = async (args) => {
     })
 
     app.cache.clear({ scope: 'user-' + args.userID })
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }
@@ -237,8 +231,6 @@ export const banIP = async (args) => {
       // Clear the cached data
       app.cache.clear({ scope: 'logs', key: 'bannedIPs' })
     }
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }
@@ -555,8 +547,6 @@ export const logByID = async (args) => {
     })
 
     return result.rows[0]
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }

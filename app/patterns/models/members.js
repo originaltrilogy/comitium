@@ -54,8 +54,6 @@ export const all = async (args) => {
       }
 
       return result.rows
-    } catch (err) {
-      throw err
     } finally {
       client.release()
     }
@@ -131,8 +129,6 @@ export const group = async (args) => {
       }
 
       return result.rows
-    } catch (err) {
-      throw err
     } finally {
       client.release()
     }
@@ -169,8 +165,6 @@ export const groups = async () => {
       }
 
       return result.rows
-    } catch (err) {
-      throw err
     } finally {
       client.release()
     }
@@ -253,8 +247,6 @@ export const search = async (args) => {
       }
 
       return result.rows
-    } catch (err) {
-      throw err
     } finally {
       client.release()
     }

@@ -30,8 +30,6 @@ export const discussionPermissions = async (discussionID, groupID) => {
       }
 
       return result.rows[0]
-    } catch (err) {
-      throw err
     } finally {
       client.release()
     }
@@ -50,8 +48,6 @@ export const info = async (groupID) => {
     })
 
     return result.rows[0]
-  } catch (err) {
-    throw err
   } finally {
     client.release()
   }
