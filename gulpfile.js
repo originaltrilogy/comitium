@@ -1,17 +1,18 @@
-'use strict'
+import autoprefixer from 'autoprefixer'
+import concat       from 'gulp-concat'
+import cssnano      from 'gulp-cssnano'
+import filter       from 'gulp-filter'
+import gulp         from 'gulp'
+import gulpsass     from 'gulp-sass'
+import livereload   from 'gulp-livereload'
+import postcss      from 'gulp-postcss'
+import nodesass     from 'sass'
+import sourcemaps   from 'gulp-sourcemaps'
+import uglify       from 'gulp-uglify-es'
 
-var autoprefixer  = require('autoprefixer'),
-    concat        = require('gulp-concat'),
-    cssnano       = require('gulp-cssnano'),
-    filter        = require('gulp-filter'),
-    gulp          = require('gulp'),
-    livereload    = require('gulp-livereload'),
-    postcss       = require('gulp-postcss'),
-    sass          = require('gulp-sass')(require('sass')),
-    sourcemaps    = require('gulp-sourcemaps'),
-    uglify        = require('gulp-uglify-es').default
+const sass = gulpsass(nodesass)
 
-var themes = [
+let themes = [
       {
         name: 'Comitium Dark',
         path: 'comitium-dark'
