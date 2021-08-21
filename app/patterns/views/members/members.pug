@@ -38,7 +38,7 @@ section(class="members")
               td.group
                 = member.name
             td.join-date
-              = app.toolbox.moment.tz(member.joined, session.timezone).format(session.dateFormat)
+              = app.toolbox.moment.tz(member.joined, session.timezone).format(session.date_format)
             td.last-active
-              = app.toolbox.moment.tz(member.lastActivity, session.timezone).format(session.dateFormat)
+              = app.toolbox.moment.tz(member.last_activity, session.timezone).format(session.date_format)
     include ../partials/previous-and-next
