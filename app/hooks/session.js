@@ -72,6 +72,8 @@ export const start = async (params, request) => {
         session.last_activity = active
       }
 
+      session.date_format = 'MMMM D, YYYY'
+
       return {
         cookies: cookies,
         session: session
