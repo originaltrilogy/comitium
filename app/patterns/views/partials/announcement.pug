@@ -1,18 +1,18 @@
-article(class="topic" + ( topic.replies ? " has-replies" : "" ) + ( topic.unread ? " unread" : "" ) + ( topic.lockedByID ? " locked" : "" ) data-topic-id=topic.id)
+article(class="topic" + ( topic.replies ? " has-replies" : "" ) + ( topic.unread ? " unread" : "" ) + ( topic.locked_by_id ? " locked" : "" ) data-topic-id=topic.id)
   section.description
     h3
-      a(href="announcement/" + topic.url + "/id/" + topic.id ) !{topic.titleHtml}
+      a(href="announcement/" + topic.url + "/id/" + topic.id ) !{topic.title_html}
     section.author
-      a.avatar(href="user/" + topic.topicStarterUrl + "/id/" + topic.topicStarterID rel="author" title="View " + topic.topicStarter + "'s profile.")
-        img(src="avatars/" + topic.topicStarterID + ".jpg")
+      a.avatar(href="user/" + topic.topic_starter_url + "/id/" + topic.topic_starter_id rel="author" title="View " + topic.topic_starter + "'s profile.")
+        img(src="avatars/" + topic.topic_starter_id + ".jpg")
       dl.byline
         dt.author Author
         dd.author
-          a(href="user/" + topic.topicStarterUrl + "/id/" + topic.topicStarterID rel="author" title="View " + topic.topicStarter + "'s profile.") #{topic.topicStarter}
+          a(href="user/" + topic.topic_starter_url + "/id/" + topic.topic_starter_id rel="author" title="View " + topic.topic_starter + "'s profile.") #{topic.topic_starter}
         dt.date Date
         dd.date
           time
-            = topic.postDateFormatted
+            = topic.post_date_formatted
   a.content-stats(href="topic/" + topic.url + "/id/" + topic.id)
     dl.content-stats(data-replies=topic.replies)
       dt.replies
@@ -21,12 +21,12 @@ article(class="topic" + ( topic.replies ? " has-replies" : "" ) + ( topic.unread
         else
           | Reply
       dd.replies
-        = topic.repliesFormatted
+        = topic.replies_formatted
   if topic.replies
     p.last-post
-      a.avatar(href="user/" + topic.lastPostAuthorUrl + "/id/" + topic.lastPostAuthorID rel="author" title="View " + topic.lastPostAuthor + "'s profile.")
-        img(src="avatars/" + topic.lastPostAuthorID + ".jpg")
-      a(href="user/" + topic.lastPostAuthorUrl + "/id/" + topic.lastPostAuthorID rel="author" title="View " + topic.lastPostAuthor + "'s profile.")
-        = topic.lastPostAuthor
+      a.avatar(href="user/" + topic.last_post_author_url + "/id/" + topic.last_post_author_id rel="author" title="View " + topic.last_post_author + "'s profile.")
+        img(src="avatars/" + topic.last_post_author_id + ".jpg")
+      a(href="user/" + topic.last_post_author_url + "/id/" + topic.last_post_author_id rel="author" title="View " + topic.last_post_author + "'s profile.")
+        = topic.last_post_author
       |  replied 
-      time #{topic.lastPostCreatedFormatted}
+      time #{topic.last_post_created_formatted}
