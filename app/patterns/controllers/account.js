@@ -1,14 +1,13 @@
 // account controller
 
+import { writeFile } from 'fs/promises'
 import gm from 'gm'
 
 
 export const config = {
-  controller: {
-    avatarForm: {
-      forms: {
-        maxFileSize: 5242880 // 5MB
-      }
+  avatarForm: {
+    forms: {
+      maxPayloadSize: 5242880 // 5MB
     }
   }
 }
@@ -180,8 +179,6 @@ export const avatarForm = async (params, request, response, context) => {
   // For now, all avatars are converted to JPEG. Storing custom avatars has many complications
   // (topic caches, static file caches, etc.).
 
-  // var extension, newExtension
-
   if ( params.session.authenticated ) {
     if ( request.method === 'POST' ) {
       params.form.email = params.session.email
@@ -198,27 +195,26 @@ export const avatarForm = async (params, request, response, context) => {
         avatarForm: {}
       }
 
-      if ( params.form.avatar && params.form.avatar.size ) {
-        // extension = path.extname(params.form.avatar.path).toLowerCase()
-        // newExtension = extension === '.jpg' || extension === '.jpeg' || extension === '.png' || extension === '.gif' ? extension : '.jpg'
+      if ( params.form.avatar && Object.keys(params.form.avatar).length && Object.keys(params.form.avatar).length === 1 ) {
+        await writeFile('/tmp/comitium-avatar-' + params.session.user_id + '.jpg', params.form.avatar[Object.keys(params.form.avatar)[0]].binary, 'binary')
 
         let processImage = await new Promise((resolve, reject) => {
-          gm(params.form.avatar.path).identify( function (err, stats) {
+          gm('/tmp/comitium-avatar-' + params.session.user_id + '.jpg').identify( function (err, stats) {
             let file = app.config.citizen.directories.web + '/avatars/' + params.session.user_id + '.jpg'
-  
+
             if ( !stats ) {
               content.avatarForm.message = 'There was a problem with your upload, possibly because the file is corrupt.'
-              resolve({ content: content })
+              resolve({ public: content })
             } else if ( !stats.size ) {
               content.avatarForm.message = 'Only image files are allowed.'
-              resolve({ content: content })
+              resolve({ public: content })
             } else {
               let width = stats.size.width,
                   height = stats.size.height
   
               if ( stats.format === 'GIF' && stats.Scene ) {
                 content.avatarForm.message = 'Animated GIFs aren\'t allowed.'
-                resolve({ content: content })
+                resolve({ public: content })
               } else {
                 if ( stats.size.width !== stats.size.height ) {
                   if ( stats.size.width > stats.size.height ) {
@@ -228,14 +224,13 @@ export const avatarForm = async (params, request, response, context) => {
                   }
                 }
   
-                gm(params.form.avatar.path)
+                gm('/tmp/comitium-avatar-' + params.session.user_id + '.jpg')
                   .gravity('Center')
                   .crop(width, height)
                   .resize(200, 200)
                   .sharpen(10)
                   .autoOrient()
                   .noProfile()
-                  // .write(app.config.citizen.directories.web + '/avatars/' + params.session.user_id + newExtension, function (err) {
                   .write(file, function (err) {
                     if ( err ) {
                       reject(err)
@@ -243,7 +238,7 @@ export const avatarForm = async (params, request, response, context) => {
                       app.cache.clear({ file: file })
                       content.avatarForm.success = true
                       content.avatarForm.message = 'Your avatar was saved successfully!'
-                      resolve({ content: content })
+                      resolve({ public: content })
                     }
                   })
               }
@@ -255,7 +250,7 @@ export const avatarForm = async (params, request, response, context) => {
       } else {
         content.avatarForm.message = 'You need to specify a file to upload.'
         return {
-          content: content
+          public: content
         }
       }
     } else {

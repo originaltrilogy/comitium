@@ -73,13 +73,12 @@ section.settings
 
   section.avatar#avatar
     h2 Avatar
-    if avatarForm && avatarForm.messages
+    if avatarForm && avatarForm.message
       section(class="notice" + ( avatarForm.success ? " success" : " error" ) )
         svg(class="icon" + ( avatarForm.success ? " success" : " error" ) )
           use(xlink:href="themes/default/images/symbols.svg#icon-" + ( avatarForm.success ? "success" : "error" ) )
-        each message in avatarForm.messages
-          p
-            = message
+        p
+          = avatarForm.message
     a.avatar(href="user/" + session.url + "/id/" + session.user_id rel="author")
       img(src="avatars/" + session.user_id + ".jpg?v=" + Math.random() )
     p Your avatar is an image that appears next to your posts to help identify you to other members.
