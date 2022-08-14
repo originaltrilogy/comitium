@@ -3,7 +3,7 @@
 import { stat } from 'fs/promises'
 
 export const handler = async (params) => {
-  let themePath = app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes['Default'].path,
+  let themePath = app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path,
       cssKey = themePath.css + '/min/site.css',
       cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.css + '/min/site.css?v=',
       jsKey = themePath.js + '/min/site.js',
