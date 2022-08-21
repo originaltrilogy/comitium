@@ -1,10 +1,10 @@
-if !topic.lockedByID || session.moderateDiscussions
+if !topic.lockedByID || session.moderate_discussions
   nav.topic.actions
     ul
       if topic.discussionID !== 1
         //- Everyone (including the public) should see the reply button.
         //- Only exception: the topic is locked and the user isn"t a mod.
-        if !topic.lockedByID || session.moderateDiscussions
+        if !topic.lockedByID || session.moderate_discussions
           li.reply
             a(href="topic/action/reply/id/" + url.id) Reply
         if !userIsSubscribed
@@ -16,7 +16,7 @@ if !topic.lockedByID || session.moderateDiscussions
       if userCanEdit
         li.edit
           a(href="topic/action/edit/id/" + topic.id title="Edit this topic.") Edit
-      if session.moderateDiscussions
+      if session.moderate_discussions
         li.move
           a(href="topic/action/move/id/" + topic.id title="Move this topic to another discussion forum.") Move
         li.merge

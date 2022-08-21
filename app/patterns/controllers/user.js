@@ -92,12 +92,50 @@ export const ban = async (params, request) => {
   if ( access === true ) {
     await app.models.user.ban({ userID: params.url.id })
     // End the banned user's session immediately
-    app.session.end('userID', +params.url.id) // URL params are always strings, so cast to number
+    app.session.end('user_id', +params.url.id) // URL params are always strings, so cast to number
     return {
       redirect: request.headers.referer
     }
   } else {
     return access
+  }
+}
+
+
+export const cleanup = async (params) => {
+  let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
+
+  if ( access === true ) {
+    let user = await app.models.user.info({ userID: params.url.id }),
+        topics = await app.models.user.topics({ userID: params.url.id })
+    
+    return {
+      public: {
+        user: user,
+        topics: topics
+      },
+      view: 'cleanup'
+    }
+  } else {
+    return access
+  }
+}
+
+
+export const cleanupForm = async (params, request) => {
+  if ( request.method === 'POST' ) {
+    let access = await app.toolbox.access.userBan({ userID: params.form.userID, user: params.session })
+  
+    if ( access === true ) {
+      await app.models.user.trashTopics({ userID: params.form.userID })
+      return {
+        redirect: app.config.comitium.baseUrl + 'user/id/' + params.form.userID
+      }
+    } else {
+      return access
+    }
+  } else {
+    return cleanup(params)
   }
 }
 
@@ -113,7 +151,7 @@ export const liftBan = async (params, request) => {
   if ( access === true ) {
     await app.models.user.liftBan({ userID: params.url.id })
     // End the user's session immediately
-    app.session.end('userID', +params.url.id) // URL params are always strings, so cast to number
+    app.session.end('user_id', +params.url.id) // URL params are always strings, so cast to number
     return {
       redirect: request.headers.referer
     }

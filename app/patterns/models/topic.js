@@ -105,32 +105,21 @@ export const edit = async (args) => {
 
 
 export const newPosts = async (args) => {
-  // See if already cached
-  let cacheKey = 'key',
-      scope = 'scope',
-      cached = app.cache.get({ scope: scope, key: cacheKey })
+  const client = await app.toolbox.dbPool.connect()
 
-  // If it's cached, return the cache item
-  if ( cached ) {
-    return cached
-  // If it's not cached, retrieve it from the database and cache it
-  } else {
-    const client = await app.toolbox.dbPool.connect()
+  try {
+    const result = await client.query({
+      name: 'topic_newPosts',
+      text: 'select id from posts where topic_id = $1 and draft = false and created > $2 order by created asc;',
+      values: [ args.topicID, args.time ]
+    })
 
-    try {
-      const result = await client.query({
-        name: 'topic_newPosts',
-        text: 'select id from posts where topic_id = $1 and draft = false and created > $2 order by created asc;',
-        values: [ args.topicID, args.time ]
-      })
-
-      return {
-        post: result.rows[0],
-        page: Math.ceil(( args.replies + 1.5 - result.rows.length ) / 25)
-      }
-    } finally {
-      client.release()
+    return {
+      post: result.rows[0],
+      page: Math.ceil(( args.replies + 1.5 - result.rows.length ) / 25)
     }
+  } finally {
+    client.release()
   }
 }
 
@@ -354,7 +343,6 @@ export const insert = async (args) => {
     }
   }
 }
-
 
 
 export const posts = async (args) => {

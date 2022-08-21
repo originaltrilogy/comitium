@@ -1,0 +1,22 @@
+header
+  section.summary
+    h1 User Cleanup: !{user.username}
+    p Clicking the button below will move all topics started by this user to the Trash.
+    form(method="post" action="user/action/cleanupForm/id/" + user.id)
+      input(type="hidden" name="userID" value=url.id)
+      ul.actions
+        li.primary
+          input(type="submit" value="Delete all user topics")
+
+section.topics
+  if topics
+    h2 #{topics.length} Topics
+    each topic in topics
+      article(class="topic")
+        section.description
+          h3
+            a(href="topic/" + topic.url + "/id/" + topic.id) !{topic.title_html}
+          time
+            = topic.post_date_formatted
+  else
+    p This user hasn"t started any topics yet.

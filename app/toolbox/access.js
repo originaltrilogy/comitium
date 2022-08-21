@@ -135,8 +135,8 @@ export const postLock = async (args) => {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
-    if ( args.user.moderateDiscussions ) {
-      let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
+    if ( args.user.moderate_discussions ) {
+      let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topic_id }))
 
       if ( topicViewAccess === true ) {
         return true
@@ -182,8 +182,8 @@ export const postTrash = async (args) => {
 
   if ( post ) {
     if ( post.topicReplies > 0 ) {
-      if ( args.user.moderateDiscussions ) {
-        let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
+      if ( args.user.moderate_discussions ) {
+        let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topic_id }))
 
         if ( topicViewAccess === true ) {
           return true
@@ -210,7 +210,7 @@ export const postView = async (args) => {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
-    let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topicID }))
+    let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topic_id }))
 
     if ( topicViewAccess === true ) {
       return true
@@ -276,7 +276,7 @@ export const topicEdit = async (args) => {
 
 
 export const topicLock = async (args) => {
-  if ( args.user.moderateDiscussions ) {
+  if ( args.user.moderate_discussions ) {
     let topicViewAccess = await topicView(args)
 
     if ( topicViewAccess === true ) {
@@ -291,7 +291,7 @@ export const topicLock = async (args) => {
 
 
 export const topicMerge = async (args) => {
-  if ( args.user.moderateDiscussions ) {
+  if ( args.user.moderate_discussions ) {
     return await topicView(args)
   } else {
     return challenge(args)
@@ -300,7 +300,7 @@ export const topicMerge = async (args) => {
 
 
 export const topicMergeForm = async (args) => {
-  if ( args.user.moderateDiscussions ) {
+  if ( args.user.moderate_discussions ) {
     let access = true
     let permissions = await Promise.all(args.topicID.map( async (topicID) => {
       return await topicView(app.toolbox.helpers.extend(args, { topicID: topicID }))
@@ -318,7 +318,7 @@ export const topicMergeForm = async (args) => {
 
 
 export const topicMove = async (args) => {
-  if ( args.user.moderateDiscussions ) {
+  if ( args.user.moderate_discussions ) {
     return await topicView(args)
   } else {
     return challenge(args)
@@ -327,7 +327,7 @@ export const topicMove = async (args) => {
 
 
 export const topicMoveForm = async (args) => {
-  if ( args.user.moderateDiscussions ) {
+  if ( args.user.moderate_discussions ) {
     let topicViewAccess = await topicView(args)
 
     if ( topicViewAccess === true ) {
@@ -477,7 +477,7 @@ export const userBan = async (args) => {
   let target = await app.models.user.info({ userID: args.userID })
 
   if ( target ) {
-    if ( args.user.moderateUsers ) {
+    if ( args.user.moderate_users ) {
       if ( target.group === 'Administrators' ) {
         let err = new Error('Administrators can\'t be banned.')
         err.statusCode = 403
@@ -501,7 +501,7 @@ export const userBan = async (args) => {
 
 
 export const userIPBan = (args) => {
-  if ( args.user.moderateUsers ) {
+  if ( args.user.moderate_users ) {
     return true
   } else {
     return challenge(args)

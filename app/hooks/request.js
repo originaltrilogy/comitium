@@ -11,7 +11,7 @@ export const start = (params) => {
       // If moderators are allowed to bypass the offline mode, check permissions
       if ( app.config.comitium.mode.moderatorBypass ) {
         if ( params.session.authenticated ) {
-          if ( params.session.moderateDiscussions ) {
+          if ( params.session.moderate_discussions ) {
             return
           } else {
             return {

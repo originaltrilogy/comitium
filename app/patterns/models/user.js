@@ -769,6 +769,73 @@ export const matchingUsersByIP = async (args) => {
 }
 
 
+export const topics = async (args) => {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'user_topics',
+      text: 'select t.id, t.title_html, t.url, p.created as post_date ' +
+      'from topics t ' +
+      'join posts p on p.id = ( select id from posts where topic_id = t.id and draft = false order by created asc limit 1 ) ' +
+      'join users u on u.id = p.user_id ' +
+      'where u.id = $1 ' +
+      'and t.draft = false and t.private = false ' +
+      'order by p.created asc;',
+      values: [ args.userID ]
+    })
+
+    result.rows.forEach( function (item) {
+      item.post_date_formatted = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+    })
+
+    if ( result.rows.length ) {
+      return result.rows
+    } else {
+      return false
+    }
+  } finally {
+    client.release()
+  }
+}
+
+
+export const trashTopics = async (args) => {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    await client.query('begin')
+    // Move this user's topics to the trash
+    await client.query(
+      'update topics set discussion_id = 1 where id in ( ' +
+        'select t.id from topics t ' +
+        'join posts p on p.id = ( select id from posts where topic_id = t.id and draft = false order by created asc limit 1 ) ' +
+        'join users u on u.id = p.user_id ' +
+        'where u.id = $1 and t.private = false' +
+      ');',
+      [ args.userID ])
+    // Update the last post across all discussions
+    await client.query(
+      'update discussions d set last_post_id = ( ' +
+        'select p.id from posts p ' +
+        'join topics t on p.topic_id = t.id ' +
+        'where t.id = p.topic_id and t.discussion_id = d.id ' +
+        'order by p.created desc limit 1 ' +
+      ');',
+      )
+    await client.query('commit')
+
+    // Clear the cache
+    app.cache.clear()
+  } catch (err) {
+    await client.query('rollback')
+    throw err
+  } finally {
+    client.release()
+  }
+}
+
+
 export const topicViewTimes = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 

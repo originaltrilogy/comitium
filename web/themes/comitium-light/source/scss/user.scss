@@ -2,7 +2,7 @@
 //   user view   //
 ///////////////////
 
-body[data-controller="user"] {
+body[data-controller="user"][data-action="handler"] {
 
   section.summary {
     margin: auto;
@@ -178,7 +178,47 @@ body[data-controller="user"] {
         margin: 0;
       }
     }
-
   }
 
+}
+
+
+body[data-controller="user"][data-action="cleanup"] {
+  section.topics {
+    padding: 1.6rem;
+  }
+
+  article.topic {
+    padding: 0.4rem 0;
+  }
+
+  h3 {
+    margin-bottom: 0.6rem;
+  }
+
+  @media only screen and (min-width: 720px) {
+    ul.actions {
+      margin-top: 2rem;
+    }
+
+    section.topics {
+      margin: 2rem auto;
+      max-width: 96rem;
+      padding: 0;
+    }
+
+    h3 {
+      display: inline-block;
+      margin: 0;
+    }
+  
+    time {
+      display: inline-block;
+      padding-left: 0.4rem;
+  
+      &::before {
+        content: ' – '
+      }
+    }
+  }
 }

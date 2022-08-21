@@ -26,15 +26,15 @@ article.post(id=post.id data-post-id=post.id)
     != post.html
   nav.actions
     ul
-      if ( session.username === post.author && !post.lockedByID ) || session.moderateDiscussions
+      if ( session.username === post.author && !post.lockedByID ) || session.moderate_discussions
         li.edit
           a(href="post/action/edit/id/" + post.id) Edit
       //- li.bookmark
       //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
-      if post.authorID !== session.user_id && !session.moderateDiscussions
+      if post.authorID !== session.user_id && !session.moderate_discussions
         li.report
           a(href="post/action/report/id/" + post.id) Report
-      if session.moderateDiscussions
+      if session.moderate_discussions
         if !post.lockedByID
           li.lock
             a(href="post/action/lock/id/" + post.id) Lock

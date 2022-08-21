@@ -8,7 +8,7 @@ header
 if topic.locked_by_id
   section.notice.locked
     <svg class="icon lock"><use xlink:href="themes/default/images/symbols.svg#icon-lock"></use></svg>
-    if !session.moderateDiscussions
+    if !session.moderate_discussions
       p This topic has been locked by a moderator.
     else
       p This topic is locked, but as a moderator, you can still reply and make edits.

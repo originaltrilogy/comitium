@@ -9,7 +9,7 @@ section.topics
   header
     h2 #{discussion.topicsFormatted} Announcement#{ discussion.topics != 1 ? "s" : "" }
     include ../partials/pagination
-    if session.moderateDiscussions
+    if session.moderate_discussions
       nav.actions
         ul
           li.new-announcement

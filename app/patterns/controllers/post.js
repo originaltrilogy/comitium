@@ -5,11 +5,11 @@ export const handler = async (params) => {
 
   if ( access === true ) {
     let post  = await app.models.post.info(params.url.id),
-        topic = await app.models.topic.info(post.topicID),
+        topic = await app.models.topic.info(post.topic_id),
         topicController = topic.discussionID !== 2 ? 'topic' : 'announcement',
         topicUrlTitle = topic.private ? '' : '/' + topic.url
 
-    topic.url = topicController + topicUrlTitle + '/id/' + post.topicID,
+    topic.url = topicController + topicUrlTitle + '/id/' + post.topic_id,
     post.url = 'post/id/' + post.id + '/action/topic#' + post.id
 
     return {
@@ -149,7 +149,7 @@ export const lockForm = async (params, request, response, context) => {
       
       await app.models.post.lock({
         postID: post.id,
-        topicID: post.topicID,
+        topicID: post.topic_id,
         lockedByID: params.session.user_id,
         lockReason: app.toolbox.markdown.inline(params.form.reason)
       })
@@ -166,7 +166,7 @@ export const lockForm = async (params, request, response, context) => {
               postUrl: app.config.comitium.baseUrl + 'post/id/' + post.id,
               postText: post.text,
               topicTitle: post.topicTitle,
-              topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+              topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topic_id,
               reason: params.form.reason
             }
           })
@@ -238,7 +238,7 @@ export const reportForm = async (params, request, response, context) => {
             postUrl: app.config.comitium.baseUrl + 'post/id/' + post.id,
             postText: post.text,
             topicTitle: post.topicTitle,
-            topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+            topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topic_id,
             reason: params.form.reason
           }
         })
@@ -286,7 +286,7 @@ export const topic = async (params) => {
   ])
 
   if ( post ) {
-    params.url.id = post.topicID
+    params.url.id = post.topic_id
     params.url.page = page
 
     return {
@@ -294,7 +294,7 @@ export const topic = async (params) => {
         controller: 'topic'
       },
       topic: {
-        id: post.topicID,
+        id: post.topic_id,
         page: page
       },
       view: false
@@ -342,7 +342,7 @@ export const trashForm = async (params, request, response, context) => {
 
       await app.models.post.trash({
         postID: post.id,
-        topicID: post.topicID,
+        topicID: post.topic_id,
         discussionID: post.discussionID,
         authorID: post.userID,
         deletedByID: params.session.user_id,
@@ -361,7 +361,7 @@ export const trashForm = async (params, request, response, context) => {
               postID: post.id,
               postText: post.text,
               topicTitle: post.topicTitle,
-              topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topicID,
+              topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topic_id,
               reason: params.form.reason
             }
           })
@@ -393,7 +393,7 @@ export const unlock = async (params, request) => {
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    await app.models.post.unlock({ postID: post.id, topicID: post.topicID })
+    await app.models.post.unlock({ postID: post.id, topicID: post.topic_id })
 
     return {
       redirect: request.headers.referer

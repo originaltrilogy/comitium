@@ -86,7 +86,7 @@ export const info = async (discussionID) => {
       })
 
       if ( result.rows.length ) {
-        result.rows[0]['topicsFormatted'] = app.toolbox.numeral(result.rows[0].topics).format('0,0')
+        result.rows[0]['topics_formatted'] = app.toolbox.numeral(result.rows[0].topics).format('0,0')
 
         // Cache the discussion info object for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
@@ -112,8 +112,8 @@ export const metaData = async (args) => {
   let discussionInfo = await info(args.discussionID)
 
   return {
-    title       : discussionInfo.title + ' - ' + discussionInfo.categoryTitle + ' - Original Trilogy',
-    description : discussionInfo.metaDescription,
+    title       : discussionInfo.title + ' - ' + discussionInfo.category_title + ' - Original Trilogy',
+    description : discussionInfo.meta_description,
     keywords    : discussionInfo.keywords
   }
 }
@@ -153,8 +153,8 @@ export const topics = async (args) => {
       result.rows.forEach( function (item) {
         item.replies                      = parseInt(item.replies, 10)
         item.replies_formatted            = app.toolbox.numeral(item.replies).format('0,0')
-        item.post_date_formatted          = app.toolbox.moment.tz(item.postDate, 'America/New_York').format('D-MMM-YYYY')
-        item.last_post_created_formatted  = app.toolbox.moment.tz(item.lastPostCreated, 'America/New_York').format('D-MMM-YYYY')
+        item.post_date_formatted          = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+        item.last_post_created_formatted  = app.toolbox.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests
