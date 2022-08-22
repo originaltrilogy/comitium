@@ -24,9 +24,10 @@ export const start = async (params, request) => {
           user          = authenticate.user
 
       if ( authenticate.success ) {
-        user.user_id = authenticate.user.id
-        user.ip = ip
+        user.user_id = user.id
         delete user.id
+        user.ip = ip
+        user.themePath = app.config.comitium.themes[user.theme] ? app.config.comitium.themes[user.theme].path : app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path
 
         app.models.user.log({
           userID: user.user_id,
@@ -60,6 +61,7 @@ export const start = async (params, request) => {
     } else {
       session.group_id = 1
       session.ip = ip
+      session.themePath = app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path
       active = app.toolbox.helpers.isoDate()
       cookies.comitium_active = {
         value: active,
@@ -80,7 +82,7 @@ export const start = async (params, request) => {
       }
     }
   // Throw an exception if the remote IP is banned
-  // TODO: Create a banned
+  // TODO: Create a banned IP view
   } else {
     let err = new Error('Your IP address (' + bannedIP + ') has been banned.')
     err.statusCode = 403

@@ -7,7 +7,7 @@ header
 
 if topic.lockedByID
   section.notice.locked
-    <svg class="icon lock"><use xlink:href="themes/default/images/symbols.svg#icon-lock"></use></svg>
+    <svg class="icon lock"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-lock"></use></svg>
     if !session.moderate_discussions
       p This topic has been locked by a moderator.
     else
@@ -36,7 +36,7 @@ if userCanReply
         li.post-content.textarea.required
           label(for="post-content")
             | Post content
-          textarea(id="post-content" name="content" rows="20" required) #{config.comitium.editorIntro}
+          textarea(id="post-content" name="content" rows="20" required) #{config.comitium.copy.editorIntro}
         li.subscribe.checkbox
           input(id="subscribe" name="subscribe" type="checkbox" value="true")
           label(for="subscribe")

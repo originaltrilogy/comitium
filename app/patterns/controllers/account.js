@@ -135,6 +135,7 @@ export const generalForm = async (params, request, response, context) => {
 
           user.userID = user.id
           delete user.id
+          user.themePath = app.config.comitium.themes[user.theme].path
           params.form.password = ''
 
           return {

@@ -6,7 +6,7 @@ header
     include ../partials/topic-summary
 
 section.notice.private
-  <svg class="icon private"><use xlink:href="themes/default/images/symbols.svg#icon-private"></use></svg>
+  <svg class="icon private"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-private"></use></svg>
   p This topic is private and visible only to 
     each user, index in participants
       if participants.length > 1 && index === participants.length - 1
@@ -49,7 +49,7 @@ if userCanReply
         li.post-content.textarea.required
           label(for="post-content")
             | Post content
-          textarea(id="post-content" name="content" rows="20" required) #{config.comitium.editorIntro}
+          textarea(id="post-content" name="content" rows="20" required) #{config.comitium.copy.editorIntro}
         li.subscribe.checkbox
           input(id="subscribe" name="subscribe" type="checkbox" value="true")
           label(for="subscribe")

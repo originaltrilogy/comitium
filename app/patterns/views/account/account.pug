@@ -9,7 +9,7 @@ section.settings
     if general && general.messages
       section(class="notice" + ( general.success ? " success" : " error" ) )
         svg(class="icon" + ( general.success ? " success" : " error" ) )
-          use(xlink:href="themes/default/images/symbols.svg#icon-" + ( general.success ? "success" : "error" ) )
+          use(xlink:href="themes/" + session.themePath.images + "/images/symbols.svg#icon-" + ( general.success ? "success" : "error" ) )
         each message in general.messages
           p
             = message
@@ -76,7 +76,7 @@ section.settings
     if avatarForm && avatarForm.message
       section(class="notice" + ( avatarForm.success ? " success" : " error" ) )
         svg(class="icon" + ( avatarForm.success ? " success" : " error" ) )
-          use(xlink:href="themes/default/images/symbols.svg#icon-" + ( avatarForm.success ? "success" : "error" ) )
+          use(xlink:href="themes/" + session.themePath.images + "/images/symbols.svg#icon-" + ( avatarForm.success ? "success" : "error" ) )
         p
           = avatarForm.message
     a.avatar(href="user/" + session.url + "/id/" + session.user_id rel="author")

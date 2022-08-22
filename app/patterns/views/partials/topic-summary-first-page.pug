@@ -2,7 +2,7 @@ section.summary
   h1 !{topic.title_html}
   a(class="avatar" + ( topic.author_group_id === 6 ? " banned" : "" ) href="user/" + topic.author_url + "/id/" + topic.author_id rel="author" title="View " + topic.author + "'s profile.")
     if topic.author_group_id === 6
-      <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
+      <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
     img(src="avatars/" + topic.author_id + ".jpg")
   dl.byline
     dt.author Author

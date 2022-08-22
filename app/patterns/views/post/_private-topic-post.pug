@@ -2,7 +2,7 @@ article(id=post.id class="post" + ( post.authorSignature ? " signature" : "" ) +
   header
     a(class="avatar" + ( post.authorGroupID === 6 ? " banned" : "" ) href="user/" + post.authorUrl + "/id/" + post.authorID rel="author")
       if post.authorGroupID === 6
-        <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
+        <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
       img(src="avatars/" + post.authorID + ".jpg")
     dl
       dt.author Author
@@ -19,7 +19,7 @@ article(id=post.id class="post" + ( post.authorSignature ? " signature" : "" ) +
       dt.link Post link
       dd.link
         a.post(href="post/id/" + post.id + "/action/topic#" + post.id title="Jump directly to this post.")
-          | <svg class="icon link"><use xlink:href="themes/default/images/symbols.svg#icon-link"></use></svg>
+          | <svg class="icon link"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-link"></use></svg>
   section.content.post
     != post.html
   nav.actions
@@ -31,11 +31,11 @@ article(id=post.id class="post" + ( post.authorSignature ? " signature" : "" ) +
           a(href="post/action/edit/id/" + post.id) Edit
       //- li.bookmark
       //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
-  if post.authorSignature
+  if ( post.author_signature && post.author_signature.length ) || post.author_group_id === 4 || post.author_group_id === 5
     section.signature
-      if post.authorGroupID === 4
-        section.staff.moderator originaltrilogy.com Moderator
-      else if post.authorGroupID === 5
-        section.staff.administrator originaltrilogy.com Administrator
+      if post.author_group_id === 4
+        section.staff.moderator Forum Moderator
+      else if post.author_group_id === 5
+        section.staff.administrator Forum Administrator
       section.content
-        != post.authorSignature
+        != post.author_signature

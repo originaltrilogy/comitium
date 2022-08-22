@@ -1,6 +1,6 @@
 header
   a.home(href="/" title="Go to our home page.")
-    <svg class="logo"><use xlink:href="themes/#{themePath.images}/images/symbols.svg#logo-horizontal"></use></svg>
+    img(src="themes/" + session.themePath.images + "/images/logo.svg")
   a.sign-in(href="sign-in") Sign In
   nav
     ul.content

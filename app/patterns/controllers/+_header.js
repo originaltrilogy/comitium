@@ -4,7 +4,6 @@ export const handler = async (params) => {
   if ( !params.session.username ) {
     return {
       public: {
-        themePath: app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path,
         logo: app.resources.images.logoHorizontal
       }
     }
@@ -23,7 +22,6 @@ export const handler = async (params) => {
           topics: unreadTopics,
           privateTopics: unreadPrivateTopics
         },
-        themePath: app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path,
         logo: app.resources.images.logoHorizontal
       }
     }

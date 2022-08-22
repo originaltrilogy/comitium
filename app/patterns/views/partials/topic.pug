@@ -5,7 +5,7 @@ article(class="topic" + ( topic.replies ? " has-replies" : "" ) + ( topic.unread
     section.author
       a(class="avatar" + ( topic.topic_starter_group_id === 6 ? " banned" : "" ) href="user/" + topic.topic_starter_url + "/id/" + topic.topic_starter_id rel="author" title="View " + topic.topicStarter + "'s profile.")
         if topic.topic_starter_group_id === 6
-          <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
+          <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
         img(src="avatars/" + topic.topic_starter_id + ".jpg")
       dl.byline
         dt.author Author

@@ -208,15 +208,6 @@ time {
   @include bodyFont();
 }
 
-a.home {
-  display: block;
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-}
-
 body {
   > header {
     display: flex;
@@ -228,8 +219,14 @@ body {
     text-transform: uppercase;
   
     a.home {
-      height: 100%;
-      padding: 0 1.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 14rem;
+
+      img {
+        width: 100%;
+      }
     }
   
     a.sign-in {
@@ -895,8 +892,13 @@ footer {
   padding: 1.6rem;
 
   a.home {
-    width: 14rem;
+    display: block;
+    width: 24rem;
     margin: 2.4rem auto 3rem;
+
+    img {
+      width: 100%;
+    }
   }
 
   section.stats {
@@ -1182,9 +1184,7 @@ a.avatar {
         margin: 0 2.4rem;
       }
       a.home {
-        flex-basis: 16.8rem;
-        height: 4rem;
-        padding: 0;
+        width: 16rem;
       }
       a.sign-in {
         display: none;
@@ -1710,9 +1710,6 @@ a.avatar {
     > header {
       padding: 1.2rem calc( (100% - 100rem ) / 2 );
 
-      a.home {
-        margin-left: 0;
-      }
       nav {
         ul.account {
           margin-right: 0;

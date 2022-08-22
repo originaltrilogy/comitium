@@ -1,6 +1,6 @@
 footer(data-view="/views/partials/footer")
   a.home(href="/" title="Go to our home page.")
-    <svg class="logo"><use xlink:href="themes/default/images/symbols.svg#logo-vertical"></use></svg>
+    img(src="themes/" + session.themePath.images + "/images/logo.svg")
   section.stats
     p <strong>#{stats.users}</strong> members have started <strong>#{stats.topics}</strong> topics with <strong>#{stats.posts}</strong> posts since <strong>#{stats.firstPostCreated}</strong>
   section.copyright

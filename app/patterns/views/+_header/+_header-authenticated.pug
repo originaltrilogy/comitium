@@ -1,6 +1,6 @@
 header(class="authenticated" + ( updates ? " updates" : "" ) )
   a.home(href="/" title="Go to our home page.")
-    <svg class="logo"><use xlink:href="themes/#{themePath.images}/images/symbols.svg#logo-horizontal"></use></svg>
+    img(src="themes/" + session.themePath.images + "/images/logo.svg")
   nav
     ul.content
       li.discussions
@@ -31,9 +31,9 @@ header(class="authenticated" + ( updates ? " updates" : "" ) )
   section.status
     if unread.privateTopics
       a.private-topics.updates(href="private-topics" title="You have unread private topics.")
-        <svg class="icon messages-new"><use xlink:href="themes/#{themePath.images}/images/symbols.svg#icon-messages-new"></use></svg> Private Topics
+        <svg class="icon messages-new"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-messages-new"></use></svg> Private Topics
     else
       a.private-topics(href="private-topics" title="You have no private topic updates.")
-        <svg class="icon messages"><use xlink:href="themes/#{themePath.images}/images/symbols.svg#icon-messages"></use></svg> Private Topics
+        <svg class="icon messages"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-messages"></use></svg> Private Topics
     a.account.avatar(href="account") Your Account
       img(src="avatars/" + session.user_id + ".jpg")

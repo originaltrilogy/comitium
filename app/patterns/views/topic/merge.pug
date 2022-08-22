@@ -4,7 +4,7 @@ header
 
 if error && error.message
   section.notice.error
-    <svg class="icon error"><use xlink:href="themes/default/images/symbols.svg#icon-error"></use></svg>
+    <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
     p !{error.message}
 
 section.form.post

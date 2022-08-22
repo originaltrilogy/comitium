@@ -2,12 +2,12 @@ header
   section.summary
     a(class="avatar" + ( user.group_id === 6 ? " banned" : "" ) href="user/" + user.username + "/id/" + user.id)
       if user.group === "Banned Members"
-        <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
+        <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
       img(src="avatars/" + user.id + ".jpg")
     h1 #{user.username}
     if user.group === "Banned Members"
       section.notice.banned
-        <svg class="icon banned"><use xlink:href="themes/default/images/symbols.svg#icon-banned"></use></svg>
+        <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
         p This user has been banned.
     dl
       dt User Group

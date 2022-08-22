@@ -3,11 +3,10 @@
 import { stat } from 'fs/promises'
 
 export const handler = async (params) => {
-  let themePath = app.config.comitium.themes[params.session.theme] ? app.config.comitium.themes[params.session.theme].path : app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path,
-      cssKey = themePath.css + '/min/site.css',
-      cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.css + '/min/site.css?v=',
-      jsKey = themePath.js + '/min/site.js',
-      jsUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.js + '/min/site.js?v=',
+  let cssKey = params.session.themePath.css + '/min/site.css',
+      cssUrl = app.config.comitium.staticAssetUrl + 'themes/' + params.session.themePath.css + '/min/site.css?v=',
+      jsKey = params.session.themePath.js + '/min/site.js',
+      jsUrl = app.config.comitium.staticAssetUrl + 'themes/' + params.session.themePath.js + '/min/site.js?v=',
       staticFileStats = app.config.citizen.cache.static.enable ? app.cache.get({ scope: 'staticFileStats' }) : false,
       metaData = params.route.action === 'handler' && app.controllers[params.route.controller] && app.controllers[params.route.controller].head ? await app.controllers[params.route.controller].head(params) : {}
 
@@ -26,8 +25,8 @@ export const handler = async (params) => {
       css,
       js
     ] = await Promise.all([
-      stat(app.config.citizen.directories.web + '/themes/' + themePath.css + '/min/site.css'),
-      stat(app.config.citizen.directories.web + '/themes/' + themePath.js + '/min/site.js')
+      stat(app.config.citizen.directories.web + '/themes/' + params.session.themePath.css + '/min/site.css'),
+      stat(app.config.citizen.directories.web + '/themes/' + params.session.themePath.js + '/min/site.js')
     ])
 
     // Cache the file stats if they aren't cached already
