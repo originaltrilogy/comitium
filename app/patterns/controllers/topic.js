@@ -176,7 +176,7 @@ export const start = async (params) => {
     let discussion = await app.models.discussion.info(params.url.id)
 
     params.form.title = ''
-    params.form.content = app.config.comitium.editorIntro
+    params.form.content = app.config.comitium.copy.editorIntro
     params.form.subscribe = true
 
     return {
@@ -289,7 +289,7 @@ export const startAnnouncement = async (params) => {
     let categories = await app.models.discussions.categoriesPost(params.session.groupID)
 
     params.form.title = ''
-    params.form.content = app.config.comitium.editorIntro
+    params.form.content = app.config.comitium.copy.editorIntro
     params.form.displayDiscussions = 'none'
     params.form.discussions = []
     params.form.subscribe = true
@@ -450,7 +450,7 @@ export const startPrivate = async (params) => {
   if ( access === true ) {
     params.form.invitees = invitees ? invitees.join(', ') : ''
     params.form.title = ''
-    params.form.content = app.config.comitium.editorIntro
+    params.form.content = app.config.comitium.copy.editorIntro
     params.form.subscribe = true
 
     return {
@@ -585,7 +585,7 @@ export const reply = async (params) => {
       })()
     ])
 
-    params.form.content = app.config.comitium.editorIntro
+    params.form.content = app.config.comitium.copy.editorIntro
     let message
 
     // If the quoted post exists and its topic ID matches this topic ID, add the
