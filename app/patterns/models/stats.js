@@ -57,10 +57,10 @@ export const posts = async () => {
         app.cache.set({
           key: cacheKey,
           scope: scope,
-          value: result.rows[0].postCount
+          value: result.rows[0].post_count
         })
       }
-      return result.rows[0].postCount
+      return result.rows[0].post_count
     } finally {
       client.release()
     }
