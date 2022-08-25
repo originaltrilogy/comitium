@@ -203,8 +203,7 @@ body[data-controller="user"][data-action="cleanup"] {
 
     section.topics {
       margin: 2rem auto;
-      max-width: 96rem;
-      padding: 0;
+      padding: 0 2.4rem;
     }
 
     h3 {
@@ -219,6 +218,13 @@ body[data-controller="user"][data-action="cleanup"] {
       &::before {
         content: ' – '
       }
+    }
+  }
+
+  @media only screen and (min-width: 1024px) {
+    section.topics {
+      max-width: 96rem;
+      padding: 0;
     }
   }
 }
