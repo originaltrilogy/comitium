@@ -21,8 +21,8 @@ export const handler = async (params) => {
     params.form.timezone = params.session.timezone
     params.form.dateFormat = params.session.dateFormat
     params.form.theme = params.session.theme
-    params.form.subscriptionEmailNotification = params.session.subscriptionEmailNotification
-    params.form.privateTopicEmailNotification = params.session.privateTopicEmailNotification
+    params.form.subscriptionEmailNotification = params.session.subscription_email_notification
+    params.form.privateTopicEmailNotification = params.session.private_topic_email_notification
     params.form.website = params.session.website
 
     return {
