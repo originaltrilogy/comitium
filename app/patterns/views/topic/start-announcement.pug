@@ -48,14 +48,14 @@ section.form.post.topic-write
             ul.data
               each category in categories
                 li
-                  = category.categoryTitle
+                  = category.category_title
                   ul.data.checkbox
                     each discussion in category.subcategories
-                      if discussion.discussionID !== 1
+                      if discussion.discussion_id !== 1
                         li.discussion.checkbox
-                          input(id="discussion-#{discussion.discussionID}" name="discussions" type="checkbox" value=discussion.discussionID checked=form.discussions[discussion.discussionID])
-                          label(for="discussion-" + discussion.discussionID)
-                            = discussion.discussionTitle
+                          input(id="discussion-#{discussion.discussion_id}" name="discussions" type="checkbox" value=discussion.discussion_id checked=form.discussions[discussion.discussion_id])
+                          label(for="discussion-" + discussion.discussion_id)
+                            = discussion.discussion_title
       li.subscribe.checkbox
         input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
         label(for="subscribe")
