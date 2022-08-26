@@ -184,9 +184,9 @@ export const start = async (params) => {
       public: {
         discussion: discussion,
         breadcrumbs: app.models.topic.breadcrumbs({
-          discussionTitle : discussion.title,
-          discussionUrl   : discussion.url,
-          discussionID    : discussion.id
+          discussion_title : discussion.title,
+          discussion_url   : discussion.url,
+          discussion_id    : discussion.id
         })
       }
     }
@@ -224,9 +224,9 @@ export const startForm = async (params, request, response, context) => {
               },
               discussion: discussion,
               breadcrumbs: app.models.topic.breadcrumbs({
-                discussionTitle: discussion.title,
-                discussionUrl: discussion.url,
-                discussionID: discussion.id
+                discussion_title: discussion.title,
+                discussion_url: discussion.url,
+                discussion_id: discussion.id
               })
             }
           }
@@ -267,7 +267,11 @@ export const startForm = async (params, request, response, context) => {
               public: {
                 topic: saveTopic,
                 discussion: discussion,
-                breadcrumbs: app.models.topic.breadcrumbs(discussion.title, discussion.url, discussion.id)
+                breadcrumbs: app.models.topic.breadcrumbs({
+                  discussion_title: discussion.title,
+                  discussion_url: discussion.url,
+                  discussion_id: discussion.id
+                })
               }
             }
           }
@@ -286,7 +290,7 @@ export const startAnnouncement = async (params) => {
   let access = await app.toolbox.access.discussionPost({ discussionID: 2, user: params.session })
 
   if ( access === true ) {
-    let categories = await app.models.discussions.categoriesPost(params.session.groupID)
+    let categories = await app.models.discussions.categoriesPost(params.session.group_id)
 
     params.form.title = ''
     params.form.content = app.config.comitium.copy.editorIntro
@@ -299,9 +303,9 @@ export const startAnnouncement = async (params) => {
       public: {
         categories: categories,
         breadcrumbs: app.models.topic.breadcrumbs({
-          discussionTitle: 'Announcements',
-          discussionUrl: 'announcements',
-          discussionID: 2
+          discussion_title: 'Announcements',
+          discussion_url: 'announcements',
+          discussion_id: 2
         })
       }
     }
@@ -324,7 +328,7 @@ export const startAnnouncementForm = async (params, request, response, context) 
         discussions.push(item)
       })
 
-      let categories = await app.models.discussions.categoriesPost(params.session.groupID),
+      let categories = await app.models.discussions.categoriesPost(params.session.group_id),
           parsedTitle = app.toolbox.markdown.title(params.form.title),
           parsedContent = app.toolbox.markdown.content(params.form.content),
           url = app.toolbox.slug(params.form.title),
@@ -347,9 +351,9 @@ export const startAnnouncementForm = async (params, request, response, context) 
               },
               categories: categories,
               breadcrumbs: app.models.topic.breadcrumbs({
-                discussionTitle: 'Announcements',
-                discussionUrl: 'announcements',
-                discussionID: 2
+                discussion_title: 'Announcements',
+                discussion_url: 'announcements',
+                discussion_id: 2
               })
             }
           }
@@ -406,9 +410,9 @@ export const startAnnouncementForm = async (params, request, response, context) 
                 topic: saveTopic,
                 categories: categories,
                 breadcrumbs: app.models.topic.breadcrumbs({
-                  discussionTitle: 'Announcements',
-                  discussionUrl: 'announcements',
-                  discussionID: 2
+                  discussion_title: 'Announcements',
+                  discussion_url: 'announcements',
+                  discussion_id: 2
                 })
               }
             }
@@ -1072,7 +1076,7 @@ export const move = async (params, request) => {
       categories
     ] = await Promise.all([
       app.models.topic.info(params.url.id),
-      app.models.discussions.categories(params.session.groupID)
+      app.models.discussions.categories(params.session.group_id)
     ])
 
     params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id)
