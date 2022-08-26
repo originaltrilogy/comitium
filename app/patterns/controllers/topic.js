@@ -655,7 +655,7 @@ export const replyForm = async (params, request, response, context) => {
 
           reply = await app.models.topic.reply({
             topicID: topic.id,
-            discussionID: topic.discussionID,
+            discussionID: topic.discussion_id,
             userID: params.session.user_id,
             html: parsedContent,
             text: params.form.content,
