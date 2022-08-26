@@ -39,9 +39,10 @@ export const submit = async (params, request) => {
 
     if ( authenticate.success ) {
       user.user_id = authenticate.user.id
+      delete user.id
       user.authenticated = true
       user.login_referrer = params.form.loginReferrer
-      delete user.id
+      user.themePath = app.config.comitium.themes[user.theme] ? app.config.comitium.themes[user.theme].path : app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path
 
       if ( !params.cookie.comitium_id ) {
         cookies.comitium_id = {
