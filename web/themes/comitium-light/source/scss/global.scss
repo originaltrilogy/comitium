@@ -641,15 +641,15 @@ section {
   }
 
   &.preview {
-    margin-top: 1.8rem;
+    margin-top: 0.8rem;
     
     article {
-      padding: 0;
+      display: block;
       border: none;
 
       h3.title {
         @include titleFont($weight: normal);
-        margin: 1.2rem;
+        margin: 1.6rem;
       }
     }
   }
@@ -1492,10 +1492,13 @@ a.avatar {
       margin-top: 3.2rem;
 
       > h2 {
-        margin: 0 2.4rem;
+        margin: 0 2.4rem 1.6rem;
       }
+
       article {
-        padding: 0;
+        h3.title {
+          margin: 1.6rem 2.6rem 0;
+        }
       }
     }
     &.form {
@@ -1731,17 +1734,22 @@ a.avatar {
   section.preview {
     h2 {
       max-width: 96rem;
-      margin: auto;
+      margin-right: auto;
+      margin-left: auto;
     }
-    h3.title {
-      max-width: 96rem;
-      margin: auto;
-      padding: 2.4rem;
+
+    article {
+      h3.title {
+        max-width: 96rem;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 0;
+      }
     }
     section.content {
       max-width: 96rem;
       margin: auto;
-      padding: 0;
+      padding: 2.6rem 0;
     }
   }
 
