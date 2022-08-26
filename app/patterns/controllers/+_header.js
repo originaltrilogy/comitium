@@ -21,8 +21,7 @@ export const handler = async (params) => {
         unread: {
           topics: unreadTopics,
           privateTopics: unreadPrivateTopics
-        },
-        logo: app.resources.images.logoHorizontal
+        }
       }
     }
   }
