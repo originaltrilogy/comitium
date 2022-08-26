@@ -26,7 +26,7 @@ article(class="topic" + ( topic.replies ? " has-replies" : "" ) + ( topic.unread
           else
             | Reply
         dd.replies
-          = topic.repliesFormatted
+          = topic.replies_formatted
     p.last-post
       a.avatar(href="user/" + topic.lastPostAuthorUrl + "/id/" + topic.lastPostAuthorID rel="author" title="View " + topic.lastPostAuthor + "'s profile.")
         img(src="avatars/" + topic.lastPostAuthorID + ".jpg")

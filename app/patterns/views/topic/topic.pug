@@ -20,7 +20,7 @@ section.posts
   each post in firstPost
     include ../post/_topic-post
   nav
-    h2 #{topic.repliesFormatted} Repl#{ topic.replies != 1 ? "ies" : "y" }
+    h2 #{topic.replies_formatted} #{ topic.replies != 1 ? "Replies" : "Reply" }
     include ../partials/pagination
     include ../partials/topic-actions
   each post in posts

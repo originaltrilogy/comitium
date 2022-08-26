@@ -147,7 +147,7 @@ export const invitee = async (args) => {
   try {
     const result = await client.query({
       name: 'topic_invitee',
-      text: 'select topic_id, accepted, left from topic_invitations where topic_id = $1 and user_id = $2;',
+      text: 'select topic_id, accepted, left_topic from topic_invitations where topic_id = $1 and user_id = $2;',
       values: [ args.topicID, args.userID ]
     })
 
