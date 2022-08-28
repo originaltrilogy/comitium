@@ -157,7 +157,6 @@ body[data-chain*="subscriptions-"] {
         flex: 1 0 100%;
 
         section.description {
-          flex: 0 1 70.6rem;
           padding-right: 2.4rem;
         }
         h3 {
@@ -252,6 +251,16 @@ body[data-controller="subscriptions"] {
             font-size: 88%;
           }
         }
+      }
+    }
+  }
+}
+
+body[data-controller="private-topics"] {
+  @media only screen and (min-width: 720px) {
+    article.topic {
+      nav.actions {
+        flex-basis: 6rem;
       }
     }
   }
