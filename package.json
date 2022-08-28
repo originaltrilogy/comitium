@@ -29,12 +29,12 @@
   },
   "devDependencies": {
     "autoprefixer": "*",
+    "browser-sync": "^2.27.10",
     "eslint": "^8.0.0",
     "gulp": "*",
     "gulp-concat": "*",
     "gulp-cssnano": "*",
     "gulp-filter": "*",
-    "gulp-livereload": "*",
     "gulp-postcss": "*",
     "gulp-sass": "*",
     "gulp-sourcemaps": "*",

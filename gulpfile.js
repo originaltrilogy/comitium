@@ -4,7 +4,7 @@ import cssnano      from 'gulp-cssnano'
 import filter       from 'gulp-filter'
 import gulp         from 'gulp'
 import gulpsass     from 'gulp-sass'
-import livereload   from 'gulp-livereload'
+import browsersync  from 'browser-sync'
 import postcss      from 'gulp-postcss'
 import nodesass     from 'sass'
 import sourcemaps   from 'gulp-sourcemaps'
@@ -36,7 +36,7 @@ themes.forEach( function (item, index) {
         .pipe(sourcemaps.write(''))
         .pipe(gulp.dest('web/themes/' + item.path + '/min'))
         .pipe(filter('**/*.css*'))
-        .pipe(livereload())
+        .pipe(browsersync.stream())
     done()
   })
 })
@@ -53,17 +53,26 @@ gulp.task('js', function (done) {
       .pipe(concat('site.js'))
       .pipe(sourcemaps.write(''))
       .pipe(gulp.dest('web/themes/comitium-light/min'))
-      .pipe(livereload())
+      .pipe(browsersync.stream())
   done()
 })
 
 gulp.task('reload', function (done) {
-  livereload.reload()
+  browsersync.reload()
   done()
 })
 
 gulp.task('watch', function (done) {
-  livereload.listen()
+  browsersync.init({
+    snippet: false,
+    https: true,
+    port: 8181,
+    ui: {
+      port: 8282
+    },
+    notify: false,
+    open: false
+  })
   themes.forEach( function (item) {
     gulp.watch('web/themes/comitium-light/source/scss/**/**.scss', gulp.parallel('css' + item.name))
   })
@@ -75,7 +84,7 @@ gulp.task('watch', function (done) {
   gulp.watch('web/themes/**/source/js/**/**.js', gulp.parallel('js'))
   gulp.watch('app/patterns/**', gulp.parallel('reload'))
   gulp.watch('app/toolbox/**', gulp.parallel('reload'))
-  gulp.watch('web/**/**.html', gulp.parallel('reload'))
+  gulp.watch('web/themes/**', gulp.parallel('reload'))
   done()
 })
 
