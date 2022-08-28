@@ -7,6 +7,8 @@ head
   meta(name="keywords" content=metaData.keywords)
   link(rel="stylesheet" type="text/css" href=cssUrl)
   script(type="text/javascript" src=jsUrl)
+  if config.citizen.mode === 'development'
+    script(src=config.comitium.livereloadUrl)
   //- REMOVE from shipping version
   if config.citizen.mode === 'production'
     script
