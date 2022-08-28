@@ -220,9 +220,8 @@ body {
   
     a.home {
       display: flex;
-      justify-content: center;
-      align-items: center;
       width: 14rem;
+      padding: 0 1rem;
 
       img {
         width: 100%;
@@ -1185,6 +1184,7 @@ a.avatar {
       }
       a.home {
         width: 16rem;
+        padding: 0;
       }
       a.sign-in {
         display: none;
