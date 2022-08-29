@@ -49,7 +49,7 @@ gulp.task('js', function (done) {
             'web/themes/comitium-light/source/js/site/**.js'
           ])
       .pipe(sourcemaps.init())
-      .pipe(uglify())
+      .pipe(uglify.default())
       .pipe(concat('site.js'))
       .pipe(sourcemaps.write(''))
       .pipe(gulp.dest('web/themes/comitium-light/min'))
