@@ -65,12 +65,12 @@ CF.topic = ( function () {
           zoomWrapper.classList.add('zoom')
           parent.appendChild(zoomWrapper)
           zoomButton.classList.add('zoom-button')
-          zoomButton.innerHTML = '<svg class="icon zoom-in"><use xlink:href="themes/default/images/symbols.svg#icon-zoom-in"></use></svg>'
+          zoomButton.innerHTML = '<svg class="icon zoom-in"><use xlink:href="themes/comitium-light/images/symbols.svg#icon-zoom-in"></use></svg>'
           zoomWrapper.appendChild(item)
           zoomWrapper.appendChild(zoomButton)
 
           zoomWrapper.addEventListener('click', function () {
-            mask.innerHTML = '<div id="mask-close"><svg class="icon close"><use xlink:href="themes/default/images/symbols.svg#icon-close"></use></svg></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '<svg class="icon arrow-up-right"><use xlink:href="themes/default/images/symbols.svg#icon-arrow-up-right"></use></svg></a>'
+            mask.innerHTML = '<div id="mask-close"><svg class="icon close"><use xlink:href="themes/comitium-light/images/symbols.svg#icon-close"></use></svg></div><img src="' + src + '"><a class="open-tab" href="' + src + '" target="_blank">' + src + '<svg class="icon arrow-up-right"><use xlink:href="themes/comitium-light/images/symbols.svg#icon-arrow-up-right"></use></svg></a>'
             document.querySelector('html').classList.add('mask-enabled')
             mask.classList.add('enabled')
 
