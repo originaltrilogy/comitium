@@ -1,6 +1,5 @@
 header(class="authenticated" + ( updates ? " updates" : "" ) )
-  a.home(href="/" title="Go to our home page.")
-    img(src="themes/" + session.themePath.images + "/images/logo.svg")
+  a.home(href="/" title="Go to our home page.") !{app.resources.images.logo}
   nav
     ul.content
       li.discussions

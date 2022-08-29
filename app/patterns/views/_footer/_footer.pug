@@ -1,6 +1,5 @@
 footer(data-view="/views/partials/footer")
-  a.home(href="/" title="Go to our home page.")
-    img(src="themes/" + session.themePath.images + "/images/logo.svg")
+  a.home(href="/" title="Go to our home page.") !{app.resources.images.logo}
   section.stats
     p <strong>#{stats.users}</strong> members have started <strong>#{stats.topics}</strong> topics with <strong>#{stats.posts}</strong> posts since <strong>#{stats.firstPostCreated}</strong>
   section.copyright
