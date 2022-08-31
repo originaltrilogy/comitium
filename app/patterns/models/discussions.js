@@ -141,7 +141,7 @@ export const categoriesPost = async (groupID) => {
 
 export const metaData = () => {
   return {
-    title: 'Original Trilogy - Discussion Forum',
+    title: 'Discussion Forum - Original Trilogy',
     description: 'Various discussion forums related to the Star Wars universe, including fan projects such as fan edits, fan documentaries, and preservations of the original unaltered Star Wars trilogy.',
     keywords: 'star wars forum, forums, star wars bulletin board, bbs, messageboard, message board, discussion forum, fan edit forum, star wars fan films, fan documentaries, fan preservations, film preservation'
   }

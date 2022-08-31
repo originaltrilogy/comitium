@@ -108,7 +108,7 @@ export const breadcrumbs = () => {
 
 export const metaData = () => {
   return {
-    title: 'Original Trilogy - Discussion Forum: Announcements',
+    title: 'Announcements - Original Trilogy',
     description: 'Important news and updates for the Original Trilogy community.',
     keywords: 'news, announcements'
   }

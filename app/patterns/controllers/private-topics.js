@@ -47,3 +47,10 @@ export const handler = async (params) => {
     return access
   }
 }
+
+
+export const head = async () => {
+  return {
+    title: 'Private Topics - Original Trilogy'
+  }
+}
