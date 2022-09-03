@@ -64,8 +64,7 @@ gulp.task('reload', function (done) {
 
 gulp.task('watch', function (done) {
   browsersync.init({
-    snippet: false,
-    https: true,
+    proxy: 'https://dev.comitium.com',
     port: 8181,
     ui: {
       port: 8282
