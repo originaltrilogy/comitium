@@ -1,7 +1,7 @@
 // request event hooks
 
 
-export const start = (params) => {
+export const start = async (params) => {
   switch ( app.config.comitium.mode.status ) {
     // If full access is enabled, send the user on their way
     case 'online':
