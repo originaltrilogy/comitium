@@ -757,7 +757,7 @@ export const matchingUsersByIP = async (args) => {
     if ( result.rows.length ) {
       result.rows.forEach( function (item, index, array) {
         array[index].ip = array[index].ip.replace('/32', '')
-        array[index].timeFormatted = app.toolbox.moment.tz(array[index].time, 'America/New_York').format('D-MMM-YYYY h:mm A')
+        array[index].time_formatted = app.toolbox.moment.tz(array[index].time, 'America/New_York').format('D-MMM-YYYY h:mm A')
       })
       return result.rows
     } else {
