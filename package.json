@@ -16,16 +16,16 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "citizen": "https://github.com/jaysylvester/citizen#1.0.0",
-    "gm": "^1.23.1",
+    "gm": "^1.25.0",
     "markdown-it": "^13.0.1",
     "markdown-it-emoji": "^2.0.2",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.34",
-    "nodemailer": "^6.7.8",
+    "moment-timezone": "^0.5.43",
+    "nodemailer": "^6.9.4",
     "numeral": "^2.0.6",
-    "pg": "^8.7.3",
+    "pg": "^8.11.3",
     "pug": "^3.0.2",
-    "slug": "^6.0.0"
+    "slug": "^8.2.3"
   },
   "devDependencies": {
     "autoprefixer": "*",
