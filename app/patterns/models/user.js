@@ -780,7 +780,7 @@ export const topics = async (args) => {
       'join posts p on p.id = ( select id from posts where topic_id = t.id and draft = false order by created asc limit 1 ) ' +
       'join users u on u.id = p.user_id ' +
       'where u.id = $1 ' +
-      'and t.draft = false and t.private = false ' +
+      'and t.discussion_id <> 1 and t.draft = false and t.private = false ' +
       'order by p.created asc;',
       values: [ args.userID ]
     })

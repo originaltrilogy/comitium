@@ -86,4 +86,8 @@ app.resources = {
 }
 
 // Start the server
-app.server.start()
+app.server.start({
+  citizen: {
+    mode: 'development'
+  }
+})

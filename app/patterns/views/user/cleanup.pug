@@ -1,15 +1,16 @@
 header
   section.summary
     h1 User Cleanup: !{user.username}
+
+section.topics
+  if topics
     p Clicking the button below will move all topics started by this user to the Trash.
+    p <strong>This can't be undone without moving the topics back manually.</strong>
     form(method="post" action="user/action/cleanupForm/id/" + user.id)
       input(type="hidden" name="userID" value=url.id)
       ul.actions
         li.primary
           input(type="submit" value="Delete all user topics")
-
-section.topics
-  if topics
     h2 #{topics.length} Topics
     each topic in topics
       article(class="topic")
@@ -19,4 +20,4 @@ section.topics
           time
             = topic.post_date_formatted
   else
-    p This user hasn"t started any topics yet.
+    p This user doesn't have any public topics.
