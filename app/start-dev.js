@@ -1,4 +1,4 @@
-// app start
+// app start with alternate functionality for develompent mode
 
 import fs from 'fs'
 
