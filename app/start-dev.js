@@ -1,4 +1,4 @@
-// app start
+// app start with alternate functionality for develompent mode
 
 import fs from 'fs'
 
@@ -86,4 +86,8 @@ app.resources = {
 }
 
 // Start the server
-app.server.start()
+app.server.start({
+  citizen: {
+    mode: 'development'
+  }
+})
