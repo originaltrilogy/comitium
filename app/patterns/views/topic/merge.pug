@@ -19,10 +19,10 @@ section.form.post
           each topic in topics
             if topic.id != url.id
               option(value=topic.id)
-                | #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+                | #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
             else
               option(value=topic.id selected)
-                | #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+                | #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.topic-b.select.required
         label(for="topic-b")
           | Second topic
@@ -30,7 +30,7 @@ section.form.post
           option
           each topic in topics
             if topic.id != url.id
-              option(value=topic.id) #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+              option(value=topic.id) #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.topic-c.select
         label(for="topic-c")
           | Third topic
@@ -38,7 +38,7 @@ section.form.post
           option
           each topic in topics
             if topic.id != url.id
-              option(value=topic.id) #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+              option(value=topic.id) #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.topic-d.select
         label(for="topic-d")
           | Fourth topic
@@ -46,7 +46,7 @@ section.form.post
           option
           each topic in topics
             if topic.id != url.id
-              option(value=topic.id) #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+              option(value=topic.id) #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.topic-e.select
         label(for="topic-e")
           | Fifth topic
@@ -54,7 +54,7 @@ section.form.post
           option
           each topic in topics
             if topic.id != url.id
-              option(value=topic.id) #{topic.titleHtml} – started by #{topic.topicStarter} on #{topic.postDateFormatted}
+              option(value=topic.id) #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.notify.checkbox
         input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
         label(for="notify") Notify members following these topics

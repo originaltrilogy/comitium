@@ -42,7 +42,7 @@ export const info = async (postID) => {
   try {
     const result = await client.query({
       name: 'post_info',
-      text: 'select p.id, p.user_id, p.topic_id, p.text, p.html, p.created, p.modified, p.draft, p.editor_id, p.edit_reason, p.locked_by_id, p.lock_reason, t.discussion_id, t.title as topic_title, t.title_html as topic_title, t.url as topic_url, t.replies as topic_replies, d.url as discussion_url, u.id as authorID, u.username as author, u.url as author_url, u2.username as editor, u2.url as editorUrl from posts p join users u on p.user_id = u.id left join users u2 on p.editor_id = u2.id join topics t on p.topic_id = t.id left join discussions d on t.discussion_id = d.id where p.id = $1;',
+      text: 'select p.id, p.user_id, p.topic_id, p.text, p.html, p.created, p.modified, p.draft, p.editor_id, p.edit_reason, p.locked_by_id, p.lock_reason, t.discussion_id, t.title as topic_title, t.title_html as topic_title, t.url as topic_url, t.replies as topic_replies, d.url as discussion_url, u.id as author_id, u.username as author, u.url as author_url, u2.username as editor, u2.url as editor_url from posts p join users u on p.user_id = u.id left join users u2 on p.editor_id = u2.id join topics t on p.topic_id = t.id left join discussions d on t.discussion_id = d.id where p.id = $1;',
       values: [ postID ]
     })
 

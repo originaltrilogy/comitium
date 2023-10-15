@@ -16,14 +16,14 @@ section.form.topic-move
         label(for="destination") Where do you want to move this topic?
         select(id="destination" name="destination")
           each category in categories
-            optgroup(label=category.categoryTitle)
+            optgroup(label=category.category_title)
             each discussion in category.subcategories
-              if discussion.discussionID !== topic.discussionID
-                option(value=discussion.discussionID)
-                  = "– " + discussion.discussionTitle
+              if discussion.discussion_id !== topic.discussion_id
+                option(value=discussion.discussion_id)
+                  = "– " + discussion.discussion_title
               else
-                option(value=discussion.discussionID selected)
-                  = "– " + discussion.discussionTitle
+                option(value=discussion.discussion_id selected)
+                  = "– " + discussion.discussion_title
       li.notify.checkbox
         input(id="notify" name="notify" type="checkbox" value="true" checked=form.notify)
         label(for="notify") Notify members following this topic

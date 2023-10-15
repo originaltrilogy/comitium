@@ -41,7 +41,7 @@ header
             li.unban
               a(href="user/action/liftBan/id/" + user.id) Lift ban
           li.cleanup
-            a(href="user/action/cleanup/id/" + user.id) Clean Up
+            a(href="user/action/cleanup/id/" + user.id) User Clean Up...
 
 if moderateUser
   section.user-logs
@@ -52,10 +52,10 @@ if moderateUser
         ul
           each log in ipHistory
             li(class=( log.id == url.log_id ? "selected" : "" ))
-              a(href="user/" + user.url + "/id/" + user.id + "/logID/" + log.id + "#ip-history") #{log.ip}
+              a(href="user/" + user.url + "/id/" + user.id + "/logID/" + log.id + "#ip-matches") #{log.ip}
       else
         p There are no IP addresses associated with this user.
-    section.ip-matches
+    section#ip-matches.ip-matches
       if matchingUsersByIP
         p Users who match #{matchingUsersByIP[0].ip} (most recent first):
         table

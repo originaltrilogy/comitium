@@ -181,7 +181,7 @@ export const postTrash = async (args) => {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
-    if ( post.topicReplies > 0 ) {
+    if ( post.topic_replies > 0 ) {
       if ( args.user.moderate_discussions ) {
         let topicViewAccess = await topicView(app.toolbox.helpers.extend(args, { topicID: post.topic_id }))
 

@@ -58,8 +58,11 @@ gulp.task('js', function (done) {
 })
 
 gulp.task('reload', function (done) {
-  browsersync.reload()
-  done()
+  // Slight delay in browser reload to give citizen time to reinitialize module updates
+  setTimeout( () => {
+    browsersync.reload()
+    done()
+  }, 500)
 })
 
 gulp.task('watch', function (done) {

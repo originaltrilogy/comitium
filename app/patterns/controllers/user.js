@@ -107,12 +107,14 @@ export const cleanup = async (params) => {
 
   if ( access === true ) {
     let user = await app.models.user.info({ userID: params.url.id }),
-        topics = await app.models.user.topics({ userID: params.url.id })
+        topics = await app.models.user.topics({ userID: params.url.id }),
+        replies = await app.models.user.replies({ userID: params.url.id })
     
     return {
       public: {
         user: user,
-        topics: topics
+        topics: topics,
+        replies: replies
       },
       view: 'cleanup'
     }
@@ -127,7 +129,7 @@ export const cleanupForm = async (params, request) => {
     let access = await app.toolbox.access.userBan({ userID: params.form.userID, user: params.session })
   
     if ( access === true ) {
-      await app.models.user.trashTopics({ userID: params.form.userID })
+      await app.models.user.cleanup({ userID: params.form.userID, deleteReplies: params.form.deleteReplies ? true : false })
       return {
         redirect: app.config.comitium.baseUrl + 'user/id/' + params.form.userID
       }

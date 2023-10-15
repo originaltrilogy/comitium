@@ -919,7 +919,7 @@ export const editForm = async (params, request, response, context) => {
 
     if ( access === true ) {
       let topic         = await app.models.topic.info(params.url.id),
-          firstPost     = await app.models.post.info(topic.firstPostID),
+          firstPost     = await app.models.post.info(topic.first_post_id),
           announcement  = topic.discussionID === 2 ? true : false,
           parsedTitle   = app.toolbox.markdown.title(params.form.title),
           parsedContent = app.toolbox.markdown.content(params.form.content),
@@ -948,8 +948,8 @@ export const editForm = async (params, request, response, context) => {
         case 'Save changes':
           edit = await app.models.topic.edit({
             topicID: topic.id,
-            discussionID: topic.discussionID,
-            postID: topic.firstPostID,
+            discussionID: topic.discussion_id,
+            postID: topic.first_post_id,
             editorID: params.session.user_id,
             currentPost: firstPost,
             title: params.form.title,
@@ -989,7 +989,7 @@ export const merge = async (params, request) => {
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id),
         topics = await app.models.discussion.topics({
-          discussionID: topic.discussionID,
+          discussionID: topic.discussion_id,
           end: 150
         })
 
