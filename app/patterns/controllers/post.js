@@ -159,14 +159,14 @@ export const lockForm = async (params, request, response, context) => {
           user,
           mail
         ] = await Promise.all([
-          app.models.user.info({ userID: post.authorID }),
+          app.models.user.info({ userID: post.author_id }),
           app.models.content.mail({
             template: 'Post Lock',
             replace: {
               postUrl: app.config.comitium.baseUrl + 'post/id/' + post.id,
               postText: post.text,
-              topicTitle: post.topicTitle,
-              topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topic_id,
+              topicTitle: post.topic_title,
+              topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topic_url + '/id/' + post.topic_id,
               reason: params.form.reason
             }
           })

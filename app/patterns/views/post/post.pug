@@ -3,21 +3,21 @@ header
     h1 Post ##{post.id}
     dl
       dt Author
-      dd <a href="user/#{post.authorUrl}/id/#{post.authorID}">#{post.author}</a>
+      dd <a href="user/#{post.author_url}/id/#{post.user_id}">#{post.author}</a>
       dt Parent topic
-      dd <a href="#{topic.url}">!{topic.titleHtml}</a>
+      dd <a href="#{topic.url}">!{topic.title_html}</a>
       dt Link to post in topic
       dd <a href="#{post.url}">#{config.comitium.baseUrl + post.url}</a>
       dt Date created
-      dd #{post.createdFormatted}
+      dd #{post.created_formatted}
       if post.editorID
         dt Last modified
-        dd #{post.modifiedFormatted}
+        dd #{post.modified_formatted}
         dt Edited by
-        dd <a href="user/#{post.editorUrl}/id/#{post.editorID}">#{post.editor}</a>
+        dd <a href="user/#{post.editor_url}/id/#{post.editor_id}">#{post.editor}</a>
         dt Reason for edit
         if post.editReason
-          dd !{post.editReason}
+          dd !{post.edit_reason}
         else
           dd None provided
 
@@ -31,11 +31,11 @@ article.post(id=post.id data-post-id=post.id)
           a(href="post/action/edit/id/" + post.id) Edit
       //- li.bookmark
       //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
-      if post.authorID !== session.user_id && !session.moderate_discussions
+      if post.author_id !== session.user_id && !session.moderate_discussions
         li.report
           a(href="post/action/report/id/" + post.id) Report
       if session.moderate_discussions
-        if !post.lockedByID
+        if !post.locked_by_id
           li.lock
             a(href="post/action/lock/id/" + post.id) Lock
         else

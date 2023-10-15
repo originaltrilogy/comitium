@@ -517,7 +517,7 @@ export const merge = async (args) => {
       await Promise.all(subscribers.rows.map( async (subscriber) => {
         await client.query(
           'insert into topic_subscriptions ( user_id, topic_id, notification_sent ) values ( $1, $2, $3 );',
-          [ subscriber.userID, oldestPost.rows[0].topicID, args.time ]
+          [ subscriber.user_id, oldestPost.rows[0].topic_id, args.time ]
         )
       }))
 
@@ -525,13 +525,13 @@ export const merge = async (args) => {
         text: oldestPost.rows[0].text + '\n\n## The following topics have been merged into this one:\n\n',
         html: ''
       }
-      let mergedTopicInfo = await app.models.topic.info(oldestPost.rows[0].topicID)
+      let mergedTopicInfo = await app.models.topic.info(oldestPost.rows[0].topic_id)
       await Promise.all(args.topicID.map( async (mergedTopicID) => {
-        if ( mergedTopicID != oldestPost.rows[0].topicID ) {
+        if ( mergedTopicID != oldestPost.rows[0].topic_id ) {
           let mergedTopicUrl = app.config.comitium.baseUrl + 'topic/' + mergedTopicInfo.url + '/id/' + mergedTopicInfo.id
           await client.query(
             'update posts set topic_id = $1 where topic_id = $2 and id <> ( select id from posts where topic_id = $2 order by created asc limit 1 );',
-            [ oldestPost.rows[0].topicID, mergedTopicID ]
+            [ oldestPost.rows[0].topic_id, mergedTopicID ]
           )
   
           let firstPost = await client.query(
@@ -579,13 +579,13 @@ export const merge = async (args) => {
       args.topicID.forEach( topicID => {
         app.cache.clear({ scope: 'topic-' + topicID })
       })
-      app.cache.clear({ scope: 'discussion-' + mergedTopicInfo.discussionID })
+      app.cache.clear({ scope: 'discussion-' + mergedTopicInfo.discussion_id })
       app.cache.clear({ scope: 'categories_discussions' })
-      if ( mergedTopicInfo.discussionID === 2 ) {
+      if ( mergedTopicInfo.discussion_id === 2 ) {
         app.cache.clear({ scope: 'announcements' })
       }
       subscribers.rows.forEach( subscriber => {
-        app.cache.clear({ scope: 'subscriptions-' + subscriber.userID })
+        app.cache.clear({ scope: 'subscriptions-' + subscriber.user_id })
       })
 
       return mergedTopicInfo
