@@ -2,16 +2,23 @@ header
   section.summary
     h1 User Cleanup: !{user.username}
 
+section.form
+  p Performing a user cleanup will move all topics started by this user to the Trash. This can only be undone by moving each topic back manually.
+  p You can optionally delete all replies posted by this user in other topics by selecting the checkbox below. <strong><em>This is permanent and can't be undone</strong></em>, so only do it if you're sure you want this user's posts deleted forever.
+  p Private topics are unaffected.
+  form(method="post" action="user/action/cleanupForm/id/" + user.id)
+    input(type="hidden" name="userID" value=url.id)
+    ul.data
+      li.checkbox
+        input(type="checkbox" id="deleteReplies" name="deleteReplies")
+        label(for="deleteReplies") Permanently delete all replies by this user in other topics
+    ul.actions
+      li.primary
+        input(type="submit" value="Clean up this user")
+
 section.topics
   if topics
-    p Clicking the button below will move all topics started by this user to the Trash.
-    p <strong>This can't be undone without moving the topics back manually.</strong>
-    form(method="post" action="user/action/cleanupForm/id/" + user.id)
-      input(type="hidden" name="userID" value=url.id)
-      ul.actions
-        li.primary
-          input(type="submit" value="Delete all user topics")
-    h2 #{topics.length} Topics
+    h2 #{topics.length} Topic#{topics.length === 1 ? '' : 's'}
     each topic in topics
       article(class="topic")
         section.description
@@ -20,4 +27,16 @@ section.topics
           time
             = topic.post_date_formatted
   else
+    h2 Topics
     p This user doesn't have any public topics.
+
+section.posts
+  if replies
+    h2 #{replies.length} Repl#{replies.length === 1 ? 'y' : 'ies'}
+    each reply in replies
+      article(class="topic")
+        h3
+          a(href="post/id/" + reply.id) #{reply.created_formatted}
+  else
+    h2 Replies
+    p This user doesn't have any public replies.

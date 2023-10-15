@@ -184,11 +184,13 @@ body[data-controller="user"][data-action="handler"] {
 
 
 body[data-controller="user"][data-action="cleanup"] {
-  section.topics {
+  section.topics,
+  section.posts {
     padding: 1.6rem;
   }
 
-  article.topic {
+  article.topic,
+  article.post {
     padding: 0.4rem 0;
   }
 
@@ -198,11 +200,12 @@ body[data-controller="user"][data-action="cleanup"] {
 
   @media only screen and (min-width: 720px) {
     ul.actions {
-      margin-top: 2rem;
+      margin: 2rem 0;
     }
 
-    section.topics {
-      margin: 2rem auto;
+    section.topics,
+    section.posts {
+      margin: 2rem auto 4rem;
       padding: 0 2.4rem;
     }
 
@@ -222,7 +225,8 @@ body[data-controller="user"][data-action="cleanup"] {
   }
 
   @media only screen and (min-width: 1024px) {
-    section.topics {
+    section.topics,
+    section.posts {
       max-width: 96rem;
       padding: 0;
     }

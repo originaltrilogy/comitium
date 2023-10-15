@@ -656,6 +656,34 @@ export const posts = async (args) => {
 }
 
 
+export const replies = async (args) => {
+  const client = await app.toolbox.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'user_replies',
+      text: 'select p.id, p.created from posts p ' +
+      'join topics t on t.id = p.topic_id ' +
+      // Public posts only (no private posts, no Trash)
+      'where p.user_id = $1 and t.discussion_id > 1 and p.created <> t.created;',
+      values: [ args.userID ]
+    })
+
+    result.rows.forEach( function (item) {
+      item.created_formatted   = app.toolbox.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
+    })
+
+    if ( result.rows.length ) {
+      return result.rows
+    } else {
+      return false
+    }
+  } finally {
+    client.release()
+  }
+}
+
+
 export const profileByID = async (args) => {
   // See if already cached
   let cacheKey = 'profileByID-visitorGroupID-' + args.visitorGroupID,
@@ -679,50 +707,6 @@ export const profileByID = async (args) => {
       if ( result.rows && result.rows.length ) {
         result.rows[0].joined_formatted        = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
         result.rows[0].last_activity_formatted = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY')
-
-        // Cache the result for future requests
-        if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
-          app.cache.set({
-            key: cacheKey,
-            scope: scope,
-            value: result.rows[0]
-          })
-        }
-
-        return result.rows[0]
-      } else {
-        return false
-      }
-    } finally {
-      client.release()
-    }
-  }
-}
-
-
-export const profileByUsername = async (args) => {
-  // See if already cached
-  let cacheKey = 'profileByUsername-user-' + args.userID,
-      scope = 'user',
-      cached = app.cache.get({ scope: scope, key: cacheKey })
-
-  // If it's cached, return the cache item
-  if ( cached ) {
-    return cached
-  // If it's not cached, retrieve it from the database and cache it
-  } else {
-    const client = await app.toolbox.dbPool.connect()
-
-    try {
-      const result = await client.query({
-        name: 'user_profileByUsername',
-        text: 'select u.id, u.group_id, u.username, u.url, u.signature_html, u.last_activity, u.joined, u.website, g.name as group, ( select count(id) from posts where user_id = $1 and draft = false ) as post_count from users u join groups g on u.group_id = g.id where u.username = $1',
-        values: [ args.username ]
-      })
-
-      if ( result.rows && result.rows.length ) {
-        result.rows[0].joinedFormatted        = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
-        result.rows[0].lastActivityFormatted  = app.toolbox.moment.tz(result.rows[0].lastActivity, 'America/New_York').format('D-MMM-YYYY')
 
         // Cache the result for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
@@ -800,7 +784,7 @@ export const topics = async (args) => {
 }
 
 
-export const trashTopics = async (args) => {
+export const cleanup = async (args) => {
   const client = await app.toolbox.dbPool.connect()
 
   try {
@@ -814,6 +798,16 @@ export const trashTopics = async (args) => {
         'where u.id = $1 and t.private = false' +
       ');',
       [ args.userID ])
+    // Permanently delete this user's replies in any other topics
+    if ( args.deleteReplies ) {
+      await client.query(
+        'delete from posts where id in ( ' +
+          'select p.id from posts p ' +
+          'join topics t on t.id = p.topic_id ' +
+          'where p.user_id = $1 and t.discussion_id > 1 and p.created <> t.created' +
+        ');',
+        [ args.userID ])
+    }
     // Update the last post across all discussions
     await client.query(
       'update discussions d set last_post_id = ( ' +
