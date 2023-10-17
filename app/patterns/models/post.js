@@ -21,7 +21,7 @@ export const edit = async (args) => {
       await client.query('COMMIT')
 
       // Clear the topic cache
-      app.cache.clear({ scope: 'topic-' + args.currentPost.topicID })
+      app.cache.clear({ scope: 'topic-' + args.currentPost.topic_id })
 
       return {
         success: true

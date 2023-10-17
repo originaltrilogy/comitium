@@ -401,7 +401,7 @@ export const leave = async (args) => {
 
   try {
     await client.query('BEGIN')
-    await client.query('update topic_invitations set left = true where user_id = $1 and topic_id = $2;', [ args.userID, args.topicID ])
+    await client.query('update topic_invitations set left_topic = true where user_id = $1 and topic_id = $2;', [ args.userID, args.topicID ])
     await client.query('delete from topic_subscriptions where user_id = $1 and topic_id = $2;', [ args.userID, args.topicID ])
     await client.query('COMMIT')
 
