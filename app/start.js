@@ -26,7 +26,7 @@ app.toolbox = {
 
   // Third party modules
   bcrypt   : bcrypt,
-  mail     : nodemailer.createTransport,
+  mail     : nodemailer.createTransport(app.config.comitium.mail),
   moment   : moment,
   numeral  : numeral,
   pg       : pg,
