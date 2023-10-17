@@ -370,7 +370,7 @@ export const startAnnouncementForm = async (params, request, response, context) 
             case 'all':
               categories.forEach( function (item) {
                 item.subcategories.forEach( function (item) {
-                  discussions.push(item.discussionID)
+                  discussions.push(item.discussion_id)
                 })
               })
               break
@@ -666,7 +666,7 @@ export const replyForm = async (params, request, response, context) => {
 
           page = Math.ceil( ( topic.replies + 2 ) / 25 ),
           pageParameter = page === 1 ? '' : '/page/' + page,
-          controller = topic.discussionID === 2 ? 'announcement' : 'topic',
+          controller = topic.discussion_id === 2 ? 'announcement' : 'topic',
           urlTitle = topic.private ? '' : '/' + topic.url,
           replyUrl = app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '#' + reply.id,
           forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : replyUrl
@@ -1045,7 +1045,7 @@ export const mergeForm = async (params, request, response, context) => {
       } else {
         let topic = await app.models.topic.info(params.url.id),
             topics = await app.models.discussion.topics({
-              discussionID: topic.discussionID,
+              discussionID: topic.discussion_id,
               end: 50
             })
 
@@ -1109,8 +1109,8 @@ export const moveForm = async (params, request, response, context) => {
       await app.models.topic.move({
               topicID: topic.id,
               topicUrl: topic.url,
-              discussionID: topic.discussionID,
-              discussionUrl: topic.discussionUrl,
+              discussionID: topic.discussion_id,
+              discussionUrl: topic.discussion_url,
               newDiscussionID: newDiscussion.id
             })
       
@@ -1121,7 +1121,7 @@ export const moveForm = async (params, request, response, context) => {
           replace: {
             topicTitle: topic.title,
             topicUrl: app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id,
-            oldDiscussionTitle: topic.discussionTitle,
+            oldDiscussionTitle: topic.discussion_title,
             newDiscussionTitle: newDiscussion.title
           }
         })
@@ -1169,7 +1169,7 @@ export const trashForm = async (params, request, response, context) => {
 
       await app.models.topic.move({
         topicID: topic.id,
-        discussionID: topic.discussionID,
+        discussionID: topic.discussion_id,
         newDiscussionID: 1
       })
 
