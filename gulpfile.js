@@ -69,6 +69,10 @@ gulp.task('watch', function (done) {
   browsersync.init({
     proxy: 'https://dev.comitium.com',
     port: 8181,
+    https: {
+      key: '_dev-certs/ssl-cert-snakeoil.key',
+      cert: '_dev-certs/ssl-cert-snakeoil.pem'
+    },
     ui: {
       port: 8282
     },
