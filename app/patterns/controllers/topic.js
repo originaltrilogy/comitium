@@ -530,7 +530,7 @@ export const startPrivateForm = async (params, request, response, context) => {
               })
 
               saveTopic.invited.forEach(item => {
-                if ( item.privateTopicEmailNotification ) {
+                if ( item.private_topic_email_notification ) {
                   app.toolbox.mail.sendMail({
                     from    : app.config.comitium.email,
                     to      : item.email,

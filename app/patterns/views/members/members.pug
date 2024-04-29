@@ -12,6 +12,10 @@ section(class="members")
         li(class="group-" + group.id + " " + group.url + " " + ( !term ? ( !url.group && index === 0 ) || ( group.id == url.group ) ? "current" : "" : "" ))
           a(href="members/" + group.url + "/group/" + group.id)
             = group.name
+      if url.term
+        li(class="current")
+          a(href="members/")
+            | Search Results
     form(action="members/action/search" + ( url.group ? "/group/" + url.group : "" ) method="post" novalidate)
       ul.data
         li.term.text

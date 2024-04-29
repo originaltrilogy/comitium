@@ -17,7 +17,7 @@ export const edit = async (args) => {
         [ args.text, args.html, args.editorID, args.reason, args.time, args.id ])
       await client.query(
         'insert into post_history ( post_id, editor_id, edit_reason, text, html, time ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
-        [ args.id, !args.currentPost.editorID ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ])
+        [ args.id, args.currentPost.editor_id || args.currentPost.author_id, args.currentPost.edit_reason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ])
       await client.query('COMMIT')
 
       // Clear the topic cache
