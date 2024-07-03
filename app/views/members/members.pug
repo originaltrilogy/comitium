@@ -1,0 +1,48 @@
+header
+  //- include ../partials/breadcrumbs
+  section.summary
+    h1 Member List
+
+section(class="members")
+  h2 #{app.toolbox.numeral(local.count).format("0,0")} !{ local.term ? "Matches for &quot;" + local.term + "&quot;" : local.group.name }
+  include ../partials/pagination
+  nav.groups
+    ul#group-menu
+      each group, index in local.groups
+        li(class="group-" + group.id + " " + group.url + " " + ( !local.term ? ( !url.group && index === 0 ) || ( group.id == url.group ) ? "current" : "" : "" ))
+          a(href="members/" + group.url + "/group/" + group.id)
+            = group.name
+      if url.term
+        li(class="current")
+          a(href="members/")
+            | Search Results
+    form(action="members/action/search" + ( url.group ? "/group/" + url.group : "" ) method="post" novalidate)
+      ul.data
+        li.term.text
+          input(id="term" name="term" type="text" placeholder="Username search" value=form.term)
+      ul.actions
+        li.primary
+          input(id="submit" name="submit" type="submit" value="Search")
+  section.list
+    table
+      thead
+        tr
+          th(class="username" + ( !url.order || url.order === "username" ? " selected" : "" ) ) <a href="members#{local.urlParams}#{ !url.order || url.order === "username" ? ( !url.sort || url.sort === "asc" ? "order/username/sort/desc" : "order/username/sort/asc" ) : "" }">Username</a>
+          if url.term
+            th(class="group" + ( url.order === "group" ? " selected" : "" ) ) <a href="members#{local.urlParams}#{ url.order === "group" && url.sort === "asc" ? "order/group/sort/desc" : "order/group/sort/asc" }">Group</a>
+          th(class="join-date" + ( url.order === "join-date" ? " selected" : "" ) ) <a href="members#{local.urlParams}#{ url.order === "join-date" && url.sort === "asc" ? "order/join-date/sort/desc" : "order/join-date/sort/asc" }">Join Date</a>
+          th(class="last-active" + ( url.order === "last-active" ? " selected" : "" ) ) <a href="members#{local.urlParams}#{ url.order === "last-active" && url.sort === "desc" ? "order/last-active/sort/asc" : "order/last-active/sort/desc" }">Last Active</a>
+      tbody
+        each member in local.members
+          tr
+            td.username
+              a(href="user/" + member.url + "/id/" + member.id)
+                = member.username
+            if url.term
+              td.group
+                = member.name
+            td.join-date
+              = app.toolbox.moment.tz(member.joined, session.timezone).format(session.date_format)
+            td.last-active
+              = app.toolbox.moment.tz(member.last_activity, session.timezone).format(session.date_format)
+    include ../partials/previous-and-next

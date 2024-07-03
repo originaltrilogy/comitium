@@ -1,0 +1,33 @@
+header
+  include ../partials/breadcrumbs
+  section.summary
+    h1 !{local.discussion.title}
+    if local.discussion.description
+      p !{local.discussion.description}
+
+if local.announcements
+  section.announcements
+    h2 Announcements
+    each topic in local.announcements
+      article(class="topic announcement" + ( topic.unread ? " unread" : "" ) + ( topic.locked_by_id ? " locked" : "" ) data-topic-id=topic.id)
+        h3
+          a(href="announcement/" + topic.url + "/id/" + topic.id) !{topic.title_html}
+
+section.topics
+  header
+    h2 #{app.toolbox.numeral(local.discussion.topics).format("0,0")} Topic#{ local.discussion.topics != 1 ? "s" : "" }
+    include ../partials/pagination
+    if local.discussion.id !== 1
+      nav.actions
+        ul
+          li.new-topic
+            a(href="topic/action/start/id/" + local.discussion.id) Start a new topic
+          if session.moderate_discussions
+            li.new-announcement
+              a(href="topic/action/startAnnouncement/id/" + local.discussion.id) Make an announcement
+  each topic in local.topics
+    include ../partials/topic
+  else
+    p This discussion has no topics. <a href="topic/action/start/id/#{local.discussion.id}">Why not start one?</a>
+
+include ../partials/previous-and-next

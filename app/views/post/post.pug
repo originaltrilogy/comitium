@@ -1,0 +1,47 @@
+header
+  section.summary
+    h1 Post ##{local.post.id}
+    dl
+      dt Author
+      dd <a href="user/#{local.post.author_url}/id/#{local.post.user_id}">#{local.post.author}</a>
+      dt Parent topic
+      dd <a href="#{local.topic.url}">!{local.topic.title_html}</a>
+      dt Link to post in topic
+      dd <a href="#{local.post.url}">#{config.comitium.baseUrl + local.post.url}</a>
+      dt Date created
+      dd #{local.post.created_formatted}
+      if local.post.editorID
+        dt Last modified
+        dd #{local.post.modified_formatted}
+        dt Edited by
+        dd <a href="user/#{local.post.editor_url}/id/#{local.post.editor_id}">#{local.post.editor}</a>
+        dt Reason for edit
+        if local.post.editReason
+          dd !{local.post.edit_reason}
+        else
+          dd None provided
+
+article.post(id=local.post.id data-post-id=local.post.id)
+  section.content.post
+    != local.post.html
+  nav.actions
+    ul
+      if ( session.username === local.post.author && !local.post.lockedByID ) || session.moderate_discussions
+        li.edit
+          a(href="post/action/edit/id/" + local.post.id) Edit
+      //- li.bookmark
+      //-   a(href="post/action/bookmark/id/#{local.post.id}") Bookmark
+      if local.post.author_id !== session.user_id && !session.moderate_discussions
+        li.report
+          a(href="post/action/report/id/" + local.post.id) Report
+      if session.moderate_discussions
+        if !local.post.locked_by_id
+          li.lock
+            a(href="post/action/lock/id/" + local.post.id) Lock
+        else
+          li.unlock
+            a(href="post/action/unlock/id/" + local.post.id) Unlock
+        // Don"t allow the only post in the topic to be deleted
+        if local.topic.replies > 0
+          li.delete
+            a(href="post/action/trash/id/" + local.post.id) Delete

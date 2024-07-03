@@ -1,0 +1,12 @@
+header
+  section.summary
+    h1 !{local.content.title_html}
+
+if local.userCanEdit
+  nav
+    nav.actions
+      ul
+        li.edit
+          a(href="content/" + url.content + "/id/" + url.id + "/action/edit") Edit
+
+section.content !{local.content.content_html}

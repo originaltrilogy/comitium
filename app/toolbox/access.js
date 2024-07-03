@@ -155,7 +155,7 @@ export const postLock = async (args) => {
 
 
 export const postReport = async (args) => {
-  if ( args.user.userID ) {
+  if ( args.user.user_id ) {
     let post = await app.models.post.info(args.postID)
 
     if ( post ) {
