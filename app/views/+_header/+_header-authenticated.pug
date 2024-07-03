@@ -1,4 +1,4 @@
-header(class="authenticated" + ( updates ? " updates" : "" ) )
+header(class="authenticated" + ( local.updates ? " updates" : "" ) )
   a.home(href="/" title="Go to our home page.") !{app.resources.images.logo}
   nav
     ul.content
@@ -11,15 +11,15 @@ header(class="authenticated" + ( updates ? " updates" : "" ) )
       li.help
         a(href="content/Help/id/2") Help
     ul.account
-      if unread.topics
+      if local.unread.topics
         li.subscriptions.updates
-          a(href="subscriptions") Subscriptions <span class="count">(#{unread.topics.length} unread)</span>
+          a(href="subscriptions") Subscriptions <span class="count">(#{local.unread.topics.length} unread)</span>
       else
         li.subscriptions
           a(href="subscriptions") Subscriptions
-      if unread.privateTopics
+      if local.unread.privateTopics
         li.private-topics.updates
-          a(href="private-topics") Private Topics <span class="count">(#{unread.privateTopics.length} unread)</span>
+          a(href="private-topics") Private Topics <span class="count">(#{local.unread.privateTopics.length} unread)</span>
       else
         li.private-topics
           a(href="private-topics") Private Topics
@@ -28,7 +28,7 @@ header(class="authenticated" + ( updates ? " updates" : "" ) )
       li.sign-out
         a(href="sign-out") Sign Out
   section.status
-    if unread.privateTopics
+    if local.unread.privateTopics
       a.private-topics.updates(href="private-topics" title="You have unread private topics.")
         <svg class="icon messages-new"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-messages-new"></use></svg> Private Topics
     else

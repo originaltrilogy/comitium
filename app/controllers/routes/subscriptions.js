@@ -35,7 +35,7 @@ export const handler = async (params) => {
     })
 
     return {
-      public: {
+      local: {
         count: count,
         topics: topics.length ? topics : false,
         breadcrumbs: {

@@ -26,7 +26,7 @@ export const handler = async (params) => {
     params.form.website = params.session.website
 
     return {
-      public: {
+      local: {
         timezones : app.toolbox.moment.tz.names(),
         themes    : app.config.comitium.themes
       }
@@ -141,7 +141,7 @@ export const generalForm = async (params, request, response, context) => {
           return {
             // Update the user's session with their new settings
             session: user,
-            public: {
+            local: {
               general: {
                 success: true,
                 messages: {
@@ -155,7 +155,7 @@ export const generalForm = async (params, request, response, context) => {
         }
       } else {
         return {
-          public: {
+          local: {
             general: {
               messages: messages
             },
@@ -188,7 +188,9 @@ export const avatarForm = async (params, request, response, context) => {
       params.form.timezone = params.session.timezone
       params.form.dateFormat = params.session.dateFormat
       params.form.theme = params.session.theme
-      params.form.privateTopicEmailNotification = params.session.privateTopicEmailNotification
+      params.form.subscriptionEmailNotification = params.session.subscription_email_notification
+      params.form.privateTopicEmailNotification = params.session.private_topic_email_notification
+      params.form.website = params.session.website
 
       let content = {
         timezones: app.toolbox.moment.tz.names(),
@@ -205,17 +207,17 @@ export const avatarForm = async (params, request, response, context) => {
 
             if ( !stats ) {
               content.avatarForm.message = 'There was a problem with your upload, possibly because the file is corrupt.'
-              resolve({ public: content })
+              resolve({ local: content })
             } else if ( !stats.size ) {
               content.avatarForm.message = 'Only image files are allowed.'
-              resolve({ public: content })
+              resolve({ local: content })
             } else {
               let width = stats.size.width,
                   height = stats.size.height
   
               if ( stats.format === 'GIF' && stats.Scene ) {
                 content.avatarForm.message = 'Animated GIFs aren\'t allowed.'
-                resolve({ public: content })
+                resolve({ local: content })
               } else {
                 if ( stats.size.width !== stats.size.height ) {
                   if ( stats.size.width > stats.size.height ) {
@@ -239,7 +241,7 @@ export const avatarForm = async (params, request, response, context) => {
                       app.cache.clear({ file: file })
                       content.avatarForm.success = true
                       content.avatarForm.message = 'Your avatar was saved successfully!'
-                      resolve({ public: content })
+                      resolve({ local: content })
                     }
                   })
               }
@@ -251,7 +253,7 @@ export const avatarForm = async (params, request, response, context) => {
       } else {
         content.avatarForm.message = 'You need to specify a file to upload.'
         return {
-          public: content
+          local: content
         }
       }
     } else {

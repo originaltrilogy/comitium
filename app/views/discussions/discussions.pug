@@ -10,7 +10,7 @@ if include && include.announcements
     != include.announcements
 
 section.categories
-  each category in categories
+  each category in local.categories
     section(class="category" data-category-id=category.category_id)
       h2 #{category.category_title}
       each discussion in category.subcategories

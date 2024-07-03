@@ -9,12 +9,12 @@ export const handler = async (params) => {
       jsKey = themePath.js + '/min/site.js',
       jsUrl = app.config.comitium.staticAssetUrl + 'themes/' + themePath.js + '/min/site.js?v=',
       staticFileStats = app.config.citizen.cache.static.enable ? app.cache.get({ scope: 'staticFileStats' }) : false,
-      metaData = params.route.action === 'handler' && app.controllers[params.route.controller] && app.controllers[params.route.controller].head ? await app.controllers[params.route.controller].head(params) : {}
+      metaData = app.controllers.routes[params.url.controller] && app.controllers.routes[params.url.controller].head ? await app.controllers.routes[params.url.controller].head(params) : {}
 
   // If the static files are cached, generate the URLs
   if ( staticFileStats && staticFileStats[cssKey] && staticFileStats[jsKey] ) {
     return {
-      public: {
+      local: {
         metaData: metaData,
         cssUrl: cssUrl + staticFileStats[cssKey].mtime.toString().replace(/[ :\-()]/g, ''),
         jsUrl: jsUrl + staticFileStats[jsKey].mtime.toString().replace(/[ :\-()]/g, '')
@@ -45,7 +45,7 @@ export const handler = async (params) => {
     }
 
     return {
-      public: {
+      local: {
         metaData  : metaData,
         cssUrl    : cssUrl + css.mtime.toString().replace(/[ :\-()]/g, ''),
         jsUrl     : jsUrl + js.mtime.toString().replace(/[ :\-()]/g, '')

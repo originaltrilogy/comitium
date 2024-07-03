@@ -28,7 +28,7 @@ export const handler = async (params) => {
   let count = members.length ? members[0].full_count : 0
 
   return {
-    public: {
+    local: {
       count: count,
       group: group,
       groups: groups,
@@ -86,7 +86,7 @@ export const searchResults = async (params) => {
   let count = members.length ? members[0].full_count : 0
 
   return {
-    public: {
+    local: {
       count: count,
       groups: groups,
       members: members,

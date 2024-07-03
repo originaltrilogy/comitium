@@ -1,5 +1,5 @@
-if topics
-  each topic in topics
+if local.topics
+  each topic in local.topics
     article(class="topic" + ( topic.unread ? " unread" : "" ) + ( topic.locked_by_id ? " locked" : "" ) data-topic-id=topic.id )
       h3
         a(href="announcement/" + topic.url + "/id/" + topic.id ) !{topic.title_html}

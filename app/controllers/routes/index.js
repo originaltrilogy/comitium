@@ -1,10 +1,8 @@
 // index controller
 
-export const handler = () => {
+export const handler = async () => {
   return {
-    handoff: {
-      controller: 'discussions'
-    },
+    next: '/discussions',
     view: false
   }
 }

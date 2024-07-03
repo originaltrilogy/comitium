@@ -22,10 +22,10 @@ article(id=post.id class="post" + ( post.author_signature ? " signature" : "" ) 
     != post.html
   nav.actions
     ul
-      if !topic.locked_by_id || session.moderate_discussions
+      if !local.topic.locked_by_id || session.moderate_discussions
         li.quote
           a(href="topic/action/reply/id/" + url.id + "/quote/" + post.id) Quote
-      if ( session.username === post.author && !post.lockedByID && !topic.locked_by_id ) || session.moderate_discussions
+      if ( session.username === post.author && !post.locked_by_id && !local.topic.locked_by_id ) || session.moderate_discussions
         li.edit
           a(href="post/action/edit/id/" + post.id) Edit
       //- li.bookmark
@@ -41,7 +41,7 @@ article(id=post.id class="post" + ( post.author_signature ? " signature" : "" ) 
           li.unlock
             a(href="post/action/unlock/id/" + post.id) Unlock
         //- Don"t allow the only post in the topic to be deleted
-        if topic.replies > 0
+        if local.topic.replies > 0
           li.delete
             a(href="post/action/trash/id/" + post.id) Delete
   if ( post.author_signature && post.author_signature.length ) || post.author_group_id === 4 || post.author_group_id === 5

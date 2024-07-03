@@ -4,19 +4,19 @@ header
     h1 Make an announcement
     p Announcements are special topics that have higher prominence than standard topics. They can be displayed in the <a href="announcements">Announcements</a> discussion or at the top of individual discussions above the other topics.
 
-if preview
+if local.preview
   section.preview
     h2 Topic preview:
     article.post
       h3.title
-        != preview.title
+        != local.preview.title
       section.content.post
-        != preview.content
+        != local.preview.content
 
-if topic && topic.message
+if local.topic && local.topic.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{topic.message}
+    p !{local.topic.message}
 
 section.form.post.topic-write
   form#topic-write-form(action="topic/action/startAnnouncementForm" method="post" novalidate)
@@ -46,7 +46,7 @@ section.form.post.topic-write
             label(for="display-discussions-custom")
               | Within the following forums:
             ul.data
-              each category in categories
+              each category in local.categories
                 li
                   = category.category_title
                   ul.data.checkbox

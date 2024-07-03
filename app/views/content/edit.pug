@@ -1,11 +1,11 @@
 header
   section.summary
-    h1 Edit content: #{content.title_html}
+    h1 Edit content: #{local.content.title_html}
 
-if message
+if local.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{message}
+    p !{local.message}
 
 section.form.post
   form(id="content-edit-form" action="content/" + url.content + "/id/" + url.id + "/action/editForm" method="post" novalidate)

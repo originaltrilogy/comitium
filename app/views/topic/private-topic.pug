@@ -1,6 +1,6 @@
 header
   include ../partials/breadcrumbs
-  if page === 1
+  if local.page === 1
     include ../partials/topic-summary-first-page
   else
     include ../partials/topic-summary
@@ -8,40 +8,40 @@ header
 section.notice.private
   <svg class="icon private"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-private"></use></svg>
   p This topic is private and visible only to 
-    each user, index in participants
-      if participants.length > 1 && index === participants.length - 1
+    each user, index in local.participants
+      if local.participants.length > 1 && index === local.participants.length - 1
         |  and 
       span(class=index)
         a(href="user/" + user.username + "/id/" + user.id)
           = user.username
-      if participants.length > 2 && index < participants.length - 1
+      if local.participants.length > 2 && index < local.participants.length - 1
         | , 
     | .
-  if left.length
+  if local.left.length
     p
-      each user, index in left
-        if left.length > 1 && index === left.length - 1
+      each user, index in local.left
+        if local.left.length > 1 && index === local.left.length - 1
           |  and 
         span(class=index)
           a(href="user/" + user.username + "/id/" + user.id)
             = user.username
-        if left.length > 2 && index < left.length - 1
+        if local.left.length > 2 && index < local.left.length - 1
           | , 
       |  left the topic.
 
 section.posts
-  each post in firstPost
+  each post in local.firstPost
     include ../post/_topic-post
   nav
-    h2 #{topic.replies_formatted} #{ topic.replies != 1 ? "Replies" : "Reply" }
+    h2 #{local.topic.replies_formatted} #{ local.topic.replies != 1 ? "Replies" : "Reply" }
     include ../partials/pagination
     include ../partials/private-topic-actions
-  each post in posts
+  each post in local.posts
     include ../post/_private-topic-post
 
 include ../partials/previous-and-next
 
-if userCanReply
+if local.userCanReply
   section.form.post.quick-reply
     h2 Quick reply
     form#quick-reply-form(action="topic/id/" + url.id + "/action/replyForm" method="post" novalidate)

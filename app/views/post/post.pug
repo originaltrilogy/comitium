@@ -1,47 +1,47 @@
 header
   section.summary
-    h1 Post ##{post.id}
+    h1 Post ##{local.post.id}
     dl
       dt Author
-      dd <a href="user/#{post.author_url}/id/#{post.user_id}">#{post.author}</a>
+      dd <a href="user/#{local.post.author_url}/id/#{local.post.user_id}">#{local.post.author}</a>
       dt Parent topic
-      dd <a href="#{topic.url}">!{topic.title_html}</a>
+      dd <a href="#{local.topic.url}">!{local.topic.title_html}</a>
       dt Link to post in topic
-      dd <a href="#{post.url}">#{config.comitium.baseUrl + post.url}</a>
+      dd <a href="#{local.post.url}">#{config.comitium.baseUrl + local.post.url}</a>
       dt Date created
-      dd #{post.created_formatted}
-      if post.editorID
+      dd #{local.post.created_formatted}
+      if local.post.editorID
         dt Last modified
-        dd #{post.modified_formatted}
+        dd #{local.post.modified_formatted}
         dt Edited by
-        dd <a href="user/#{post.editor_url}/id/#{post.editor_id}">#{post.editor}</a>
+        dd <a href="user/#{local.post.editor_url}/id/#{local.post.editor_id}">#{local.post.editor}</a>
         dt Reason for edit
-        if post.editReason
-          dd !{post.edit_reason}
+        if local.post.editReason
+          dd !{local.post.edit_reason}
         else
           dd None provided
 
-article.post(id=post.id data-post-id=post.id)
+article.post(id=local.post.id data-post-id=local.post.id)
   section.content.post
-    != post.html
+    != local.post.html
   nav.actions
     ul
-      if ( session.username === post.author && !post.lockedByID ) || session.moderate_discussions
+      if ( session.username === local.post.author && !local.post.lockedByID ) || session.moderate_discussions
         li.edit
-          a(href="post/action/edit/id/" + post.id) Edit
+          a(href="post/action/edit/id/" + local.post.id) Edit
       //- li.bookmark
-      //-   a(href="post/action/bookmark/id/#{post.id}") Bookmark
-      if post.author_id !== session.user_id && !session.moderate_discussions
+      //-   a(href="post/action/bookmark/id/#{local.post.id}") Bookmark
+      if local.post.author_id !== session.user_id && !session.moderate_discussions
         li.report
-          a(href="post/action/report/id/" + post.id) Report
+          a(href="post/action/report/id/" + local.post.id) Report
       if session.moderate_discussions
-        if !post.locked_by_id
+        if !local.post.locked_by_id
           li.lock
-            a(href="post/action/lock/id/" + post.id) Lock
+            a(href="post/action/lock/id/" + local.post.id) Lock
         else
           li.unlock
-            a(href="post/action/unlock/id/" + post.id) Unlock
+            a(href="post/action/unlock/id/" + local.post.id) Unlock
         // Don"t allow the only post in the topic to be deleted
-        if topic.replies > 0
+        if local.topic.replies > 0
           li.delete
-            a(href="post/action/trash/id/" + post.id) Delete
+            a(href="post/action/trash/id/" + local.post.id) Delete

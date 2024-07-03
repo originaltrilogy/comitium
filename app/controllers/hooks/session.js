@@ -2,7 +2,7 @@
 
 
 export const start = async (params, request) => {
-  let cookies   = {},
+  let cookie   = {},
       session   = {},
       active    ,
       ip        = app.toolbox.helpers.ip(request),
@@ -36,7 +36,7 @@ export const start = async (params, request) => {
         })
 
         return {
-          cookies: {
+          cookie: {
             comitium_active: {
               expires: 'now'
             }
@@ -45,7 +45,7 @@ export const start = async (params, request) => {
         }
       } else {
         return {
-          cookies: {
+          cookie: {
             comitium_id: {
               expires: 'now'
             },
@@ -63,7 +63,7 @@ export const start = async (params, request) => {
       session.ip = ip
       session.themePath = app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path
       active = app.toolbox.helpers.isoDate()
-      cookies.comitium_active = {
+      cookie.comitium_active = {
         value: active,
         expires: 'never'
       }
@@ -77,7 +77,7 @@ export const start = async (params, request) => {
       session.date_format = 'MMMM D, YYYY'
 
       return {
-        cookies: cookies,
+        cookie: cookie,
         session: session
       }
     }

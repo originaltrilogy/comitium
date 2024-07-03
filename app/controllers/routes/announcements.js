@@ -57,13 +57,14 @@ export const handler = async (params) => {
     }
     
     return {
-      public: {
+      local: {
         discussion: discussion,
         topics: topics.length ? topics : false,
         breadcrumbs: app.models.announcements.breadcrumbs(),
         pagination: app.toolbox.helpers.paginate('announcements/id/2', params.url.page, discussion.topics),
         previousAndNext: app.toolbox.helpers.previousAndNext('announcements/id/2', params.url.page, discussion.topics)
-      }
+      },
+      view: params.url.compact ? 'compact' : 'announcements'
     }
   } else {
     return access

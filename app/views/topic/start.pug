@@ -1,24 +1,24 @@
 header
   include ../partials/breadcrumbs
   section.summary
-    h1 Start a new topic in #{discussion.title}
+    h1 Start a new topic in #{local.discussion.title}
 
-if preview
+if local.preview
   section.preview
     h2 Topic preview:
     article.post
       h3.title
-        != preview.title
+        != local.preview.title
       section.content.post
-        != preview.content
+        != local.preview.content
 
-if topic && topic.message
+if local.topic && local.topic.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{topic.message}
+    p !{local.topic.message}
 
 section.form.post.topic-write
-  form#topic-write-form(action="topic/action/startForm/id/" + discussion.id method="post" novalidate)
+  form#topic-write-form(action="topic/action/startForm/id/" + local.discussion.id method="post" novalidate)
     ul.data
       li.topic-title.textarea.required
         label(for="topic-title")

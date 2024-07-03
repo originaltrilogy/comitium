@@ -1,15 +1,15 @@
 header
   section.summary
-    h1 Reply to topic: !{topic.title_html}
+    h1 Reply to topic: !{local.topic.title_html}
 
-if preview
+if local.preview
   section.preview
     h2 Post preview:
     article.post
       section.content.post
-        != preview.content
+        != local.preview.content
 
-if message
+if local.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
     p !{message}

@@ -2,21 +2,21 @@ header
   section.summary
     h1 Merge topics
 
-if error && error.message
+if local.error && local.error.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{error.message}
+    p !{local.error.message}
 
 section.form.post
   p Select the topics you'd like to merge (up to 5). The oldest topic becomes the parent; newer topics will be merged into the oldest topic.
   p Only topics within the same discussion can be merged; to merge topics in different categories, move them into the same category first.
-  form(action="topic/action/mergeForm/id/" + topic.id method="post" novalidate)
+  form(action="topic/action/mergeForm/id/" + local.topic.id method="post" novalidate)
     ul.data
       li.topic-a.select.required
         label(for="topic-a")
           | First topic
         select(id="topic-a" name="topicID")
-          each topic in topics
+          each topic in local.topics
             if topic.id != url.id
               option(value=topic.id)
                 | #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
@@ -28,7 +28,7 @@ section.form.post
           | Second topic
         select(id="topic-b" name="topicID")
           option
-          each topic in topics
+          each topic in local.topics
             if topic.id != url.id
               option(value=topic.id) #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.topic-c.select
@@ -36,7 +36,7 @@ section.form.post
           | Third topic
         select(id="topic-c" name="topicID")
           option
-          each topic in topics
+          each topic in local.topics
             if topic.id != url.id
               option(value=topic.id) #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.topic-d.select
@@ -44,7 +44,7 @@ section.form.post
           | Fourth topic
         select(id="topic-d" name="topicID")
           option
-          each topic in topics
+          each topic in local.topics
             if topic.id != url.id
               option(value=topic.id) #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.topic-e.select
@@ -52,7 +52,7 @@ section.form.post
           | Fifth topic
         select(id="topic-e" name="topicID")
           option
-          each topic in topics
+          each topic in local.topics
             if topic.id != url.id
               option(value=topic.id) #{topic.title_html} – started by #{topic.topic_starter} on #{topic.post_date_formatted}
       li.notify.checkbox

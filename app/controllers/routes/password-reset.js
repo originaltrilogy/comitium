@@ -11,13 +11,13 @@ export const form = async (params, request, response, context) => {
 
     if ( !params.form.email.length ) {
       return {
-        public: {
+        local: {
           message: 'Your e-mail address is required.'
         }
       }
     } else if ( !app.toolbox.validate.email(params.form.email) ) {
       return {
-        public: {
+        local: {
           message: 'That doesn\'t appear to be a properly formatted e-mail address. Please check your entry and try again.'
         }
       }
@@ -27,7 +27,7 @@ export const form = async (params, request, response, context) => {
 
     if ( !user ) {
       return {
-        public: {
+        local: {
           message: 'The e-mail address you provided doesn\'t exist in our system. Please check it and try again.'
         }
       }
@@ -108,7 +108,7 @@ export const resetForm = async (params) => {
 
   if ( message.length ) {
     return {
-      public: {
+      local: {
         message: message
       },
       view: 'reset'

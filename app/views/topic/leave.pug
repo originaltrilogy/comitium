@@ -1,16 +1,16 @@
 header
   section.summary
-    h1 Leave a private topic: !{topic.titleHtml}
+    h1 Leave a private topic: !{local.topic.titleHtml}
 
-if topic && topic.message
+if topic && local.topic.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{topic.message}
+    p !{local.topic.message}
 
 section.form.topic-leave
   p Once you leave a private topic, you can no longer view the topic or reply. Are you sure you want to leave?
-  form#topic-leave-form(action="topic/action/leaveForm/id/" + topic.id method="post" novalidate)
-    input(name="topicID" type="hidden" value=topic.id)
+  form#topic-leave-form(action="topic/action/leaveForm/id/" + local.topic.id method="post" novalidate)
+    input(name="topicID" type="hidden" value=local.topic.id)
     input(name="forwardToUrl" type="hidden" value=form.forwardToUrl)
     ul.actions
       li.primary

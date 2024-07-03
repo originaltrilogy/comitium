@@ -3,10 +3,10 @@ header
     h1 Move a topic
     p You can move a topic to any discussion to which you have moderation permissions.
 
-if move && move.message
+if local.move && local.move.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{move.message}
+    p !{local.move.message}
 
 section.form.topic-move
   form#topic-move-form(action="topic/id/" + url.id + "/action/moveForm" method="post" novalidate)
@@ -15,10 +15,10 @@ section.form.topic-move
       li.select.destination
         label(for="destination") Where do you want to move this topic?
         select(id="destination" name="destination")
-          each category in categories
+          each category in local.categories
             optgroup(label=category.category_title)
             each discussion in category.subcategories
-              if discussion.discussion_id !== topic.discussion_id
+              if discussion.discussion_id !== local.topic.discussion_id
                 option(value=discussion.discussion_id)
                   = "– " + discussion.discussion_title
               else

@@ -1,13 +1,13 @@
 // register controller
 
-export const handler = (params) => {
+export const handler = async (params) => {
   params.form.username = ''
   params.form.email = ''
   params.form.password = ''
   params.form.tos = false
 
   return {
-    public: {
+    local: {
       verification: verification()
     }
   }
@@ -20,7 +20,7 @@ export const form = async (params, request, response, context) => {
 
     if ( parseInt(params.form.first_int, 10) + parseInt(params.form.second_int, 10) !== parseInt(params.form.verification, 10) ) {
       return {
-        public: {
+        local: {
           message: 'Are you a bot? If not, please try again.',
           verification: verification()
         }
@@ -50,7 +50,7 @@ export const form = async (params, request, response, context) => {
       }
     } else {
       return {
-        public: {
+        local: {
           message: register.message,
           verification: verification()
         }

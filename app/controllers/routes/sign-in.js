@@ -1,6 +1,6 @@
 // sign in controller
 
-export const handler = (params, request) => {
+export const handler = async (params, request) => {
   params.form.forwardToUrl = params.form.forwardToUrl || params.session.ctzn_referer || request.headers.referer || app.config.comitium.baseUrl
   params.form.loginReferrer = request.headers.referer || app.config.comitium.baseUrl
   params.form.email = ''
@@ -35,7 +35,7 @@ export const submit = async (params, request) => {
   if ( request.method === 'POST' ) {
     let authenticate = await app.models.user.authenticate({ email: params.form.email || params.session.email, password: params.form.password }),
         user = authenticate.user,
-        cookies = {}
+        cookie = {}
 
     if ( authenticate.success ) {
       user.user_id = authenticate.user.id
@@ -45,14 +45,14 @@ export const submit = async (params, request) => {
       user.themePath = app.config.comitium.themes[user.theme] ? app.config.comitium.themes[user.theme].path : app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path
 
       if ( !params.cookie.comitium_id ) {
-        cookies.comitium_id = {
+        cookie.comitium_id = {
           value: authenticate.user.username_hash,
           expires: params.form.remember ? 'never' : 'session'
         }
       }
       
       // This cookie is only necessary for guests
-      cookies.comitium_active = {
+      cookie.comitium_active = {
         expires: 'now'
       }
 
@@ -63,14 +63,14 @@ export const submit = async (params, request) => {
       })
 
       return {
-        cookies: cookies,
+        cookie: cookie,
         session: user,
         redirect: params.form.forwardToUrl
       }
     } else {
       return {
         view: params.form.authenticationMethod || 'sign-in',
-        public: {
+        local: {
           authenticate: authenticate
         }
       }

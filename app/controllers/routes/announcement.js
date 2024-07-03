@@ -7,7 +7,7 @@ import { head } from './topic.js'
 export const handler = async () => {
   return {
     view: false,
-    handoff: {
+    next: {
       controller: 'topic',
       view: 'announcement'
     }

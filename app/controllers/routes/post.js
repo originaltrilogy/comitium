@@ -6,14 +6,14 @@ export const handler = async (params) => {
   if ( access === true ) {
     let post  = await app.models.post.info(params.url.id),
         topic = await app.models.topic.info(post.topic_id),
-        topicController = topic.discussionID !== 2 ? 'topic' : 'announcement',
+        topicController = topic.discussion_id !== 2 ? 'topic' : 'announcement',
         topicUrlTitle = topic.private ? '' : '/' + topic.url
 
     topic.url = topicController + topicUrlTitle + '/id/' + post.topic_id,
     post.url = 'post/id/' + post.id + '/action/topic#' + post.id
 
     return {
-      public: {
+      local: {
         post: post,
         topic: topic
       }
@@ -36,7 +36,7 @@ export const edit = async (params, request) => {
 
     return {
       view: 'edit',
-      public: {
+      local: {
         post: post
       }
     }
@@ -64,7 +64,7 @@ export const editForm = async (params, request, response, context) => {
           throw new Error('No valid form action received')
         case 'Preview post':
           return {
-            public: {
+            local: {
               preview: {
                 content: parsedContent
               },
@@ -97,7 +97,7 @@ export const editForm = async (params, request, response, context) => {
             }
           } else {
             return {
-              public: {
+              local: {
                 post: post,
                 message: postEdit.message
               },
@@ -125,13 +125,11 @@ export const lock = async (params, request) => {
 
     return {
       view: 'lock',
-      public: {
+      local: {
         post: post
       },
       include: {
-        post: {
-          route: '/post/id/' + post.id
-        }
+        post: '/post/id/' + post.id
       }
     }
   } else {
@@ -203,13 +201,11 @@ export const report = async (params, request) => {
 
     return {
       view: 'report',
-      public: {
+      local: {
         post: post
       },
       include: {
-        post: {
-          route: '/post/id/' + post.id
-        }
+        post: '/post/id/' + post.id
       }
     }
   } else {
@@ -237,8 +233,8 @@ export const reportForm = async (params, request, response, context) => {
             reporter: params.session.username,
             postUrl: app.config.comitium.baseUrl + 'post/id/' + post.id,
             postText: post.text,
-            topicTitle: post.topicTitle,
-            topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topicUrl + '/id/' + post.topic_id,
+            topicTitle: post.topic_title,
+            topicUrl: app.config.comitium.baseUrl + 'topic/' + post.topic_url + '/id/' + post.topic_id,
             reason: params.form.reason
           }
         })
@@ -256,14 +252,12 @@ export const reportForm = async (params, request, response, context) => {
       } else {
         return {
           view: 'report',
-          public: {
+          local: {
             message: saveReport.message,
             post: post
           },
           include: {
-            post: {
-              route: '/post/id/' + post.id
-            }
+            post: '/post/id/' + post.id
           }
         }
       }
@@ -290,7 +284,7 @@ export const topic = async (params) => {
     params.url.page = page
 
     return {
-      handoff: {
+      next: {
         controller: 'topic'
       },
       topic: {
@@ -318,13 +312,11 @@ export const trash = async (params, request) => {
 
     return {
       view: 'trash',
-      public: {
+      local: {
         post: post
       },
       include: {
-        post: {
-          route: '/post/id/' + post.id
-        }
+        post: '/post/id/' + post.id
       }
     }
   } else {
@@ -343,7 +335,7 @@ export const trashForm = async (params, request, response, context) => {
       await app.models.post.trash({
         postID: post.id,
         topicID: post.topic_id,
-        discussionID: post.discussionID,
+        discussionID: post.discussion_id,
         authorID: post.userID,
         deletedByID: params.session.user_id,
         deleteReason: app.toolbox.markdown.inline(params.form.reason)

@@ -17,7 +17,7 @@ export const handler = async (params) => {
     if ( params.route.descriptor === content.url ) {
       // content.userCanEdit = userCanEdit
       return {
-        public: {
+        local: {
           content: content,
           userCanEdit: userCanEdit
         }
@@ -48,7 +48,7 @@ export const edit = async (params) => {
     params.form.content_markdown = content.content_markdown
 
     return {
-      public: {
+      local: {
         content: content
       },
       view: 'edit'
@@ -81,7 +81,7 @@ export const editForm = async (params, request, response, context) => {
       } else {
         let content = await app.models.content.info(params.url.id)
         return {
-          public: {
+          local: {
             content: content,
             message: editContent.message
           },

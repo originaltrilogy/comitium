@@ -12,7 +12,7 @@ export const handler = (params, request) => {
 
   return {
     view: params.url.reason || 'sign-out',
-    cookies: {
+    cookie: {
       comitium_id: {
         expires: 'now'
       }

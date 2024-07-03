@@ -72,7 +72,7 @@ export const handler = async (params) => {
       })
 
       return {
-        public: {
+        local: {
           discussion: discussion,
           announcements: announcements.length ? announcements : false,
           topics: topics.length ? topics : false,

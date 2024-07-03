@@ -36,7 +36,7 @@ export const handler = async (params) => {
     }
 
     return {
-      public: {
+      local: {
         talkPrivately: params.session.talk_privately && user.id !== params.session.user_id,
         editProfile: user.id === params.session.user_id,
         moderateUser: params.url.id !== params.session.user_id && params.session.moderate_users,
@@ -65,7 +65,7 @@ export const activate = async (params) => {
   if ( activate.success || ( !activate.success && activate.reason === 'accountAlreadyActivated' ) ) {
     return {
       view: 'activate',
-      public: {
+      local: {
         activate: activate
       },
       include: {
@@ -78,7 +78,7 @@ export const activate = async (params) => {
   } else {
     return {
       view: 'activate',
-      public: {
+      local: {
         activate: activate
       }
     }
@@ -111,7 +111,7 @@ export const cleanup = async (params) => {
         replies = await app.models.user.replies({ userID: params.url.id })
     
     return {
-      public: {
+      local: {
         user: user,
         topics: topics,
         replies: replies

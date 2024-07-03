@@ -21,7 +21,7 @@ export const handler = async () => {
   }
 
   return {
-    public: {
+    local: {
       stats: {
         topics: app.toolbox.numeral(topics).format('0,0'),
         posts: app.toolbox.numeral(posts).format('0,0'),
@@ -31,7 +31,7 @@ export const handler = async () => {
       copyrightYear: copyrightYear
     },
     cache: {
-      controller: {
+      action: {
         lifespan: 'application'
       }
     }

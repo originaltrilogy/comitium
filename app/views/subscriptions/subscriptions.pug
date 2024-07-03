@@ -6,10 +6,10 @@ header
 
 section.topics
   header
-    h2 #{app.toolbox.numeral(count).format("0,0")} Topic#{ count != 1 ? "s" : "" }
+    h2 #{app.toolbox.numeral(local.count).format("0,0")} Topic#{ local.count != 1 ? "s" : "" }
     include ../partials/pagination
-  if topics
-    each topic in topics
+  if local.topics
+    each topic in local.topics
       if topic.discussionID !== 2
         include ../partials/subscribed-topic
       else

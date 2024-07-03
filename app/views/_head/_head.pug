@@ -2,8 +2,8 @@ head
   meta(charset="utf-8")
   meta(name="viewport" content="width=device-width, initial-scale=1")
   base(href=config.comitium.baseUrl)
-  title #{metaData.title}
-  meta(name="description" content=metaData.description)
-  meta(name="keywords" content=metaData.keywords)
-  link(rel="stylesheet" type="text/css" href=cssUrl)
-  script(type="text/javascript" src=jsUrl)
+  title #{local.metaData.title}
+  meta(name="description" content=local.metaData.description)
+  meta(name="keywords" content=local.metaData.keywords)
+  link(rel="stylesheet" type="text/css" href=local.cssUrl)
+  script(type="text/javascript" src=local.jsUrl)

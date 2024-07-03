@@ -14,7 +14,7 @@ export const handler = async (params) => {
   }
 
   return {
-    public: {
+    local: {
       unread: {
         topics: unreadTopics,
         privateTopics: unreadPrivateTopics

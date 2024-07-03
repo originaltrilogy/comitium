@@ -135,7 +135,7 @@ export const handler = async (params, request, response, context) => {
 
       return {
         view: type,
-        public: {
+        local: {
           topic: topic,
           firstPost: firstPost,
           posts: posts,
@@ -181,7 +181,7 @@ export const start = async (params) => {
 
     return {
       view: 'start',
-      public: {
+      local: {
         discussion: discussion,
         breadcrumbs: app.models.topic.breadcrumbs({
           discussion_title : discussion.title,
@@ -217,7 +217,7 @@ export const startForm = async (params, request, response, context) => {
         case 'Preview post':
           return {
             view: 'start',
-            public: {
+            local: {
               preview: {
                 title: parsedTitle,
                 content: parsedContent
@@ -264,7 +264,7 @@ export const startForm = async (params, request, response, context) => {
           } else {
             return {
               view: 'start',
-              public: {
+              local: {
                 topic: saveTopic,
                 discussion: discussion,
                 breadcrumbs: app.models.topic.breadcrumbs({
@@ -300,7 +300,7 @@ export const startAnnouncement = async (params) => {
 
     return {
       view: 'start-announcement',
-      public: {
+      local: {
         categories: categories,
         breadcrumbs: app.models.topic.breadcrumbs({
           discussion_title: 'Announcements',
@@ -324,9 +324,12 @@ export const startAnnouncementForm = async (params, request, response, context) 
       params.form.displayDiscussions = params.form.displayDiscussions || 'none'
       params.form.discussions = params.form.discussions || []
       let discussions = []
-      params.form.discussions.forEach( function (item) {
-        discussions.push(item)
-      })
+      
+      if ( Array.isArray(params.form.discussions) ) {
+        discussions = params.form.discussions
+      } else {
+        discussions.push(params.form.discussions)
+      }
 
       let categories = await app.models.discussions.categoriesPost(params.session.group_id),
           parsedTitle = app.toolbox.markdown.title(params.form.title),
@@ -344,7 +347,7 @@ export const startAnnouncementForm = async (params, request, response, context) 
         case 'Preview post':
           return {
             view: 'start-announcement',
-            public: {
+            local: {
               preview: {
                 title: parsedTitle,
                 content: parsedContent
@@ -406,7 +409,7 @@ export const startAnnouncementForm = async (params, request, response, context) 
           } else {
             return {
               view: 'start-announcement',
-              public: {
+              local: {
                 topic: saveTopic,
                 categories: categories,
                 breadcrumbs: app.models.topic.breadcrumbs({
@@ -459,7 +462,7 @@ export const startPrivate = async (params) => {
 
     return {
       view: 'start-private',
-      public: {
+      local: {
         invitees: invitees
       }
     }
@@ -491,7 +494,7 @@ export const startPrivateForm = async (params, request, response, context) => {
         case 'Preview post':
           return {
             view: 'start-private',
-            public: {
+            local: {
               preview: {
                 title: parsedTitle,
                 content: parsedContent
@@ -555,7 +558,7 @@ export const startPrivateForm = async (params, request, response, context) => {
           } else {
             return {
               view: 'start-private',
-              public: {
+              local: {
                 topic: saveTopic
               }
             }
@@ -602,7 +605,7 @@ export const reply = async (params) => {
 
     return {
       view: 'reply',
-      public: {
+      local: {
         topic: topic,
         message: message
       }
@@ -630,7 +633,7 @@ export const replyForm = async (params, request, response, context) => {
         case 'Preview post':
           return {
             view: 'reply',
-            public: {
+            local: {
               preview: {
                 content: parsedContent
               },
@@ -646,7 +649,7 @@ export const replyForm = async (params, request, response, context) => {
           if ( !params.form.content.trim().length ) {
             return {
               view: 'reply',
-              public: {
+              local: {
                 message: 'All fields are required.',
                 topic: topic
               }
@@ -697,7 +700,7 @@ export const replyForm = async (params, request, response, context) => {
           }
 
           return {
-            public: reply,
+            local: reply,
             redirect: forwardToUrl
           }
       }
@@ -789,7 +792,7 @@ export const leave = async (params) => {
 
     return {
       view: 'leave',
-      public: {
+      local: {
         topic: topic
       }
     }
@@ -829,7 +832,7 @@ export const lock = async (params, request) => {
 
     return {
       view: 'lock',
-      public: {
+      local: {
         topic: topic
       }
     }
@@ -903,7 +906,7 @@ export const edit = async (params, request) => {
 
     return {
       view: 'edit',
-      public: {
+      local: {
         topic: topic
       }
     }
@@ -920,7 +923,7 @@ export const editForm = async (params, request, response, context) => {
     if ( access === true ) {
       let topic         = await app.models.topic.info(params.url.id),
           firstPost     = await app.models.post.info(topic.first_post_id),
-          announcement  = topic.discussionID === 2 ? true : false,
+          announcement  = topic.discussion_id === 2 ? true : false,
           parsedTitle   = app.toolbox.markdown.title(params.form.title),
           parsedContent = app.toolbox.markdown.content(params.form.content),
           parsedReason  = app.toolbox.markdown.inline(params.form.reason),
@@ -937,7 +940,7 @@ export const editForm = async (params, request, response, context) => {
         case 'Preview changes':
           return {
             view: 'edit',
-            public: {
+            local: {
               preview: {
                 title: parsedTitle,
                 content: parsedContent
@@ -968,7 +971,7 @@ export const editForm = async (params, request, response, context) => {
           } else {
             return {
               view: 'edit',
-              public: {
+              local: {
                 topic: edit
               }
             }
@@ -998,7 +1001,7 @@ export const merge = async (params, request) => {
 
     return {
       view: 'merge',
-      public: {
+      local: {
         topic: topic,
         topics: topics
       }
@@ -1014,6 +1017,7 @@ export const mergeForm = async (params, request, response, context) => {
     params.form.topicID = params.form.topicID.filter( item => {
       return item.length
     })
+
     let access = await app.toolbox.access.topicMergeForm({
           topicID: params.form.topicID,
           user: params.session
@@ -1051,10 +1055,10 @@ export const mergeForm = async (params, request, response, context) => {
 
         return {
           view: 'merge',
-          public: {
+          local: {
             topic: topic,
             topics: topics,
-            error: merge
+            error: mergedTopic
           }
         }
       }
@@ -1083,7 +1087,7 @@ export const move = async (params, request) => {
 
     return {
       view: 'move',
-      public: {
+      local: {
         topic: topic,
         categories: categories
       }
@@ -1150,7 +1154,7 @@ export const trash = async (params, request) => {
 
     return {
       view: 'trash',
-      public: {
+      local: {
         topic: topic
       }
     }

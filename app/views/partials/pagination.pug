@@ -1,7 +1,7 @@
-if pagination && pagination.lastPage > 1
+if local.pagination && local.pagination.lastPage > 1
   nav.pagination
     ul
-      each page in pagination.pages
+      each page in local.pagination.pages
         li(class="page-" + page.number + ( page.isCurrentPage ? " current" : "" ))
           a(href=page.url)
             = page.text

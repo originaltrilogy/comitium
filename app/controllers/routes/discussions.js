@@ -12,16 +12,13 @@ export const handler = async (params) => {
   })
 
   return {
-    public: {
+    local: {
       categories: categories
       // Breadcrumbs will return when the today/home page is done
       // breadcrumbs: app.models.discussions.breadcrumbs()
     },
     include: {
-      announcements: {
-        route: '/announcements/end/4',
-        view: 'compact'
-      }
+      announcements: '/announcements/compact/true/end/4'
     }
   }
 }

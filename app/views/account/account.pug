@@ -6,11 +6,11 @@ header
 section.settings
   section.general#general
     h2 Info and settings
-    if general && general.messages
-      section(class="notice" + ( general.success ? " success" : " error" ) )
-        svg(class="icon" + ( general.success ? " success" : " error" ) )
-          use(xlink:href="themes/" + session.themePath.images + "/images/symbols.svg#icon-" + ( general.success ? "success" : "error" ) )
-        each message in general.messages
+    if local.general && local.general.messages
+      section(class="notice" + ( local.general.success ? " success" : " error" ) )
+        svg(class="icon" + ( local.general.success ? " success" : " error" ) )
+          use(xlink:href="themes/" + session.themePath.images + "/images/symbols.svg#icon-" + ( local.general.success ? "success" : "error" ) )
+        each message in local.general.messages
           p
             = message
     section.form
@@ -34,7 +34,7 @@ section.settings
             label(for="timezone") Time zone
             p.label-note Doesn"t do anything right now, sorry. All times are in Eastern US for now regardless of this setting.
             select#timezone(name="timezone")
-              each timezone in timezones
+              each timezone in local.timezones
                 if timezone !== form.timezone
                   option
                     = timezone
@@ -44,7 +44,7 @@ section.settings
           li.theme.select
             label(for="theme") Theme
             select#theme(name="theme")
-              each theme in themes
+              each theme in local.themes
                 if theme.name !== form.theme
                   option
                     = theme.name
@@ -73,12 +73,12 @@ section.settings
 
   section.avatar#avatar
     h2 Avatar
-    if avatarForm && avatarForm.message
-      section(class="notice" + ( avatarForm.success ? " success" : " error" ) )
-        svg(class="icon" + ( avatarForm.success ? " success" : " error" ) )
-          use(xlink:href="themes/" + session.themePath.images + "/images/symbols.svg#icon-" + ( avatarForm.success ? "success" : "error" ) )
+    if local.avatarForm && local.avatarForm.message
+      section(class="notice" + ( local.avatarForm.success ? " success" : " error" ) )
+        svg(class="icon" + ( local.avatarForm.success ? " success" : " error" ) )
+          use(xlink:href="themes/" + session.themePath.images + "/images/symbols.svg#icon-" + ( local.avatarForm.success ? "success" : "error" ) )
         p
-          = avatarForm.message
+          = local.avatarForm.message
     a.avatar(href="user/" + session.url + "/id/" + session.user_id rel="author")
       img(src="avatars/" + session.user_id + ".jpg?v=" + Math.random() )
     p Your avatar is an image that appears next to your posts to help identify you to other members.
