@@ -1,0 +1,15 @@
+nav.topic.actions
+  ul
+    li.reply
+      a(href="topic/action/reply/id/" + url.id) Reply
+    if !local.userIsSubscribed
+      li.subscribe
+        a(href="topic/action/subscribe/id/" + local.topic.id title="Receive an e-mail notification when people reply to this topic.") Subscribe
+    else
+      li.unsubscribe
+        a(href="topic/action/unsubscribe/id/" + local.topic.id title="Stop receiving e-mail notifications about this topic.") Unsubscribe
+    if local.userCanEdit
+      li.edit
+        a(href="topic/action/edit/id/" + local.topic.id title="Edit this topic.") Edit
+    li.leave
+      a(href="topic/action/leave/id/" + url.id) Leave

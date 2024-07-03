@@ -4,12 +4,15 @@ CF.members = ( function () {
   var methods = {
 
       init: function () {
-        document.querySelector('#group-menu li.current a').addEventListener('click', function (e) {
-          if ( document.body.clientWidth < 720 ) {
-            e.preventDefault()
-            e.target.parentNode.parentNode.classList.toggle('show-menu')
+        if ( document.body.clientWidth < 720 ) {
+          let currentGroup = document.querySelector('#group-menu li.current a')
+          if ( currentGroup ) {
+            currentGroup.addEventListener('click', function (e) {
+              e.preventDefault()
+              e.target.parentNode.parentNode.classList.toggle('show-menu')
+            })
           }
-        })
+        }
       }
 
     }

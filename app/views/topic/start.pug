@@ -1,0 +1,42 @@
+header
+  include ../partials/breadcrumbs
+  section.summary
+    h1 Start a new topic in #{local.discussion.title}
+
+if local.preview
+  section.preview
+    h2 Topic preview:
+    article.post
+      h3.title
+        != local.preview.title
+      section.content.post
+        != local.preview.content
+
+if local.topic && local.topic.message
+  section.notice.error
+    <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
+    p !{local.topic.message}
+
+section.form.post.topic-write
+  form#topic-write-form(action="topic/action/startForm/id/" + local.discussion.id method="post" novalidate)
+    ul.data
+      li.topic-title.textarea.required
+        label(for="topic-title")
+          | Topic title
+        textarea(id="topic-title" name="title" rows="2" required) #{form.title}
+      li.post-content.textarea.required
+        label(for="post-content")
+          | Post content
+        textarea(id="post-content" name="content" rows="20" required) #{form.content}
+      li.subscribe.checkbox
+        input(id="subscribe" name="subscribe" type="checkbox" value="true" checked=form.subscribe)
+        label(for="subscribe")
+          | Notify me when someone replies
+
+    ul.actions
+      li.secondary.preview
+        input(name="formAction" type="submit" value="Preview post")
+      li.primary.post
+        input(name="formAction" type="submit" value="Post your topic")
+      //- li.tertiary.draft
+      //-   input(name="formAction" type="submit" value="Save as draft")

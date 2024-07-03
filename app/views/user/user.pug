@@ -1,0 +1,86 @@
+header
+  section.summary
+    a(class="avatar" + ( local.user.group_id === 6 ? " banned" : "" ) href="user/" + local.user.username + "/id/" + local.user.id)
+      if local.user.group === "Banned Members"
+        <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
+      img(src="avatars/" + local.user.id + ".jpg")
+    h1 #{local.user.username}
+    if local.user.group === "Banned Members"
+      section.notice.banned
+        <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
+        p This user has been banned.
+    dl
+      dt User Group
+      dd #{local.user.group}
+
+      dt Join date
+      dd #{local.user.joined_formatted}
+
+      dt Last activity
+      dd #{local.user.last_activity_formatted}
+
+      dt Posts
+      dd #{app.toolbox.numeral(local.user.post_count).format("0,0")}
+
+      if local.user.website && local.user.website.length
+        dt Web Site
+        dd
+          a(href=local.user.website) #{local.user.website}
+    nav.actions
+      ul
+        li.private-topic
+          a(href="topic/action/startPrivate/invitee/" + local.user.id) Start a private topic
+        if editProfile
+          li.edit
+            a(href="account") Edit profile
+        if local.moderateUser
+          if local.user.group !== "Banned Members"
+            li.ban
+              a(href="user/action/ban/id/" + local.user.id) Ban this user
+          else
+            li.unban
+              a(href="user/action/liftBan/id/" + local.user.id) Lift ban
+          li.cleanup
+            a(href="user/action/cleanup/id/" + local.user.id) User Clean Up...
+
+if local.moderateUser
+  section.user-logs
+    h2 User Logs
+    section#ip-history.ip-history
+      if local.ipHistory
+        p IP addresses associated with this user (most recent first):
+        ul
+          each log in local.ipHistory
+            li(class=( log.id == url.log_id ? "selected" : "" ))
+              a(href="user/" + local.user.url + "/id/" + local.user.id + "/logID/" + log.id + "#ip-matches") #{log.ip}
+      else
+        p There are no IP addresses associated with this local.user.
+    section#ip-matches.ip-matches
+      if local.matchingUsersByIP
+        p Users who match #{matchingUsersByIP[0].ip} (most recent first):
+        table
+          thead
+            th Username
+            th Last access via this IP
+          each user in local.matchingUsersByIP
+            tr
+              td
+                a(href="user/" + local.user.url + "/id/" + local.user.id ) #{local.user.username}
+              td #{local.user.time_formatted}
+
+        nav.actions
+          ul
+            li
+              a(href="user/action/banIP/logID/" + url.logID + "/userID/" + local.user.id ) Ban #{matchingUsersByIP[0].ip}
+      else
+        p Select an IP address to see all users who match that IP.
+
+section.posts
+  if local.posts
+    h2 Post History
+    include ../partials/pagination
+    each post in local.posts
+      include ../post/_user-profile-post
+    include ../partials/pagination
+  else
+    p This user hasn"t made any posts yet.

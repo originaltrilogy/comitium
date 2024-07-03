@@ -1,0 +1,13 @@
+section.summary
+  h1 !{local.topic.title_html}
+  a(class="avatar" + ( local.topic.author_group_id === 6 ? " banned" : "" ) href="user/" + local.topic.author_url + "/id/" + local.topic.author_id rel="author" title="View " + local.topic.author + "'s profile.")
+    if local.topic.author_group_id === 6
+      <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
+    img(src="avatars/" + local.topic.author_id + ".jpg")
+  dl.byline
+    dt.author Author
+    dd.author
+      a(href="user/" + local.topic.author_url + "/id/" + local.topic.author_id rel="author" title="View " + local.topic.author + "'s profile." ) #{local.topic.author}
+    dt.date Date
+    dd.date
+      time #{local.topic.created_formatted}

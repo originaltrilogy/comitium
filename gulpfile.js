@@ -1,14 +1,14 @@
-import autoprefixer from 'autoprefixer'
-import concat       from 'gulp-concat'
-import cssnano      from 'gulp-cssnano'
-import filter       from 'gulp-filter'
-import gulp         from 'gulp'
-import gulpsass     from 'gulp-sass'
-import browsersync  from 'browser-sync'
-import postcss      from 'gulp-postcss'
-import nodesass     from 'sass'
-import sourcemaps   from 'gulp-sourcemaps'
-import uglify       from 'gulp-uglify-es'
+import autoprefixer  from 'autoprefixer'
+import concat        from 'gulp-concat'
+import cssnano       from 'gulp-cssnano'
+import filter        from 'gulp-filter'
+import gulp          from 'gulp'
+import gulpsass      from 'gulp-sass'
+import browsersync   from 'browser-sync'
+import postcss       from 'gulp-postcss'
+import * as nodesass from 'sass'
+import sourcemaps    from 'gulp-sourcemaps'
+import uglify        from 'gulp-uglify-es'
 
 const sass = gulpsass(nodesass)
 
@@ -67,8 +67,10 @@ gulp.task('reload', function (done) {
 
 gulp.task('watch', function (done) {
   browsersync.init({
-    proxy: 'https://dev.comitium.com',
-    port: 8181,
+    https: {
+      key: '_dev-certs/ssl-cert-snakeoil.key',
+      cert: '_dev-certs/ssl-cert-snakeoil.pem'
+    },
     ui: {
       port: 8282
     },
@@ -84,7 +86,8 @@ gulp.task('watch', function (done) {
     }
   })
   gulp.watch('web/themes/**/source/js/**/**.js', gulp.parallel('js'))
-  gulp.watch('app/patterns/**', gulp.parallel('reload'))
+  gulp.watch('app/controllers/**/**', gulp.parallel('reload'))
+  gulp.watch('app/views/**/**', gulp.parallel('reload'))
   gulp.watch('app/toolbox/**', gulp.parallel('reload'))
   gulp.watch('web/themes/**', gulp.parallel('reload'))
   done()
