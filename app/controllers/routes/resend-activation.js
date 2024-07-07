@@ -10,17 +10,16 @@ export const submit = async ({ form }, request) => {
     let email = form.email.trim()
 
     if ( app.toolbox.validate.email(email) ) {
-      let user = await app.models.user.info({ email: email })
+      let user = await app.models.user.info({ email: email }),
+          mail = {}
 
       if ( user ) {
-        let mail = {}
-        
         if ( user.activated ) {
           mail = await app.models.content.mail({
-            template: 'Registration Resend Failure',
+            template: 'Registration Resend - Activated',
             replace: {
-              siteName: app.config.siteName,
-              siteUrl: app.config.comitium.baseUrl
+              siteName: app.config.comitium.site.name,
+              siteUrl: app.config.comitium.site.url
             }
           })
         } else {
@@ -32,14 +31,22 @@ export const submit = async ({ form }, request) => {
             }
           })
         }
-
-        app.toolbox.mail.sendMail({
-          from: app.config.comitium.email,
-          to: email,
-          subject: mail.subject,
-          text: mail.text
+      } else {
+        mail = await app.models.content.mail({
+          template: 'Registration Resend - No Match',
+          replace: {
+            siteName: app.config.comitium.site.name,
+            siteUrl: app.config.comitium.site.url
+          }
         })
       }
+
+      app.toolbox.mail.sendMail({
+        from: app.config.comitium.email,
+        to: email,
+        subject: mail.subject,
+        text: mail.text
+      })
 
       return {
         redirect: '/resend-activation/action/confirmation'

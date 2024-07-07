@@ -625,7 +625,7 @@ Click the link below to verify this address and reactivate your account:
 [activationUrl]','Welcome to the forum, [username]!','Thanks for signing up! To activate your account, please click the link below:
 
 [activationUrl]',NULL),
-('Registration Resend Failure', 'This e-mail is sent to users who request a duplicate of their registration e-mail, but the associated account is already activated.', 'Forum account activation', 'We received a request to resend the [siteName] forum registration e-mail associated with this e-mail account. However, the account has already been activated.
+('Registration Resend - Activated', 'This e-mail is sent to users who request a duplicate of their registration e-mail, but the associated account is already activated.', 'Forum account activation', 'We received a request to resend the [siteName] forum registration e-mail associated with this e-mail account. However, the account has already been activated.
 
 You should be able to log in with the credentials you provided at signup. If you''re having difficulty, you can reset your password here:
 
@@ -634,6 +634,19 @@ You should be able to log in with the credentials you provided at signup. If you
 You should be able to log in with the credentials you provided at signup. If you''re having difficulty, you can reset your password here:
 
 [siteUrl]password-reset', NULL),
+('Registration Resend - No Match', 'This e-mail is sent to users who request a duplicate of their registration e-mail, but no account was found associated with the provided e-mail address.', 'Forum account activation', 'We received a request to resend the [siteName] forum registration e-mail associated with this e-mail account. However, we found no account associated with this e-mail address.
+
+Perhaps you made a typo when signing up. If you want to create an account with this e-mail address, you can do so here:
+
+[siteUrl]register
+
+Otherwise, you can ignore this message.', 'Forum account activation', 'We received a request to resend the [siteName] forum registration e-mail associated with this e-mail account. However, we found no account associated with this e-mail address.
+
+Perhaps you made a typo when signing up. If you want to create an account with this e-mail address, you can do so here:
+
+[siteUrl]register
+
+Otherwise, you can ignore this message.', NULL),
 ('Topic Delete','When moderators delete a topic, they can notify subscribers using this e-mail.','A topic you''re following was deleted','A moderator deleted a topic you were following.
 
 Topic: [topicTitle]

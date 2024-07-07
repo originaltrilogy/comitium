@@ -1,9 +1,9 @@
-if local.authenticate && local.authenticate.message
-  section.notice.error
-    <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{local.authenticate.message}
-
 section.form.sign-in
+  if local.authenticate && local.authenticate.message
+    section.notice.error
+      <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
+      p !{local.authenticate.message}
+
   form(action="sign-in/action/submit" method="post" novalidate)
     input(name="forwardToUrl" type="hidden" value=form.forwardToUrl)
     input(name="loginReferrer" type="hidden" value=form.loginReferrer)
@@ -21,5 +21,3 @@ section.form.sign-in
     ul.actions
       li.primary
         input(name="formAction" type="submit" value="Sign in")
-      li.secondary
-        a(href="password-reset" title="Reset your forum password and have your login credentials e-mailed to you.") I forgot my login credentials...

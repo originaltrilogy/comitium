@@ -5,7 +5,7 @@ export const handler = (params) => {
 }
 
 
-export const form = async (params, request, response, context) => {
+export const submit = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
     params.form.email = params.form.email.trim() || ''
 

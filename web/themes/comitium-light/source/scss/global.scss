@@ -452,7 +452,7 @@ section {
   }
 
   &.notice {
-    padding: 1.2rem;
+    padding: 2.4rem;
     text-align: center;
     border-top-width: 1px;
     border-top-style: solid;
@@ -467,6 +467,10 @@ section {
     svg {
       width: 2.4rem;
       height: 2.4rem;
+    }
+
+    &.error {
+      margin-bottom: 2.4rem;
     }
 
     &.error,
@@ -516,9 +520,17 @@ section {
     }
   }
 
+  &.callout {
+    padding: 2.4rem 3.2rem;
+
+    a {
+      text-decoration: underline;
+    }
+  }
+
   &.content {
     width: 100%;
-    margin: 1.2rem 0;
+    margin: 1.2rem auto;
     padding: 0 1.6rem;
     line-height: 1.4;
     background: none;
@@ -1181,7 +1193,7 @@ a.avatar {
         display: flex;
         flex: 1 1 auto;
         align-items: center;
-        margin: 0 2.4rem;
+        margin-left: 1.2rem;
       }
       a.home {
         width: 16rem;
@@ -1210,26 +1222,29 @@ a.avatar {
       }
       nav {
         ul {
-          flex: 1 1 auto;
+          flex: 1 0 auto;
+          display: flex;
+        }
+        ul.content {
+          li {
+            margin-left: 1.2rem;
+          }
         }
         ul.account {
-          text-align: right;
+          justify-content: flex-end;
 
-          li.sign-in a {
-            @include button($padding: 1.2rem 1.6rem);
+          li.sign-in {
+            margin-right: 1.2rem;
+
+            a {
+              @include button($padding: 1.2rem 1.6rem);
+            }
           }
           li.register a {
             @include button($padding: 1.2rem 1.6rem);
           }
         }
         li {
-          margin: 0 1.2rem;
-          display: inline-block;
-          text-align: center;
-
-          &.register {
-            margin: 0;
-          }
           a {
             display: block;
             padding: 0.5rem 1rem;
@@ -1239,9 +1254,6 @@ a.avatar {
 
       &.authenticated {
         nav {
-          ul {
-            flex: 0 1 auto;
-          }
           ul.account {
             margin-right: 0;
             max-width: none;
@@ -1265,16 +1277,17 @@ a.avatar {
               position: absolute;
               top: 8.8rem;
               right: -100%;
+              display: block;
               margin: 0;
               padding: 1.2rem 0;
               border-radius: 0.3rem;
-              text-align: center;
               z-index: 4;
 
               &.active {
                 right: 1.5rem;
               }
               li {
+                // These styles hide the ::after during the hover state
                 position: relative;
                 display: block;
                 z-index: 2;
@@ -1414,7 +1427,7 @@ a.avatar {
       }
     }
     &.content {
-      margin: 2.6rem 0;
+      margin: 2.6rem auto;
       padding: 0 2.6rem;
 
       h1 {
@@ -1479,8 +1492,6 @@ a.avatar {
       }
     }
     &.notice {
-      padding: 2.4rem;
-
       svg {
         width: 3.2rem;
         height: 3.2rem;
@@ -1715,8 +1726,12 @@ a.avatar {
       padding: 1.2rem calc( (100% - 100rem ) / 2 );
 
       nav {
-        ul.account {
-          margin-right: 0;
+        margin-left: 2.4rem;
+
+        ul.content {
+          li {
+            margin-left: 2.4rem;
+          }
         }
       }
     }
@@ -1727,8 +1742,15 @@ a.avatar {
     margin: auto;
   }
 
+  main > {
+    section.content,
+    section.form {
+      max-width: 96rem;
+      padding: 0;
+    }
+  }
+
   section.form {
-    max-width: 96rem;
     margin: 2.4rem auto;
   }
 

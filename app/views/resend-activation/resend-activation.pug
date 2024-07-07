@@ -1,12 +1,14 @@
 header
   section.summary
     h1 Resend Activation E-mail
-    p If you never received your activation e-mail, you can have it resent.
 
 if local.error
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
     p !{local.error.message}
+
+section.content
+  p If you didn't receive your activation e-mail, enter your e-mail address below and we'll send it again.
 
 section.form.resend-activation
   form(action="resend-activation/action/submit" method="post" novalidate)

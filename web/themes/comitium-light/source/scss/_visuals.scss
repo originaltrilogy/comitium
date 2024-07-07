@@ -12,7 +12,6 @@
 body {
   @include bodyFont;
   color: hsl(0, 0%, 0%);
-  background-color: hsl(227,18%,96%);
 
   // Navigation highlighting
   &[data-controller="index"] nav li.discussions a,
@@ -106,6 +105,12 @@ body {
 
 main {
 	background-image: linear-gradient(180deg,hsl(227,18%,98%),hsl(227,18%,94%) 10rem,hsl(227,18%,100%) 0);
+}
+
+body[data-controller="sign-in"] {
+  main {
+    background: none;
+  }
 }
 
 nav.breadcrumbs {
@@ -388,6 +393,15 @@ table {
     }
   }
 }
+
+
+// Callouts
+section.callout {
+  background: hsl(227,18%,99%);
+  border: 0.1rem solid hsl(227,18%,95%);
+  border-radius: 0.8rem;
+}
+
 
 // Screens wider than 720px
 @media only screen and (min-width: 720px) {
