@@ -73,4 +73,4 @@ app.resources = {
 }
 
 // Start the server
-app.server.start()
+app.start()
