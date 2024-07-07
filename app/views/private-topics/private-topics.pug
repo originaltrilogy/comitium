@@ -6,7 +6,7 @@ header
 
 section.topics
   header
-    h2 #{app.toolbox.numeral(local.count).format("0,0")} Topic#{ local.count != 1 ? "s" : "" }
+    h2 #{app.helpers.numeral(local.count).format("0,0")} Topic#{ local.count != 1 ? "s" : "" }
     include ../partials/pagination
     nav.discussion.actions
       ul

@@ -27,7 +27,7 @@ export const handler = async (params) => {
 
     return {
       local: {
-        timezones : app.toolbox.moment.tz.names(),
+        timezones : app.helpers.moment.tz.names(),
         themes    : app.config.comitium.themes
       }
     }
@@ -45,7 +45,7 @@ export const generalForm = async (params, request, response, context) => {
       let email         = params.form.email.trim(),
           password      = params.form.password.trim(),
           signature     = params.form.signature.trim().length ? params.form.signature.trim() : null,
-          signatureHtml = signature ? app.toolbox.markdown.content(signature) : null,
+          signatureHtml = signature ? app.helpers.markdown.content(signature) : null,
           website       = params.form.website.trim().length ? params.form.website.trim() : null,
           methods       = [],
           update        = true,
@@ -53,11 +53,11 @@ export const generalForm = async (params, request, response, context) => {
           activationCode
 
       if ( email !== params.session.email ) {
-        if ( app.toolbox.validate.email(email) ) {
+        if ( app.helpers.validate.email(email) ) {
           let emailExists = await app.models.user.emailExists({ email: email })
 
           if ( !emailExists ) {
-            activationCode = app.toolbox.helpers.activationCode()
+            activationCode = app.helpers.util.activationCode()
             methods.push(
               app.models.user.updateEmail({
                 userID: params.session.user_id,
@@ -77,7 +77,7 @@ export const generalForm = async (params, request, response, context) => {
       }
 
       if ( password.length ) {
-        if ( app.toolbox.validate.password(password) ) {
+        if ( app.helpers.validate.password(password) ) {
           methods.push(
             app.models.user.updatePassword({
               userID: params.session.user_id,
@@ -90,7 +90,7 @@ export const generalForm = async (params, request, response, context) => {
         }
       }
 
-      if ( website && website.length && !app.toolbox.validate.url(website) ) {
+      if ( website && website.length && !app.helpers.validate.url(website) ) {
         update = false
         messages.website = 'Your website address isn\'t properly formatted. Make sure it includes the protocol (http or https).'
       }
@@ -120,7 +120,7 @@ export const generalForm = async (params, request, response, context) => {
             }
           })
 
-          app.toolbox.mail.sendMail({
+          app.helpers.mail.sendMail({
             from: app.config.comitium.email,
             to: email,
             subject: mail.subject,
@@ -148,7 +148,7 @@ export const generalForm = async (params, request, response, context) => {
                   success: 'Your changes were saved.'
                 }
               },
-              timezones: app.toolbox.moment.tz.names(),
+              timezones: app.helpers.moment.tz.names(),
               themes: app.config.comitium.themes
             }
           }
@@ -159,7 +159,7 @@ export const generalForm = async (params, request, response, context) => {
             general: {
               messages: messages
             },
-            timezones: app.toolbox.moment.tz.names(),
+            timezones: app.helpers.moment.tz.names(),
             themes: app.config.comitium.themes
           }
         }
@@ -193,7 +193,7 @@ export const avatarForm = async (params, request, response, context) => {
       params.form.website = params.session.website
 
       let content = {
-        timezones: app.toolbox.moment.tz.names(),
+        timezones: app.helpers.moment.tz.names(),
         themes: app.config.comitium.themes,
         avatarForm: {}
       }

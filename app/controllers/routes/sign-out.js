@@ -6,7 +6,7 @@ export const handler = (params, request) => {
     app.models.user.log({
       userID: params.session.user_id,
       action: 'Sign out',
-      ip: app.toolbox.helpers.ip(request)
+      ip: app.helpers.util.ip(request)
     })
   }
 

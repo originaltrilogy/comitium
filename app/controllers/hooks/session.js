@@ -5,7 +5,7 @@ export const start = async (params, request) => {
   let cookie   = {},
       session   = {},
       active    ,
-      ip        = app.toolbox.helpers.ip(request),
+      ip        = app.helpers.util.ip(request),
       bannedIP  = false
 
   // Check banned IP addresses
@@ -62,7 +62,7 @@ export const start = async (params, request) => {
       session.group_id = 1
       session.ip = ip
       session.themePath = app.config.comitium.themes[Object.keys(app.config.comitium.themes)[0]].path
-      active = app.toolbox.helpers.isoDate()
+      active = app.helpers.util.isoDate()
       cookie.comitium_active = {
         value: active,
         expires: 'never'

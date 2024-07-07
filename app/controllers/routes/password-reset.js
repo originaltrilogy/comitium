@@ -15,7 +15,7 @@ export const submit = async (params, request, response, context) => {
           message: 'Your e-mail address is required.'
         }
       }
-    } else if ( !app.toolbox.validate.email(params.form.email) ) {
+    } else if ( !app.helpers.validate.email(params.form.email) ) {
       return {
         local: {
           message: 'That doesn\'t appear to be a properly formatted e-mail address. Please check your entry and try again.'
@@ -40,7 +40,7 @@ export const submit = async (params, request, response, context) => {
       app.models.user.log({
         userID: user.id,
         action: 'Password reset request',
-        ip: app.toolbox.helpers.ip(request)
+        ip: app.helpers.util.ip(request)
       })
     ])
 
@@ -51,7 +51,7 @@ export const submit = async (params, request, response, context) => {
       }
     })
 
-    app.toolbox.mail.sendMail({
+    app.helpers.mail.sendMail({
       from: app.config.comitium.email,
       to: user.email,
       subject: mail.subject,
@@ -82,7 +82,7 @@ export const reset = async (params) => {
       view = 'reset'
 
   if ( passwordResetVerify ) {
-    if ( app.toolbox.moment(Date.now()).diff(passwordResetVerify.time, 'hours') >= 24 ) {
+    if ( app.helpers.moment(Date.now()).diff(passwordResetVerify.time, 'hours') >= 24 ) {
       view = 'expired'
     }
   } else {
@@ -102,7 +102,7 @@ export const resetForm = async (params) => {
     message = 'All fields are required.'
   } else if ( params.form.password !== params.form.verifyPassword ) {
     message = 'The passwords you entered don\'t match.'
-  } else if ( !app.toolbox.validate.password(params.form.password) ) {
+  } else if ( !app.helpers.validate.password(params.form.password) ) {
     message = 'Your password doesn\'t meet the minimum requirements (between 8 and 50 characters, anything but spaces).'
   }
 

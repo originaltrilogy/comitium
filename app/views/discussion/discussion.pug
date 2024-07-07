@@ -15,7 +15,7 @@ if local.announcements
 
 section.topics
   header
-    h2 #{app.toolbox.numeral(local.discussion.topics).format("0,0")} Topic#{ local.discussion.topics != 1 ? "s" : "" }
+    h2 #{app.helpers.numeral(local.discussion.topics).format("0,0")} Topic#{ local.discussion.topics != 1 ? "s" : "" }
     include ../partials/pagination
     if local.discussion.id !== 1
       nav.actions

@@ -117,12 +117,6 @@ main {
 	background-image: linear-gradient(180deg, hsl(227,18%,19%) 0, hsl(227,18%,19%) 100px, hsl(227,18%,18%) 101px);
 }
 
-body[data-controller="sign-in"] {
-  main {
-    background: none;
-  }
-}
-
 // The menu button and sliding nav are used on mobile only. Much easier to limit
 // here than to overwrite within the 720px media query later.
 @media only screen and (max-width: 719px) {

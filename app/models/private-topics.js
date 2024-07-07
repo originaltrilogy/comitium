@@ -11,7 +11,7 @@ export const unread = async (args) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -53,7 +53,7 @@ export const topics = async (args) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       // Baffled as to why the query planner insists on a much slower sequence scan
@@ -78,10 +78,10 @@ export const topics = async (args) => {
       await client.query('SET enable_seqscan = ON;')
 
       result.rows.forEach( function (item) {
-        item.full_count_formatted         = app.toolbox.numeral(item.full_count).format('0,0')
-        item.replies_formatted            = app.toolbox.numeral(item.replies).format('0,0')
-        item.post_date_formatted          = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
-        item.last_post_created_formatted  = app.toolbox.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
+        item.full_count_formatted         = app.helpers.numeral(item.full_count).format('0,0')
+        item.replies_formatted            = app.helpers.numeral(item.replies).format('0,0')
+        item.post_date_formatted          = app.helpers.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+        item.last_post_created_formatted  = app.helpers.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests

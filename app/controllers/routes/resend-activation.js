@@ -9,7 +9,7 @@ export const submit = async ({ form }, request) => {
   if ( request.method === 'POST' ) {
     let email = form.email.trim()
 
-    if ( app.toolbox.validate.email(email) ) {
+    if ( app.helpers.validate.email(email) ) {
       let user = await app.models.user.info({ email: email }),
           mail = {}
 
@@ -41,7 +41,7 @@ export const submit = async ({ form }, request) => {
         })
       }
 
-      app.toolbox.mail.sendMail({
+      app.helpers.mail.sendMail({
         from: app.config.comitium.email,
         to: email,
         subject: mail.subject,

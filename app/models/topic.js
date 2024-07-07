@@ -1,7 +1,7 @@
 // topic model
 
 export const acceptInvitation = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
@@ -20,7 +20,7 @@ export const acceptInvitation = async (args) => {
 
 
 export const announcementView = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -41,7 +41,7 @@ export const announcementView = async (args) => {
 
 
 export const announcementReply = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -69,7 +69,7 @@ export const edit = async (args) => {
       message: 'The topic title and content are both required.'
     }
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
   
     try {
       await client.query('begin')
@@ -105,7 +105,7 @@ export const edit = async (args) => {
 
 
 export const newPosts = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -130,7 +130,7 @@ export const firstUnreadPost = async (args) => {
   if ( viewTime ) {
     let topic = await info(args.topicID)
 
-    if ( app.toolbox.moment(topic.last_post_created).isAfter(viewTime[0].time) ) {
+    if ( app.helpers.moment(topic.last_post_created).isAfter(viewTime[0].time) ) {
       return await newPosts({ topicID: args.topicID, time: viewTime[0].time, replies: topic.replies })
     } else {
       return false
@@ -142,7 +142,7 @@ export const firstUnreadPost = async (args) => {
 
 
 export const invitee = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -164,7 +164,7 @@ export const invitee = async (args) => {
 
 export const invitees = async (args) => {
   args.left = args.left || false
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -191,7 +191,7 @@ export const info = async (topicID) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -202,8 +202,8 @@ export const info = async (topicID) => {
 
       if ( result.rows.length ) {
         result.rows[0].replies = parseInt(result.rows[0].replies, 10)
-        result.rows[0].created_formatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A')
-        result.rows[0].replies_formatted = app.toolbox.numeral(result.rows[0].replies).format('0,0')
+        result.rows[0].created_formatted = app.helpers.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A')
+        result.rows[0].replies_formatted = app.helpers.numeral(result.rows[0].replies).format('0,0')
 
         // Cache the topic info object for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
@@ -242,7 +242,7 @@ export const insert = async (args) => {
       message: 'Topic titles can\'t be longer than 120 characters.'
     }
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
   
     try {
       await client.query('BEGIN')
@@ -358,7 +358,7 @@ export const posts = async (args) => {
     return cached
   // If it's not cached, retrieve the subset and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
     
     try {
       const result = await client.query({
@@ -373,9 +373,9 @@ export const posts = async (args) => {
       })
 
       result.rows.forEach( function (item) {
-        item.created_formatted  = app.toolbox.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
+        item.created_formatted  = app.helpers.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
         item.created_formatted  = item.created_formatted.replace(/ (AM|PM)/, '&nbsp;$1')
-        item.modified_formatted = app.toolbox.moment.tz(item.modified, 'America/New_York').format('D-MMM-YYYY h:mm A')
+        item.modified_formatted = app.helpers.moment.tz(item.modified, 'America/New_York').format('D-MMM-YYYY h:mm A')
         item.modified_formatted = item.modified_formatted.replace(/ (AM|PM)/, '&nbsp;$1')
       })
 
@@ -397,7 +397,7 @@ export const posts = async (args) => {
 
 
 export const leave = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query('BEGIN')
@@ -418,7 +418,7 @@ export const leave = async (args) => {
 
 
 export const lock = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
@@ -436,7 +436,7 @@ export const lock = async (args) => {
 
 
 export const unlock = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
@@ -454,7 +454,7 @@ export const unlock = async (args) => {
 
 
 export const move = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query('begin')
@@ -493,7 +493,7 @@ export const merge = async (args) => {
       message: 'You need to specify at least two topics to merge.'
     }
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
   
     try {
       await client.query('begin')
@@ -559,7 +559,7 @@ export const merge = async (args) => {
         }
       }))
 
-      mergedFirstPost.html = app.toolbox.markdown.content(mergedFirstPost.text)
+      mergedFirstPost.html = app.helpers.markdown.content(mergedFirstPost.text)
 
       await client.query(
         'update posts set text = $1, html = $2 where id = ( select id from posts where topic_id = $3 order by created asc limit 1 );',
@@ -600,7 +600,7 @@ export const merge = async (args) => {
 
 
 export const reply = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     let sticky = await client.query('select sticky from topics where id = $1;', [ args.topicID ])
@@ -657,7 +657,7 @@ export const reply = async (args) => {
 
 
 export const subscriptionExists = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -678,7 +678,7 @@ export const subscriptionExists = async (args) => {
 
 
 export const subscribers = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -695,7 +695,7 @@ export const subscribers = async (args) => {
 
 
 export const subscribersToUpdate = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   let name = false, sql
   if ( args.skip ) {
@@ -720,7 +720,7 @@ export const subscribersToUpdate = async (args) => {
 
 
 export const subscriptionNotificationSentUpdate = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
@@ -738,7 +738,7 @@ export const subscribe = async (args) => {
   let exists = await subscriptionExists(args)
 
   if ( !exists ) {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -760,7 +760,7 @@ export const subscribe = async (args) => {
 
 
 export const unsubscribe = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -779,7 +779,7 @@ export const unsubscribe = async (args) => {
 
 
 export const viewTimeUpdate = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query('BEGIN')

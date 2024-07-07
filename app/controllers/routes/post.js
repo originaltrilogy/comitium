@@ -1,7 +1,7 @@
 // post controller
 
 export const handler = async (params) => {
-  let access = await app.toolbox.access.postView({ postID: params.url.id, user: params.session })
+  let access = await app.helpers.access.postView({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post  = await app.models.post.info(params.url.id),
@@ -25,12 +25,12 @@ export const handler = async (params) => {
 
 
 export const edit = async (params, request) => {
-  let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
+  let access = await app.helpers.access.postEdit({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/' + post.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/' + post.id)
     params.form.content = post.text
     params.form.reason = ''
 
@@ -47,16 +47,16 @@ export const edit = async (params, request) => {
 
 
 export const editForm = async (params, request, response, context) => {
-  let access = await app.toolbox.access.postEdit({ postID: params.url.id, user: params.session })
+  let access = await app.helpers.access.postEdit({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     if ( request.method === 'POST' ) {
       let post = await app.models.post.info(params.url.id),
           postEdit,
-          parsedContent = app.toolbox.markdown.content(params.form.content),
-          parsedReason = app.toolbox.markdown.inline(params.form.reason),
+          parsedContent = app.helpers.markdown.content(params.form.content),
+          parsedReason = app.helpers.markdown.inline(params.form.reason),
           draft = false,
-          time = app.toolbox.helpers.isoDate(),
+          time = app.helpers.util.isoDate(),
           forwardToUrl
   
       switch ( params.form.formAction ) {
@@ -115,12 +115,12 @@ export const editForm = async (params, request, response, context) => {
 
 
 export const lock = async (params, request) => {
-  let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
+  let access = await app.helpers.access.postLock({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
     
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {
@@ -140,7 +140,7 @@ export const lock = async (params, request) => {
 
 export const lockForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
+    let access = await app.helpers.access.postLock({ postID: params.url.id, user: params.session })
 
     if ( access === true ) {
       let post = await app.models.post.info(params.url.id)
@@ -149,7 +149,7 @@ export const lockForm = async (params, request, response, context) => {
         postID: post.id,
         topicID: post.topic_id,
         lockedByID: params.session.user_id,
-        lockReason: app.toolbox.markdown.inline(params.form.reason)
+        lockReason: app.helpers.markdown.inline(params.form.reason)
       })
 
       if ( params.form.notify ) {
@@ -170,7 +170,7 @@ export const lockForm = async (params, request, response, context) => {
           })
         ])
 
-        app.toolbox.mail.sendMail({
+        app.helpers.mail.sendMail({
           from: app.config.comitium.email,
           to: user.email,
           subject: mail.subject,
@@ -191,12 +191,12 @@ export const lockForm = async (params, request, response, context) => {
 
 
 export const report = async (params, request) => {
-  let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
+  let access = await app.helpers.access.postReport({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {
@@ -216,14 +216,14 @@ export const report = async (params, request) => {
 
 export const reportForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.postReport({ postID: params.url.id, user: params.session })
+    let access = await app.helpers.access.postReport({ postID: params.url.id, user: params.session })
   
     if ( access === true ) {
       let post = await app.models.post.info(params.url.id),
           saveReport = await app.models.post.saveReport({
             userID: params.session.user_id,
             postID: params.url.id,
-            reason: app.toolbox.markdown.inline(params.form.reason)
+            reason: app.helpers.markdown.inline(params.form.reason)
           })
 
       if ( saveReport.success ) {
@@ -239,7 +239,7 @@ export const reportForm = async (params, request, response, context) => {
           }
         })
 
-        app.toolbox.mail.sendMail({
+        app.helpers.mail.sendMail({
           from: app.config.comitium.email,
           to: app.config.comitium.reportEmail, // remove when post report UI is complete
           subject: mail.subject,
@@ -302,12 +302,12 @@ export const topic = async (params) => {
 
 
 export const trash = async (params, request) => {
-  let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
+  let access = await app.helpers.access.postTrash({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + '/post/id/' + post.id)
     params.form.reason = ''
 
     return {
@@ -327,7 +327,7 @@ export const trash = async (params, request) => {
 
 export const trashForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.postTrash({ postID: params.url.id, user: params.session })
+    let access = await app.helpers.access.postTrash({ postID: params.url.id, user: params.session })
 
     if ( access === true ) {
       let post = await app.models.post.info(params.url.id)
@@ -338,7 +338,7 @@ export const trashForm = async (params, request, response, context) => {
         discussionID: post.discussion_id,
         authorID: post.userID,
         deletedByID: params.session.user_id,
-        deleteReason: app.toolbox.markdown.inline(params.form.reason)
+        deleteReason: app.helpers.markdown.inline(params.form.reason)
       })
 
       if ( params.form.notify ) {
@@ -359,7 +359,7 @@ export const trashForm = async (params, request, response, context) => {
           })
         ])
 
-        app.toolbox.mail.sendMail({
+        app.helpers.mail.sendMail({
           from: app.config.comitium.email,
           to: user.email,
           subject: mail.subject,
@@ -380,7 +380,7 @@ export const trashForm = async (params, request, response, context) => {
 
 
 export const unlock = async (params, request) => {
-  let access = await app.toolbox.access.postLock({ postID: params.url.id, user: params.session })
+  let access = await app.helpers.access.postLock({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let post = await app.models.post.info(params.url.id)

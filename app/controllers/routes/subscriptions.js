@@ -1,7 +1,7 @@
 // subscriptions controller
 
 export const handler = async (params) => {
-  let access = await app.toolbox.access.subscriptionsView({ user: params.session })
+  let access = await app.helpers.access.subscriptionsView({ user: params.session })
 
   if ( access === true ) {
     params.url.page = params.url.page || 1
@@ -29,7 +29,7 @@ export const handler = async (params) => {
     }
 
     topics.forEach( function (item) {
-      if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
+      if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.helpers.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
         item.unread = true
       }
     })
@@ -44,8 +44,8 @@ export const handler = async (params) => {
             url: app.config.comitium.basePath
           }
         },
-        pagination: app.toolbox.helpers.paginate('subscriptions', params.url.page, count),
-        previousAndNext: app.toolbox.helpers.previousAndNext('subscriptions', params.url.page, count),
+        pagination: app.helpers.util.paginate('subscriptions', params.url.page, count),
+        previousAndNext: app.helpers.util.previousAndNext('subscriptions', params.url.page, count),
       }
     }
   } else {

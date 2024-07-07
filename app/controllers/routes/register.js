@@ -38,7 +38,7 @@ export const form = async (params, request, response, context) => {
         }
       })
 
-      app.toolbox.mail.sendMail({
+      app.helpers.mail.sendMail({
         from: app.config.comitium.email,
         to: register.email,
         subject: mail.subject,
@@ -72,12 +72,12 @@ export const complete = () => {
 
 export const verification = () => {
   let verification = {}
-  verification.firstInt  = app.toolbox.helpers.getRandomIntInclusive(0, 10)
-  verification.secondInt = app.toolbox.helpers.getRandomIntInclusive(1, 10)
+  verification.firstInt  = app.helpers.util.getRandomIntInclusive(0, 10)
+  verification.secondInt = app.helpers.util.getRandomIntInclusive(1, 10)
   verification.options   = [ verification.firstInt + verification.secondInt ]
 
   while ( verification.options.length < 8 ) {
-    let value = app.toolbox.helpers.getRandomIntInclusive(1, 20)
+    let value = app.helpers.util.getRandomIntInclusive(1, 20)
 
     if ( verification.options.indexOf(value) === -1 ) {
       verification.options.push(value)

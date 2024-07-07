@@ -8,7 +8,7 @@ export const edit = async (args) => {
       message: 'Posts can\'t be empty.'
     }
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
   
     try {
       await client.query('BEGIN')
@@ -37,7 +37,7 @@ export const edit = async (args) => {
 
 
 export const info = async (postID) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -47,9 +47,9 @@ export const info = async (postID) => {
     })
 
     if ( result.rows.length ) {
-      result.rows[0].created_formatted = app.toolbox.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A')
+      result.rows[0].created_formatted = app.helpers.moment.tz(result.rows[0].created, 'America/New_York').format('D-MMM-YYYY, h:mm A')
       if ( result.rows[0].modified ) {
-        result.rows[0].modified_formatted = app.toolbox.moment.tz(result.rows[0].modified, 'America/New_York').format('D-MMM-YYYY, h:mm A')
+        result.rows[0].modified_formatted = app.helpers.moment.tz(result.rows[0].modified, 'America/New_York').format('D-MMM-YYYY, h:mm A')
       }
       return result.rows[0]
     } else {
@@ -62,7 +62,7 @@ export const info = async (postID) => {
 
 
 export const lock = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
@@ -80,7 +80,7 @@ export const lock = async (args) => {
 
 
 export const unlock = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
@@ -98,7 +98,7 @@ export const unlock = async (args) => {
 
 
 export const page = async (postID) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -125,7 +125,7 @@ export const saveReport = async (args) => {
       message: 'You have to provide a reason for the report.'
     }
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
   
     try {
       await client.query({
@@ -145,7 +145,7 @@ export const saveReport = async (args) => {
 
 
 export const trash = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query('BEGIN')
@@ -162,7 +162,7 @@ export const trash = async (args) => {
       'select sticky from topics where id = $1;',
       [ args.topicID ])
     let sticky
-    if ( app.toolbox.moment(currentSticky.rows[0].sticky).isAfter(app.toolbox.moment().utc().valueOf()) ) {
+    if ( app.helpers.moment(currentSticky.rows[0].sticky).isAfter(app.helpers.moment().utc().valueOf()) ) {
       sticky = currentSticky.rows[0].sticky
     } else {
       sticky = lastPostDate.rows[0].last_post_date

@@ -21,7 +21,7 @@ export const categories = async (groupID) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -50,8 +50,8 @@ export const categories = async (groupID) => {
         result.rows.forEach( function (subcategory) {
           if ( subcategory.category_id === category.category_id ) {
             categories[categoryIndex].subcategories[subcategory.discussion_sort-1] = subcategory
-            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].topics_formatted = app.toolbox.numeral(subcategory.topics).format('0,0')
-            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].last_post_created_formatted = app.toolbox.moment.tz(subcategory.last_post_created, 'America/New_York').format('D-MMM-YYYY')
+            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].topics_formatted = app.helpers.numeral(subcategory.topics).format('0,0')
+            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].last_post_created_formatted = app.helpers.moment.tz(subcategory.last_post_created, 'America/New_York').format('D-MMM-YYYY')
           }
           // Remove empty array elements caused by gaps in discussion_sort
           categories[categoryIndex].subcategories = categories[categoryIndex].subcategories.filter( function (n) { return n !== undefined } )
@@ -85,7 +85,7 @@ export const categoriesPost = async (groupID) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -113,9 +113,9 @@ export const categoriesPost = async (groupID) => {
         result.rows.forEach( function (subcategory) {
           if ( subcategory.category_id === category.category_id ) {
             categories[categoryIndex].subcategories[subcategory.discussion_sort-1] = subcategory
-            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].topicsFormatted = app.toolbox.numeral(subcategory.topics).format('0,0')
-            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].postsFormatted = app.toolbox.numeral(subcategory.posts).format('0,0')
-            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].last_post_created_formatted = app.toolbox.moment.tz(subcategory.lastPostCreated, 'America/New_York').format('D-MMM-YYYY')
+            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].topicsFormatted = app.helpers.numeral(subcategory.topics).format('0,0')
+            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].postsFormatted = app.helpers.numeral(subcategory.posts).format('0,0')
+            categories[categoryIndex].subcategories[subcategory.discussion_sort-1].last_post_created_formatted = app.helpers.moment.tz(subcategory.lastPostCreated, 'America/New_York').format('D-MMM-YYYY')
           }
           // Remove empty array elements caused by gaps in discussion_sort
           categories[categoryIndex].subcategories = categories[categoryIndex].subcategories.filter( function (n) { return n !== undefined } )
