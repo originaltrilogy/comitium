@@ -33,7 +33,7 @@ themes.forEach( function (item, index) {
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(cssnano({ safe: true, colormin: false }))
-        .pipe(sourcemaps.write(''))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest('web/themes/' + item.path + '/min'))
         .pipe(filter('**/*.css*'))
         .pipe(browsersync.stream())
