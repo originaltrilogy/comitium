@@ -1,6 +1,6 @@
 // app start with alternate functionality for develompent mode
 
-import fs from 'fs'
+import fs      from 'node:fs'
 
 import bcrypt  from 'bcryptjs'
 import citizen from 'citizen'
@@ -12,9 +12,9 @@ import slug    from 'slug'
 global.app = citizen
 
 // Third party modules
-app.helpers.bcrypt   = bcrypt,
+app.helpers.bcrypt  = bcrypt,
 // Log e-mails to app/logs/email.txt instead of sending them
-app.helpers.mail     = {
+app.helpers.mail    = {
   sendMail: function (args) {
     app.helpers.log({
       label: 'E-mail debug log (not sent)',
@@ -28,10 +28,10 @@ app.helpers.mail     = {
     })
   }
 },
-app.helpers.moment   = moment,
-app.helpers.numeral  = numeral,
-app.helpers.pg       = pg,
-app.helpers.slug     = slug
+app.helpers.moment  = moment,
+app.helpers.numeral = numeral,
+app.helpers.pg      = pg,
+app.helpers.slug    = slug
 
 // Overwrite pg's default date handler to convert to GMT
 app.helpers.pg.types.setTypeParser(1114, function (stringValue) {
@@ -73,7 +73,7 @@ app.resources = {
 }
 
 // Start the server
-await app.start({
+app.start({
   citizen: {
     mode: 'development'
   }

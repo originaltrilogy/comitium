@@ -98,7 +98,7 @@ export const activityUpdate = async (args) => {
     const result = await client.query({
       name: 'user_activityUpdate',
       text: 'update users set last_activity = $1 where id = $2;',
-      values: [ args.time || app.helpers.isoDate(), args.userID ]
+      values: [ args.time || app.helpers.util.isoDate(), args.userID ]
     })
 
     return result.rows
@@ -141,7 +141,7 @@ export const authenticate = async (credentials) => {
     } else if ( email.length ) {
       user = await info({ email: email })
     }
-    let compareHash = password.length && user && user.password_hash ? await app.helpers.compareHash(password, user.password_hash) : false
+    let compareHash = password.length && user && user.password_hash ? await app.helpers.util.compareHash(password, user.password_hash) : false
 
     if ( user ) {
       if ( user.activated ) {
