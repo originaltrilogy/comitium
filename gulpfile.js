@@ -88,7 +88,7 @@ gulp.task('watch', function (done) {
   gulp.watch('web/themes/**/source/js/**/**.js', gulp.parallel('js'))
   gulp.watch('app/controllers/**/**', gulp.parallel('reload'))
   gulp.watch('app/views/**/**', gulp.parallel('reload'))
-  gulp.watch('app/toolbox/**', gulp.parallel('reload'))
+  gulp.watch('app/helpers/**', gulp.parallel('reload'))
   done()
 })
 

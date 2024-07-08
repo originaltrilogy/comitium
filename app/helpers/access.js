@@ -105,7 +105,7 @@ export const postEdit = async (args) => {
 
       if ( topic ) {
         if ( !topic.locked_by_id || args.user.moderate_discussions ) {
-          let topicViewAccess = await topicView(app.helpers.helpers.extend(args, { topicID: topic.id }))
+          let topicViewAccess = await topicView(app.helpers.util.extend(args, { topicID: topic.id }))
 
           if ( topicViewAccess === true ) {
             return true
@@ -136,7 +136,7 @@ export const postLock = async (args) => {
 
   if ( post ) {
     if ( args.user.moderate_discussions ) {
-      let topicViewAccess = await topicView(app.helpers.helpers.extend(args, { topicID: post.topic_id }))
+      let topicViewAccess = await topicView(app.helpers.util.extend(args, { topicID: post.topic_id }))
 
       if ( topicViewAccess === true ) {
         return true
@@ -183,7 +183,7 @@ export const postTrash = async (args) => {
   if ( post ) {
     if ( post.topic_replies > 0 ) {
       if ( args.user.moderate_discussions ) {
-        let topicViewAccess = await topicView(app.helpers.helpers.extend(args, { topicID: post.topic_id }))
+        let topicViewAccess = await topicView(app.helpers.util.extend(args, { topicID: post.topic_id }))
 
         if ( topicViewAccess === true ) {
           return true
@@ -210,7 +210,7 @@ export const postView = async (args) => {
   let post = await app.models.post.info(args.postID)
 
   if ( post ) {
-    let topicViewAccess = await topicView(app.helpers.helpers.extend(args, { topicID: post.topic_id }))
+    let topicViewAccess = await topicView(app.helpers.util.extend(args, { topicID: post.topic_id }))
 
     if ( topicViewAccess === true ) {
       return true
@@ -254,7 +254,7 @@ export const topicEdit = async (args) => {
         // Check if the user has posting rights to the topic's current discussion.
         // If a topic has been moved to a discussion that the user doesn't have
         // permission to post in, they lose their editing permissions.
-        let discussionPostAccess = await discussionPost(app.helpers.helpers.extend(args, { discussionID: topic.discussion_id }))
+        let discussionPostAccess = await discussionPost(app.helpers.util.extend(args, { discussionID: topic.discussion_id }))
 
         if ( discussionPostAccess === true ) {
           return true
@@ -303,7 +303,7 @@ export const topicMergeForm = async (args) => {
   if ( args.user.moderate_discussions ) {
     let access = true
     let permissions = await Promise.all(args.topicID.map( async (topicID) => {
-      return await topicView(app.helpers.helpers.extend(args, { topicID: topicID }))
+      return await topicView(app.helpers.util.extend(args, { topicID: topicID }))
     }))
     permissions.forEach( item => {
       if ( !item ) {
@@ -331,7 +331,7 @@ export const topicMoveForm = async (args) => {
     let topicViewAccess = await topicView(args)
 
     if ( topicViewAccess === true ) {
-      let newDiscussionView = await discussionView(app.helpers.helpers.extend(args, { discussionID: args.newDiscussionID }))
+      let newDiscussionView = await discussionView(app.helpers.util.extend(args, { discussionID: args.newDiscussionID }))
 
       if ( newDiscussionView === true ) {
         return true
@@ -358,7 +358,7 @@ export const topicReply = async (args) => {
         return challenge(args)
       } else {
         if ( topic.discussionID !== 2 ) {
-          let discussionReplyAccess = await discussionReply(app.helpers.helpers.extend(args, { discussionID: topic.discussion_id }))
+          let discussionReplyAccess = await discussionReply(app.helpers.util.extend(args, { discussionID: topic.discussion_id }))
 
           if ( topicLocked === false && discussionReplyAccess === true ) {
             return true
@@ -427,7 +427,7 @@ export const topicView = async (args) => {
   if ( topic ) {
     if ( !topic.private ) {
       if ( topic.discussion_id !== 2 ) {
-        let discussionViewAccess = await discussionView(app.helpers.helpers.extend(args, { discussionID: topic.discussion_id }))
+        let discussionViewAccess = await discussionView(app.helpers.util.extend(args, { discussionID: topic.discussion_id }))
         if ( discussionViewAccess === true ) {
           return true
         } else {
