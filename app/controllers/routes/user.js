@@ -44,7 +44,7 @@ export const handler = async (params) => {
         posts: posts,
         ipHistory: ipHistory,
         matchingUsersByIP: matchingUsersByIP,
-        pagination: app.toolbox.helpers.paginate(app.config.comitium.basePath + 'user/' + user.url + '/id/' + user.id, params.url.page, user.post_count)
+        pagination: app.helpers.util.paginate(app.config.comitium.basePath + 'user/' + user.url + '/id/' + user.id, params.url.page, user.post_count)
       }
     }
   } else {
@@ -87,7 +87,7 @@ export const activate = async (params) => {
 
 
 export const ban = async (params, request) => {
-  let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
+  let access = await app.helpers.access.userBan({ userID: params.url.id, user: params.session })
 
   if ( access === true ) {
     await app.models.user.ban({ userID: params.url.id })
@@ -103,7 +103,7 @@ export const ban = async (params, request) => {
 
 
 export const cleanup = async (params) => {
-  let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
+  let access = await app.helpers.access.userBan({ userID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let user = await app.models.user.info({ userID: params.url.id }),
@@ -126,7 +126,7 @@ export const cleanup = async (params) => {
 
 export const cleanupForm = async (params, request) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.userBan({ userID: params.form.userID, user: params.session })
+    let access = await app.helpers.access.userBan({ userID: params.form.userID, user: params.session })
   
     if ( access === true ) {
       await app.models.user.cleanup({ userID: params.form.userID, deleteReplies: params.form.deleteReplies ? true : false })
@@ -148,7 +148,7 @@ export const head = async (params) => {
 
 
 export const liftBan = async (params, request) => {
-  let access = await app.toolbox.access.userBan({ userID: params.url.id, user: params.session })
+  let access = await app.helpers.access.userBan({ userID: params.url.id, user: params.session })
 
   if ( access === true ) {
     await app.models.user.liftBan({ userID: params.url.id })
@@ -164,7 +164,7 @@ export const liftBan = async (params, request) => {
 
 
 export const banIP = async (params, request) => {
-  let access = await app.toolbox.access.userIPBan({ user: params.session })
+  let access = await app.helpers.access.userIPBan({ user: params.session })
 
   if ( access === true ) {
     let log = await app.models.user.logByID({ logID: params.url.logID })
@@ -172,7 +172,7 @@ export const banIP = async (params, request) => {
     await app.models.user.banIP({
       ip: log.ip,
       adminUserID: params.session.user_id,
-      time: app.toolbox.helpers.isoDate()
+      time: app.helpers.util.isoDate()
     })
 
     // End all active sessions with matching IPs

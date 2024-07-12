@@ -7,7 +7,7 @@ export const handler = async (params, request, response, context) => {
     params.url.page = context.topic.page
   }
   // Verify the user's group has read access to the topic's parent discussion
-  let access = await app.toolbox.access.topicView({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicView({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let [
@@ -81,7 +81,7 @@ export const handler = async (params, request, response, context) => {
           }
         })(),
         // userCanReply
-        app.toolbox.access.topicReply({
+        app.helpers.access.topicReply({
           topicID: topic.id,
           user: params.session,
           response: 'boolean'
@@ -92,7 +92,7 @@ export const handler = async (params, request, response, context) => {
             return await app.models.topic.viewTimeUpdate({
               userID: params.session.user_id,
               topic: topic,
-              time: app.toolbox.helpers.isoDate()
+              time: app.helpers.util.isoDate()
             })
           } else {
             return false
@@ -145,8 +145,8 @@ export const handler = async (params, request, response, context) => {
           userIsSubscribed: subscriptionExists,
           userCanEdit: ( ( !topic.locked_by_id && params.session.user_id === topic.author_id ) || params.session.moderate_discussions ) && topic.discussion_id !== 1,
           userCanReply: userCanReply,
-          pagination: app.toolbox.helpers.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
-          previousAndNext: app.toolbox.helpers.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),
+          pagination: app.helpers.util.paginate(url + '/id/' + topic.id, page, topic.replies + 1),
+          previousAndNext: app.helpers.util.previousAndNext(url + '/id/' + topic.id, page, topic.replies + 1),
           breadcrumbs: app.models.topic.breadcrumbs(topic)
         }
       }
@@ -170,7 +170,7 @@ export const head = async (params) => {
 
 
 export const start = async (params) => {
-  let access = await app.toolbox.access.discussionPost({ discussionID: params.url.id, user: params.session })
+  let access = await app.helpers.access.discussionPost({ discussionID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let discussion = await app.models.discussion.info(params.url.id)
@@ -198,15 +198,15 @@ export const start = async (params) => {
 
 export const startForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.discussionPost({ discussionID: params.url.id, user: params.session })
+    let access = await app.helpers.access.discussionPost({ discussionID: params.url.id, user: params.session })
 
     if ( access === true ) {
       let discussion = await app.models.discussion.info(params.url.id),
-          parsedTitle = app.toolbox.markdown.title(params.form.title),
-          parsedContent = app.toolbox.markdown.content(params.form.content),
-          url = app.toolbox.slug(params.form.title),
+          parsedTitle = app.helpers.markdown.title(params.form.title),
+          parsedContent = app.helpers.markdown.content(params.form.content),
+          url = app.helpers.slug(params.form.title),
           draft = false,
-          time = app.toolbox.helpers.isoDate(),
+          time = app.helpers.util.isoDate(),
           saveTopic
       
       url = url.length ? url : 'untitled'
@@ -287,7 +287,7 @@ export const startForm = async (params, request, response, context) => {
 
 
 export const startAnnouncement = async (params) => {
-  let access = await app.toolbox.access.discussionPost({ discussionID: 2, user: params.session })
+  let access = await app.helpers.access.discussionPost({ discussionID: 2, user: params.session })
 
   if ( access === true ) {
     let categories = await app.models.discussions.categoriesPost(params.session.group_id)
@@ -317,7 +317,7 @@ export const startAnnouncement = async (params) => {
 
 export const startAnnouncementForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.discussionPost({ discussionID: 2, user: params.session })
+    let access = await app.helpers.access.discussionPost({ discussionID: 2, user: params.session })
 
     if ( access === true ) {
       params.form.subscribe = params.form.subscribe || false
@@ -332,11 +332,11 @@ export const startAnnouncementForm = async (params, request, response, context) 
       }
 
       let categories = await app.models.discussions.categoriesPost(params.session.group_id),
-          parsedTitle = app.toolbox.markdown.title(params.form.title),
-          parsedContent = app.toolbox.markdown.content(params.form.content),
-          url = app.toolbox.slug(params.form.title),
+          parsedTitle = app.helpers.markdown.title(params.form.title),
+          parsedContent = app.helpers.markdown.content(params.form.content),
+          url = app.helpers.slug(params.form.title),
           draft = false,
-          time = app.toolbox.helpers.isoDate(),
+          time = app.helpers.util.isoDate(),
           saveTopic
 
       url = url.length ? url : 'untitled'
@@ -452,7 +452,7 @@ export const startPrivate = async (params) => {
     }
   })()
 
-  let access = await app.toolbox.access.privateTopicStart({ user: params.session })
+  let access = await app.helpers.access.privateTopicStart({ user: params.session })
 
   if ( access === true ) {
     params.form.invitees = invitees ? invitees.join(', ') : ''
@@ -474,14 +474,14 @@ export const startPrivate = async (params) => {
 
 export const startPrivateForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.privateTopicStart({ user: params.session })
+    let access = await app.helpers.access.privateTopicStart({ user: params.session })
 
     if ( access === true ) {
-      let url = app.toolbox.slug(params.form.title),
+      let url = app.helpers.slug(params.form.title),
           draft = false,
-          time = app.toolbox.helpers.isoDate(),
-          parsedTitle = app.toolbox.markdown.title(params.form.title),
-          parsedContent = app.toolbox.markdown.content(params.form.content),
+          time = app.helpers.util.isoDate(),
+          parsedTitle = app.helpers.markdown.title(params.form.title),
+          parsedContent = app.helpers.markdown.content(params.form.content),
           saveTopic
 
       url = url.length ? url : 'untitled'
@@ -534,7 +534,7 @@ export const startPrivateForm = async (params, request, response, context) => {
 
               saveTopic.invited.forEach(item => {
                 if ( item.private_topic_email_notification ) {
-                  app.toolbox.mail.sendMail({
+                  app.helpers.mail.sendMail({
                     from    : app.config.comitium.email,
                     to      : item.email,
                     subject : mail.subject,
@@ -575,7 +575,7 @@ export const startPrivateForm = async (params, request, response, context) => {
 
 
 export const reply = async (params) => {
-  let access = await app.toolbox.access.topicReply({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicReply({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let [
@@ -618,13 +618,13 @@ export const reply = async (params) => {
 
 export const replyForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.topicReply({ topicID: params.url.id, user: params.session })
+    let access = await app.helpers.access.topicReply({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
       let topic         = await app.models.topic.info(params.url.id),
-          parsedContent = app.toolbox.markdown.content(params.form.content),
+          parsedContent = app.helpers.markdown.content(params.form.content),
           draft         = false,
-          time          = app.toolbox.helpers.isoDate(),
+          time          = app.helpers.util.isoDate(),
           reply, page, pageParameter, controller, urlTitle, replyUrl, forwardToUrl
 
       switch ( params.form.formAction ) {
@@ -724,7 +724,7 @@ export const notifySubscribers = async (args) => {
     let mail = await app.models.content.mail({ template: args.template, replace: args.replace })
 
     for ( var i = 0; i < subscribersToNotify.length; i++ ) {
-      app.toolbox.mail.sendMail({
+      app.helpers.mail.sendMail({
         from: app.config.comitium.email,
         to: subscribersToNotify[i].email,
         subject: mail.subject,
@@ -739,7 +739,7 @@ export const notifySubscribers = async (args) => {
 
 
 export const subscribe = async (params, request) => {
-  let access = await app.toolbox.access.topicSubscribe({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicSubscribe({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let [
@@ -749,12 +749,12 @@ export const subscribe = async (params, request) => {
       app.models.topic.subscribe({
         userID: params.session.user_id,
         topicID: params.url.id,
-        time: app.toolbox.helpers.isoDate()
+        time: app.helpers.util.isoDate()
       })
     ])
 
     return {
-      redirect: app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
+      redirect: app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
     }
   } else {
     return access
@@ -763,7 +763,7 @@ export const subscribe = async (params, request) => {
 
 
 export const unsubscribe = async (params, request) => {
-  let access = await app.toolbox.access.topicSubscribe({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicSubscribe({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     await Promise.all([
@@ -775,7 +775,7 @@ export const unsubscribe = async (params, request) => {
     ])
 
     return {
-      redirect: app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + 'subscriptions')
+      redirect: app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + 'subscriptions')
     }
   } else {
     return access
@@ -784,7 +784,7 @@ export const unsubscribe = async (params, request) => {
 
 
 export const leave = async (params) => {
-  let access = await app.toolbox.access.topicView({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicView({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     params.form.forwardToUrl = app.config.comitium.baseUrl + 'private-topics'
@@ -804,7 +804,7 @@ export const leave = async (params) => {
 
 export const leaveForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.topicView({ topicID: params.form.topicID, user: params.session })
+    let access = await app.helpers.access.topicView({ topicID: params.form.topicID, user: params.session })
 
     if ( access === true ) {
       await app.models.topic.leave({ topicID: params.form.topicID, userID: params.session.user_id })
@@ -822,12 +822,12 @@ export const leaveForm = async (params, request, response, context) => {
 
 
 export const lock = async (params, request) => {
-  let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicLock({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + params.route.controller + '/' + topic.url + '/id/' + topic.id)
     params.form.reason = ''
 
     return {
@@ -844,7 +844,7 @@ export const lock = async (params, request) => {
 
 export const lockForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
+    let access = await app.helpers.access.topicLock({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
       let topic = await app.models.topic.info(params.url.id)
@@ -852,7 +852,7 @@ export const lockForm = async (params, request, response, context) => {
       await app.models.topic.lock({
         topicID: topic.id,
         lockedByID: params.session.user_id,
-        lockReason: app.toolbox.markdown.inline(params.form.reason)
+        lockReason: app.helpers.markdown.inline(params.form.reason)
       })
 
       if ( params.form.notify ) {
@@ -880,7 +880,7 @@ export const lockForm = async (params, request, response, context) => {
 
 
 export const unlock = async (params, request) => {
-  let access = await app.toolbox.access.topicLock({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicLock({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     await app.models.topic.unlock({ topicID: params.url.id })
@@ -895,12 +895,12 @@ export const unlock = async (params, request) => {
 
 
 export const edit = async (params, request) => {
-  let access = await app.toolbox.access.topicEdit({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicEdit({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/topic/action/edit/id/' + topic.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + '/topic/action/edit/id/' + topic.id)
     params.form.title = topic.title
     params.form.content = topic.text
 
@@ -918,17 +918,17 @@ export const edit = async (params, request) => {
 
 export const editForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.topicEdit({ topicID: params.url.id, user: params.session })
+    let access = await app.helpers.access.topicEdit({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
       let topic         = await app.models.topic.info(params.url.id),
           firstPost     = await app.models.post.info(topic.first_post_id),
           announcement  = topic.discussion_id === 2 ? true : false,
-          parsedTitle   = app.toolbox.markdown.title(params.form.title),
-          parsedContent = app.toolbox.markdown.content(params.form.content),
-          parsedReason  = app.toolbox.markdown.inline(params.form.reason),
-          time          = app.toolbox.helpers.isoDate(),
-          url           = app.toolbox.slug(params.form.title),
+          parsedTitle   = app.helpers.markdown.title(params.form.title),
+          parsedContent = app.helpers.markdown.content(params.form.content),
+          parsedReason  = app.helpers.markdown.inline(params.form.reason),
+          time          = app.helpers.util.isoDate(),
+          url           = app.helpers.slug(params.form.title),
           edit, err
           
       url = url.length ? url : 'untitled'
@@ -987,7 +987,7 @@ export const editForm = async (params, request, response, context) => {
 
 
 export const merge = async (params, request) => {
-  let access = await app.toolbox.access.topicMerge({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicMerge({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id),
@@ -997,7 +997,7 @@ export const merge = async (params, request) => {
         })
 
     params.form.title = topic.title
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + '/topic/' + topic.url + '/id/' + topic.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + '/topic/' + topic.url + '/id/' + topic.id)
 
     return {
       view: 'merge',
@@ -1018,14 +1018,14 @@ export const mergeForm = async (params, request, response, context) => {
       return item.length
     })
 
-    let access = await app.toolbox.access.topicMergeForm({
+    let access = await app.helpers.access.topicMergeForm({
           topicID: params.form.topicID,
           user: params.session
         })
 
     if ( access === true ) {
       let mergedTopic = await app.models.topic.merge({
-                          time       : app.toolbox.helpers.isoDate(),
+                          time       : app.helpers.util.isoDate(),
                           topicID    : params.form.topicID,
                           lockedByID : params.session.user_id
                         })
@@ -1072,7 +1072,7 @@ export const mergeForm = async (params, request, response, context) => {
 
 
 export const move = async (params, request) => {
-  let access = await app.toolbox.access.topicMove({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicMove({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let [
@@ -1083,7 +1083,7 @@ export const move = async (params, request) => {
       app.models.discussions.categories(params.session.group_id)
     ])
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + 'topic/' + topic.url + '/id/' + topic.id)
 
     return {
       view: 'move',
@@ -1100,7 +1100,7 @@ export const move = async (params, request) => {
 
 export const moveForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.topicMoveForm({
+    let access = await app.helpers.access.topicMoveForm({
           topicID: params.url.id,
           newDiscussionID: params.form.destination,
           user: params.session
@@ -1144,12 +1144,12 @@ export const moveForm = async (params, request, response, context) => {
 
 
 export const trash = async (params, request) => {
-  let access = await app.toolbox.access.topicTrash({ topicID: params.url.id, user: params.session })
+  let access = await app.helpers.access.topicTrash({ topicID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let topic = await app.models.topic.info(params.url.id)
 
-    params.form.forwardToUrl = app.toolbox.access.signInRedirect(request, app.config.comitium.baseUrl + 'topic/action/trash/id/' + topic.id)
+    params.form.forwardToUrl = app.helpers.access.signInRedirect(request, app.config.comitium.baseUrl + 'topic/action/trash/id/' + topic.id)
     params.form.reason = ''
 
     return {
@@ -1166,7 +1166,7 @@ export const trash = async (params, request) => {
 
 export const trashForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.topicTrash({ topicID: params.url.id, user: params.session })
+    let access = await app.helpers.access.topicTrash({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
       let topic = await app.models.topic.info(params.url.id)

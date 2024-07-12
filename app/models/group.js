@@ -11,7 +11,7 @@ export const discussionPermissions = async (discussionID, groupID) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -38,7 +38,7 @@ export const discussionPermissions = async (discussionID, groupID) => {
 
 
 export const info = async (groupID) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({

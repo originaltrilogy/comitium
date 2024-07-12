@@ -10,7 +10,7 @@ export const firstPost = async () => {
     return cached
   // If it's not cached, retrieve the topic count and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -44,7 +44,7 @@ export const posts = async () => {
     return cached
   // If it's not cached, retrieve the topic count and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -78,7 +78,7 @@ export const topics = async () => {
     return cached
   // If it's not cached, retrieve the topic count and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -112,7 +112,7 @@ export const users = async () => {
     return cached
   // If it's not cached, retrieve the topic count and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({

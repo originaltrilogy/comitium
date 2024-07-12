@@ -1,7 +1,7 @@
 // private topics controller
 
 export const handler = async (params) => {
-  let access = await app.toolbox.access.privateTopicsView({ user: params.session })
+  let access = await app.helpers.access.privateTopicsView({ user: params.session })
 
   if ( access === true ) {
     params.url.page = params.url.page || 1
@@ -29,7 +29,7 @@ export const handler = async (params) => {
     }
 
     topics.forEach( function (item) {
-      if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
+      if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.helpers.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
         item.unread = true
       }
     })
@@ -39,8 +39,8 @@ export const handler = async (params) => {
         count: count,
         topics: topics.length ? topics : false,
         breadcrumbs: app.models['private-topics'].breadcrumbs(),
-        pagination: app.toolbox.helpers.paginate('private-topics', params.url.page, count),
-        previousAndNext: app.toolbox.helpers.previousAndNext('private-topics', params.url.page, count)
+        pagination: app.helpers.util.paginate('private-topics', params.url.page, count),
+        previousAndNext: app.helpers.util.previousAndNext('private-topics', params.url.page, count)
       }
     } 
   } else {

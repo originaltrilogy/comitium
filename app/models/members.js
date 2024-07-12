@@ -35,7 +35,7 @@ export const all = async (args) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -110,7 +110,7 @@ export const group = async (args) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -147,7 +147,7 @@ export const groups = async () => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -219,7 +219,7 @@ export const search = async (args) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       let result

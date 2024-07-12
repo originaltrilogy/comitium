@@ -5,7 +5,7 @@ export const handler = async (params) => {
 
   categories.forEach( function (item) {
     item.subcategories.forEach( function (item) {
-      if ( app.toolbox.moment(item.last_post_created).isAfter(params.session.last_activity) && item.last_post_author_id !== params.session.user_id ) {
+      if ( app.helpers.moment(item.last_post_created).isAfter(params.session.last_activity) && item.last_post_author_id !== params.session.user_id ) {
         item.unread = true
       }
     })

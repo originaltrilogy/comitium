@@ -6,7 +6,7 @@ export const handler = async (params) => {
     userCanEdit
   ] = await Promise.all([
     app.models.content.info(params.url.id),
-    app.toolbox.access.contentEdit({
+    app.helpers.access.contentEdit({
       user: params.session,
       contentID: params.url.id,
       response: 'boolean'
@@ -39,7 +39,7 @@ export const handler = async (params) => {
 
 
 export const edit = async (params) => {
-  let access = await app.toolbox.access.contentEdit({ user: params.session, contentID: params.url.id })
+  let access = await app.helpers.access.contentEdit({ user: params.session, contentID: params.url.id })
 
   if ( access === true ) {
     let content = await app.models.content.info(params.url.id)
@@ -61,16 +61,16 @@ export const edit = async (params) => {
 
 export const editForm = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    let access = await app.toolbox.access.contentEdit({ user: params.session, contentID: params.url.id })
+    let access = await app.helpers.access.contentEdit({ user: params.session, contentID: params.url.id })
 
     if ( access === true ) {
       let editContent = await app.models.content.edit({
         id: params.url.id,
         title_markdown: params.form.title_markdown,
-        title_html: app.toolbox.markdown.title(params.form.title_markdown),
-        url: app.toolbox.slug(params.form.title_markdown),
+        title_html: app.helpers.markdown.title(params.form.title_markdown),
+        url: app.helpers.slug(params.form.title_markdown),
         content_markdown: params.form.content_markdown,
-        content_html: app.toolbox.markdown.content(params.form.content_markdown),
+        content_html: app.helpers.markdown.content(params.form.content_markdown),
         modified_by_id: params.session.user_id
       })
 

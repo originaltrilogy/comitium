@@ -3,7 +3,7 @@
 export const handler = async (params) => {
   params.url.page = params.url.page || 1
 
-  let access  = await app.toolbox.access.discussionView({ discussionID: 2, user: params.session })
+  let access  = await app.helpers.access.discussionView({ discussionID: 2, user: params.session })
   
   if ( access === true ) {
     let start       = params.url.start || ( params.url.page - 1 ) * 25,
@@ -45,11 +45,11 @@ export const handler = async (params) => {
 
       topics.forEach( function (item) {
         if ( params.session.user_id ) {
-          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
+          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.helpers.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
             item.unread = true
           }
         } else {
-          if ( app.toolbox.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
+          if ( app.helpers.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
             item.unread = true
           }
         }
@@ -61,8 +61,8 @@ export const handler = async (params) => {
         discussion: discussion,
         topics: topics.length ? topics : false,
         breadcrumbs: app.models.announcements.breadcrumbs(),
-        pagination: app.toolbox.helpers.paginate('announcements/id/2', params.url.page, discussion.topics),
-        previousAndNext: app.toolbox.helpers.previousAndNext('announcements/id/2', params.url.page, discussion.topics)
+        pagination: app.helpers.util.paginate('announcements/id/2', params.url.page, discussion.topics),
+        previousAndNext: app.helpers.util.previousAndNext('announcements/id/2', params.url.page, discussion.topics)
       },
       view: params.url.compact ? 'compact' : 'announcements'
     }

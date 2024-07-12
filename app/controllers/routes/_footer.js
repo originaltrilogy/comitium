@@ -23,10 +23,10 @@ export const handler = async () => {
   return {
     local: {
       stats: {
-        topics: app.toolbox.numeral(topics).format('0,0'),
-        posts: app.toolbox.numeral(posts).format('0,0'),
-        users: app.toolbox.numeral(users).format('0,0'),
-        firstPostCreated: app.toolbox.moment.tz(firstPost, 'America/New_York').format('MMMM D, YYYY')
+        topics: app.helpers.numeral(topics).format('0,0'),
+        posts: app.helpers.numeral(posts).format('0,0'),
+        users: app.helpers.numeral(users).format('0,0'),
+        firstPostCreated: app.helpers.moment.tz(firstPost, 'America/New_York').format('MMMM D, YYYY')
       },
       copyrightYear: copyrightYear
     },

@@ -1,7 +1,7 @@
 // discussion controller
 
 export const handler = async (params) => {
-  let access  = await app.toolbox.access.discussionView({ discussionID: params.url.id, user: params.session })
+  let access  = await app.helpers.access.discussionView({ discussionID: params.url.id, user: params.session })
 
   if ( access === true ) {
     let page    = parseInt(params.url.page, 10) || 1,
@@ -51,11 +51,11 @@ export const handler = async (params) => {
 
       announcements.forEach( function (item) {
         if ( params.session.user_id ) {
-          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
+          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.helpers.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
             item.unread = true
           }
         } else {
-          if ( app.toolbox.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
+          if ( app.helpers.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
             item.unread = true
           }
         }
@@ -63,10 +63,10 @@ export const handler = async (params) => {
 
       topics.forEach( function (item) {
         if ( params.session.user_id ) {
-          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.toolbox.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
+          if ( !viewTimes[item.id] || ( item.last_post_author !== params.session.username && app.helpers.moment(item.last_post_created).isAfter(viewTimes[item.id].time) ) ) {
             item.unread = true
           }
-        } else if ( app.toolbox.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
+        } else if ( app.helpers.moment(item.last_post_created).isAfter(params.session.last_activity) ) {
           item.unread = true
         }
       })
@@ -78,8 +78,8 @@ export const handler = async (params) => {
           topics: topics.length ? topics : false,
           breadcrumbs: app.models.discussion.breadcrumbs(discussion.title),
           page: page,
-          pagination: app.toolbox.helpers.paginate('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics),
-          previousAndNext: app.toolbox.helpers.previousAndNext('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics)
+          pagination: app.helpers.util.paginate('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics),
+          previousAndNext: app.helpers.util.previousAndNext('discussion/' + discussion.url + '/id/' + discussion.id, page, discussion.topics)
         }
       }
     } else {

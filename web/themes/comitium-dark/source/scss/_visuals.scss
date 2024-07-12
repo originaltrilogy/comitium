@@ -393,6 +393,15 @@ table {
   }
 }
 
+
+// Callouts
+section.callout {
+  background: hsl(227,18%,20%);
+  border: 0.1rem solid hsl(227,18%,26%);
+  border-radius: 0.8rem;
+}
+
+
 // Screens wider than 720px
 @media only screen and (min-width: 720px) {
 

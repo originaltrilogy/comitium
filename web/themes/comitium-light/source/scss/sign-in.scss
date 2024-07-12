@@ -3,27 +3,51 @@
 //////////////////////////////
 
 body[data-controller="sign-in"] {
-  form {
-    ul.actions {
-      & > li {
-        &.secondary {
-          a {
-            @include debutton;
-          }
+  section.help {
+    margin: 0 1.6rem;
+
+    ul {
+      margin-left: 0;
+      padding: 0;
+      
+      li {
+        list-style: none;
+        margin: 1.6rem auto;
+
+        a {
+          display: block;
         }
       }
     }
   }
-}
 
+  @media only screen and (min-width: 720px) {
 
-@media only screen and (min-width: 720px) {
-
-  body[data-controller="sign-in"] {
-    section.form {
+    section.form,
+    section.help {
       max-width: 32rem;
       margin: 4.8rem auto 2.4rem;
     }
+  
   }
 
+  @media only screen and (min-width: 1024px) {
+
+    section.options {
+      display: flex;
+      max-width: 96rem;
+      margin: auto;
+    }
+
+    section.form,
+    section.help {
+      flex: 0 0 50%;
+      margin: 4.8rem auto 2.4rem;
+    }
+
+    section.help {
+      max-width: none;
+    }
+  
+  }
 }

@@ -33,7 +33,7 @@ themes.forEach( function (item, index) {
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(cssnano({ safe: true, colormin: false }))
-        .pipe(sourcemaps.write(''))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest('web/themes/' + item.path + '/min'))
         .pipe(filter('**/*.css*'))
         .pipe(browsersync.stream())
@@ -88,8 +88,7 @@ gulp.task('watch', function (done) {
   gulp.watch('web/themes/**/source/js/**/**.js', gulp.parallel('js'))
   gulp.watch('app/controllers/**/**', gulp.parallel('reload'))
   gulp.watch('app/views/**/**', gulp.parallel('reload'))
-  gulp.watch('app/toolbox/**', gulp.parallel('reload'))
-  gulp.watch('web/themes/**', gulp.parallel('reload'))
+  gulp.watch('app/helpers/**', gulp.parallel('reload'))
   done()
 })
 

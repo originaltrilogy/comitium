@@ -33,8 +33,8 @@ export const handler = async (params) => {
       group: group,
       groups: groups,
       members: members,
-      pagination: app.toolbox.helpers.paginate(params.route.pathname, params.url.page || 1, count),
-      previousAndNext: app.toolbox.helpers.previousAndNext(params.route.pathname, params.url.page || 1, count),
+      pagination: app.helpers.util.paginate(params.route.pathname, params.url.page || 1, count),
+      previousAndNext: app.helpers.util.previousAndNext(params.route.pathname, params.url.page || 1, count),
       urlParams: '/' + ( params.url.group ? 'group/' + params.url.group + '/' : '' )
     }
   }
@@ -90,8 +90,8 @@ export const searchResults = async (params) => {
       count: count,
       groups: groups,
       members: members,
-      pagination: app.toolbox.helpers.paginate(params.route.pathname, params.url.page || 1, count),
-      previousAndNext: app.toolbox.helpers.previousAndNext(params.route.pathname, params.url.page || 1, count),
+      pagination: app.helpers.util.paginate(params.route.pathname, params.url.page || 1, count),
+      previousAndNext: app.helpers.util.previousAndNext(params.route.pathname, params.url.page || 1, count),
       urlParams: '/action/searchResults/term/' + params.url.term + '/' + ( params.url.group ? 'group/' + params.url.group + '/' : '' ),
       term: decodeURI(params.url.term)
     }

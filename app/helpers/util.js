@@ -6,7 +6,7 @@ export const activationCode = () => {
 
 
 export const compareHash = async (str, hash) => {
-  return await app.toolbox.bcrypt.compare(str, hash).then(result => {
+  return await app.helpers.bcrypt.compare(str, hash).then(result => {
     return result
   }).catch(err => { throw err })
 }
@@ -64,7 +64,7 @@ export const getRandomIntInclusive = (min, max) => {
 
 
 export const hash = async (str) => {
-  return await app.toolbox.bcrypt.hash(str, 12).then(result => {
+  return await app.helpers.bcrypt.hash(str, 12).then(result => {
     return result
   }).catch(err => { throw err })
 }
@@ -96,10 +96,8 @@ export const isoDate = (date) => {
   try {
     isoformattedDate = givenDate.toISOString()
   } catch ( err ) {
-    throw {
-      thrownBy: 'app.toolbox.helpers.isoDate()',
-      message: 'The object provided is not a valid date.'
-    }
+    err.message = 'The object provided is not a valid date.'
+    throw err
   }
 
   return isoformattedDate

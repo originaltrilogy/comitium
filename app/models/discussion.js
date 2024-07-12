@@ -11,7 +11,7 @@ export const announcements = async (discussionID) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -29,9 +29,9 @@ export const announcements = async (discussionID) => {
       })
 
       result.rows.forEach( function (item) {
-        item.replies_formatted            = app.toolbox.numeral(item.replies).format('0,0')
-        item.post_date_formatted          = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
-        item.last_post_created_formatted  = app.toolbox.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
+        item.replies_formatted            = app.helpers.numeral(item.replies).format('0,0')
+        item.post_date_formatted          = app.helpers.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+        item.last_post_created_formatted  = app.helpers.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests
@@ -76,7 +76,7 @@ export const info = async (discussionID) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -86,7 +86,7 @@ export const info = async (discussionID) => {
       })
 
       if ( result.rows.length ) {
-        result.rows[0]['topics_formatted'] = app.toolbox.numeral(result.rows[0].topics).format('0,0')
+        result.rows[0]['topics_formatted'] = app.helpers.numeral(result.rows[0].topics).format('0,0')
 
         // Cache the discussion info object for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
@@ -132,7 +132,7 @@ export const topics = async (args) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -152,9 +152,9 @@ export const topics = async (args) => {
 
       result.rows.forEach( function (item) {
         item.replies                      = parseInt(item.replies, 10)
-        item.replies_formatted            = app.toolbox.numeral(item.replies).format('0,0')
-        item.post_date_formatted          = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
-        item.last_post_created_formatted  = app.toolbox.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
+        item.replies_formatted            = app.helpers.numeral(item.replies).format('0,0')
+        item.post_date_formatted          = app.helpers.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+        item.last_post_created_formatted  = app.helpers.moment.tz(item.last_post_created, 'America/New_York').format('D-MMM-YYYY')
       })
 
       // Cache the result for future requests

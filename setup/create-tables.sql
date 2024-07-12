@@ -551,15 +551,161 @@ VALUES
 -- E-mail templates
 INSERT INTO "email_templates" ("name","description","default_subject","default_text","subject","text","html")
 VALUES
-('Password Reset','Users who have forgotten their passwords can request a password reset link via e-mail.','Forum password reset request','We received a request to reset your password. Please click the link below to start the process:\n\n[resetUrl]\n\nIf you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.','Forum password reset request','We received a request to reset your password. Please click the link below to start the process:\n\n[resetUrl]\n\nIf you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.',NULL),
-('Post Delete','When moderators delete a post, they can notify the author using this e-mail.','Your post was deleted','A moderator deleted one of your posts.\n\nPost ID: [postID]\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]\n\nPost content:\n[postText]','Your post was deleted','A moderator deleted one of your posts.\n\nPost ID: [postID]\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]\n\nPost content:\n[postText]',NULL),
-('Post Lock','When moderators lock a post, they can notify the author using this e-mail.','Your post was locked','A moderator locked one of your posts.\n\nPost: [postUrl]\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]\n\nPost content:\n[postText]','Your post was locked','A moderator locked one of your posts.\n\nPost: [postUrl]\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]\n\nPost content:\n[postText]',NULL),
-('Post Report','When users report a post, moderators are notified via e-mail.','Post report','Submitted by: [reporter]\nReason: [reason]\n\nPost: [postUrl]\nTopic: [topicTitle]\n\n[topicUrl]\n\nPost content:\n\n[postText]','Post report','Submitted by: [reporter]\nReason: [reason]\n\nPost: [postUrl]\nTopic: [topicTitle]\n\n[topicUrl]\n\nPost content:\n\n[postText]',NULL),
-('Reactivation','When users update their e-mail address, they''re asked to reactivate their account in order to verify that the e-mail they provided is valid.','Your account requires reactivation','When you update your e-mail address, we send this verification e-mail to make sure it''s a valid address. This helps us fight spammers and provide a better community experience.\n\nClick the link below to verify this address and reactivate your account:\n\n[activationUrl]','Your account requires reactivation','When you update your e-mail address, we send this verification e-mail to make sure it''s a valid address. This helps us fight spammers and provide a better community experience.\n\nClick the link below to verify this address and reactivate your account:\n\n[activationUrl]',NULL),
-('Registration','This e-mail is sent to new users after they register so they can activate their account.','Welcome to the forum, [username]!','Thanks for signing up! To activate your account, please click the link below:\n\n[activationUrl]','Welcome to the forum, [username]!','Thanks for signing up! To activate your account, please click the link below:\n\n[activationUrl]',NULL),
-('Topic Delete','When moderators delete a topic, they can notify subscribers using this e-mail.','A topic you''re following was deleted','A moderator deleted a topic you were following.\n\nTopic: [topicTitle]\n\nReason: [reason]','A topic you''re following was deleted','A moderator deleted a topic you were following.\n\nTopic: [topicTitle]\n\nReason: [reason]',NULL),
-('Topic Invitation','Users who opt in to notifications receive this e-mail when they''re invited to participate in a private topic.','Private topic invitation','[author] invited you to a private topic. Private topics are visible only to members who receive an invitation; not even moderators can view your private topics.\n\nTo accept the invitation and read the topic:\n[topicUrl]','Private topic invitation','[author] invited you to a private topic. Private topics are visible only to members who receive an invitation; not even moderators can view your private topics.\n\nTo accept the invitation and read the topic:\n[topicUrl]',NULL),
-('Topic Lock','When moderators lock a topic, they can notify subscribers using this e-mail.','A topic you''re following was locked','A moderator locked a topic you were following.\n\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]','A topic you''re following was locked','A moderator locked a topic you were following.\n\nTopic: [topicTitle]\n\n[topicUrl]\n\nReason: [reason]',NULL),
-('Topic Move','Subscribers receive an e-mail notification when a topic they''re following is moved to a different discussion.','A topic you''re following was moved','The following topic was moved from [oldDiscussionTitle] to [newDiscussionTitle].\n\n[topicTitle]\n[topicUrl]','A topic you''re following was moved','The following topic was moved from [oldDiscussionTitle] to [newDiscussionTitle].\n\n[topicTitle]\n[topicUrl]',NULL),
-('Topic Reply','Subscribers receive an e-mail notification when someone replies to a topic they''re following.','Topic update: [topicTitle]','[replyAuthor] posted a reply to the following topic:\n\n[topicTitle]\n[replyUrl]\n\n\nThere may be additional replies, but you won''t receive any further notifications until you visit the forum again.\n\n\nUnsubscribe:\n\n[unsubscribeUrl]','Topic update: [topicTitle]','[replyAuthor] posted a reply to the following topic:\n\n[topicTitle]\n[replyUrl]\n\n\nThere may be additional replies, but you won''t receive any further notifications until you visit the forum again.\n\n\nUnsubscribe:\n\n[unsubscribeUrl]',NULL),
-( 'Topic Merge','Subscribers receive an e-mail notification when moderators merge a topic they''re following.','Topic update: [topicTitle]','A topic you''re following has been merged with another topic:\n\n[topicTitle]\n[topicUrl]\n\n\nUnsubscribe from this topic:\n\n[unsubscribeUrl]','Topic update: [topicTitle]','A topic you''re following has been merged with another topic:\n\n[topicTitle]\n[topicUrl]\n\n\nUnsubscribe from this topic:\n\n[unsubscribeUrl]',NULL);
+('Password Reset','Users who have forgotten their passwords can request a password reset link via e-mail.','Forum password reset request','We received a request to reset your password. Please click the link below to start the process:
+
+[resetUrl]
+
+If you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.','Forum password reset request','We received a request to reset your password. Please click the link below to start the process:
+
+[resetUrl]
+
+If you didn''t initiate this request, it''s possible someone made a typo while entering their own e-mail address. Please let us know if you have any concerns.',NULL),
+('Post Delete','When moderators delete a post, they can notify the author using this e-mail.','Your post was deleted','A moderator deleted one of your posts.
+
+Post ID: [postID]\nTopic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]
+
+Post content:\n[postText]','Your post was deleted','A moderator deleted one of your posts.
+
+Post ID: [postID]\nTopic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]
+
+Post content:\n[postText]',NULL),
+('Post Lock','When moderators lock a post, they can notify the author using this e-mail.','Your post was locked','A moderator locked one of your posts.
+
+Post: [postUrl]\nTopic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]
+
+Post content:\n[postText]','Your post was locked','A moderator locked one of your posts.
+
+Post: [postUrl]\nTopic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]
+
+Post content:\n[postText]',NULL),
+('Post Report','When users report a post, moderators are notified via e-mail.','Post report','Submitted by: [reporter]\nReason: [reason]
+
+Post: [postUrl]\nTopic: [topicTitle]
+
+[topicUrl]
+
+Post content:
+
+[postText]','Post report','Submitted by: [reporter]\nReason: [reason]
+
+Post: [postUrl]\nTopic: [topicTitle]
+
+[topicUrl]
+
+Post content:
+
+[postText]',NULL),
+('Reactivation','When users update their e-mail address, they''re asked to reactivate their account in order to verify that the e-mail they provided is valid.','Your account requires reactivation','When you update your e-mail address, we send this verification e-mail to make sure it''s a valid address. This helps us fight spammers and provide a better community experience.
+
+Click the link below to verify this address and reactivate your account:
+
+[activationUrl]','Your account requires reactivation','When you update your e-mail address, we send this verification e-mail to make sure it''s a valid address. This helps us fight spammers and provide a better community experience.
+
+Click the link below to verify this address and reactivate your account:
+
+[activationUrl]',NULL),
+('Registration','This e-mail is sent to new users after they register so they can activate their account.','Welcome to the forum, [username]!','Thanks for signing up! To activate your account, please click the link below:
+
+[activationUrl]','Welcome to the forum, [username]!','Thanks for signing up! To activate your account, please click the link below:
+
+[activationUrl]',NULL),
+('Registration Resend - Activated', 'This e-mail is sent to users who request a duplicate of their registration e-mail, but the associated account is already activated.', 'Forum account activation', 'We received a request to resend the [siteName] forum registration e-mail associated with this e-mail account. However, the account has already been activated.
+
+You should be able to log in with the credentials you provided at signup. If you''re having difficulty, you can reset your password here:
+
+[siteUrl]password-reset', 'Forum account activation', 'We received a request to resend the [siteName] forum registration e-mail associated with this e-mail account. However, the account has already been activated.
+
+You should be able to log in with the credentials you provided at signup. If you''re having difficulty, you can reset your password here:
+
+[siteUrl]password-reset', NULL),
+('Registration Resend - No Match', 'This e-mail is sent to users who request a duplicate of their registration e-mail, but no account was found associated with the provided e-mail address.', 'Forum account activation', 'We received a request to resend the [siteName] forum registration e-mail associated with this e-mail account. However, we found no account associated with this e-mail address.
+
+Perhaps you made a typo when signing up. If you want to create an account with this e-mail address, you can do so here:
+
+[siteUrl]register
+
+Otherwise, you can ignore this message.', 'Forum account activation', 'We received a request to resend the [siteName] forum registration e-mail associated with this e-mail account. However, we found no account associated with this e-mail address.
+
+Perhaps you made a typo when signing up. If you want to create an account with this e-mail address, you can do so here:
+
+[siteUrl]register
+
+Otherwise, you can ignore this message.', NULL),
+('Topic Delete','When moderators delete a topic, they can notify subscribers using this e-mail.','A topic you''re following was deleted','A moderator deleted a topic you were following.
+
+Topic: [topicTitle]
+
+Reason: [reason]','A topic you''re following was deleted','A moderator deleted a topic you were following.
+
+Topic: [topicTitle]
+
+Reason: [reason]',NULL),
+('Topic Invitation','Users who opt in to notifications receive this e-mail when they''re invited to participate in a private topic.','Private topic invitation','[author] invited you to a private topic. Private topics are visible only to members who receive an invitation; not even moderators can view your private topics.
+
+To accept the invitation and read the topic:\n[topicUrl]','Private topic invitation','[author] invited you to a private topic. Private topics are visible only to members who receive an invitation; not even moderators can view your private topics.
+
+To accept the invitation and read the topic:\n[topicUrl]',NULL),
+('Topic Lock','When moderators lock a topic, they can notify subscribers using this e-mail.','A topic you''re following was locked','A moderator locked a topic you were following.
+
+Topic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]','A topic you''re following was locked','A moderator locked a topic you were following.
+
+Topic: [topicTitle]
+
+[topicUrl]
+
+Reason: [reason]',NULL),
+('Topic Move','Subscribers receive an e-mail notification when a topic they''re following is moved to a different discussion.','A topic you''re following was moved','The following topic was moved from [oldDiscussionTitle] to [newDiscussionTitle].
+
+[topicTitle]\n[topicUrl]','A topic you''re following was moved','The following topic was moved from [oldDiscussionTitle] to [newDiscussionTitle].
+
+[topicTitle]\n[topicUrl]',NULL),
+('Topic Reply','Subscribers receive an e-mail notification when someone replies to a topic they''re following.','Topic update: [topicTitle]','[replyAuthor] posted a reply to the following topic:
+
+[topicTitle]\n[replyUrl]
+
+\nThere may be additional replies, but you won''t receive any further notifications until you visit the forum again.
+
+\nUnsubscribe:
+
+[unsubscribeUrl]','Topic update: [topicTitle]','[replyAuthor] posted a reply to the following topic:
+
+[topicTitle]\n[replyUrl]
+
+\nThere may be additional replies, but you won''t receive any further notifications until you visit the forum again.
+
+\nUnsubscribe:
+
+[unsubscribeUrl]',NULL),
+( 'Topic Merge','Subscribers receive an e-mail notification when moderators merge a topic they''re following.','Topic update: [topicTitle]','A topic you''re following has been merged with another topic:
+
+[topicTitle]\n[topicUrl]
+
+\nUnsubscribe from this topic:
+
+[unsubscribeUrl]','Topic update: [topicTitle]','A topic you''re following has been merged with another topic:
+
+[topicTitle]\n[topicUrl]
+
+\nUnsubscribe from this topic:
+
+[unsubscribeUrl]',NULL);

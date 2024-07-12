@@ -8,7 +8,7 @@ export const edit = async (args) => {
       message: 'All fields are required.'
     }
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
   
     try {
       await client.query({
@@ -35,7 +35,7 @@ export const info = async (contentID) => {
   if ( cache ) {
     return cache
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
     
     try {
       const result = await client.query({
@@ -68,7 +68,7 @@ export const mail = async (args) => {
       replace = args.replace || {},
       regex
 
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({

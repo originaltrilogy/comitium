@@ -20,7 +20,7 @@ header
       dd #{local.user.last_activity_formatted}
 
       dt Posts
-      dd #{app.toolbox.numeral(local.user.post_count).format("0,0")}
+      dd #{app.helpers.numeral(local.user.post_count).format("0,0")}
 
       if local.user.website && local.user.website.length
         dt Web Site

@@ -1,7 +1,14 @@
 header
   section.summary
     h1 Sign In
-    p Don't have an account? <a href="register">Register now</a>!
-    p Forgotten your password? <a href="password-reset">Create a new one</a>.
 
-include ../partials/sign-in-form
+section.options
+  include ../partials/sign-in-form
+
+  section.help
+    section.callout
+      h2 Sign-In Help
+      ul
+        li Forgot your password? <a href="password-reset">Create a new password</a>
+        li Didn't receive your activation e-mail? <a href="resend-activation">Resend your activation e-mail</a>
+        li Don't have an account? <a href="register">Create an account now</a>

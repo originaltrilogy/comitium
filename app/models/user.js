@@ -14,7 +14,7 @@ export const activate = async (args) => {
 
     // If the account isn't activated, activate it
     if ( activationStatus.userExists && !activationStatus.activated && activationStatus.activationCode === args.activationCode ) {
-      const client = await app.toolbox.dbPool.connect()
+      const client = await app.helpers.dbPool.connect()
     
       try {
         await client.query({
@@ -64,7 +64,7 @@ export const activate = async (args) => {
 
 
 export const activationStatus = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -92,13 +92,13 @@ export const activationStatus = async (args) => {
 
 
 export const activityUpdate = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
       name: 'user_activityUpdate',
       text: 'update users set last_activity = $1 where id = $2;',
-      values: [ args.time || app.toolbox.helpers.isoDate(), args.userID ]
+      values: [ args.time || app.helpers.util.isoDate(), args.userID ]
     })
 
     return result.rows
@@ -128,7 +128,7 @@ export const authenticate = async (credentials) => {
       reason: 'requiredFieldsEmpty',
       message: 'All fields are required.'
     }
-  } else if ( !usernameHash.length && app.toolbox.validate.email(email) === false ) {
+  } else if ( !usernameHash.length && app.helpers.validate.email(email) === false ) {
     return {
       success: false,
       reason: 'invalidEmail',
@@ -141,7 +141,7 @@ export const authenticate = async (credentials) => {
     } else if ( email.length ) {
       user = await info({ email: email })
     }
-    let compareHash = password.length && user && user.password_hash ? await app.toolbox.helpers.compareHash(password, user.password_hash) : false
+    let compareHash = password.length && user && user.password_hash ? await app.helpers.util.compareHash(password, user.password_hash) : false
 
     if ( user ) {
       if ( user.activated ) {
@@ -186,7 +186,7 @@ export const authenticate = async (credentials) => {
 
 
 export const ban = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
@@ -203,7 +203,7 @@ export const ban = async (args) => {
 
 
 export const liftBan = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
@@ -220,7 +220,7 @@ export const liftBan = async (args) => {
 
 
 export const banIP = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const banned = await client.query('select ip from banned_ip_addresses where ip = $1;', [ args.ip ])
@@ -248,7 +248,7 @@ export const bannedIPs = async () => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -290,11 +290,11 @@ export const create = async (args) => {
 
   if ( !username.length || !password.length || !email.length || !tos ) {
     return failed('requiredFieldsEmpty')
-  } else if ( app.toolbox.validate.username(username) === false ) {
+  } else if ( app.helpers.validate.username(username) === false ) {
     return failed('invalidUsername')
-  } else if ( app.toolbox.validate.email(email) === false ) {
+  } else if ( app.helpers.validate.email(email) === false ) {
     return failed('invalidEmail')
-  } else if ( app.toolbox.validate.password(password) === false ) {
+  } else if ( app.helpers.validate.password(password) === false ) {
     return failed('invalidPassword')
   } else {
     let [
@@ -310,16 +310,16 @@ export const create = async (args) => {
     } else if ( emailExists ) {
       return failed('emailExists')
     } else {
-      let url = app.toolbox.slug(username),
-          time = app.toolbox.helpers.isoDate(),
-          activationCode = app.toolbox.helpers.activationCode()
+      let url = app.helpers.slug(username),
+          time = app.helpers.isoDate(),
+          activationCode = app.helpers.activationCode()
 
       let [
         usernameHash,
         passwordHash
       ] = await Promise.all([
-        app.toolbox.helpers.hash(username),
-        app.toolbox.helpers.hash(password)
+        app.helpers.hash(username),
+        app.helpers.hash(password)
       ])
 
       let user = await insert({
@@ -391,7 +391,7 @@ export const create = async (args) => {
 
 
 export const emailExists = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -413,7 +413,7 @@ export const emailExists = async (args) => {
 
 
 export const exists = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -452,7 +452,7 @@ export const info = async (args) => {
   }
 
   if ( sql.length ) {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
     
     try {
       const result = await client.query({
@@ -461,8 +461,8 @@ export const info = async (args) => {
       })
 
       if ( result.rows.length ) {
-        result.rows[0].joined_formatted = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
-        result.rows[0].last_activity_formatted = app.toolbox.moment.tz(result.rows[0].last_activity, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].joined_formatted = app.helpers.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].last_activity_formatted = app.helpers.moment.tz(result.rows[0].last_activity, 'America/New_York').format('D-MMM-YYYY')
         return result.rows[0]
       } else {
         return false
@@ -477,7 +477,7 @@ export const info = async (args) => {
 
 
 export const insert = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -496,7 +496,7 @@ export const insert = async (args) => {
 
 
 export const ipHistory = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -520,13 +520,13 @@ export const ipHistory = async (args) => {
 
 
 export const log = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
       name: 'user_log',
       text: 'insert into user_logs ( user_id, action, ip, time ) values ( $1, $2, $3, $4 ) returning id;',
-      values: [ args.userID, args.action, args.ip, app.toolbox.helpers.isoDate() ]
+      values: [ args.userID, args.action, args.ip, app.helpers.isoDate() ]
     })
 
     return result.rows
@@ -537,7 +537,7 @@ export const log = async (args) => {
 
 
 export const logByID = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -566,13 +566,13 @@ export const metaData = async (args) => {
 
 export const passwordResetInsert = async (args) => {
   let verificationCode = Math.random().toString().replace('0.', '') + Math.random().toString().replace('0.', '')
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query({
       name: 'user_passwordResetInsert',
       text: 'insert into password_reset ( user_id, verification_code, time ) values ( $1, $2, $3 );',
-      values: [ args.userID, verificationCode, app.toolbox.helpers.isoDate() ]
+      values: [ args.userID, verificationCode, app.helpers.isoDate() ]
     })
 
     return {
@@ -585,7 +585,7 @@ export const passwordResetInsert = async (args) => {
 
 
 export const passwordResetVerify = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -618,7 +618,7 @@ export const posts = async (args) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -635,8 +635,8 @@ export const posts = async (args) => {
       })
 
       result.rows.forEach( function (item) {
-        item.created_formatted   = app.toolbox.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
-        item.modified_formatted  = app.toolbox.moment.tz(item.modified, 'America/New_York').format('D-MMM-YYYY h:mm A')
+        item.created_formatted   = app.helpers.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
+        item.modified_formatted  = app.helpers.moment.tz(item.modified, 'America/New_York').format('D-MMM-YYYY h:mm A')
       })
 
       // Cache the result for future requests
@@ -657,7 +657,7 @@ export const posts = async (args) => {
 
 
 export const replies = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -670,7 +670,7 @@ export const replies = async (args) => {
     })
 
     result.rows.forEach( function (item) {
-      item.created_formatted   = app.toolbox.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
+      item.created_formatted   = app.helpers.moment.tz(item.created, 'America/New_York').format('D-MMM-YYYY h:mm A')
     })
 
     if ( result.rows.length ) {
@@ -695,7 +695,7 @@ export const profileByID = async (args) => {
     return cached
   // If it's not cached, retrieve it from the database and cache it
   } else {
-    const client = await app.toolbox.dbPool.connect()
+    const client = await app.helpers.dbPool.connect()
 
     try {
       const result = await client.query({
@@ -705,8 +705,8 @@ export const profileByID = async (args) => {
       })
 
       if ( result.rows && result.rows.length ) {
-        result.rows[0].joined_formatted        = app.toolbox.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
-        result.rows[0].last_activity_formatted = app.toolbox.moment.tz(result.rows[0].last_activity, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].joined_formatted        = app.helpers.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
+        result.rows[0].last_activity_formatted = app.helpers.moment.tz(result.rows[0].last_activity, 'America/New_York').format('D-MMM-YYYY')
 
         // Cache the result for future requests
         if ( !app.cache.exists({ scope: scope, key: cacheKey }) ) {
@@ -729,7 +729,7 @@ export const profileByID = async (args) => {
 
 
 export const matchingUsersByIP = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -741,7 +741,7 @@ export const matchingUsersByIP = async (args) => {
     if ( result.rows.length ) {
       result.rows.forEach( function (item, index, array) {
         array[index].ip = array[index].ip.replace('/32', '')
-        array[index].time_formatted = app.toolbox.moment.tz(array[index].time, 'America/New_York').format('D-MMM-YYYY h:mm A')
+        array[index].time_formatted = app.helpers.moment.tz(array[index].time, 'America/New_York').format('D-MMM-YYYY h:mm A')
       })
       return result.rows
     } else {
@@ -754,7 +754,7 @@ export const matchingUsersByIP = async (args) => {
 
 
 export const topics = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -770,7 +770,7 @@ export const topics = async (args) => {
     })
 
     result.rows.forEach( function (item) {
-      item.post_date_formatted = app.toolbox.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
+      item.post_date_formatted = app.helpers.moment.tz(item.post_date, 'America/New_York').format('D-MMM-YYYY')
     })
 
     if ( result.rows.length ) {
@@ -785,7 +785,7 @@ export const topics = async (args) => {
 
 
 export const cleanup = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     await client.query('begin')
@@ -831,7 +831,7 @@ export const cleanup = async (args) => {
 
 
 export const topicViewTimes = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -851,7 +851,7 @@ export const topicViewTimes = async (args) => {
 
 
 export const updateEmail = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -868,9 +868,9 @@ export const updateEmail = async (args) => {
 
 
 export const updatePassword = async (args) => {
-  let passwordHash = await app.toolbox.helpers.hash(args.password)
+  let passwordHash = await app.helpers.hash(args.password)
 
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
@@ -887,7 +887,7 @@ export const updatePassword = async (args) => {
 
 
 export const updateSettings = async (args) => {
-  const client = await app.toolbox.dbPool.connect()
+  const client = await app.helpers.dbPool.connect()
 
   try {
     const result = await client.query({
