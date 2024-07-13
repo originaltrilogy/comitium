@@ -16,7 +16,7 @@ app.helpers.bcrypt  = bcrypt,
 // Log e-mails to app/logs/email.txt instead of sending them
 app.helpers.mail    = {
   sendMail: function (args) {
-    app.helpers.log({
+    app.log({
       label: 'E-mail debug log (not sent)',
       content: {
         from: args.from,
