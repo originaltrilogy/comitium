@@ -311,15 +311,15 @@ export const create = async (args) => {
       return failed('emailExists')
     } else {
       let url = app.helpers.slug(username),
-          time = app.helpers.isoDate(),
-          activationCode = app.helpers.activationCode()
+          time = app.helpers.util.isoDate(),
+          activationCode = app.helpers.util.activationCode()
 
       let [
         usernameHash,
         passwordHash
       ] = await Promise.all([
-        app.helpers.hash(username),
-        app.helpers.hash(password)
+        app.helpers.util.hash(username),
+        app.helpers.util.hash(password)
       ])
 
       let user = await insert({
@@ -526,7 +526,7 @@ export const log = async (args) => {
     const result = await client.query({
       name: 'user_log',
       text: 'insert into user_logs ( user_id, action, ip, time ) values ( $1, $2, $3, $4 ) returning id;',
-      values: [ args.userID, args.action, args.ip, app.helpers.isoDate() ]
+      values: [ args.userID, args.action, args.ip, app.helpers.util.isoDate() ]
     })
 
     return result.rows
@@ -572,7 +572,7 @@ export const passwordResetInsert = async (args) => {
     await client.query({
       name: 'user_passwordResetInsert',
       text: 'insert into password_reset ( user_id, verification_code, time ) values ( $1, $2, $3 );',
-      values: [ args.userID, verificationCode, app.helpers.isoDate() ]
+      values: [ args.userID, verificationCode, app.helpers.util.isoDate() ]
     })
 
     return {
@@ -868,7 +868,7 @@ export const updateEmail = async (args) => {
 
 
 export const updatePassword = async (args) => {
-  let passwordHash = await app.helpers.hash(args.password)
+  let passwordHash = await app.helpers.util.hash(args.password)
 
   const client = await app.helpers.dbPool.connect()
 
