@@ -33,7 +33,7 @@ export const activate = async (args) => {
     
         return {
           success: true,
-          message: 'Your account has been activated! You can now sign in.'
+          message: 'Your account has been activated! You can now <a href="sign-in">sign in</a>.'
         }
       } finally {
         client.release()
@@ -49,7 +49,7 @@ export const activate = async (args) => {
         return {
           success: false,
           reason: 'accountAlreadyActivated',
-          message: 'This account has already been activated, so you\'re free to sign in below. If you\'re having trouble signing in, try resetting your password. If that doesn\'t work, please let us know.'
+          message: '<p>This account has already been activated, so you should be able to <a href="sign-in">sign in</a>.</p><p>If you\'re having trouble signing in, try <a href="password-reset">resetting your password</a>.</p><p>If that doesn\'t work, please let us know.</p>'
         }
       } else if ( activationStatus.activationCode !== args.activationCode ) {
         return {
@@ -171,7 +171,7 @@ export const authenticate = async (credentials) => {
         return {
           success: false,
           reason: 'notActivated',
-          message: 'This account is awaiting activation. Did you follow the instructions in your welcome e-mail to activate your account? If you\'ve activated your account and you\'re still getting this message, please contact an administrator for assistance.'
+          message: 'This account is awaiting activation. If you didn\'t receive your activation e-mail, <a href="resend-activation">we can send it again</a>.'
         }
       }
     } else {
@@ -311,15 +311,15 @@ export const create = async (args) => {
       return failed('emailExists')
     } else {
       let url = app.helpers.slug(username),
-          time = app.helpers.isoDate(),
-          activationCode = app.helpers.activationCode()
+          time = app.helpers.util.isoDate(),
+          activationCode = app.helpers.util.activationCode()
 
       let [
         usernameHash,
         passwordHash
       ] = await Promise.all([
-        app.helpers.hash(username),
-        app.helpers.hash(password)
+        app.helpers.util.hash(username),
+        app.helpers.util.hash(password)
       ])
 
       let user = await insert({
@@ -526,7 +526,7 @@ export const log = async (args) => {
     const result = await client.query({
       name: 'user_log',
       text: 'insert into user_logs ( user_id, action, ip, time ) values ( $1, $2, $3, $4 ) returning id;',
-      values: [ args.userID, args.action, args.ip, app.helpers.isoDate() ]
+      values: [ args.userID, args.action, args.ip, app.helpers.util.isoDate() ]
     })
 
     return result.rows
@@ -572,7 +572,7 @@ export const passwordResetInsert = async (args) => {
     await client.query({
       name: 'user_passwordResetInsert',
       text: 'insert into password_reset ( user_id, verification_code, time ) values ( $1, $2, $3 );',
-      values: [ args.userID, verificationCode, app.helpers.isoDate() ]
+      values: [ args.userID, verificationCode, app.helpers.util.isoDate() ]
     })
 
     return {
@@ -868,7 +868,7 @@ export const updateEmail = async (args) => {
 
 
 export const updatePassword = async (args) => {
-  let passwordHash = await app.helpers.hash(args.password)
+  let passwordHash = await app.helpers.util.hash(args.password)
 
   const client = await app.helpers.dbPool.connect()
 
