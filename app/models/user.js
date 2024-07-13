@@ -33,7 +33,7 @@ export const activate = async (args) => {
     
         return {
           success: true,
-          message: 'Your account has been activated! You can now sign in.'
+          message: 'Your account has been activated! You can now <a href="sign-in">sign in</a>.'
         }
       } finally {
         client.release()
@@ -49,7 +49,7 @@ export const activate = async (args) => {
         return {
           success: false,
           reason: 'accountAlreadyActivated',
-          message: 'This account has already been activated, so you\'re free to sign in below. If you\'re having trouble signing in, try resetting your password. If that doesn\'t work, please let us know.'
+          message: '<p>This account has already been activated, so you should be able to <a href="sign-in">sign in</a>.</p><p>If you\'re having trouble signing in, try <a href="password-reset">resetting your password</a>.</p><p>If that doesn\'t work, please let us know.</p>'
         }
       } else if ( activationStatus.activationCode !== args.activationCode ) {
         return {
@@ -171,7 +171,7 @@ export const authenticate = async (credentials) => {
         return {
           success: false,
           reason: 'notActivated',
-          message: 'This account is awaiting activation. Did you follow the instructions in your welcome e-mail to activate your account? If you\'ve activated your account and you\'re still getting this message, please contact an administrator for assistance.'
+          message: 'This account is awaiting activation. If you didn\'t receive your activation e-mail, <a href="resend-activation">we can send it again</a>.'
         }
       }
     } else {
