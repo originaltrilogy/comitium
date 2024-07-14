@@ -11,10 +11,10 @@ if preview
       section.content
         != preview.content
 
-if message
+if local.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{message}
+    p !{local.message}
 
 section.form.post.post-edit
   form#post-edit-form(action="post/id/" + url.id + "/action/editForm" method="post" novalidate)

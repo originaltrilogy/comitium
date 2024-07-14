@@ -5,10 +5,10 @@ header
 section.content
   p Thanks for confirming your e-mail address. Please enter your new password below.
 
-if message
+if local.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{message}
+    p !{local.message}
 
 section.form.password-reset
   form(action="password-reset/action/resetForm/id/" + url.id + "/code/" + url.code method="post" novalidate)
