@@ -400,6 +400,7 @@ CREATE INDEX topics_discussion_id_idx ON topics(discussion_id int4_ops);
 CREATE INDEX topics_draft_idx ON topics(draft bool_ops);
 CREATE INDEX topics_private_idx ON topics(private bool_ops);
 CREATE INDEX topics_sticky_idx ON topics(sticky timestamp_ops);
+CREATE INDEX topics_draft_private_idx ON topics(draft bool_ops,private bool_ops);
 
 
 
