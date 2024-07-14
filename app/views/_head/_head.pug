@@ -7,3 +7,10 @@ head
   meta(name="keywords" content=local.metaData.keywords)
   link(rel="stylesheet" type="text/css" href=local.cssUrl)
   script(type="text/javascript" src=local.jsUrl)
+  if ( config.citizen.mode === 'production' )
+    script(async src="https://www.googletagmanager.com/gtag/js?id=G-2MNHWQTVWZ")
+    script
+      | window.dataLayer = window.dataLayer || []
+      | function gtag(){dataLayer.push(arguments);}
+      | gtag('js', new Date())
+      | gtag('config', 'G-2MNHWQTVWZ')
