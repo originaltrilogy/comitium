@@ -78,14 +78,14 @@ export const edit = async (args) => {
         [ args.text, args.html, args.editorID, args.reason, args.time, args.postID ])
       await client.query(
         'insert into post_history ( post_id, editor_id, edit_reason, text, html, time ) values ( $1, $2, $3, $4, $5, $6 );',
-        [ args.postID, !args.currentPost.editorID ? args.currentPost.authorID : args.currentPost.editorID, args.currentPost.editReason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ])
+        [ args.postID, !args.currentPost.editor_id ? args.currentPost.author_id : args.currentPost.editor_id, args.currentPost.edit_reason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ])
       await client.query(
         'update topics set title = $1, title_html = $2, url = $3, edited_by_id = $4, edit_reason = $5 where id = $6;',
         [ args.title, args.titleHtml, args.url, args.editorID, args.reason, args.topicID ])
       await client.query('commit')
 
       // Clear the topic cache
-      app.cache.clear({ scope: 'topic-' + args.currentPost.topicID })
+      app.cache.clear({ scope: 'topic-' + args.currentPost.topic_id })
       app.cache.clear({ scope: 'discussion-' + args.discussionID })
       if ( args.discussionID === 2 ) {
         app.cache.clear({ scope: 'announcements' })
