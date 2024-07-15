@@ -13,7 +13,7 @@ export const compareHash = async (str, hash) => {
 
 
 export const copy = (object) => {
-  var objectCopy
+  let objectCopy
 
   if ( !object || typeof object === 'number' || typeof object === 'string' || typeof object === 'boolean' || typeof object === 'symbol' || typeof object === 'function' || object.constructor === Date || object._onTimeout ) { // Node returns typeof === 'object' for setTimeout()
     objectCopy = object
@@ -38,7 +38,7 @@ export const copy = (object) => {
 
 
 export const extend = (original, extension) => {
-  var mergedObject = Object.assign({}, original) || {}
+  let mergedObject = Object.assign({}, original) || {}
 
   extension = Object.assign({}, extension) || {}
 
@@ -88,7 +88,7 @@ export const ip = (remoteAddress, includeProxies) => {
 
 
 export const isoDate = (date) => {
-  var givenDate = date || new Date(),
+  let givenDate = date || new Date(),
       isoformattedDate
 
   try {
@@ -103,7 +103,7 @@ export const isoDate = (date) => {
 
 
 export const paginate = (baseUrl, currentPage, itemCount) => {
-  var pagination = {
+  let pagination = {
         // Make sure currentPage and itemCount are number types
         currentPage: parseInt(currentPage, 10),
         lastPage: Math.ceil( parseInt(itemCount, 10) / 25 ),
@@ -141,7 +141,7 @@ export const paginate = (baseUrl, currentPage, itemCount) => {
     }
 
     // Middle pages
-    var from, to
+    let from, to
 
     if ( pagination.currentPage <= 3 ) {
       from = 2
@@ -169,7 +169,7 @@ export const paginate = (baseUrl, currentPage, itemCount) => {
 
 
 export const previousAndNext = (baseUrl, currentPage, itemCount) => {
-  var pagination = {
+  let pagination = {
         // Make sure currentPage and itemCount are number types
         currentPage: parseInt(currentPage, 10),
         lastPage: parseInt(itemCount, 10) ? Math.ceil( parseInt(itemCount, 10) / 25 ) : parseInt(currentPage, 10),
