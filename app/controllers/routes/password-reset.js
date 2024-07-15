@@ -40,7 +40,7 @@ export const submit = async (params, request, response, context) => {
       app.models.user.log({
         userID: user.id,
         action: 'Password reset request',
-        ip: app.helpers.util.ip(request)
+        ip: app.helpers.util.ip(request.remoteAddress)
       })
     ])
 

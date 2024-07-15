@@ -5,7 +5,7 @@ export const start = async (params, request) => {
   let cookie   = {},
       session   = {},
       active    ,
-      ip        = app.helpers.util.ip(request),
+      ip        = app.helpers.util.ip(request.remoteAddress),
       bannedIP  = false
 
   // Check banned IP addresses

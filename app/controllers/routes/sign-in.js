@@ -59,7 +59,7 @@ export const submit = async (params, request) => {
       app.models.user.log({
         userID: user.user_id,
         action: 'Sign in',
-        ip: app.helpers.util.ip(request)
+        ip: app.helpers.util.ip(request.remoteAddress)
       })
 
       return {

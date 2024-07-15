@@ -70,10 +70,8 @@ export const hash = async (str) => {
 }
 
 
-export const ip = (request, includeProxies) => {
-  var address = request.remoteAddress
-
-  address = address.split(', ')
+export const ip = (remoteAddress, includeProxies) => {
+  let address = remoteAddress.split(', ')
 
   // Include proxies and return as an array
   if ( includeProxies ) {
