@@ -143,8 +143,7 @@ export const start = async (params) => {
       }
 
     }
-console.log(url)
-console.log(statusCode)
+
     return {
       redirect: {
         url: url,
