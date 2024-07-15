@@ -57,7 +57,7 @@ if local.moderateUser
         p There are no IP addresses associated with this local.user.
     section#ip-matches.ip-matches
       if local.matchingUsersByIP
-        p Users who match #{matchingUsersByIP[0].ip} (most recent first):
+        p Users who match #{local.matchingUsersByIP[0].ip} (most recent first):
         table
           thead
             th Username
@@ -65,13 +65,13 @@ if local.moderateUser
           each user in local.matchingUsersByIP
             tr
               td
-                a(href="user/" + local.user.url + "/id/" + local.user.id ) #{local.user.username}
-              td #{local.user.time_formatted}
+                a(href="user/" + user.url + "/id/" + user.id ) #{user.username}
+              td #{user.time_formatted}
 
         nav.actions
           ul
             li
-              a(href="user/action/banIP/logID/" + url.logID + "/userID/" + local.user.id ) Ban #{matchingUsersByIP[0].ip}
+              a(href="user/action/banIP/logID/" + url.logID + "/userID/" + local.user.id ) Ban #{local.matchingUsersByIP[0].ip}
       else
         p Select an IP address to see all users who match that IP.
 
