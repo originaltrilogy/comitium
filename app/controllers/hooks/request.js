@@ -34,6 +34,11 @@ export const start = async (params) => {
           if ( params.session.authenticated ) {
             if ( params.session.moderate_discussions ) {
               return
+            } else {
+              return {
+                redirect: params.route.controller === 'offline' ? {} : 'offline'
+              }
+            }
           } else {
             return {
               redirect: params.route.controller === 'sign-in' ? {} : 'sign-in'
@@ -45,7 +50,6 @@ export const start = async (params) => {
           }
         }
       }
-    }
   } else {
     if ( forumRegex.test(url) ) {
       url = '/discussions'
