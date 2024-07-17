@@ -5,6 +5,13 @@ export const start = async (params) => {
   switch ( app.config.comitium.mode.status ) {
     // If full access is enabled, send the user on their way
     case 'online':
+      // Check if url.id is a valid value when provided, throw a 404 if invalid
+      if ( params.url.id && !app.helpers.validate.id(params.url.id) ) {
+        let err = new Error()
+        err.statusCode = 404
+        throw err
+      }
+
       return
     // If the forum is offline, check the user's permissions
     case 'offline':
