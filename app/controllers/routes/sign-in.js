@@ -8,16 +8,17 @@ export const handler = async (params, request) => {
   params.form.remember = false
 
   if (
-      // If the referrer isn't local...
-      params.form.forwardToUrl.search(app.config.comitium.baseUrl) < 0 ||
-      // ...or the referrer is one of these...
-      params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'sign-in') >= 0 ||
-      params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'sign-out') >= 0 ||
-      params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'register') >= 0 ||
-      params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'user/action/activate') >= 0 ||
-      params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'password-reset') >= 0 ||
-      params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'offline') >= 0
-    ) {
+    // If the referrer isn't local...
+    params.form.forwardToUrl.search(app.config.comitium.baseUrl) < 0 ||
+    // ...or the referrer is one of these...
+    params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'offline') >= 0 ||
+    params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'password-reset') >= 0 ||
+    params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'register') >= 0 ||
+    params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'resend-activation') >= 0 ||
+    params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'sign-in') >= 0 ||
+    params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'sign-out') >= 0 ||
+    params.form.forwardToUrl.search(app.config.comitium.baseUrl + 'user/action/activate') >= 0
+  ) {
     // ...forward the user to the forum home page after logging in.
     params.form.forwardToUrl = app.config.comitium.baseUrl
   }

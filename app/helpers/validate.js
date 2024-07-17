@@ -27,3 +27,12 @@ export const username = (u) => {
     return usernameRegex.test(u)
   }
 }
+
+
+export const id = (string) => {
+  if ( !isNaN(Number(string)) ) {
+    return true
+  } else {
+    return false
+  }
+}
