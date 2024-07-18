@@ -30,11 +30,11 @@ export const username = (u) => {
 
 
 export const id = (string) => {
-  // Verifies an id string is a positive integer by replacing any character NOT 1-9 with the letter "a" and checking if the result is greater than 0.
+  // Verifies an id string is a positive integer by replacing any character NOT 0-9 with the letter "a" and checking if the result is greater than 0.
   // string === '1234'  -> true
   // string === '0'     -> false
   // string === '123.'  -> false
   // string === '123.4' -> false
   // string === '-1234' -> false
-  return Number(string.replace(/[^1-9]/g, 'a')) > 0
+  return Number(string.replace(/[^0-9]/g, 'a')) > 0
 }
