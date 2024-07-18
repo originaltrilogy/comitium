@@ -435,8 +435,8 @@ export const startPrivate = async (params) => {
   let invitees = await ( async () => {
     let inviteesArray = []
 
-    if ( params.url.invitee ) {
-      let inviteesArray = await app.models.user.info({ userID: params.url.invitee })
+    if ( params.url.id ) {
+      let inviteesArray = await app.models.user.info({ userID: params.url.id })
       inviteesArray = [ inviteesArray.username ]
 
       return inviteesArray
