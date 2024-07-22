@@ -15,7 +15,7 @@ article(id=post.id class="post" + ( post.author_signature ? " signature" : "" ) 
         else
           time
             != post.created_formatted
-          span.edited &nbsp;<a href="post/id/" + post.id>(Edited)</a>
+          span.edited &nbsp;<a href="post/id/#{post.id}">(Edited)</a>
       dt.link Post link
       dd.link
         a.post(href="post/id/" + post.id + "/action/topic#" + post.id title="Jump directly to this post.")

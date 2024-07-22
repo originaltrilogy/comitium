@@ -15,7 +15,7 @@
   "type": "module",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "citizen": "https://github.com/jaysylvester/citizen#1.0.0",
+    "citizen": "^1.0.0",
     "@ladjs/consolidate": "^1.0.x",
     "gm": "^1.25.0",
     "markdown-it": "^13.0.1",
