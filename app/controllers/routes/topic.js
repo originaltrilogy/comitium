@@ -704,6 +704,8 @@ export const replyForm = async (params, request, response, context) => {
             redirect: forwardToUrl
           }
       }
+    } else {
+      return access
     }
   // If it's a GET, fall back to the default topic reply action
   } else {
