@@ -332,7 +332,7 @@ export const create = async (args) => {
         url: url,
         email: email,
         timezone: 'GMT',
-        dateFormat: 'MMMM d, YYYY',
+        dateFormat: 'MMMM D, YYYY',
         theme: 'Default',
         lastActivity: time,
         joined: time,
