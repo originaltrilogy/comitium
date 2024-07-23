@@ -1,13 +1,13 @@
 // password-reset controller
 
-export const handler = (params) => {
-  params.form.email = ''
+export const handler = ({ form }) => {
+  form.email = ''
 }
 
 
-export const submit = async (params, request, response, context) => {
+export const submit = async ({ form }, request) => {
   if ( request.method === 'POST' ) {
-    let email = params.form.email?.trim() || ''
+    let email = form.email?.trim() || ''
 
     if ( app.helpers.validate.email(email) ) {
       let user = await app.models.user.info({ email: email })
@@ -60,7 +60,9 @@ export const submit = async (params, request, response, context) => {
       }
     }
   } else {
-    return handler(params, context)
+    return {
+      redirect: '/password-reset'
+    }
   }
 }
 
