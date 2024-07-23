@@ -83,12 +83,22 @@ export const start = async (params) => {
           break
         case 'forum':
           url = url.replace('forum.cfm', 'discussion')
-          if ( params.url.forum == 2 ) {
-            url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/22')
-          } else if ( params.url.forum == 14 ) {
-            url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/5')
-          } else {
-            url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/$2')
+
+          switch ( params.url.forum ) {
+            case '2':
+              url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/22')
+              break
+            case '7':
+              url = '/announcements'
+              break
+            case '14':
+              url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/5')
+              break
+            case '15':
+              url = '/discussion/Feedback-Forum/id/5'
+              break
+            default:
+              url = url.replace(/(.*)\/forum\/([0-9]+)[/]?.*/, '$1/id/$2')
           }
           break
         case 'category':
