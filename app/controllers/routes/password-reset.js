@@ -7,59 +7,57 @@ export const handler = (params) => {
 
 export const submit = async (params, request, response, context) => {
   if ( request.method === 'POST' ) {
-    params.form.email = params.form.email.trim() || ''
+    let email = params.form.email?.trim() || ''
 
-    if ( !params.form.email.length ) {
-      return {
-        local: {
-          message: 'Your e-mail address is required.'
+    if ( app.helpers.validate.email(email) ) {
+      let user = await app.models.user.info({ email: email })
+  
+      if ( !user ) {
+        return {
+          local: {
+            error: {
+              message: 'The e-mail address you provided doesn\'t exist in our system. Please check it and try again.'
+            }
+          }
         }
       }
-    } else if ( !app.helpers.validate.email(params.form.email) ) {
-      return {
-        local: {
-          message: 'That doesn\'t appear to be a properly formatted e-mail address. Please check your entry and try again.'
+  
+      let [
+        passwordResetInsert
+      ] = await Promise.all([
+        app.models.user.passwordResetInsert({ userID: user.id }),
+        app.models.user.log({
+          userID: user.id,
+          action: 'Password reset request',
+          ip: app.helpers.util.ip(request.remoteAddress)
+        })
+      ])
+  
+      let mail = await app.models.content.mail({
+        template: 'Password Reset',
+        replace: {
+          resetUrl: app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + user.id + '/code/' + passwordResetInsert.verificationCode
         }
-      }
-    }
-
-    let user = await app.models.user.info({ email: params.form.email })
-
-    if ( !user ) {
-      return {
-        local: {
-          message: 'The e-mail address you provided doesn\'t exist in our system. Please check it and try again.'
-        }
-      }
-    }
-
-    let [
-      passwordResetInsert
-    ] = await Promise.all([
-      app.models.user.passwordResetInsert({ userID: user.id }),
-      app.models.user.log({
-        userID: user.id,
-        action: 'Password reset request',
-        ip: app.helpers.util.ip(request.remoteAddress)
       })
-    ])
-
-    let mail = await app.models.content.mail({
-      template: 'Password Reset',
-      replace: {
-        resetUrl: app.config.comitium.baseUrl + 'password-reset/action/reset/id/' + user.id + '/code/' + passwordResetInsert.verificationCode
+  
+      app.helpers.mail.sendMail({
+        from: app.config.comitium.email,
+        to: user.email,
+        subject: mail.subject,
+        text: mail.text
+      })
+  
+      return {
+        redirect: app.config.comitium.basePath + 'password-reset/action/confirmation'
       }
-    })
-
-    app.helpers.mail.sendMail({
-      from: app.config.comitium.email,
-      to: user.email,
-      subject: mail.subject,
-      text: mail.text
-    })
-
-    return {
-      redirect: app.config.comitium.basePath + 'password-reset/action/confirmation'
+    } else {
+      return {
+        local: {
+          error: {
+            message: 'Please provide a valid e-mail address.'
+          }
+        }
+      }
     }
   } else {
     return handler(params, context)
