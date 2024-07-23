@@ -7,7 +7,7 @@ export const handler = ({ form }) => {
 
 export const submit = async ({ form }, request) => {
   if ( request.method === 'POST' ) {
-    let email = form.email.trim()
+    let email = form.email?.trim() || ''
 
     if ( app.helpers.validate.email(email) ) {
       let user = await app.models.user.info({ email: email }),
