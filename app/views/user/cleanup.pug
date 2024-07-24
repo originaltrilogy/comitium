@@ -18,7 +18,7 @@ section.form
 
 section.topics
   if local.topics
-    h2 #{topics.length} Topic#{topics.length === 1 ? '' : 's'}
+    h2 #{local.topics.length} Topic#{local.topics.length === 1 ? '' : 's'}
     each topic in local.topics
       article(class="topic")
         section.description
