@@ -196,7 +196,7 @@ export const start = async (params) => {
 }
 
 
-export const startForm = async (params, request, response, context) => {
+export const startForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.discussionPost({ discussionID: params.url.id, user: params.session })
 
@@ -281,7 +281,7 @@ export const startForm = async (params, request, response, context) => {
     }
   // If it's a GET, fall back to the default topic start action
   } else {
-    return start(params, context)
+    return start(params)
   }
 }
 
@@ -315,7 +315,7 @@ export const startAnnouncement = async (params) => {
 }
 
 
-export const startAnnouncementForm = async (params, request, response, context) => {
+export const startAnnouncementForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.discussionPost({ discussionID: 2, user: params.session })
 
@@ -426,7 +426,7 @@ export const startAnnouncementForm = async (params, request, response, context) 
     }
   // If it's a GET, fall back to the default announcement start action
   } else {
-    return start(params, context)
+    return startAnnouncement(params)
   }
 }
 
@@ -472,7 +472,7 @@ export const startPrivate = async (params) => {
 }
 
 
-export const startPrivateForm = async (params, request, response, context) => {
+export const startPrivateForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.privateTopicStart({ user: params.session })
 
@@ -569,7 +569,7 @@ export const startPrivateForm = async (params, request, response, context) => {
     }
   // If it's a GET, fall back to the default topic start action
   } else {
-    return startPrivate(params, context)
+    return startPrivate(params)
   }
 }
 
@@ -616,7 +616,7 @@ export const reply = async (params) => {
 }
 
 
-export const replyForm = async (params, request, response, context) => {
+export const replyForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.topicReply({ topicID: params.url.id, user: params.session })
 
@@ -709,7 +709,7 @@ export const replyForm = async (params, request, response, context) => {
     }
   // If it's a GET, fall back to the default topic reply action
   } else {
-    return reply(params, context)
+    return reply(params)
   }
 }
 
@@ -804,7 +804,7 @@ export const leave = async (params) => {
 }
 
 
-export const leaveForm = async (params, request, response, context) => {
+export const leaveForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.topicView({ topicID: params.form.topicID, user: params.session })
 
@@ -818,7 +818,7 @@ export const leaveForm = async (params, request, response, context) => {
     }
   // If it's a GET, fall back to the default leave action
   } else {
-    return leave(params, context)
+    return leave(params)
   }
 }
 
@@ -844,7 +844,7 @@ export const lock = async (params, request) => {
 }
 
 
-export const lockForm = async (params, request, response, context) => {
+export const lockForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.topicLock({ topicID: params.url.id, user: params.session })
 
@@ -876,7 +876,7 @@ export const lockForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return lock(params, context)
+    return lock(params, request)
   }
 }
 
@@ -918,7 +918,7 @@ export const edit = async (params, request) => {
 }
 
 
-export const editForm = async (params, request, response, context) => {
+export const editForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.topicEdit({ topicID: params.url.id, user: params.session })
 
@@ -983,7 +983,7 @@ export const editForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return edit(params, context)
+    return edit(params, request)
   } 
 }
 
@@ -1014,7 +1014,7 @@ export const merge = async (params, request) => {
 }
 
 
-export const mergeForm = async (params, request, response, context) => {
+export const mergeForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     params.form.topicID = params.form.topicID.filter( item => {
       return item.length
@@ -1068,7 +1068,7 @@ export const mergeForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return merge(params, context)
+    return merge(params, request)
   }
 }
 
@@ -1100,7 +1100,7 @@ export const move = async (params, request) => {
 }
 
 
-export const moveForm = async (params, request, response, context) => {
+export const moveForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.topicMoveForm({
           topicID: params.url.id,
@@ -1140,7 +1140,7 @@ export const moveForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return move(params, context)
+    return move(params, request)
   }
 }
 
@@ -1166,7 +1166,7 @@ export const trash = async (params, request) => {
 }
 
 
-export const trashForm = async (params, request, response, context) => {
+export const trashForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.topicTrash({ topicID: params.url.id, user: params.session })
 
@@ -1197,6 +1197,6 @@ export const trashForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return trash(params, context)
+    return trash(params, request)
   }
 }

@@ -46,7 +46,7 @@ export const edit = async (params, request) => {
 }
 
 
-export const editForm = async (params, request, response, context) => {
+export const editForm = async (params, request) => {
   let access = await app.helpers.access.postEdit({ postID: params.url.id, user: params.session })
 
   if ( access === true ) {
@@ -106,7 +106,7 @@ export const editForm = async (params, request, response, context) => {
           }
       }
     } else {
-      return edit(params, context)
+      return edit(params, request)
     }
   } else {
     return access
@@ -138,7 +138,7 @@ export const lock = async (params, request) => {
 }
 
 
-export const lockForm = async (params, request, response, context) => {
+export const lockForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.postLock({ postID: params.url.id, user: params.session })
 
@@ -185,7 +185,7 @@ export const lockForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return lock(params, context)
+    return lock(params, request)
   }
 }
 
@@ -214,7 +214,7 @@ export const report = async (params, request) => {
 }
 
 
-export const reportForm = async (params, request, response, context) => {
+export const reportForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.postReport({ postID: params.url.id, user: params.session })
   
@@ -265,7 +265,7 @@ export const reportForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return report(params, context)
+    return report(params, request)
   }
 }
 
@@ -325,7 +325,7 @@ export const trash = async (params, request) => {
 }
 
 
-export const trashForm = async (params, request, response, context) => {
+export const trashForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.postTrash({ postID: params.url.id, user: params.session })
 
@@ -374,7 +374,7 @@ export const trashForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return trash(params, context)
+    return trash(params, request)
   }
 }
 
