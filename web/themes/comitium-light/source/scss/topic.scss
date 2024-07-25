@@ -358,7 +358,8 @@ body[data-chain*="post-handler-announcement"] {
         border-bottom-right-radius: 0.6rem;
         border-bottom-left-radius: 0.6rem;
       }
-      &.signature {
+      &.signature,
+      &.staff {
         nav.actions {
           border-radius: 0;
         }
