@@ -39,7 +39,7 @@ export const handler = async (params) => {
 }
 
 
-export const generalForm = async (params, request, response, context) => {
+export const generalForm = async (params, request) => {
   if ( params.session.authenticated ) {
     if ( request.method === 'POST' ) {
       let email         = params.form.email.trim(),
@@ -166,7 +166,7 @@ export const generalForm = async (params, request, response, context) => {
       }
     // If it's a GET, fall back to the default topic start action
     } else {
-      return handler(params, context)
+      return handler(params)
     }
   } else {
     return {
@@ -176,7 +176,7 @@ export const generalForm = async (params, request, response, context) => {
 }
 
 
-export const avatarForm = async (params, request, response, context) => {
+export const avatarForm = async (params, request) => {
   // For now, all avatars are converted to JPEG. Storing custom avatars has many complications
   // (topic caches, static file caches, etc.).
 
@@ -257,7 +257,7 @@ export const avatarForm = async (params, request, response, context) => {
         }
       }
     } else {
-      return handler(params, context)
+      return handler(params)
     }
   } else {
     return {

@@ -59,7 +59,7 @@ export const edit = async (params) => {
 }
 
 
-export const editForm = async (params, request, response, context) => {
+export const editForm = async (params, request) => {
   if ( request.method === 'POST' ) {
     let access = await app.helpers.access.contentEdit({ user: params.session, contentID: params.url.id })
 
@@ -92,6 +92,6 @@ export const editForm = async (params, request, response, context) => {
       return access
     }
   } else {
-    return edit(params, context)
+    return edit(params)
   }
 }

@@ -14,7 +14,7 @@ export const handler = async (params) => {
 }
 
 
-export const form = async (params, request, response, context) => {
+export const form = async (params, request) => {
   if ( request.method === 'POST' ) {
     params.form.tos = params.form.tos || false
 
@@ -58,7 +58,7 @@ export const form = async (params, request, response, context) => {
     }
   // If it's a GET, fall back to the default action
   } else {
-    return handler(params, context)
+    return handler(params)
   }
 }
 
