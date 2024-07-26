@@ -54,7 +54,7 @@ if local.moderateUser
             li(class=( log.id == url.log_id ? "selected" : "" ))
               a(href="user/" + local.user.url + "/id/" + local.user.id + "/logID/" + log.id + "#ip-matches") #{log.ip}
       else
-        p There are no IP addresses associated with this local.user.
+        p There are no IP addresses associated with this user.
     section#ip-matches.ip-matches
       if local.matchingUsersByIP
         p Users who match #{local.matchingUsersByIP[0].ip} (most recent first):
