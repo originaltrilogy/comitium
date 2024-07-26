@@ -29,8 +29,8 @@ export const username = (u) => {
 }
 
 
-export const id = (string) => {
-  // Verifies an id string is a positive integer by replacing any character NOT 0-9 with the letter "a" and checking if the result is greater than 0.
+export const positiveInteger = (string) => {
+  // Verifies a string is a positive integer by replacing any character NOT 0-9 with the letter "a" and checking if the result is greater than 0.
   // string === '1234'  -> true
   // string === '0'     -> false
   // string === '123.'  -> false
