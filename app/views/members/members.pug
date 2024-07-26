@@ -9,14 +9,14 @@ section(class="members")
   nav.groups
     ul#group-menu
       each group, index in local.groups
-        li(class="group-" + group.id + " " + group.url + " " + ( !local.term ? ( !url.group && index === 0 ) || ( group.id == url.group ) ? "current" : "" : "" ))
-          a(href="members/" + group.url + "/group/" + group.id)
+        li(class="group-" + group.id + " " + group.url + " " + ( !local.term ? ( !url.id && index === 0 ) || ( group.id == url.id ) ? "current" : "" : "" ))
+          a(href="members/" + group.url + "/id/" + group.id)
             = group.name
       if url.term
         li(class="current")
           a(href="members/")
             | Search Results
-    form(action="members/action/search" + ( url.group ? "/group/" + url.group : "" ) method="post" novalidate)
+    form(action="members/action/search" + ( url.id ? "/id/" + url.id : "" ) method="post" novalidate)
       ul.data
         li.term.text
           input(id="term" name="term" type="text" placeholder="Username search" value=form.term)
