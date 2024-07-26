@@ -19,8 +19,8 @@ export const start = async (params) => {
     switch ( app.config.comitium.mode.status ) {
       // If full access is enabled, send the user on their way
       case 'online':
-        // Check if url.id is a valid value when provided, throw a 404 if invalid
-        if ( params.url.id && !app.helpers.validate.positiveInteger(params.url.id) || params.url.page && !app.helpers.validate.positiveInteger(params.url.page) ) {
+        // Check if url.id or url.page is a valid value when provided, throw a 404 if invalid
+        if ( ( params.url.id && !app.helpers.validate.positiveInteger(params.url.id) ) || ( params.url.page && !app.helpers.validate.positiveInteger(params.url.page) ) ) {
           let err = new Error()
           err.statusCode = 404
           throw err
