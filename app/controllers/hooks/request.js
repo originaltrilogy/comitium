@@ -6,7 +6,7 @@ import querystring from 'querystring'
 export const start = async (params) => {
   // Redirects for legacy OT.com forum URLs
   // REMOVE from shipping version
-  let url           = params.route.parsed.pathname,
+  let url           = params.route.parsed.pathname + params.route.parsed.search,
       template      ,
       statusCode    = 301,
       regexp        = new RegExp(/.*\/([A-Za-z0-9-_]+)\.cfm(.*)/),
