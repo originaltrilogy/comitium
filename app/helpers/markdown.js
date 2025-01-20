@@ -1,7 +1,7 @@
 // Markdown processing
 
-import Markdown from 'markdown-it'
-import emoji    from 'markdown-it-emoji'
+import Markdown          from 'markdown-it'
+import { full as emoji } from 'markdown-it-emoji'
 
 
 export const emojiMarkup = (token, idx) => {
