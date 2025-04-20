@@ -2,25 +2,42 @@
 
 
 export const email = (e) => {
-  var emailRegex = new RegExp(/[a-z0-9!##$%&''*+/=?^_`{|}~-]+(?:\.[a-z0-9!##$%&''*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i)
+  let emailRegex = new RegExp(/^[a-z0-9!##$%&''*+/=?^_`{|}~-]+(?:\.[a-z0-9!##$%&''*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i)
   return emailRegex.test(e)
 }
 
 
 export const password = (p) => {
-  var passwordRegex = new RegExp(/^[^\s\n\t\r\v]{8,50}$/)
+  let passwordRegex = new RegExp(/^[^\s\n\t\r\v]{8,50}$/)
   return passwordRegex.test(p)
 }
 
 
+// Members with restricted posting privileges have their posts screened for contact info, URLs, etc.
+export const restrictedContent = (pc) => {
+  let containsEmail = new RegExp(/[a-z0-9!##$%&''*+/=?^_`{|}~-]+(?:\.[a-z0-9!##$%&''*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i).test(pc),
+      containsPhoneNumber = new RegExp(/[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}/).test(pc),
+      urlRegex = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/i),
+      containsUrl = urlRegex.test(pc)
+
+  // Links within the site are allowed
+  if ( containsUrl ) {
+    let siteUrlCheck = pc.replaceAll(app.config.comitium.baseUrl, 'foo')
+    containsUrl = urlRegex.test(siteUrlCheck)
+  }
+  
+  return containsEmail || containsPhoneNumber || containsUrl
+}
+
+
 export const url = (u) => {
-  let urlRegex = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/)
+  let urlRegex = new RegExp(/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)$/i)
   return urlRegex.test(u)
 }
 
 
 export const username = (u) => {
-  var usernameRegex = new RegExp(/^[^\n\t\r\v@:!<>(),[\]]{1,30}$/)
+  let usernameRegex = new RegExp(/^[^\n\t\r\v@:!<>(),[\]]{1,30}$/)
   if ( !u.trim().length ) {
     return false
   } else {

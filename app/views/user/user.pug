@@ -1,6 +1,6 @@
 header
   section.summary
-    a(class="avatar" + ( local.user.group_id === 6 ? " banned" : "" ) href="user/" + local.user.username + "/id/" + local.user.id)
+    a(class="avatar" + ( local.user.group_id === 7 ? " banned" : "" ) href="user/" + local.user.username + "/id/" + local.user.id)
       if local.user.group === "Banned Members"
         <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
       img(src="avatars/" + local.user.id + ".jpg")
@@ -34,6 +34,9 @@ header
           li.edit
             a(href="account") Edit profile
         if local.moderateUser
+          if local.user.group_id === 3
+            li.upgrade
+              a(href="user/action/upgrade/id/" + local.user.id) Upgrade membership
           if local.user.group !== "Banned Members"
             li.ban
               a(href="user/action/ban/id/" + local.user.id) Ban this user

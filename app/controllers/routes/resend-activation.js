@@ -23,10 +23,12 @@ export const submit = async ({ form }, request) => {
             }
           })
         } else {
+          let activationStatus = await app.models.user.activationStatus({ userID: user.id })
+
           mail = await app.models.content.mail({
             template: 'Registration',
             replace: {
-              activationUrl: app.config.comitium.baseUrl + 'user/action/activate/id/' + user.id + '/activationCode/' + user.activation_code,
+              activationUrl: app.config.comitium.baseUrl + 'user/action/activate/id/' + user.id + '/activationCode/' + activationStatus.activation_code,
               username: user.username
             }
           })

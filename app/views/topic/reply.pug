@@ -9,10 +9,10 @@ if local.preview
       section.content.post
         != local.preview.content
 
-if local.message
+if local.topic && local.topic.message
   section.notice.error
     <svg class="icon error"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-error"></use></svg>
-    p !{message}
+    p !{local.topic.message}
 
 section(class="form post topic-reply" + ( url.quote ? " quote" : "" ))
   form#topic-reply-form(action="topic/id/" + url.id + "/action/replyForm" method="post" novalidate)

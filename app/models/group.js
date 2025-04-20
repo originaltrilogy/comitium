@@ -43,11 +43,15 @@ export const info = async (groupID) => {
   try {
     const result = await client.query({
       name: 'group_info',
-      text: 'select id, name, url, description, login, post, reply, talk_privately, moderate_discussions, administrate_discussions, moderate_users, administrate_users, administrate_app, bypass_lockdown, system, locked from groups where id = $1;',
+      text: 'select id, name, url, description, login, post, reply, talk_privately, moderate_discussions, administrate_discussions, moderate_users, administrate_users, administrate_app, bypass_lockdown, system, locked from user_groups where id = $1;',
       values: [ groupID ]
     })
 
-    return result.rows[0]
+    if ( result.rows.length ) {
+      return result.rows[0]
+    } else {
+      return false
+    }
   } finally {
     client.release()
   }

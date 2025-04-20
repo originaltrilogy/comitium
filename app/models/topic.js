@@ -62,11 +62,20 @@ export const announcementReply = async (args) => {
 
 
 export const edit = async (args) => {
-  if ( !args.title.length || !args.text.length ) {
+  let title   = args.title.trim() || '',
+      content = args.text.trim() || ''
+
+  if ( !title.length || !content.length ) {
     return {
       success: false,
       reason: 'requiredFieldsEmpty',
       message: 'The topic title and content are both required.'
+    }
+  } else if ( args.user.content_restrictions && ( app.helpers.validate.restrictedContent(args.titleHtml) || app.helpers.validate.restrictedContent(args.html) ) ) {
+    return {
+      success: false,
+      reason: 'restrictedContent',
+      message: 'To help prevent spam, new members aren\'t allowed to post contact information (websites, e-mail, phone numbers, etc.).'
     }
   } else {
     const client = await app.helpers.dbPool.connect()
@@ -241,6 +250,12 @@ export const insert = async (args) => {
       reason: 'titleLength',
       message: 'Topic titles can\'t be longer than 120 characters.'
     }
+  } else if ( args.user.content_restrictions && ( app.helpers.validate.restrictedContent(args.titleHtml) || app.helpers.validate.restrictedContent(args.html) ) ) {
+    return {
+      success: false,
+      reason: 'restrictedContent',
+      message: 'To help prevent spam, new members aren\'t allowed to post contact information (websites, e-mail, phone numbers, etc.).'
+    }
   } else {
     const client = await app.helpers.dbPool.connect()
   
@@ -251,7 +266,7 @@ export const insert = async (args) => {
         [ args.discussionID, args.title, args.titleHtml, args.url, args.time, args.draft, args.private ])
       const insertPost = await client.query(
         'insert into posts ( topic_id, user_id, text, html, created, draft ) values ( $1, $2, $3, $4, $5, $6 ) returning id;',
-        [ insertTopic.rows[0].id, args.userID, args.text, args.html, args.time, args.draft ])
+        [ insertTopic.rows[0].id, args.user.user_id, args.text, args.html, args.time, args.draft ])
       
       let invited = []
       if ( args.private && args.invitees ) {
@@ -274,7 +289,7 @@ export const insert = async (args) => {
               if ( !invitee.rowCount ) {
                 throw new Error(item + ' isn\'t a member.')
               }
-              if ( array.length === 1 && invitee.rows[0].id === args.userID ) {
+              if ( array.length === 1 && invitee.rows[0].id === args.user.user_id ) {
                 throw new Error('You don\'t need to invite yourself, but you do need to invite at least one other person.')
               }
               await client.query('insert into topic_invitations ( topic_id, user_id, accepted ) values ( $1, $2, false );',
@@ -287,7 +302,7 @@ export const insert = async (args) => {
         invitations.push(
           client.query(
             'insert into topic_invitations ( topic_id, user_id, accepted ) values ( $1, $2, true );',
-            [ insertTopic.rows[0].id, args.userID ])
+            [ insertTopic.rows[0].id, args.user.user_id ])
         )
 
         await Promise.all(invitations)
@@ -311,7 +326,7 @@ export const insert = async (args) => {
         [ args.discussionID, insertPost.rows[0].id ])
       await client.query(
         'update users set last_activity = $1 where id = $2;',
-        [ args.time, args.userID ])
+        [ args.time, args.user.user_id ])
       await client.query('COMMIT')
 
       if ( !args.draft ) {
@@ -600,58 +615,74 @@ export const merge = async (args) => {
 
 
 export const reply = async (args) => {
-  const client = await app.helpers.dbPool.connect()
+  let content = args.text.trim() || ''
 
-  try {
-    let sticky = await client.query('select sticky from topics where id = $1;', [ args.topicID ])
-    if ( sticky.rows[0].sticky > args.time ) {
-      sticky = sticky.rows[0].sticky
-    } else {
-      sticky = args.time
-    }
-    await client.query('BEGIN')
-    // Insert the new post
-    const post = await client.query('insert into posts ( topic_id, user_id, text, html, created, draft ) values ( $1, $2, $3, $4, $5, $6 ) returning id;', [ args.topicID, args.userID, args.text, args.html, args.time, args.draft ])
-    // Update topic stats
-    await client.query('update topics set replies = ( select count(id) from posts where topic_id = $1 and draft = false ) - 1, sticky = $2 where id = $1;', [ args.topicID, sticky ])
-    // Update discussion stats
-    await client.query('update discussions set last_post_id = $2 where id = $1', [ args.discussionID, post.rows[0].id ])
-    // Update user stats
-    await client.query('update users set last_activity = $1 where id = $2;', [ args.time, args.userID ])
-    await client.query('COMMIT')
-
-    if ( !args.draft ) {
-      // Clear the cache for this topic and discussion
-      app.cache.clear({ scope: 'topic-' + args.topicID })
-
-      if ( args.private ) {
-        const topicInvitees = await invitees({ topicID: args.topicID })
-        topicInvitees.forEach( function (item) {
-          app.cache.clear({ scope: 'private-topics-' + item.id })
-        })
-      } else {
-        app.cache.clear({ scope: 'discussion-' + args.discussionID })
-        app.cache.clear({ scope: 'categories_discussions' })
-        if ( args.discussionID === 2 ) {
-          app.cache.clear({ scope: 'announcements' })
-        }
-      }
-
-      const topicSubscribers = await subscribers({ topicID: args.topicID })
-      topicSubscribers.forEach( function (item) {
-        app.cache.clear({ scope: 'subscriptions-' + item.id })
-      })
-    }
-
+  if ( !content.length ) {
     return {
-      success: true,
-      id: post.rows[0].id
+      success: false,
+      reason: 'requiredFieldsEmpty',
+      message: 'All fields are required.'
     }
-  } catch (err) {
-    await client.query('ROLLBACK')
-    throw err
-  } finally {
-    client.release()
+  } else if ( args.user.content_restrictions && app.helpers.validate.restrictedContent(args.html) ) {
+    return {
+      success: false,
+      reason: 'restrictedContent',
+      message: 'To help prevent spam, new members aren\'t allowed to post contact information (websites, e-mail, phone numbers, etc.).'
+    }
+  } else {
+    const client = await app.helpers.dbPool.connect()
+
+    try {
+      let sticky = await client.query('select sticky from topics where id = $1;', [ args.topicID ])
+      if ( sticky.rows[0].sticky > args.time ) {
+        sticky = sticky.rows[0].sticky
+      } else {
+        sticky = args.time
+      }
+      await client.query('BEGIN')
+      // Insert the new post
+      const post = await client.query('insert into posts ( topic_id, user_id, text, html, created, draft ) values ( $1, $2, $3, $4, $5, $6 ) returning id;', [ args.topicID, args.user.user_id, args.text, args.html, args.time, args.draft ])
+      // Update topic stats
+      await client.query('update topics set replies = ( select count(id) from posts where topic_id = $1 and draft = false ) - 1, sticky = $2 where id = $1;', [ args.topicID, sticky ])
+      // Update discussion stats
+      await client.query('update discussions set last_post_id = $2 where id = $1', [ args.discussionID, post.rows[0].id ])
+      // Update user stats
+      await client.query('update users set last_activity = $1 where id = $2;', [ args.time, args.user.user_id ])
+      await client.query('COMMIT')
+  
+      if ( !args.draft ) {
+        // Clear the cache for this topic and discussion
+        app.cache.clear({ scope: 'topic-' + args.topicID })
+  
+        if ( args.private ) {
+          const topicInvitees = await invitees({ topicID: args.topicID })
+          topicInvitees.forEach( function (item) {
+            app.cache.clear({ scope: 'private-topics-' + item.id })
+          })
+        } else {
+          app.cache.clear({ scope: 'discussion-' + args.discussionID })
+          app.cache.clear({ scope: 'categories_discussions' })
+          if ( args.discussionID === 2 ) {
+            app.cache.clear({ scope: 'announcements' })
+          }
+        }
+  
+        const topicSubscribers = await subscribers({ topicID: args.topicID })
+        topicSubscribers.forEach( function (item) {
+          app.cache.clear({ scope: 'subscriptions-' + item.id })
+        })
+      }
+  
+      return {
+        success: true,
+        id: post.rows[0].id
+      }
+    } catch (err) {
+      await client.query('ROLLBACK')
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
 
@@ -852,7 +883,7 @@ export const metaData = async (args) => {
 
   return {
     title: topicInfo.title + ' - Original Trilogy',
-    description: 'Posted by ' + topicInfo.author + ' on ' + topicInfo.time,
+    description: 'Posted by ' + topicInfo.author + ' on ' + topicInfo.created_formatted,
     keywords: ''
   }
 }

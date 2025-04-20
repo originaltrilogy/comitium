@@ -40,19 +40,26 @@ export const contentEdit = async (args) => {
 
 
 export const discussionPost = async (args) => {
-  let discussion = await app.models.discussion.info(args.discussionID)
-
-  if ( discussion ) {
-    let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.group_id)
-
-    if ( discussionPermissions.post === true ) {
-      return true
+  if ( args.user.post ) {
+    let discussion = await app.models.discussion.info(args.discussionID)
+  
+    if ( discussion ) {
+      let discussionPermissions = await app.models.group.discussionPermissions(args.discussionID, args.user.group_id)
+  
+      if ( discussionPermissions.post === true ) {
+        return true
+      } else {
+        return challenge(args)
+      }
     } else {
-      return challenge(args)
+      let err = new Error()
+      err.statusCode = 404
+      throw err
     }
   } else {
-    let err = new Error()
-    err.statusCode = 404
+    let err = new Error('')
+    err.statusCode = 403
+    err.message = args.user.group_id === 3 ? 'To help prevent spam, new members aren\'t allowed to start topics for the first 7 days after signing up.' : 'You don\'t have permission to start new topics.'
     throw err
   }
 }
@@ -226,10 +233,17 @@ export const postView = async (args) => {
 
 
 export const privateTopicStart = async (args) => {
-  if ( args.user.talk_privately ) {
-    return true
+  if ( args.user.post ) {
+    if ( args.user.talk_privately ) {
+      return true
+    } else {
+      return challenge(args)
+    }
   } else {
-    return challenge(args)
+    let err = new Error('')
+    err.statusCode = 403
+    err.message = args.user.group_id === 3 ? 'To help prevent spam, new members aren\'t allowed to start private topics for the first 7 days after signing up.' : 'You don\'t have permission to start new topics.'
+    throw err
   }
 }
 
@@ -505,5 +519,28 @@ export const userIPBan = (args) => {
     return true
   } else {
     return challenge(args)
+  }
+}
+
+
+export const userUpgrade = async (args) => {
+  let target = await app.models.user.info({ userID: args.userID })
+
+  if ( target ) {
+    if ( args.user.moderate_users ) {
+      if ( target.group_id > 3 ) {
+        let err = new Error('This user can\'t be upgraded.')
+        err.statusCode = 403
+        throw err
+      } else {
+        return true
+      }
+    } else {
+      return challenge(args)
+    }
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
   }
 }

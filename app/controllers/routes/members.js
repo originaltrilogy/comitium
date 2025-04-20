@@ -25,18 +25,24 @@ export const handler = async (params) => {
     })()
   ])
 
-  let count = members.length ? members[0].full_count : 0
-
-  return {
-    local: {
-      count: count,
-      group: group,
-      groups: groups,
-      members: members,
-      pagination: app.helpers.util.paginate(params.route.pathname, params.url.page || 1, count),
-      previousAndNext: app.helpers.util.previousAndNext(params.route.pathname, params.url.page || 1, count),
-      urlParams: '/' + ( params.url.id ? 'id/' + params.url.id + '/' : '' )
+  if ( group ) {
+    let count = members.length ? members[0].full_count : 0
+  
+    return {
+      local: {
+        count: count,
+        group: group,
+        groups: groups,
+        members: members,
+        pagination: app.helpers.util.paginate(params.route.pathname, params.url.page || 1, count),
+        previousAndNext: app.helpers.util.previousAndNext(params.route.pathname, params.url.page || 1, count),
+        urlParams: '/' + ( params.url.id ? 'id/' + params.url.id + '/' : '' )
+      }
     }
+  } else {
+    let err = new Error()
+    err.statusCode = 404
+    throw err
   }
 }
 

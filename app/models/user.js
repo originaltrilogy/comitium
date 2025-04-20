@@ -4,28 +4,35 @@ import { writeFile } from 'fs/promises'
 
 
 export const activate = async (args) => {
-  if ( !args.id || !args.activationCode ) {
+  if ( !args.userID || !args.activationCode ) {
     return {
       success: false,
       message: 'The activation link you requested isn\'t valid. Try copying it from your activation e-mail and pasting it into your browser\'s address bar. If you continue to have problems, please contact us for help.'
     }
   } else {
-    let activationStatus = await app.models.user.activationStatus({ id: args.id, activationCode: args.activationCode })
+    let activationStatus = await app.models.user.activationStatus({ userID: args.userID })
 
     // If the account isn't activated, activate it
-    if ( activationStatus.userExists && !activationStatus.activated && activationStatus.activationCode === args.activationCode ) {
+    if ( activationStatus.user_exists && !activationStatus.activated && activationStatus.activation_code === args.activationCode ) {
       const client = await app.helpers.dbPool.connect()
     
       try {
+        await client.query('begin')
         await client.query({
           name: 'user_activate',
-          text: 'update users set activated = true where id = $1 and activation_code = $2',
-          values: [ args.id, args.activationCode ]
+          text: 'update users set group_id = $1 where id = $2;',
+          values: [ activationStatus.destination_group_id, args.userID ]
         })
+        await client.query({
+          name: 'user_activate_cleanup',
+          text: 'delete from user_activation where user_id = $1;',
+          values: [ args.userID ]
+        })
+        await client.query('commit')
 
         // Create the user's avatar if they're activating their account for the first time.
         if ( !args.reactivation ) {
-          await writeFile(app.config.citizen.directories.web + '/avatars/' + args.id + '.jpg', app.resources.images.defaultAvatar)
+          await writeFile(app.config.citizen.directories.web + '/avatars/' + args.userID + '.jpg', app.resources.images.defaultAvatar)
         }
 
         // Clear the member cache
@@ -35,11 +42,14 @@ export const activate = async (args) => {
           success: true,
           message: 'Your account has been activated! You can now <a href="sign-in">sign in</a>.'
         }
+      } catch (err) {
+        await client.query('rollback')
+        throw err
       } finally {
         client.release()
       }
     } else {
-      if ( !activationStatus.userExists ) {
+      if ( !activationStatus.user_exists ) {
         return {
           success: false,
           reason: 'userDoesNotExist',
@@ -51,7 +61,7 @@ export const activate = async (args) => {
           reason: 'accountAlreadyActivated',
           message: '<p>This account has already been activated, so you should be able to <a href="sign-in">sign in</a>.</p><p>If you\'re having trouble signing in, try <a href="password-reset">resetting your password</a>.</p><p>If that doesn\'t work, please let us know.</p>'
         }
-      } else if ( activationStatus.activationCode !== args.activationCode ) {
+      } else if ( activationStatus.activation_code !== args.activationCode ) {
         return {
           success: false,
           reason: 'invalidActivationCode',
@@ -68,21 +78,19 @@ export const activationStatus = async (args) => {
 
   try {
     const result = await client.query({
-      name: 'user_activationStatus',
-      text: 'select id, activated, activation_code from users where id = $1',
-      values: [ args.id ]
+      name: 'user_activation_status',
+      text: 'select u.id, u.group_id, ua.destination_group_id, ua.activation_code from users u left join user_activation ua on u.id = ua.user_id where u.id = $1',
+      values: [ args.userID ]
     })
 
     if ( result.rows.length ) {
-      return {
-        userExists: true,
-        id: result.rows[0].id,
-        activationCode: result.rows[0].activation_code,
-        activated: result.rows[0].activated
-      }
+      result.rows[0].user_exists = true
+      result.rows[0].activated   = result.rows[0].group_id > 2
+
+      return result.rows[0]
     } else {
       return {
-        userExists: false
+        user_exists: false
       }
     }
   } finally {
@@ -191,11 +199,12 @@ export const ban = async (args) => {
   try {
     await client.query({
       name: 'user_ban',
-      text: 'update users set group_id = ( select id from groups where name = \'Banned Members\' ), signature = null, signature_html = null, website = null where id = $1;',
+      text: 'update users set group_id = ( select id from user_groups where name = \'Banned Members\' ), signature = null, signature_html = null, website = null where id = $1;',
       values: [ args.userID ]
     })
 
     app.cache.clear({ scope: 'user-' + args.userID })
+    app.cache.clear({ scope: 'members' })
   } finally {
     client.release()
   }
@@ -208,11 +217,12 @@ export const liftBan = async (args) => {
   try {
     await client.query({
       name: 'user_liftBan',
-      text: 'update users set group_id = ( select id from groups where name = \'Members\' ) where id = $1;',
+      text: 'update users set group_id = ( select id from user_groups where name = \'Members\' ) where id = $1;',
       values: [ args.userID ]
     })
 
     app.cache.clear({ scope: 'user-' + args.userID })
+    app.cache.clear({ scope: 'members' })
   } finally {
     client.release()
   }
@@ -323,9 +333,8 @@ export const create = async (args) => {
       ])
 
       let user = await insert({
-        // New members will eventually go into groupID 2 (New Members).
-        // Until new member logic is in place, new members are Members.
-        groupID: 3,
+        groupID: 2,
+        destinationGroupID: 3,
         username: username,
         usernameHash: usernameHash,
         passwordHash: passwordHash,
@@ -438,16 +447,16 @@ export const info = async (args) => {
   let sql, arg
 
   if ( args.userID ) {
-    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join groups g on u.group_id = g.id where u.id = $1'
+    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.content_restrictions, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join user_groups g on u.group_id = g.id where u.id = $1'
     arg = args.userID
   } else if ( args.username ) {
-    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join groups g on u.group_id = g.id where lower(u.username) = lower($1)'
+    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.content_restrictions, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join user_groups g on u.group_id = g.id where lower(u.username) = lower($1)'
     arg = args.username
   } else if ( args.usernameHash ) {
-    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join groups g on u.group_id = g.id where lower(u.username_hash) = lower($1)'
+    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.content_restrictions, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join user_groups g on u.group_id = g.id where lower(u.username_hash) = lower($1)'
     arg = args.usernameHash
   } else if ( args.email ) {
-    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.activated, u.activation_code, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join groups g on u.group_id = g.id where lower(u.email) = lower($1)'
+    sql = 'select u.id, u.group_id, u.username, u.username_hash, u.password_hash, u.url, u.email, u.timezone, u.date_format, u.theme, u.signature, u.signature_html, u.last_activity, u.joined, u.website, u.private_topic_email_notification, u.subscription_email_notification, u.system, u.locked, g.name as group, g.login, g.post, g.reply, g.talk_privately, g.content_restrictions, g.moderate_discussions, g.administrate_discussions, g.moderate_users, g.administrate_users, g.administrate_app, g.bypass_lockdown from users u join user_groups g on u.group_id = g.id where lower(u.email) = lower($1)'
     arg = args.email
   }
 
@@ -461,6 +470,7 @@ export const info = async (args) => {
       })
 
       if ( result.rows.length ) {
+        result.rows[0].activated = result.rows[0].group_id > 2,
         result.rows[0].joined_formatted = app.helpers.moment.tz(result.rows[0].joined, 'America/New_York').format('D-MMM-YYYY')
         result.rows[0].last_activity_formatted = app.helpers.moment.tz(result.rows[0].last_activity, 'America/New_York').format('D-MMM-YYYY')
         return result.rows[0]
@@ -480,15 +490,25 @@ export const insert = async (args) => {
   const client = await app.helpers.dbPool.connect()
 
   try {
-    const result = await client.query({
+    await client.query('begin')
+    const user = await client.query({
       name: 'user_insert',
-      text: 'insert into users ( group_id, username, username_hash, password_hash, url, email, timezone, date_format, theme, last_activity, joined, private_topic_email_notification, subscription_email_notification, activated, activation_code, system, locked ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17 ) returning id;',
-      values: [ args.groupID, args.username, args.usernameHash, args.passwordHash, args.url, args.email, args.timezone, args.dateFormat, args.theme, args.lastActivity, args.joined, args.privateTopicEmailNotification, args.subscriptionEmailNotification, args.activated, args.activationCode, args.system, args.locked ]
+      text: 'insert into users ( group_id, username, username_hash, password_hash, url, email, timezone, date_format, theme, last_activity, joined, private_topic_email_notification, subscription_email_notification, system, locked ) values ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15 ) returning id;',
+      values: [ args.groupID, args.username, args.usernameHash, args.passwordHash, args.url, args.email, args.timezone, args.dateFormat, args.theme, args.lastActivity, args.joined, args.privateTopicEmailNotification, args.subscriptionEmailNotification, args.system, args.locked ]
     })
+    await client.query({
+      name: 'user_activation_code_insert',
+      text: 'insert into user_activation ( user_id, destination_group_id, activation_code ) values ( $1, $2, $3 );',
+      values: [ user.rows[0].id, args.destinationGroupID, args.activationCode ]
+    })
+    await client.query('commit')
 
     return {
-      id: result.rows[0].id
+      id: user.rows[0].id
     }
+  } catch (err) {
+    await client.query('rollback')
+    throw err
   } finally {
     client.release()
   }
@@ -700,7 +720,7 @@ export const profileByID = async (args) => {
     try {
       const result = await client.query({
         name: 'user_profileByID',
-        text: 'select u.id, u.group_id, u.username, u.url, u.signature_html, u.last_activity, u.joined, u.website, g.name as group, ( select count(*) from posts p join topics t on p.topic_id = t.id where user_id = $1 and t.draft = false and p.draft = false and t.discussion_id in ( select discussion_id from discussion_permissions where group_id = $2 and read = true ) ) as post_count from users u join groups g on u.group_id = g.id where u.id = $1',
+        text: 'select u.id, u.group_id, u.username, u.url, u.signature_html, u.last_activity, u.joined, u.website, g.name as group, ( select count(*) from posts p join topics t on p.topic_id = t.id where user_id = $1 and t.draft = false and p.draft = false and t.discussion_id in ( select discussion_id from discussion_permissions where group_id = $2 and read = true ) ) as post_count from users u join user_groups g on u.group_id = g.id where u.id = $1',
         values: [ args.userID, args.visitorGroupID ]
       })
 
@@ -854,13 +874,21 @@ export const updateEmail = async (args) => {
   const client = await app.helpers.dbPool.connect()
 
   try {
-    const result = await client.query({
-      name: 'user_updateEmail',
-      text: 'update users set email = $1, activated = false, activation_code = $3 where id = $2;',
-      values: [ args.email, args.userID, args.activationCode ]
+    await client.query('begin')
+    await client.query({
+      name: 'user_update_email',
+      text: 'update users set email = $1, group_id = $2 where id = $3;',
+      values: [ args.email, args.groupID, args.userID ]
     })
-
-    return result.rows
+    await client.query({
+      name: 'user_update_reactivation',
+      text: 'insert into user_activation ( user_id, destination_group_id, activation_code ) values ( $1, $2, $3 );',
+      values: [ args.userID, args.destinationGroupID, args.activationCode ]
+    })
+    await client.query('commit')
+  } catch (err) {
+    await client.query('rollback')
+    throw err
   } finally {
     client.release()
   }
@@ -895,6 +923,26 @@ export const updateSettings = async (args) => {
       text: 'update users set signature = $1, signature_html = $2, timezone = $3, theme = $4, website = $5, subscription_email_notification = $6, private_topic_email_notification = $7 where id = $8;',
       values: [ args.signature, args.signatureHtml, args.timezone, args.theme, args.website, args.subscriptionEmailNotification, args.privateTopicEmailNotification, args.userID ]
     })
+
+    return result.rows
+  } finally {
+    client.release()
+  }
+}
+
+
+export const updateGroup = async (args) => {
+  const client = await app.helpers.dbPool.connect()
+
+  try {
+    const result = await client.query({
+      name: 'user_update_group',
+      text: 'update users set group_id = $1 where id = $2;',
+      values: [ args.groupID, args.userID ]
+    })
+
+    app.cache.clear({ scope: 'user-' + args.userID })
+    app.cache.clear({ scope: 'members' })
 
     return result.rows
   } finally {

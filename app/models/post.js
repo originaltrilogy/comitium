@@ -1,11 +1,19 @@
 // post model
 
 export const edit = async (args) => {
-  if ( !args.text.length ) {
+  let content = args.text.trim() || ''
+
+  if ( !content.length ) {
     return {
       success: false,
       reason: 'requiredFieldsEmpty',
       message: 'Posts can\'t be empty.'
+    }
+  } else if ( args.user.content_restrictions && app.helpers.validate.restrictedContent(args.html) ) {
+    return {
+      success: false,
+      reason: 'restrictedContent',
+      message: 'To help prevent spam, new members aren\'t allowed to post contact information (websites, e-mail, phone numbers, etc.).'
     }
   } else {
     const client = await app.helpers.dbPool.connect()
@@ -14,7 +22,7 @@ export const edit = async (args) => {
       await client.query('BEGIN')
       await client.query(
         'update posts set text = $1, html = $2, editor_id = $3, edit_reason = $4, modified = $5 where id = $6',
-        [ args.text, args.html, args.editorID, args.reason, args.time, args.id ])
+        [ args.text, args.html, args.user.user_id, args.reason, args.time, args.id ])
       await client.query(
         'insert into post_history ( post_id, editor_id, edit_reason, text, html, time ) values ( $1, $2, $3, $4, $5, $6 ) returning id',
         [ args.id, args.currentPost.editor_id || args.currentPost.author_id, args.currentPost.edit_reason, args.currentPost.text, args.currentPost.html, args.currentPost.modified || args.currentPost.created ])

@@ -3,7 +3,7 @@ article(class="topic" + ( topic.replies ? " has-replies" : "" ) + ( topic.unread
     h3
       a(href="topic" + ( topic.discussion_id > 0 ? "/" + topic.url : "" ) + "/id/" + topic.id ) !{topic.title_html}
     section.author
-      a(class="avatar" + ( topic.topic_starter_group_id === 6 ? " banned" : "" ) href="user/" + topic.topic_starter_url + "/id/" + topic.topic_starter_id rel="author" title="View " + topic.topic_starter + "'s profile.")
+      a(class="avatar" + ( topic.topic_starter_group_id === 7 ? " banned" : "" ) href="user/" + topic.topic_starter_url + "/id/" + topic.topic_starter_id rel="author" title="View " + topic.topic_starter + "'s profile.")
         img(src="avatars/" + topic.topic_starter_id + ".jpg")
       dl.byline
         dt.author Author
@@ -28,7 +28,7 @@ article(class="topic" + ( topic.replies ? " has-replies" : "" ) + ( topic.unread
         = topic.replies_formatted
   if topic.replies
     p.last-post
-      a(class="avatar" + ( topic.last_post_author_group_id === 6 ? " banned" : "" ) href="user/" + topic.last_post_author_url + "/id/" + topic.last_post_author_id rel="author" title="View " + topic.lastPostAuthor + "'s profile.")
+      a(class="avatar" + ( topic.last_post_author_group_id === 7 ? " banned" : "" ) href="user/" + topic.last_post_author_url + "/id/" + topic.last_post_author_id rel="author" title="View " + topic.lastPostAuthor + "'s profile.")
         img(src="avatars/" + topic.last_post_author_id + ".jpg")
       a(href="user/" + topic.last_post_author_url + "/id/" + topic.last_post_author_id rel="author" title="View " + topic.last_post_author + "'s profile.")
         = topic.last_post_author

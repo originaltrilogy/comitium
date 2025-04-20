@@ -117,7 +117,7 @@ export const users = async () => {
     try {
       const result = await client.query({
         name: 'stats_users',
-        text: 'select count(id) as user_count from users where activated = true;'
+        text: 'select count(id) as user_count from users where group_id > 2;'
       })
 
       // Cache the categories object for future requests

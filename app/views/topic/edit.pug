@@ -17,7 +17,7 @@ if local.topic && local.topic.message
     p !{local.topic.message}
 
 section.form.post.topic-write
-  form#topic-write-form(action="topic/action/editForm/id/" + local.topic.id method="post" novalidate)
+  form#topic-write-form(action="topic/action/editForm/id/" + url.id method="post" novalidate)
     ul.data
       li.topic-title.textarea.required
         label(for="topic-title")
