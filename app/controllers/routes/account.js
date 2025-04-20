@@ -61,6 +61,8 @@ export const generalForm = async (params, request) => {
             methods.push(
               app.models.user.updateEmail({
                 userID: params.session.user_id,
+                groupID: 2,
+                destinationGroupID: params.session.group_id,
                 email: email,
                 deactivateUser: true,
                 activationCode: activationCode
@@ -90,9 +92,19 @@ export const generalForm = async (params, request) => {
         }
       }
 
-      if ( website && website.length && !app.helpers.validate.url(website) ) {
+      if ( signature && params.session.content_restrictions && app.helpers.validate.restrictedContent(signatureHtml) ) {
         update = false
-        messages.website = 'Your website address isn\'t properly formatted. Make sure it includes the protocol (http or https).'
+        messages.signature = 'To help prevent spam, new members aren\'t allowed to have contact information (websites, e-mail, phone numbers, etc.) in their signature.'
+      }
+
+      if ( website && website.length ) {
+        if ( params.session.content_restrictions ) {
+          update = false
+          messages.website = 'To help prevent spam, new members aren\'t allowed to link to websites in their profile.'
+        } else if ( !app.helpers.validate.url(website) ) {
+          update = false
+          messages.website = 'Your website address isn\'t properly formatted. Make sure it includes the protocol (http or https).'
+        }
       }
 
       if ( update ) {

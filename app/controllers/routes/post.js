@@ -58,7 +58,7 @@ export const editForm = async (params, request) => {
           draft = false,
           time = app.helpers.util.isoDate(),
           forwardToUrl
-  
+
       switch ( params.form.formAction ) {
         default:
           throw new Error('No valid form action received')
@@ -80,7 +80,7 @@ export const editForm = async (params, request) => {
   
           postEdit = await app.models.post.edit({
             id: post.id,
-            editorID: params.session.user_id,
+            user: params.session,
             text: params.form.content,
             html: parsedContent,
             reason: parsedReason,
@@ -97,11 +97,10 @@ export const editForm = async (params, request) => {
             }
           } else {
             return {
+              view: 'edit',
               local: {
-                post: post,
-                message: postEdit.message
-              },
-              view: 'edit'
+                post: postEdit
+              }
             }
           }
       }

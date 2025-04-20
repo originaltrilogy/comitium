@@ -57,30 +57,15 @@ export const handler = async (params) => {
 
 export const activate = async (params) => {
   let activate = await app.models.user.activate({
-    id: params.url.id || false,
+    userID: params.url.id || false,
     activationCode: params.url.activationCode || false,
     reactivation: params.url.reactivation || false
   })
 
-  if ( activate.success || ( !activate.success && activate.reason === 'accountAlreadyActivated' ) ) {
-    return {
-      view: 'activate',
-      local: {
-        activate: activate
-      },
-      include: {
-        'sign-in': {
-          controller: 'sign-in',
-          view: 'sign-in-partial'
-        }
-      }
-    }
-  } else {
-    return {
-      view: 'activate',
-      local: {
-        activate: activate
-      }
+  return {
+    view: 'activate',
+    local: {
+      activate: activate
     }
   }
 }
@@ -92,7 +77,31 @@ export const ban = async (params, request) => {
   if ( access === true ) {
     await app.models.user.ban({ userID: params.url.id })
     // End the banned user's session immediately
-    app.session.end('user_id', +params.url.id) // URL params are always strings, so cast to number
+    app.session.end({ key: 'user_id', value: +params.url.id }) // URL params are always strings, so cast to number
+    return {
+      redirect: request.headers.referer
+    }
+  } else {
+    return access
+  }
+}
+
+
+export const banIP = async (params, request) => {
+  let access = await app.helpers.access.userIPBan({ user: params.session })
+
+  if ( access === true ) {
+    let log = await app.models.user.logByID({ logID: params.url.logID })
+
+    await app.models.user.banIP({
+      ip: log.ip,
+      adminUserID: params.session.user_id,
+      time: app.helpers.util.isoDate()
+    })
+
+    // End all active sessions with matching IPs
+    app.session.end({ key: 'ip', value: log.ip.replace('/32', '') })
+
     return {
       redirect: request.headers.referer
     }
@@ -153,7 +162,7 @@ export const liftBan = async (params, request) => {
   if ( access === true ) {
     await app.models.user.liftBan({ userID: params.url.id })
     // End the user's session immediately
-    app.session.end('user_id', +params.url.id) // URL params are always strings, so cast to number
+    app.session.end({ key: 'user_id', value: +params.url.id }) // URL params are always strings, so cast to number
     return {
       redirect: request.headers.referer
     }
@@ -163,21 +172,13 @@ export const liftBan = async (params, request) => {
 }
 
 
-export const banIP = async (params, request) => {
-  let access = await app.helpers.access.userIPBan({ user: params.session })
+export const upgrade = async ({ session, url }, request) => {
+  let access = await app.helpers.access.userUpgrade({ userID: url.id, user: session })
 
   if ( access === true ) {
-    let log = await app.models.user.logByID({ logID: params.url.logID })
-
-    await app.models.user.banIP({
-      ip: log.ip,
-      adminUserID: params.session.user_id,
-      time: app.helpers.util.isoDate()
-    })
-
-    // End all active sessions with matching IPs
-    app.session.end('ip', log.ip.replace('/32', ''))
-
+    await app.models.user.updateGroup({ userID: url.id, groupID: 4 })
+    // End the user's session immediately
+    app.session.end({ key: 'user_id', value: +url.id }) // URL params are always strings, so cast to number
     return {
       redirect: request.headers.referer
     }

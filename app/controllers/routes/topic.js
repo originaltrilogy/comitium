@@ -238,7 +238,7 @@ export const startForm = async (params, request) => {
 
           saveTopic = await app.models.topic.insert({
             discussionID: discussion.id,
-            userID: params.session.user_id,
+            user: params.session,
             title: params.form.title,
             titleHtml: parsedTitle,
             url: url,
@@ -383,7 +383,7 @@ export const startAnnouncementForm = async (params, request) => {
             announcement: true,
             discussionID: 2,
             discussions: discussions,
-            userID: params.session.user_id,
+            user: params.session,
             title: params.form.title,
             titleHtml: parsedTitle,
             url: url,
@@ -510,7 +510,7 @@ export const startPrivateForm = async (params, request) => {
           saveTopic = await app.models.topic.insert({
             private: true,
             invitees: params.form.invitees,
-            userID: params.session.user_id,
+            user: params.session,
             username: params.session.username,
             discussionID: 0,
             title: params.form.title,
@@ -621,10 +621,10 @@ export const replyForm = async (params, request) => {
     let access = await app.helpers.access.topicReply({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
-      let topic         = await app.models.topic.info(params.url.id),
-          parsedContent = app.helpers.markdown.content(params.form.content),
-          draft         = false,
-          time          = app.helpers.util.isoDate(),
+      let topic             = await app.models.topic.info(params.url.id),
+          parsedContent     = app.helpers.markdown.content(params.form.content),
+          draft             = false,
+          time              = app.helpers.util.isoDate(),
           reply, page, pageParameter, controller, urlTitle, replyUrl, forwardToUrl
 
       switch ( params.form.formAction ) {
@@ -659,7 +659,7 @@ export const replyForm = async (params, request) => {
           reply = await app.models.topic.reply({
             topicID: topic.id,
             discussionID: topic.discussion_id,
-            userID: params.session.user_id,
+            user: params.session,
             html: parsedContent,
             text: params.form.content,
             draft: draft,
@@ -667,41 +667,50 @@ export const replyForm = async (params, request) => {
             time: time
           })
 
-          page = Math.ceil( ( topic.replies + 2 ) / 25 ),
-          pageParameter = page === 1 ? '' : '/page/' + page,
-          controller = topic.discussion_id === 2 ? 'announcement' : 'topic',
-          urlTitle = topic.private ? '' : '/' + topic.url,
-          replyUrl = app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '#' + reply.id,
-          forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : replyUrl
-
-          if ( params.form.subscribe ) {
-            await app.models.topic.subscribe({
-              userID: params.session.user_id,
-              topicID: topic.id,
-              time: time
-            })
-          }
-
-          // If it's not a draft post, notify the topic subscribers
-          if ( !draft ) {
-            notifySubscribers({
-              topicID: topic.id,
-              scope: 'updates',
-              skip: [ params.session.user_id ],
-              time: time,
-              template: 'Topic Reply',
-              replace: {
-                replyAuthor: params.session.username,
-                replyUrl: replyUrl,
-                topicTitle: topic.private ? 'Private Topic (title withheld for your privacy)' : topic.title,
-                unsubscribeUrl: app.config.comitium.baseUrl + 'topic/action/unsubscribe/id/' + topic.id
+          if ( reply.success ) {
+            page = Math.ceil( ( topic.replies + 2 ) / 25 ),
+            pageParameter = page === 1 ? '' : '/page/' + page,
+            controller = topic.discussion_id === 2 ? 'announcement' : 'topic',
+            urlTitle = topic.private ? '' : '/' + topic.url,
+            replyUrl = app.config.comitium.baseUrl + controller + urlTitle + '/id/' + topic.id + pageParameter + '#' + reply.id,
+            forwardToUrl = draft ? app.config.comitium.baseUrl + '/drafts' : replyUrl
+  
+            if ( params.form.subscribe ) {
+              await app.models.topic.subscribe({
+                userID: params.session.user_id,
+                topicID: topic.id,
+                time: time
+              })
+            }
+  
+            // If it's not a draft post, notify the topic subscribers
+            if ( !draft ) {
+              notifySubscribers({
+                topicID: topic.id,
+                scope: 'updates',
+                skip: [ params.session.user_id ],
+                time: time,
+                template: 'Topic Reply',
+                replace: {
+                  replyAuthor: params.session.username,
+                  replyUrl: replyUrl,
+                  topicTitle: topic.private ? 'Private Topic (title withheld for your privacy)' : topic.title,
+                  unsubscribeUrl: app.config.comitium.baseUrl + 'topic/action/unsubscribe/id/' + topic.id
+                }
+              })
+            }
+  
+            return {
+              local: reply,
+              redirect: forwardToUrl
+            }
+          } else {
+            return {
+              view: 'reply',
+              local: {
+                topic: reply
               }
-            })
-          }
-
-          return {
-            local: reply,
-            redirect: forwardToUrl
+            }
           }
       }
     } else {
@@ -923,14 +932,14 @@ export const editForm = async (params, request) => {
     let access = await app.helpers.access.topicEdit({ topicID: params.url.id, user: params.session })
 
     if ( access === true ) {
-      let topic         = await app.models.topic.info(params.url.id),
-          firstPost     = await app.models.post.info(topic.first_post_id),
-          announcement  = topic.discussion_id === 2 ? true : false,
-          parsedTitle   = app.helpers.markdown.title(params.form.title),
-          parsedContent = app.helpers.markdown.content(params.form.content),
-          parsedReason  = app.helpers.markdown.inline(params.form.reason),
-          time          = app.helpers.util.isoDate(),
-          url           = app.helpers.slug(params.form.title),
+      let topic             = await app.models.topic.info(params.url.id),
+          firstPost         = await app.models.post.info(topic.first_post_id),
+          announcement      = topic.discussion_id === 2 ? true : false,
+          parsedTitle       = app.helpers.markdown.title(params.form.title),
+          parsedContent     = app.helpers.markdown.content(params.form.content),
+          parsedReason      = app.helpers.markdown.inline(params.form.reason),
+          time              = app.helpers.util.isoDate(),
+          url               = app.helpers.slug(params.form.title),
           edit, err
           
       url = url.length ? url : 'untitled'
@@ -955,7 +964,7 @@ export const editForm = async (params, request) => {
             topicID: topic.id,
             discussionID: topic.discussion_id,
             postID: topic.first_post_id,
-            editorID: params.session.user_id,
+            user: params.session,
             currentPost: firstPost,
             title: params.form.title,
             titleHtml: parsedTitle,

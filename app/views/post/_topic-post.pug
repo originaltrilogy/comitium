@@ -1,7 +1,7 @@
-article(id=post.id class="post" + ( post.author_signature ? " signature" : "" ) + ( post.author_group_id === 4 || post.author_group_id === 5 ? " staff" : "" ) data-post-id=post.id )
+article(id=post.id class="post" + ( post.author_signature ? " signature" : "" ) + ( post.author_group_id === 5 || post.author_group_id === 6 ? " staff" : "" ) data-post-id=post.id )
   header
-    a(class="avatar" + ( post.author_group_id === 6 ? " banned" : "" ) href="user/" + post.author_url + "/id/" + post.author_id rel="author")
-      if post.author_group_id === 6
+    a(class="avatar" + ( post.author_group_id === 7 ? " banned" : "" ) href="user/" + post.author_url + "/id/" + post.author_id rel="author")
+      if post.author_group_id === 7
         <svg class="icon banned"><use xlink:href="themes/#{session.themePath.images}/images/symbols.svg#icon-banned"></use></svg>
       img(src="avatars/" + post.author_id + ".jpg")
     dl
@@ -44,11 +44,11 @@ article(id=post.id class="post" + ( post.author_signature ? " signature" : "" ) 
         if local.topic.replies > 0
           li.delete
             a(href="post/action/trash/id/" + post.id) Delete
-  if ( post.author_signature && post.author_signature.length ) || post.author_group_id === 4 || post.author_group_id === 5
+  if ( post.author_signature && post.author_signature.length ) || post.author_group_id === 5 || post.author_group_id === 6
     section.signature
-      if post.author_group_id === 4
+      if post.author_group_id === 5
         section.staff.moderator Forum Moderator
-      else if post.author_group_id === 5
+      else if post.author_group_id === 6
         section.staff.administrator Forum Administrator
       section.content
         != post.author_signature
