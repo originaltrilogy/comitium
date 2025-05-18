@@ -20,16 +20,10 @@ export const start = async (params, request) => {
   if ( !bannedIP ) {
     // If the user has cookies from a previous session, authenticate and start a new session.
     if ( params.cookie.comitium_id ) {
-      let authenticate = await app.models.user.authenticate({ usernameHash: params.cookie.comitium_id }),
-          user         = authenticate.user
+      let authenticate = await app.models.user.authenticate({ usernameHash: params.cookie.comitium_id })
 
       if ( authenticate.success ) {
-        // Move New Members to the Members group if their account is more than 7 days old
-        if ( user.group_id === 3 && app.helpers.moment().subtract(7, 'days') > app.helpers.moment(user.joined) ) {
-          await app.models.user.updateGroup({ userID: user.id, groupID: 4 })
-          authenticate = await app.models.user.authenticate({ usernameHash: params.cookie.comitium_id }),
-          user         = authenticate.user
-        }
+        let user = await app.helpers.access.newMemberUpgrade(authenticate.user)
 
         user.user_id = user.id
         delete user.id

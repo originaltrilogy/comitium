@@ -35,11 +35,12 @@ export const submit = async (params, request) => {
   // If it's a POST, authenticate the user
   if ( request.method === 'POST' ) {
     let authenticate = await app.models.user.authenticate({ email: params.form.email || params.session.email, password: params.form.password }),
-        user = authenticate.user,
         cookie = {}
 
     if ( authenticate.success ) {
-      user.user_id = authenticate.user.id
+      let user = await app.helpers.access.newMemberUpgrade(authenticate.user)
+
+      user.user_id = user.id
       delete user.id
       user.authenticated = true
       user.login_referrer = params.form.loginReferrer

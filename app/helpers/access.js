@@ -1,3 +1,15 @@
+// Move New Members to the Members group if their account is more than 7 days old
+export const newMemberUpgrade = async (user) => {
+  if ( user.group_id === 3 && app.helpers.moment().subtract(7, 'days') > app.helpers.moment(user.joined) ) {
+    await app.models.user.updateGroup({ userID: user.id, groupID: 4 })
+    user.group_id = 4
+
+    return user
+  } else {
+    return user
+  }
+}
+
 // Security checks to verify if users have access to a given controller/action/view
 
 // If they're not logged in, send them to the sign in form. If they are, respond with a 403 Forbidden.
@@ -242,17 +254,16 @@ export const privateTopicStart = async (args) => {
   } else {
     let err = new Error('')
     err.statusCode = 403
-    err.message = args.user.group_id === 3 ? 'To help prevent spam, new members aren\'t allowed to start private topics for the first 7 days after signing up.' : 'You don\'t have permission to start new topics.'
+    err.message = args.user.group_id === 3 ? 'To help prevent spam, new members aren\'t allowed to start private topics for the first 7 days, but you can receive and respond to messages from other members.' : 'You don\'t have permission to start new topics.'
     throw err
   }
 }
 
 
 export const privateTopicsView = (args) => {
-  if ( args.user.talk_privately ) {
+  // Anybody can view private topics if logged in
+  if ( args.user.group_id > 1 ) {
     return true
-  } else {
-    return challenge(args)
   }
 }
 
@@ -392,7 +403,7 @@ export const topicReply = async (args) => {
     } else {
       let invitee = await app.models.topic.invitee({ topicID: args.topicID, userID: args.user.user_id })
 
-      if ( args.user.talk_privately && invitee && !invitee.left_topic ) {
+      if ( invitee && !invitee.left_topic ) {
         return true
       } else {
         return challenge(args)
@@ -457,7 +468,8 @@ export const topicView = async (args) => {
       }
     } else {
       let invitee = await app.models.topic.invitee({ topicID: args.topicID, userID: args.user.user_id })
-      if ( args.user.talk_privately && invitee && !invitee.left_topic ) {
+
+      if ( invitee && !invitee.left_topic ) {
         return true
       } else {
         return challenge(args)
