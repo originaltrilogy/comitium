@@ -4,12 +4,12 @@ header
     if !preview
       p Your changes will appear immediately. The post's current state will be saved in its history and can be recovered later.
 
-if preview
+if local.preview
   section.preview
     h2 Post preview:
     article.post
       section.content
-        != preview.content
+        != local.preview.content
 
 if local.post && local.post.message
   section.notice.error
