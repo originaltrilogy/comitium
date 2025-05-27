@@ -2,9 +2,8 @@
 export const newMemberUpgrade = async (user) => {
   if ( user.group_id === 3 && app.helpers.moment().subtract(7, 'days') > app.helpers.moment(user.joined) ) {
     await app.models.user.updateGroup({ userID: user.id, groupID: 4 })
-    user.group_id = 4
 
-    return user
+    return await app.models.user.info({ userID: user.id })
   } else {
     return user
   }
